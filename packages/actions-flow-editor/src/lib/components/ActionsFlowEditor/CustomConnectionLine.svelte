@@ -27,10 +27,10 @@
   let lineColor = $derived(getHandleColor(sourceType));
 
   // 获取连接线的坐标
-  let fromX = $derived(connection.current.from.x);
-  let fromY = $derived(connection.current.from.y);
-  let toX = $derived(connection.current.to.x);
-  let toY = $derived(connection.current.to.y);
+  let fromX = $derived(connection.current.from?.x || 0);
+  let fromY = $derived(connection.current.from?.y || 0);
+  let toX = $derived(connection.current.to?.x || 0);
+  let toY = $derived(connection.current.to?.y || 0);
 
   // 计算贝塞尔曲线控制点
   let controlPointX1 = $derived(fromX + (toX - fromX) * 0.5);

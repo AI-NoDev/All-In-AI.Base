@@ -73,20 +73,20 @@
   </div>
 
   <!-- 变量列表 -->
-  <div class="relative" style="min-height: {ROW_HEIGHT}px;">
+  <div class="relative">
     {#each data.variables as variable, i}
-      <div class="flex items-center gap-1 px-2 border-b border-border relative" style="height: {ROW_HEIGHT}px;">
+      <div class="flex items-center gap-1 px-2 pr-6 border-b border-border relative" style="height: {ROW_HEIGHT}px;">
         <!-- 变量名输入 -->
         <input
           type="text"
-          class="nodrag w-20 text-[11px] px-1.5 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
+          class="nodrag nowheel w-20 text-[11px] px-1.5 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
           value={variable.key}
           oninput={(e) => updateVariable(i, 'key', (e.target as HTMLInputElement).value)}
           placeholder="变量名"
         />
         <!-- 类型选择 -->
         <select
-          class="nodrag flex-1 text-[11px] px-1 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
+          class="nodrag nowheel flex-1 text-[11px] px-1 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
           value={variable.type}
           onchange={(e) => updateVariable(i, 'type', (e.target as HTMLSelectElement).value as VariableType)}
         >
@@ -111,17 +111,20 @@
             <p>删除变量</p>
           </Tooltip.Content>
         </Tooltip.Root>
-        <!-- 输出 Handle 放在每行内部 -->
-        <Handle
-          id="output-{variable.key}"
-          type="source"
-          position={Position.Right}
-          style="top: 50%; right: -5px; width: 10px; height: 10px; background: {getHandleColor(variable.type)}; border: none; transform: translateY(-50%);"
-          {isConnectable}
-        />
       </div>
     {/each}
   </div>
+
+  <!-- 输出 Handles - 放在节点外层以确保可连接 -->
+  {#each data.variables as variable, i}
+    <Handle
+      id="output-{variable.key}"
+      type="source"
+      position={Position.Right}
+      style="top: {HEADER_HEIGHT + ROW_HEIGHT * i + ROW_HEIGHT / 2}px; width: 10px; height: 10px; background: {getHandleColor(variable.type)}; border: none;"
+      {isConnectable}
+    />
+  {/each}
 
   <!-- 添加变量按钮 -->
   <div class="flex items-center justify-center border-t border-chart-3/20" style="height: {FOOTER_HEIGHT}px;">
