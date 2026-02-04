@@ -64,6 +64,6 @@
 		"svelte-grid": "^5.1.2",
 		"vditor": "^3.11.2",
 		"zod": "^4.3.6",
-		"zod-visual-editor": "workspace:*"
+		"@qiyu-allinai/zod-visual-editor": "workspace:*"
 	}
 }

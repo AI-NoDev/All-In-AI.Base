@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { BaseEdge, getBezierPath, type EdgeProps } from '@xyflow/svelte';
+  import { BaseEdge, getBezierPath, type EdgeProps, type Node } from '@xyflow/svelte';
   import { getContext } from 'svelte';
-  import { EDGE_DELETE_CONTEXT_KEY, type EdgeDeleter } from '../../types.js';
+  import { EDGE_DELETE_CONTEXT_KEY, NODES_CONTEXT_KEY, type EdgeDeleter, type NodesGetter } from '../../types';
+  import { getHandleColor } from '../../edgeTypeRule';
+  import { getOutputPinType } from '../../utils/pinTypeUtils';
 
   let {
     id,
@@ -13,10 +15,20 @@
     targetPosition,
     markerEnd,
     style,
+    source,
+    sourceHandleId,
   }: EdgeProps = $props();
 
-  // 从 context 获取删除函数
+  // 从 context 获取删除函数和 nodes
   const deleteEdge = getContext<EdgeDeleter>(EDGE_DELETE_CONTEXT_KEY);
+  const getNodes = getContext<NodesGetter | undefined>(NODES_CONTEXT_KEY);
+
+  // 响应式获取 nodes
+  let nodes = $derived(getNodes?.() ?? []);
+
+  // 计算源引脚类型和颜色
+  let sourceType = $derived(getOutputPinType(nodes as Node[], source ?? '', sourceHandleId ?? ''));
+  let edgeColor = $derived(getHandleColor(sourceType));
 
   // 计算贝塞尔曲线路径和中点位置
   let pathData = $derived(
@@ -46,7 +58,7 @@
 <BaseEdge 
   path={edgePath} 
   {markerEnd} 
-  {style}
+  style="{style}; stroke: {edgeColor};"
 />
 
 <!-- 透明的宽路径用于更容易触发 hover -->

@@ -244,11 +244,11 @@ export function getTypeColor(typeStr: string | null): string {
  * @returns CSS 背景颜色 (使用 CSS 变量以支持主题切换)
  */
 export function getHandleColor(typeStr: string | null): string {
-  if (!typeStr) return 'hsl(var(--muted-foreground))';
+  if (!typeStr) return 'var(--muted-foreground)';
   
   // 处理 array<xxx> 格式
   if (typeStr.startsWith('array<')) {
-    return 'hsl(var(--chart-3))';
+    return 'var(--chart-3)';
   }
   
   const types = parseTypeUnion(typeStr);
@@ -257,19 +257,19 @@ export function getHandleColor(typeStr: string | null): string {
   if (types.length === 1) {
     const t = types[0];
     // 再次检查 array<xxx>（可能在联合类型解析后）
-    if (t.startsWith('array<')) return 'hsl(var(--chart-3))';
+    if (t.startsWith('array<')) return 'var(--chart-3)';
     
     switch (t) {
-      case 'string': return 'hsl(var(--chart-2))';
-      case 'number': return 'hsl(var(--primary))';
-      case 'boolean': return 'hsl(var(--chart-5))';
-      case 'object': return 'hsl(var(--chart-4))';
-      case 'array': return 'hsl(var(--chart-3))';
-      case 'null': return 'hsl(var(--muted-foreground))';
-      default: return 'hsl(var(--muted-foreground))';
+      case 'string': return 'var(--chart-2)';
+      case 'number': return 'var(--primary)';
+      case 'boolean': return 'var(--chart-5)';
+      case 'object': return 'var(--chart-4)';
+      case 'array': return 'var(--chart-3)';
+      case 'null': return 'var(--muted-foreground)';
+      default: return 'var(--muted-foreground)';
     }
   }
   
   // 联合类型
-  return 'hsl(var(--chart-4))';
+  return 'var(--chart-4)';
 }

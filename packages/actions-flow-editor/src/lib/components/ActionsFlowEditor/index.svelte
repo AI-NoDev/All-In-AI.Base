@@ -59,7 +59,7 @@
     NodeDebugResult,
     DebugStateMap,
   } from '../../types.js';
-  import { EDGES_CONTEXT_KEY, EDGE_DELETE_CONTEXT_KEY, DEBUG_STATE_CONTEXT_KEY, RUN_NODE_CONTEXT_KEY, OPEN_DEBUG_DIALOG_CONTEXT_KEY, UTIL_DEFINITIONS } from '../../types.js';
+  import { NODES_CONTEXT_KEY, EDGES_CONTEXT_KEY, EDGE_DELETE_CONTEXT_KEY, DEBUG_STATE_CONTEXT_KEY, RUN_NODE_CONTEXT_KEY, OPEN_DEBUG_DIALOG_CONTEXT_KEY, UTIL_DEFINITIONS } from '../../types.js';
   import type { OpenDebugDialogParams } from '../../types.js';
   import NodeDebugDialog from './NodeDebugDialog.svelte';
   import {
@@ -157,10 +157,10 @@
     /** 运行单个节点的回调（用于调试或执行） */
     onRunNode?: (nodeName: string, input: Record<string, unknown>) => Promise<unknown>;
     /** 颜色模式：'light' | 'dark' | 'system' */
-    colorMode?: 'light' | 'dark' | 'system';
+    colorMode?: 'light' | 'dark';
   }
 
-  let { actions, getActionDetail, initialWorkflow, onWorkflowChange, inputSchema, onConnectionError, onRunNode, colorMode = 'system' }: Props = $props();
+  let { actions, getActionDetail, initialWorkflow, onWorkflowChange, inputSchema, onConnectionError, onRunNode, colorMode }: Props = $props();
 
   const nodeTypes: NodeTypes = {
     action: ActionNode,
@@ -207,6 +207,7 @@
   );
   let edges = $state<Edge[]>(initialWorkflow?.edges ?? []);
 
+  setContext(NODES_CONTEXT_KEY, () => nodes);
   setContext(EDGES_CONTEXT_KEY, () => edges);
 
   // 调试状态管理
@@ -1029,7 +1030,7 @@
   <ActionsPalette {actions} onAddAction={handleAddAction} />
   
   <ContextMenu.Trigger class="flex-1 flex flex-col relative" oncontextmenu={handlePaneContextMenu}>
-    <SvelteFlow bind:nodes bind:edges {nodeTypes} {edgeTypes} {isValidConnection} {colorMode} onconnect={handleConnect} onconnectstart={handleConnectStart} onconnectend={handleConnectEndWithAutoCreate} ondelete={handleDelete} onnodedragstop={handleNodeDragStop} class="actions-flow">
+    <SvelteFlow style="background-color: var(--background)" bind:nodes bind:edges {nodeTypes} {edgeTypes} {isValidConnection} {colorMode} onconnect={handleConnect} onconnectstart={handleConnectStart} onconnectend={handleConnectEndWithAutoCreate} ondelete={handleDelete} onnodedragstop={handleNodeDragStop} proOptions={{ hideAttribution: true }} class="actions-flow">
     </SvelteFlow>
   </ContextMenu.Trigger>
   

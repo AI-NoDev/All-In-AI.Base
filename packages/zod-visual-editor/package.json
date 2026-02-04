@@ -1,5 +1,5 @@
 {
-	"name": "zod-visual-editor",
+	"name": "@qiyu-allinai/zod-visual-editor",
 	"version": "0.1.0",
 	"description": "A visual editor for building Zod schemas in Svelte 5",
 	"license": "MIT",

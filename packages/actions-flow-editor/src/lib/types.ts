@@ -1,5 +1,8 @@
 import type { Node, Edge } from '@xyflow/svelte';
 
+/** Context key for nodes getter */
+export const NODES_CONTEXT_KEY = Symbol('nodes-context');
+
 /** Context key for edges getter */
 export const EDGES_CONTEXT_KEY = Symbol('edges-context');
 
@@ -14,6 +17,9 @@ export const RUN_NODE_CONTEXT_KEY = Symbol('run-node-context');
 
 /** Context key for opening debug dialog */
 export const OPEN_DEBUG_DIALOG_CONTEXT_KEY = Symbol('open-debug-dialog-context');
+
+/** Nodes getter function type */
+export type NodesGetter = () => Node[];
 
 /** Edges getter function type */
 export type EdgesGetter = () => Edge[];

@@ -238,6 +238,7 @@
       onWorkflowChange={(workflow) => console.log('Workflow changed:', workflow)}
       onConnectionError={handleConnectionError}
       onRunNode={handleRunNode}
+      colorMode="dark"
     />
   {/if}
 </div>

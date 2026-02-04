@@ -5,7 +5,7 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
   import { ActionsFlowEditor } from '@qiyu-allinai/actions-flow-editor';
-  import type { ActionSummary, ActionDetail, WorkflowDefinition } from '@qiyu-allinai/actions-flow-editor';
+  import type { ActionSummary, ActionDetail, WorkflowDefinition, JsonSchemaProperty } from '@qiyu-allinai/actions-flow-editor';
 
   interface ApiResponse<T> {
     data: T | null;
@@ -16,20 +16,43 @@
   interface Props {
     open: boolean;
     initialWorkflow: string;
+    /** 输入参数 Schema（JSON Schema 字符串或 Zod Schema 字符串） */
+    inputSchema?: string;
     onOpenChange: (open: boolean) => void;
     onConfirm: (workflow: string) => void;
   }
 
-  let { open, initialWorkflow, onOpenChange, onConfirm }: Props = $props();
+  let { open, initialWorkflow, inputSchema, onOpenChange, onConfirm }: Props = $props();
 
   let actions = $state<ActionSummary[]>([]);
   let loading = $state(true);
   let workflow = $state<WorkflowDefinition | undefined>(undefined);
+  let parsedInputSchema = $state<Record<string, JsonSchemaProperty> | undefined>(undefined);
 
   // 从 preferencesStore 获取当前主题
   let colorMode = $derived<'light' | 'dark'>(preferencesStore.theme);
 
-  // 解析初始工作流
+  // 解析输入 Schema（JSON Schema 格式）
+  function parseInputSchema(schemaStr: string): Record<string, JsonSchemaProperty> | undefined {
+    if (!schemaStr) return undefined;
+    
+    try {
+      const parsed = JSON.parse(schemaStr);
+      // 如果是完整的 JSON Schema 对象（带 type: 'object'）
+      if (parsed.type === 'object' && parsed.properties) {
+        return parsed.properties as Record<string, JsonSchemaProperty>;
+      }
+      // 如果是直接的 properties 对象
+      if (typeof parsed === 'object' && !parsed.type) {
+        return parsed as Record<string, JsonSchemaProperty>;
+      }
+    } catch {
+      console.warn('Failed to parse input schema:', schemaStr);
+    }
+    return undefined;
+  }
+
+  // 解析初始工作流和输入 Schema
   $effect(() => {
     if (open && initialWorkflow) {
       try {
@@ -39,6 +62,13 @@
       }
     } else if (open) {
       workflow = undefined;
+    }
+    
+    // 解析输入 Schema
+    if (open && inputSchema) {
+      parsedInputSchema = parseInputSchema(inputSchema);
+    } else {
+      parsedInputSchema = undefined;
     }
   });
 
@@ -130,6 +160,7 @@
           {getActionDetail}
           {colorMode}
           initialWorkflow={workflow}
+          inputSchema={parsedInputSchema}
           onWorkflowChange={handleWorkflowChange}
           onConnectionError={handleConnectionError}
           onRunNode={handleRunNode}

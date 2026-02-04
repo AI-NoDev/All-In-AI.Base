@@ -126,13 +126,6 @@ export const pages: PageMeta[] = [
     "order": 20
   },
   {
-    "path": "/dashboard/ai/flows",
-    "title": "流程编排",
-    "icon": "mdi:sitemap",
-    "group": "智能体",
-    "order": 25
-  },
-  {
     "path": "/dashboard/ai/agents",
     "title": "智能体管理",
     "icon": "mdi:robot",
@@ -225,7 +218,6 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
   '/dashboard/ai/tools': "工具管理",
-  '/dashboard/ai/flows': "流程编排",
   '/dashboard/ai/agents': "智能体管理",
   '/dashboard/ai/skills': "技能管理",
   '/dashboard/preferences': "个性化",
@@ -281,13 +273,6 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "mdi:tools",
       "group": "智能体",
       "order": 20
-    },
-    {
-      "path": "/dashboard/ai/flows",
-      "title": "流程编排",
-      "icon": "mdi:sitemap",
-      "group": "智能体",
-      "order": 25
     },
     {
       "path": "/dashboard/ai/agents",

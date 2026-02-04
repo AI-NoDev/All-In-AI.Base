@@ -196,3 +196,11 @@
   onOpenChange={(v) => schemaEditorOpen = v}
   onConfirm={handleSchemaConfirm}
 />
+
+<FlowEditorSheet
+  open={flowEditorOpen}
+  initialWorkflow={form.implementation}
+  onOpenChange={(v) => flowEditorOpen = v}
+  onConfirm={handleFlowConfirm}
+  inputSchema={form.inputSchema}
+/>

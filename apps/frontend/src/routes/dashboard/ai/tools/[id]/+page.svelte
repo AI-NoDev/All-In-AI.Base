@@ -298,5 +298,6 @@
     initialWorkflow={form.implementation}
     onOpenChange={(v) => flowEditorOpen = v}
     onConfirm={handleFlowConfirm}
+    inputSchema={form.inputSchema}
   />
 {/if}

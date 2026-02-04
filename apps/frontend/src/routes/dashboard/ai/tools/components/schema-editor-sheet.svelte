@@ -11,7 +11,7 @@
     createRootSchema,
     generateSchema,
     generateId,
-  } from 'zod-visual-editor';
+  } from '@qiyu-allinai/zod-visual-editor';
 
   interface Props {
     open: boolean;
