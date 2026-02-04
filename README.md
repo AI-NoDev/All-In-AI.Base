@@ -2,235 +2,237 @@
   <img src="apps/frontend/src/lib/assets/logo.png" alt="Qiyu AllInAI Logo" width="120" />
   <h1 align="center">Qiyu AllInAI</h1>
   <p align="center">
-    <strong>企业级 AI 应用基座系统</strong>
-    <br />
-    <em>Enterprise-grade AI Application Foundation Platform</em>
+    <strong>Enterprise-grade AI Application Foundation Platform</strong>
   </p>
   <p align="center">
-    <a href="#功能特性">功能特性</a> •
-    <a href="#技术栈">技术栈</a> •
-    <a href="#快速开始">快速开始</a> •
-    <a href="#项目结构">项目结构</a> •
-    <a href="#模块说明">模块说明</a> •
-    <a href="#二次开发">二次开发</a>
+    <a href="#features">Features</a> •
+    <a href="#tech-stack">Tech Stack</a> •
+    <a href="#quick-start">Quick Start</a> •
+    <a href="#project-structure">Project Structure</a> •
+    <a href="#modules">Modules</a> •
+    <a href="#development">Development</a>
   </p>
   <p align="center">
     <img src="https://img.shields.io/badge/status-active%20development-yellow" alt="Status" />
     <img src="https://img.shields.io/badge/AI%20features-expanding-blue" alt="AI Features" />
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
+  </p>
+  <p align="center">
+    <a href="README-zh.md">中文文档</a>
   </p>
 </p>
 
-> ⚠️ **开发中提示**: 部分 AI 高级功能正在加速扩展中，敬请期待更多强大的 AI 能力！
+> ⚠️ **Work in Progress**: Advanced AI features are being rapidly expanded. Stay tuned for more powerful AI capabilities!
 
 ---
 
-## 💡 灵感来源
+## 💡 Inspiration
 
-本项目的设计灵感来自两个优秀的开源项目：
+This project draws inspiration from two excellent open-source projects:
 
-- **[Vercel AI SDK](https://sdk.vercel.ai)** - 现代化的 AI 应用开发工具包，提供了优雅的 AI 集成方案和工具调用模式
-- **[RuoYi](https://ruoyi.vip)** - 成熟的企业级管理系统，提供了完善的 RBAC 权限模型和系统管理功能
+- **[Vercel AI SDK](https://sdk.vercel.ai)** - Modern AI application development toolkit with elegant AI integration and tool calling patterns
+- **[RuoYi](https://ruoyi.vip)** - Mature enterprise management system with comprehensive RBAC permission model and system management features
 
-我们将 Vercel AI 的现代 AI 能力与 RuoYi 的企业级管理功能相结合，并采用高性能的现代技术栈实现：
+We combine Vercel AI's modern AI capabilities with RuoYi's enterprise-grade management features, implemented with a high-performance modern tech stack:
 
-- ⚡ **[Bun](https://bun.sh)** - 极速 JavaScript 运行时，比 Node.js 快 4 倍
-- 🦊 **[Elysia](https://elysiajs.com)** - 为 Bun 优化的高性能 TypeScript Web 框架
-- � **[SvelteKit](https://kit.svelte.dev)** - 编译时优化的现代前端框架，零运行时开销
+- ⚡ **[Bun](https://bun.sh)** - Ultra-fast JavaScript runtime, 4x faster than Node.js
+- 🦊 **[Elysia](https://elysiajs.com)** - High-performance TypeScript web framework optimized for Bun
+- 🔥 **[SvelteKit](https://kit.svelte.dev)** - Compile-time optimized modern frontend framework with zero runtime overhead
 
-打造一个**开箱即用、性能卓越的 AI 应用基座**。
-
----
-
-## 📖 项目简介
-
-Qiyu AllInAI 是一个**开箱即用的 AI 应用基座系统**，为企业和开发者提供构建 AI 应用所需的完整基础设施。无论是构建智能客服、知识库问答、AI 助手还是其他 AI 驱动的应用，都可以基于本系统进行快速二次开发。
-
-### 🎯 设计目标
-
-- **开箱即用** - 提供完整的用户管理、权限控制、AI 模型管理等基础功能
-- **高度可扩展** - 模块化架构设计，支持灵活的功能扩展和定制
-- **现代化技术栈** - 采用 Bun + SvelteKit + Elysia 等现代技术，性能卓越
-- **AI 原生** - 内置 AI Agent、工具编排、技能管理等 AI 核心能力
-- **企业级** - 完善的 RBAC 权限、审计日志、多租户支持
+Building a **production-ready, high-performance AI application foundation**.
 
 ---
 
-## ✨ 功能特性
+## 📖 Overview
 
-### 🔐 系统管理
-- **用户管理** - 用户 CRUD、状态管理、密码重置
-- **角色管理** - 灵活的角色定义和权限分配
-- **菜单管理** - 动态菜单配置，支持权限控制
-- **部门管理** - 树形组织架构管理
-- **岗位管理** - 岗位定义和用户关联
-- **字典管理** - 系统字典和业务字典配置
-- **系统配置** - 全局参数配置管理
-- **操作日志** - 完整的操作审计追踪
-- **登录日志** - 用户登录记录和安全监控
-- **定时任务** - Cron 任务调度和执行日志
+Qiyu AllInAI is a **ready-to-use AI application foundation system** that provides complete infrastructure for building AI applications. Whether you're building intelligent customer service, knowledge base Q&A, AI assistants, or other AI-driven applications, you can quickly develop on top of this system.
 
-### 🤖 AI 模块
-- **模型管理** - 多 AI 提供商（OpenAI、Anthropic、Azure 等）模型配置
-- **Agent 管理** - AI Agent 创建、配置和会话管理
-- **工具管理** - AI 工具定义和分组管理
-- **技能管理** - Agent 技能树配置
-- **工作流编辑器** - 可视化 AI 工作流编排（Actions Flow Editor）
+### 🎯 Design Goals
 
-### 💬 即时通讯 (IM)
-- **私聊/群聊** - 支持一对一和群组会话
-- **消息类型** - 文本、图片、文件、链接等多种消息格式
-- **WebSocket** - 实时消息推送
-- **消息已读** - 已读状态追踪
-- **群组管理** - 群成员、群主、管理员角色
+- **Ready to Use** - Complete user management, permission control, AI model management out of the box
+- **Highly Extensible** - Modular architecture supporting flexible feature extension and customization
+- **Modern Tech Stack** - Built with Bun + SvelteKit + Elysia for exceptional performance
+- **AI Native** - Built-in AI Agent, tool orchestration, skill management and other core AI capabilities
+- **Enterprise Grade** - Complete RBAC permissions, audit logs, multi-tenant support
 
-### 📁 知识库
-- **文件管理** - 文件夹和文件的 CRUD 操作
-- **版本控制** - 文件版本历史和回滚
-- **权限控制** - 细粒度的资源访问权限
-- **在线编辑** - Markdown 文档在线编辑
-- **文件搜索** - 全文搜索支持
+---
+
+## ✨ Features
+
+### 🔐 System Management
+- **User Management** - User CRUD, status management, password reset
+- **Role Management** - Flexible role definition and permission assignment
+- **Menu Management** - Dynamic menu configuration with permission control
+- **Department Management** - Tree-structured organization management
+- **Position Management** - Position definition and user association
+- **Dictionary Management** - System and business dictionary configuration
+- **System Configuration** - Global parameter configuration
+- **Operation Logs** - Complete operation audit trail
+- **Login Logs** - User login records and security monitoring
+- **Scheduled Tasks** - Cron job scheduling and execution logs
+
+### 🤖 AI Module
+- **Model Management** - Multi-provider (OpenAI, Anthropic, Azure, etc.) model configuration
+- **Agent Management** - AI Agent creation, configuration, and session management
+- **Tool Management** - AI tool definition and grouping
+- **Skill Management** - Agent skill tree configuration
+- **Workflow Editor** - Visual AI workflow orchestration (Actions Flow Editor)
+
+### 💬 Instant Messaging (IM)
+- **Private/Group Chat** - Support for one-on-one and group conversations
+- **Message Types** - Text, images, files, links and more
+- **WebSocket** - Real-time message push
+- **Read Status** - Message read tracking
+- **Group Management** - Group members, owner, admin roles
+
+### 📁 Knowledge Base
+- **File Management** - Folder and file CRUD operations
+- **Version Control** - File version history and rollback
+- **Permission Control** - Fine-grained resource access permissions
+- **Online Editing** - Markdown document online editing
+- **File Search** - Full-text search support
 
 ### 🎨 UI/UX
-- **深色/浅色主题** - 完整的主题切换支持
-- **响应式设计** - 适配桌面和移动端
-- **国际化** - 中英文双语支持
-- **shadcn-svelte** - 精美的 UI 组件库
+- **Dark/Light Theme** - Complete theme switching support
+- **Responsive Design** - Desktop and mobile compatible
+- **Internationalization** - Chinese and English bilingual support
+- **shadcn-svelte** - Beautiful UI component library
 
 ---
 
-## 🛠 技术栈
+## 🛠 Tech Stack
 
-| 层级 | 技术 | 说明 |
-|------|------|------|
-| **运行时** | [Bun](https://bun.sh) | 高性能 JavaScript 运行时和包管理器 |
-| **Monorepo** | [Turborepo](https://turbo.build) | 高效的 Monorepo 构建系统 |
-| **前端框架** | [SvelteKit](https://kit.svelte.dev) | Svelte 5 全栈框架 |
-| **UI 组件** | [shadcn-svelte](https://shadcn-svelte.com) | 精美的 Svelte UI 组件库 |
-| **样式** | [Tailwind CSS v4](https://tailwindcss.com) | 原子化 CSS 框架 |
-| **后端框架** | [Elysia](https://elysiajs.com) | 高性能 TypeScript Web 框架 |
-| **数据库** | [PostgreSQL](https://postgresql.org) | 关系型数据库 |
-| **ORM** | [Drizzle ORM](https://orm.drizzle.team) | 类型安全的 TypeScript ORM |
-| **验证** | [Zod](https://zod.dev) | TypeScript-first Schema 验证 |
-| **对象存储** | [MinIO](https://min.io) / S3 | 文件存储服务 |
-| **API 文档** | OpenAPI / Swagger | 自动生成 API 文档 |
+| Layer | Technology | Description |
+|-------|------------|-------------|
+| **Runtime** | [Bun](https://bun.sh) | High-performance JavaScript runtime and package manager |
+| **Monorepo** | [Turborepo](https://turbo.build) | Efficient monorepo build system |
+| **Frontend** | [SvelteKit](https://kit.svelte.dev) | Svelte 5 full-stack framework |
+| **UI Components** | [shadcn-svelte](https://shadcn-svelte.com) | Beautiful Svelte UI component library |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com) | Utility-first CSS framework |
+| **Backend** | [Elysia](https://elysiajs.com) | High-performance TypeScript web framework |
+| **Database** | [PostgreSQL](https://postgresql.org) | Relational database |
+| **ORM** | [Drizzle ORM](https://orm.drizzle.team) | Type-safe TypeScript ORM |
+| **Validation** | [Zod](https://zod.dev) | TypeScript-first schema validation |
+| **Object Storage** | [MinIO](https://min.io) / S3 | File storage service |
+| **API Docs** | OpenAPI / Swagger | Auto-generated API documentation |
 
 ---
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Requirements
 
 - [Bun](https://bun.sh) >= 1.3.6
 - [PostgreSQL](https://postgresql.org) >= 14
-- [MinIO](https://min.io) 或 S3 兼容存储（可选）
+- [MinIO](https://min.io) or S3-compatible storage (optional)
 
-### 安装步骤
+### Installation
 
 ```bash
-# 1. 克隆项目
+# 1. Clone the repository
 git clone https://github.com/your-org/qiyu-allinai.git
 cd qiyu-allinai
 
-# 2. 安装依赖
+# 2. Install dependencies
 bun install
 
-# 3. 配置环境变量
+# 3. Configure environment variables
 cp packages/db/.env.example packages/db/.env
 cp apps/server/.env.example apps/server/.env
 cp apps/frontend/.env.example apps/frontend/.env
 
-# 4. 初始化数据库
+# 4. Initialize database
 bun run --filter=@qiyu-allinai/db migrate
 bun run --filter=@qiyu-allinai/db seed
 
-# 5. 启动开发服务器
+# 5. Start development server
 bun run dev
 ```
 
-### 访问地址
+### Access URLs
 
-- 前端: http://localhost:5173
-- 后端 API: http://localhost:3000
-- API 文档: http://localhost:3000/swagger
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
+- API Docs: http://localhost:3000/swagger
 
-### 默认账号
+### Default Account
 
-- 用户名: `admin`
-- 密码: `admin123`
+- Username: `admin`
+- Password: `admin123`
 
 ---
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 qiyu-allinai/
 ├── apps/
-│   ├── frontend/              # SvelteKit 前端应用
+│   ├── frontend/              # SvelteKit frontend application
 │   │   ├── src/
-│   │   │   ├── lib/           # 共享库
-│   │   │   │   ├── api/       # 生成的 API 客户端
-│   │   │   │   ├── components/# UI 组件
-│   │   │   │   ├── stores/    # Svelte 状态管理
-│   │   │   │   └── hooks/     # 自定义 Hooks
-│   │   │   └── routes/        # 页面路由
-│   │   └── static/            # 静态资源
+│   │   │   ├── lib/           # Shared libraries
+│   │   │   │   ├── api/       # Generated API client
+│   │   │   │   ├── components/# UI components
+│   │   │   │   ├── stores/    # Svelte state management
+│   │   │   │   └── hooks/     # Custom hooks
+│   │   │   └── routes/        # Page routes
+│   │   └── static/            # Static assets
 │   │
-│   ├── server/                # Elysia 后端服务
+│   ├── server/                # Elysia backend service
 │   │   └── src/
-│   │       ├── config/        # 配置
-│   │       ├── routers/       # 自定义路由
-│   │       └── server/        # 服务核心
-│   │           └── plugins/   # Elysia 插件
+│   │       ├── config/        # Configuration
+│   │       ├── routers/       # Custom routers
+│   │       └── server/        # Server core
+│   │           └── plugins/   # Elysia plugins
 │   │
-│   └── docs/                  # VuePress 文档站点
+│   └── docs/                  # VuePress documentation site
 │
 ├── packages/
-│   ├── db/                    # 数据库实体和连接
-│   │   ├── src/entities/      # Drizzle 实体定义
-│   │   │   ├── system/        # 系统管理实体
-│   │   │   ├── ai/            # AI 模块实体
-│   │   │   ├── im/            # 即时通讯实体
-│   │   │   └── knowledge/     # 知识库实体
-│   │   └── drizzle/           # 数据库迁移
+│   ├── db/                    # Database entities and connections
+│   │   ├── src/entities/      # Drizzle entity definitions
+│   │   │   ├── system/        # System management entities
+│   │   │   ├── ai/            # AI module entities
+│   │   │   ├── im/            # Instant messaging entities
+│   │   │   └── knowledge/     # Knowledge base entities
+│   │   └── drizzle/           # Database migrations
 │   │
-│   ├── actions/               # 业务逻辑 Actions
+│   ├── actions/               # Business logic actions
 │   │   └── src/
-│   │       ├── core/          # Action 核心定义
-│   │       ├── db/            # 数据库 CRUD Actions
-│   │       ├── files/         # 文件操作 Actions
-│   │       └── filter/        # 查询过滤器
+│   │       ├── core/          # Action core definitions
+│   │       ├── db/            # Database CRUD actions
+│   │       ├── files/         # File operation actions
+│   │       └── filter/        # Query filters
 │   │
-│   ├── i18n/                  # 国际化翻译
-│   │   └── src/locales/       # 语言包 (zh-CN, en)
+│   ├── i18n/                  # Internationalization
+│   │   └── src/locales/       # Language packs (zh-CN, en)
 │   │
-│   ├── actions-flow-editor/   # AI 工作流可视化编辑器
-│   ├── zod-visual-editor/     # Zod Schema 可视化编辑器
-│   ├── file-icons/            # 文件图标组件
-│   └── vite-plugin-*/         # Vite 插件
+│   ├── actions-flow-editor/   # AI workflow visual editor
+│   ├── zod-visual-editor/     # Zod schema visual editor
+│   ├── file-icons/            # File icon components
+│   └── vite-plugin-*/         # Vite plugins
 │
-├── turbo.json                 # Turborepo 配置
-└── package.json               # 根 package.json
+├── turbo.json                 # Turborepo configuration
+└── package.json               # Root package.json
 ```
 
 ---
 
-## 📦 模块说明
+## 📦 Modules
 
 ### @qiyu-allinai/db
 
-数据库层，使用 Drizzle ORM 定义实体和关系。
+Database layer using Drizzle ORM for entity and relationship definitions.
 
 ```typescript
-// 导入实体
+// Import entities
 import { user, userZodSchemas } from '@qiyu-allinai/db/entities/system';
 
-// 使用 Zod Schema 进行验证
+// Use Zod schema for validation
 const userData = userZodSchemas.insert.parse(input);
 ```
 
 ### @qiyu-allinai/actions
 
-业务逻辑层，使用 `defineAction` 创建标准化的 API 操作。
+Business logic layer using `defineAction` to create standardized API operations.
 
 ```typescript
 import { defineAction } from '@qiyu-allinai/actions/core';
@@ -246,14 +248,14 @@ export const myAction = defineAction({
     outputSchema: z.object({ ... }),
   },
   execute: async (input, context) => {
-    // 业务逻辑
+    // Business logic
   },
 });
 ```
 
 ### @qiyu-allinai/i18n
 
-国际化支持，提供中英文翻译。
+Internationalization support with Chinese and English translations.
 
 ```typescript
 import { t } from '@qiyu-allinai/i18n';
@@ -263,7 +265,7 @@ const message = t('error.system.admin.cannot.modify');
 
 ### @qiyu-allinai/actions-flow-editor
 
-AI 工作流可视化编辑器，基于 @xyflow/svelte 构建。
+AI workflow visual editor built on @xyflow/svelte.
 
 ```svelte
 <script>
@@ -279,116 +281,116 @@ AI 工作流可视化编辑器，基于 @xyflow/svelte 构建。
 
 ---
 
-## 🔧 开发命令
+## 🔧 Development Commands
 
 ```bash
-# 启动所有服务（前端 + 后端）
+# Start all services (frontend + backend)
 bun run dev
 
-# 仅启动前端
+# Start frontend only
 bun run --filter=frontend dev
 
-# 仅启动后端
+# Start backend only
 bun run --filter=@qiyu-aiinall/server dev
 
-# 构建所有项目
+# Build all projects
 bun run build
 
-# 类型检查
+# Type checking
 bun run check-types
 
-# 数据库迁移
-bun run --filter=@qiyu-allinai/db generate  # 生成迁移
-bun run --filter=@qiyu-allinai/db migrate   # 执行迁移
-bun run --filter=@qiyu-allinai/db seed      # 初始化数据
+# Database migrations
+bun run --filter=@qiyu-allinai/db generate  # Generate migration
+bun run --filter=@qiyu-allinai/db migrate   # Run migration
+bun run --filter=@qiyu-allinai/db seed      # Seed data
 
-# 生成 API 客户端
+# Generate API client
 bun run --filter=frontend generate:api
 
-# 构建 actions-flow-editor 包
+# Build actions-flow-editor package
 bun run --filter=@qiyu-allinai/actions-flow-editor build
 ```
 
 ---
 
-## 🔌 二次开发
+## 🔌 Extending the Platform
 
-### 添加新实体
+### Adding New Entities
 
-1. 在 `packages/db/src/entities/` 下创建实体文件
-2. 在 `packages/actions/src/db/` 下创建对应的 Actions
-3. 在 `packages/i18n/src/locales/` 下添加翻译
-4. 运行 `bun run --filter=@qiyu-allinai/db generate` 生成迁移
+1. Create entity file in `packages/db/src/entities/`
+2. Create corresponding actions in `packages/actions/src/db/`
+3. Add translations in `packages/i18n/src/locales/`
+4. Run `bun run --filter=@qiyu-allinai/db generate` to generate migration
 
-### 添加新页面
+### Adding New Pages
 
-1. 在 `apps/frontend/src/routes/dashboard/` 下创建路由
-2. 导出 `_meta` 对象配置页面元数据
-3. 页面会自动注册到导航菜单
+1. Create route in `apps/frontend/src/routes/dashboard/`
+2. Export `_meta` object to configure page metadata
+3. Page will be automatically registered in navigation menu
 
 ```typescript
 // +page.ts
 export const _meta = {
-  title: '页面标题',
+  title: 'Page Title',
   icon: 'tdesign:icon-name',
-  group: '分组名称',
+  group: 'Group Name',
   order: 10,
   permission: 'module:entity:view'
 };
 ```
 
-### 添加新 AI 工具
+### Adding New AI Tools
 
-1. 在 AI 工具管理页面创建工具组
-2. 添加工具定义（名称、描述、输入/输出 Schema）
-3. 使用 Actions Flow Editor 编排工具执行流程
+1. Create tool group in AI Tool Management page
+2. Add tool definition (name, description, input/output schema)
+3. Use Actions Flow Editor to orchestrate tool execution flow
 
-### 集成新的 AI 提供商
+### Integrating New AI Providers
 
-1. 在 AI 模型管理页面添加提供商配置
-2. 配置 API Key 和端点
-3. 添加该提供商支持的模型
-
----
-
-## 🤝 贡献指南
-
-欢迎提交 Issue 和 Pull Request！
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 提交 Pull Request
-
-### 代码规范
-
-- 使用 TypeScript，避免 `any` 类型
-- 遵循 Svelte 5 的 `$state`、`$derived`、`$effect` 模式
-- 使用 Zod 进行数据验证
-- 保持中英文翻译同步
+1. Add provider configuration in AI Model Management page
+2. Configure API Key and endpoint
+3. Add models supported by the provider
 
 ---
 
-## 📄 许可证
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit Issues and Pull Requests.
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Submit Pull Request
+
+### Code Standards
+
+- Use TypeScript, avoid `any` type
+- Follow Svelte 5 patterns with `$state`, `$derived`, `$effect`
+- Use Zod for data validation
+- Keep Chinese and English translations in sync
+
+---
+
+## 📄 License
 
 [MIT License](LICENSE)
 
 ---
 
-## 🙏 致谢
+## 🙏 Acknowledgments
 
-本项目基于以下优秀的开源项目构建：
+This project is built on these excellent open-source projects:
 
-- [Bun](https://bun.sh) - 高性能 JavaScript 运行时
-- [SvelteKit](https://kit.svelte.dev) - 现代化 Web 框架
-- [Elysia](https://elysiajs.com) - 高性能 TypeScript 后端框架
-- [shadcn-svelte](https://shadcn-svelte.com) - 精美的 UI 组件库
-- [Drizzle ORM](https://orm.drizzle.team) - 类型安全的 ORM
-- [@xyflow/svelte](https://svelteflow.dev) - 流程图编辑器
+- [Bun](https://bun.sh) - High-performance JavaScript runtime
+- [SvelteKit](https://kit.svelte.dev) - Modern web framework
+- [Elysia](https://elysiajs.com) - High-performance TypeScript backend framework
+- [shadcn-svelte](https://shadcn-svelte.com) - Beautiful UI component library
+- [Drizzle ORM](https://orm.drizzle.team) - Type-safe ORM
+- [@xyflow/svelte](https://svelteflow.dev) - Flow chart editor
 
 ---
 
 <p align="center">
-  Made with ❤️ by Qiyu Team
+  Made with ❤️ by Qiyu Zhou
 </p>
