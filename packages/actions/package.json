@@ -1,0 +1,25 @@
+{
+  "name": "@qiyu-allinai/actions",
+  "module": "index.ts",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./core": "./src/core/index.ts",
+    "./db": "./src/db/index.ts",
+    "./filter": "./src/filter/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.975.0",
+    "@aws-sdk/s3-request-presigner": "^3.975.0",
+    "@qiyu-allinai/db": "workspace:*",
+    "ai": "^4.3.16",
+    "drizzle-orm": "^0.45.1",
+    "zod": "^4.3.6"
+  }
+}

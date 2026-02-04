@@ -1,0 +1,70 @@
+# 项目架构
+
+## 目录结构
+
+```
+ai-drive-system/
+├── apps/
+│   ├── frontend/    # SvelteKit + shadcn-svelte 前端
+│   └── server/      # Elysia 后端
+├── packages/
+│   ├── db/          # Drizzle ORM 实体和 Zod Schema
+│   ├── actions/     # 业务逻辑 Actions
+│   └── i18n/        # 国际化翻译
+```
+
+## packages/db
+
+定义数据库实体、关系和 Zod Schema。
+
+导出规范：
+```typescript
+export const tableName = pgTable('table_name', { ... });
+export const tableNameZodSchemas = {
+  select: z.object({ ... }),
+  insert: z.object({ ... }),
+  update: z.object({ ... }),
+};
+```
+
+## packages/actions
+
+使用 `defineAction` 创建标准化 CRUD 操作。
+
+```typescript
+export const entityGetByPagination = defineAction({
+  meta: { name, displayName, method, path },
+  schemas: { bodySchema, outputSchema },
+  execute: async (input, context) => { ... },
+});
+```
+
+ActionContext 包含：
+- `currentUserId` - 当前用户 ID（必填）
+- `currentUserName` - 当前用户名（必填）
+
+## packages/i18n
+
+翻译文件结构：
+- `common.ts` - 通用翻译
+- `error.ts` - 错误消息
+- `validation.ts` - 验证消息
+- `db/*.ts` - 数据库字段翻译
+
+## apps/frontend
+
+页面元数据（+page.ts）：
+```typescript
+export const _meta = {
+  title: '页面标题',
+  icon: 'tdesign:icon',
+  group: '分组',
+  order: 1,
+  permission: 'module:entity:action'
+};
+```
+
+auth.svelte.ts 功能：
+- Token 管理和自动刷新
+- 401 自动重试
+- 自动注入审计字段（createdBy, updatedBy）

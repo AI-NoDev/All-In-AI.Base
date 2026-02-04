@@ -1,0 +1,35 @@
+{
+  "name": "@qiyu-allinai/file-icons",
+  "version": "1.0.0",
+  "description": "File type icons library with SVG",
+  "type": "module",
+  "main": "index.ts",
+  "types": "index.ts",
+  "svelte": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "svelte": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./icons": "./src/icons/index.ts",
+    "./component": "./src/FileIcon.svelte"
+  },
+  "scripts": {
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "peerDependencies": {
+    "svelte": "^5.45.6"
+  },
+  "devDependencies": {
+    "svelte": "^5.45.6",
+    "svelte-check": "^4.3.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
+    "prettier": "^3.7.4",
+    "prettier-plugin-svelte": "^3.4.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-svelte": "^3.13.1"
+  }
+}

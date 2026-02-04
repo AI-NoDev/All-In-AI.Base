@@ -1,0 +1,21 @@
+// 音频/视频相关图标
+
+// 音频
+export const audio = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#E91E63"/><path d="M14 2v6h6" fill="#F48FB1"/><path d="M12 10v7M9 12v5M15 11v6M7 14v2M17 13v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+export const mp3 = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#E91E63"/><path d="M14 2v6h6" fill="#F48FB1"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">MP3</text></svg>`;
+export const wav = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#9C27B0"/><path d="M14 2v6h6" fill="#CE93D8"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">WAV</text></svg>`;
+export const ogg = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#673AB7"/><path d="M14 2v6h6" fill="#B39DDB"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">OGG</text></svg>`;
+export const flac = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#FF5722"/><path d="M14 2v6h6" fill="#FF8A65"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">FLAC</text></svg>`;
+export const aac = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#F44336"/><path d="M14 2v6h6" fill="#EF9A9A"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">AAC</text></svg>`;
+export const m4a = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#EC407A"/><path d="M14 2v6h6" fill="#F48FB1"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">M4A</text></svg>`;
+
+// 视频
+export const video = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#9C27B0"/><path d="M14 2v6h6" fill="#CE93D8"/><path d="M10 10v8l6-4-6-4z" fill="#fff"/></svg>`;
+export const mp4 = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#9C27B0"/><path d="M14 2v6h6" fill="#CE93D8"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">MP4</text></svg>`;
+export const mov = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#7B1FA2"/><path d="M14 2v6h6" fill="#BA68C8"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">MOV</text></svg>`;
+export const avi = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#6A1B9A"/><path d="M14 2v6h6" fill="#AB47BC"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">AVI</text></svg>`;
+export const mkv = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#4A148C"/><path d="M14 2v6h6" fill="#9C27B0"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">MKV</text></svg>`;
+export const webm = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#8E24AA"/><path d="M14 2v6h6" fill="#CE93D8"/><text x="4" y="17" font-size="4" fill="#fff" font-weight="bold">WEBM</text></svg>`;
+export const flv = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#D81B60"/><path d="M14 2v6h6" fill="#F06292"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">FLV</text></svg>`;
+export const wmv = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#0078D4"/><path d="M14 2v6h6" fill="#4DA3E0"/><text x="4" y="17" font-size="4" fill="#fff" font-weight="bold">WMV</text></svg>`;
+export const m3u8 = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#00BCD4"/><path d="M14 2v6h6" fill="#80DEEA"/><text x="4" y="17" font-size="3" fill="#fff" font-weight="bold">M3U8</text></svg>`;

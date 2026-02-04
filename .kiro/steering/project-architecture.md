@@ -1,0 +1,217 @@
+---
+inclusion: always
+---
+
+# 项目架构与模块说明
+
+## 项目概述
+
+AI Drive System 是一个企业级管理系统，采用 Turborepo monorepo 架构，包含前端、后端和多个共享包。
+
+## 目录结构
+
+```
+ai-drive-system/
+├── apps/
+│   ├── frontend/          # SvelteKit 前端应用
+│   └── server/            # Elysia 后端服务
+├── packages/
+│   ├── db/                # 数据库实体和连接
+│   ├── actions/           # 业务逻辑 Actions
+│   ├── i18n/              # 国际化翻译
+│   └── vite-plugin-*/     # Vite 插件
+```
+
+---
+
+## packages/db - 数据库层
+
+### 作用
+定义数据库实体（表结构）、关系和 Zod Schema，使用 Drizzle ORM。
+
+### 目录结构
+```
+packages/db/
+├── src/
+│   ├── connect/           # 数据库连接配置
+│   ├── entities/          # 实体定义
+│   │   ├── base/          # 基础 Schema（审计、软删除、权限）
+│   │   ├── system/        # 系统管理（用户、角色、菜单、部门等）
+│   │   ├── ai/            # AI 模块（Agent、Model、Provider 等）
+│   │   ├── im/            # 即时通讯（会话、消息等）
+│   │   └── knowledge/     # 知识库（文件、文件夹等）
+│   └── utils/             # 工具函数
+├── drizzle/               # 迁移文件
+└── drizzle.config.ts      # Drizzle 配置
+```
+
+### 实体定义规范
+```typescript
+// 每个实体文件导出：
+export const tableName = pgTable('table_name', { ... });
+export const tableNameZodSchemas = {
+  select: z.object({ ... }),   // 查询返回类型
+  insert: z.object({ ... }),   // 插入类型
+  update: z.object({ ... }),   // 更新类型
+};
+```
+
+### 基础 Schema
+- `pkSchema` - 主键（UUID）
+- `auditSchema` - 审计字段（createdBy, updatedBy, createdAt, updatedAt）
+- `deletedSchema` - 软删除字段（deletedAt, deletedBy, deletedById）
+- `permissionSchema` - 权限字段（deptId, permissionScope）
+
+---
+
+## packages/actions - 业务逻辑层
+
+### 作用
+定义 API 接口的业务逻辑，使用 `defineAction` 创建标准化的 CRUD 操作。
+
+### 目录结构
+```
+packages/actions/
+├── src/
+│   ├── core/              # 核心定义
+│   │   ├── define.ts      # defineAction 函数
+│   │   ├── types.ts       # 类型定义（ActionContext 等）
+│   │   ├── schema.ts      # Schema 转换工具
+│   │   └── registry.ts    # Action 注册表
+│   ├── db/                # 数据库 Actions
+│   │   ├── system/        # 系统管理 Actions
+│   │   ├── ai/            # AI 模块 Actions
+│   │   ├── im/            # 即时通讯 Actions
+│   │   └── knowledge/     # 知识库 Actions
+│   └── filter/            # 过滤器定义
+```
+
+### Action 定义规范
+```typescript
+export const entityGetByPagination = defineAction({
+  meta: {
+    name: 'module.entity.getByPagination',
+    displayName: '分页查询',
+    description: '分页查询列表',
+    tags: ['module', 'entity', 'query'],
+    method: 'POST',
+    path: '/api/module/entity/query'
+  },
+  schemas: {
+    bodySchema: paginationBodySchema,
+    outputSchema: z.object({ data: z.array(entityZodSchemas.select), total: z.number() }),
+  },
+  execute: async (input, context) => {
+    // 业务逻辑
+  },
+});
+```
+
+### ActionContext 类型
+```typescript
+interface ActionContext {
+  currentUserId: string;    // 当前用户 ID（必填）
+  currentUserName: string;  // 当前用户名（必填）
+  // 其他上下文...
+}
+```
+
+---
+
+## packages/i18n - 国际化
+
+### 作用
+提供多语言翻译支持，目前支持中文（zh-CN）和英文（en）。
+
+### 目录结构
+```
+packages/i18n/
+├── src/
+│   ├── locales/
+│   │   ├── zh-CN/         # 中文翻译
+│   │   │   ├── common.ts  # 通用翻译
+│   │   │   ├── error.ts   # 错误消息
+│   │   │   ├── validation.ts # 验证消息
+│   │   │   └── db/        # 数据库字段翻译
+│   │   └── en/            # 英文翻译
+│   └── types.ts           # 类型定义
+```
+
+### 翻译 Key 规范
+- 错误消息：`error.module.action` 如 `error.system.admin.cannot.modify`
+- 字段名：`db.module.entity.field` 如 `db.system.user.loginName`
+- 通用：`common.action` 如 `common.save`, `common.cancel`
+
+---
+
+## apps/server - 后端服务
+
+### 作用
+Elysia 框架的 HTTP 服务，提供 RESTful API。
+
+### 目录结构
+```
+apps/server/
+├── src/
+│   ├── config/            # 配置
+│   ├── server/
+│   │   ├── app.ts         # 主应用（Action 转路由）
+│   │   ├── plugins/       # Elysia 插件
+│   │   │   ├── jwt.ts     # JWT 认证
+│   │   │   ├── cors.ts    # CORS
+│   │   │   ├── openapi.ts # OpenAPI 文档
+│   │   │   └── ...
+│   │   └── index.ts       # 服务入口
+│   └── routers/           # 自定义路由（如 auth）
+```
+
+### app.ts 职责
+- 将 Actions 转换为 Elysia 路由
+- 从 JWT Token 获取用户信息注入 ActionContext
+- 统一错误处理和响应格式
+
+---
+
+## apps/frontend - 前端应用
+
+### 作用
+SvelteKit + shadcn-svelte 的管理后台界面。
+
+### 目录结构
+```
+apps/frontend/
+├── src/
+│   ├── lib/
+│   │   ├── api/           # 生成的 API 客户端
+│   │   ├── components/    # UI 组件
+│   │   │   └── ui/        # shadcn-svelte 组件
+│   │   ├── stores/        # Svelte 状态管理
+│   │   │   ├── auth.svelte.ts  # 认证状态
+│   │   │   ├── i18n.svelte.ts  # 国际化
+│   │   │   └── tabs.svelte.ts  # 标签页
+│   │   └── hooks/         # 自定义 Hooks
+│   └── routes/
+│       ├── login/         # 登录页
+│       └── dashboard/     # 后台页面
+│           ├── system/    # 系统管理
+│           ├── ai/        # AI 管理
+│           └── ...
+```
+
+### 页面元数据
+每个页面的 `+page.ts` 导出 `_meta` 用于导航和权限：
+```typescript
+export const _meta = {
+  title: '用户管理',
+  icon: 'tdesign:user',
+  group: '系统管理',
+  order: 10,
+  permission: 'system:user:view'
+};
+```
+
+### auth.svelte.ts 功能
+- Token 管理（accessToken, refreshToken）
+- 自动刷新 Token（401 时）
+- 自动注入审计字段（createdBy, updatedBy）
+- 公共 HttpClient 实例

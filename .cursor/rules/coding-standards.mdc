@@ -1,0 +1,55 @@
+# 编码规范
+
+## TypeScript 类型规范
+
+### 避免使用 `any`
+- 定义明确的 interface 或 type
+- 使用 `z.infer<typeof schema>` 从 Zod Schema 推导类型
+- 如必须断言，使用具体类型而非 `as any`
+
+### 避免复杂类型推理
+- 不要使用深层嵌套的泛型
+- 优先使用简单的 interface 定义
+- 从 Zod Schema 推导类型
+
+## Zod Schema 规范
+
+- Schema 与实体一一对应
+- 复用基础 Schema（pkSchema, auditSchema, deletedSchema）
+- 使用 `.optional()` 或 `.nullable()` 明确可选字段
+- 使用 `z.preprocess()` 处理空值转换
+
+## i18n 国际化规范
+
+### 翻译 Key 命名
+- 错误消息：`error.{module}.{action}`
+- 字段名：`db.{module}.{entity}.{field}`
+- 通用操作：`common.{action}`
+
+### 规则
+- 同时更新 zh-CN 和 en
+- 保持两个语言的 key 结构一致
+- 后端抛出 i18n key，前端负责翻译
+
+## 前端组件规范
+
+### Svelte 5 状态
+- `$state` 定义响应式状态
+- `$derived` 定义派生状态
+- `$effect` 处理副作用
+
+### API 调用
+- 使用 `authStore.createApi(true)` 获取带认证的 API
+- 审计字段由 auth.svelte.ts 自动注入
+
+## 后端 Action 规范
+
+### 标准 CRUD
+- getByPagination (POST /query)
+- getByPk (GET /:id)
+- create (POST)
+- update (PUT /:id)
+- deleteByPk (DELETE /:id)
+
+### 业务校验
+在 execute 中按顺序：权限校验 → 业务规则校验 → 数据校验 → 执行操作

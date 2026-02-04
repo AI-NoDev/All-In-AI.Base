@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Bun Dev (nvm 24)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": ["-c", "source /Volumes/CP/computer_language/.nvm/nvm.sh && nvm use 24 && bun run dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Bun Dev Frontend (nvm 24)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": ["-c", "source /Volumes/CP/computer_language/.nvm/nvm.sh && nvm use 24 && bun run dev"],
+      "cwd": "${workspaceFolder}/apps/frontend",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Bun Dev Server (nvm 24)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": ["-c", "source /Volumes/CP/computer_language/.nvm/nvm.sh && nvm use 24 && bun run dev"],
+      "cwd": "${workspaceFolder}/apps/server",
+      "console": "integratedTerminal"
+    }
+  ]
+}

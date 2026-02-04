@@ -1,0 +1,9 @@
+// 压缩包相关图标
+
+export const zip = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#FFC107"/><path d="M14 2v6h6" fill="#FFE082"/><rect x="10" y="10" width="4" height="2" fill="#fff"/><rect x="10" y="13" width="4" height="2" fill="#fff"/><rect x="10" y="16" width="4" height="3" rx="1" fill="#fff"/></svg>`;
+export const rar = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#6D4C41"/><path d="M14 2v6h6" fill="#A1887F"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">RAR</text></svg>`;
+export const sevenZ = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#4CAF50"/><path d="M14 2v6h6" fill="#81C784"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">7Z</text></svg>`;
+export const tar = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#795548"/><path d="M14 2v6h6" fill="#A1887F"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">TAR</text></svg>`;
+export const gz = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#FF5722"/><path d="M14 2v6h6" fill="#FF8A65"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">GZ</text></svg>`;
+export const bz2 = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#E64A19"/><path d="M14 2v6h6" fill="#FF8A65"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">BZ2</text></svg>`;
+export const xz = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#BF360C"/><path d="M14 2v6h6" fill="#E64A19"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">XZ</text></svg>`;

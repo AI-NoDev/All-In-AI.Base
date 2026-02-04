@@ -1,0 +1,17 @@
+{
+  "name": "@qiyu-allinai/ai",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^2.0.25",
+    "@ai-sdk/provider": "^3.0.6",
+    "ai": "^6.0.66",
+    "zod": "^4.3.6"
+  }
+}

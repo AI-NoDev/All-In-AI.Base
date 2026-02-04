@@ -1,0 +1,168 @@
+// AI module entity translations
+export const ai = {
+  provider: {
+    _meta: {
+      name: 'ai_provider',
+      displayName: 'AI Provider',
+      verboseName: 'Provider',
+      verboseNamePlural: 'Providers',
+    },
+    fields: {
+      name: 'Provider Name',
+      baseUrl: 'API URL',
+      token: 'API Key',
+      remark: 'Remark',
+      status: 'Status',
+    },
+  },
+
+  model: {
+    _meta: {
+      name: 'ai_model',
+      displayName: 'AI Model',
+      verboseName: 'Model',
+      verboseNamePlural: 'Models',
+    },
+    fields: {
+      providerId: 'Provider ID',
+      name: 'Model Name',
+      modelId: 'Model ID',
+      remark: 'Remark',
+      status: 'Status',
+      supportTools: 'Support Tools',
+      maxTokens: 'Max Tokens',
+      inputCapabilities: 'Input Capabilities',
+      outputCapabilities: 'Output Capabilities',
+    },
+  },
+
+  agent: {
+    _meta: {
+      name: 'ai_agent',
+      displayName: 'AI Agent',
+      verboseName: 'Agent',
+      verboseNamePlural: 'Agents',
+    },
+    fields: {
+      name: 'Agent Name',
+      description: 'Description',
+      avatar: 'Avatar',
+      color: 'Theme Color',
+      providerId: 'Provider ID',
+      modelId: 'Model ID',
+      systemPrompt: 'System Prompt',
+      skillIds: 'Skills',
+      toolIds: 'Tools',
+      temperature: 'Temperature',
+      supportLoop: 'Support Loop',
+      maxLoops: 'Max Loops',
+      contextStrategy: 'Context Strategy',
+      remark: 'Remark',
+      status: 'Status',
+    },
+  },
+
+  skill: {
+    _meta: {
+      name: 'ai_skill',
+      displayName: 'AI Skill',
+      verboseName: 'Skill',
+      verboseNamePlural: 'Skills',
+    },
+    fields: {
+      name: 'Skill Name',
+      parentId: 'Parent Skill ID',
+      folderId: 'Folder',
+      isGroup: 'Is Group',
+      orderNum: 'Sort Order',
+      icon: 'Icon',
+      description: 'Description',
+      fileId: 'Main File',
+      isA2a: 'Use A2A Protocol',
+      remark: 'Remark',
+      status: 'Status',
+    },
+  },
+
+  tool: {
+    _meta: {
+      name: 'ai_tool',
+      displayName: 'AI Tool',
+      verboseName: 'Tool',
+      verboseNamePlural: 'Tools',
+    },
+    fields: {
+      groupId: 'Group ID',
+      name: 'Tool Name',
+      description: 'Description',
+      inputSchema: 'Input Schema',
+      outputSchema: 'Output Schema',
+      isAsync: 'Async Execution',
+      implementation: 'Implementation',
+      remark: 'Remark',
+      status: 'Status',
+    },
+  },
+
+  toolGroup: {
+    _meta: {
+      name: 'ai_tool_group',
+      displayName: 'Tool Group',
+      verboseName: 'Tool Group',
+      verboseNamePlural: 'Tool Groups',
+    },
+    fields: {
+      name: 'Group Name',
+      description: 'Description',
+      icon: 'Icon',
+      orderNum: 'Sort Order',
+      remark: 'Remark',
+      status: 'Status',
+    },
+  },
+
+  agentSession: {
+    _meta: {
+      name: 'ai_agent_session',
+      displayName: 'Agent Session',
+      verboseName: 'Session',
+      verboseNamePlural: 'Sessions',
+    },
+    fields: {
+      agentId: 'Agent ID',
+      userId: 'User ID',
+      title: 'Session Title',
+      summary: 'Summary',
+      messageCount: 'Message Count',
+      tokenUsage: 'Token Usage',
+      lastMessageAt: 'Last Message Time',
+      isArchived: 'Is Archived',
+      isPinned: 'Is Pinned',
+      extra: 'Extra Data',
+      status: 'Status',
+    },
+  },
+
+  agentMessage: {
+    _meta: {
+      name: 'ai_agent_message',
+      displayName: 'Agent Message',
+      verboseName: 'Message',
+      verboseNamePlural: 'Messages',
+    },
+    fields: {
+      sessionId: 'Session ID',
+      msgSeq: 'Message Sequence',
+      role: 'Role',
+      content: 'Content',
+      contentType: 'Content Type',
+      toolCalls: 'Tool Calls',
+      toolResults: 'Tool Results',
+      tokenCount: 'Token Count',
+      modelId: 'Model ID',
+      latencyMs: 'Latency (ms)',
+      finishReason: 'Finish Reason',
+      extra: 'Extra Data',
+    },
+  },
+};

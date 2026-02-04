@@ -1,0 +1,23 @@
+export const validation = {
+  required: '{{field}}不能为空',
+  minLength: '{{field}}长度不能少于{{min}}个字符',
+  maxLength: '{{field}}长度不能超过{{max}}个字符',
+  min: '{{field}}不能小于{{min}}',
+  max: '{{field}}不能大于{{max}}',
+  email: '请输入有效的邮箱地址',
+  phone: '请输入有效的手机号码',
+  url: '请输入有效的URL地址',
+  number: '请输入有效的数字',
+  integer: '请输入有效的整数',
+  positive: '请输入正数',
+  pattern: '{{field}}格式不正确',
+  unique: '{{field}}已存在',
+  confirm: '两次输入不一致',
+  password: {
+    weak: '密码强度太弱',
+    minLength: '密码长度不能少于{{min}}位',
+    requireNumber: '密码必须包含数字',
+    requireLetter: '密码必须包含字母',
+    requireSpecial: '密码必须包含特殊字符',
+  },
+};

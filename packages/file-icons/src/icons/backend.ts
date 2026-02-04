@@ -1,0 +1,28 @@
+// 后端/脚本相关图标
+
+export const py = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#3776AB"/><path d="M14 2v6h6" fill="#FFD43B"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">PY</text></svg>`;
+export const pyc = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#306998"/><path d="M14 2v6h6" fill="#FFD43B"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">PYC</text></svg>`;
+export const java = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#E76F00"/><path d="M14 2v6h6" fill="#F89820"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">JAVA</text></svg>`;
+export const classFile = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#B07219"/><path d="M14 2v6h6" fill="#D4A24C"/><text x="4" y="17" font-size="4" fill="#fff" font-weight="bold">CLASS</text></svg>`;
+export const jar = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#E76F00"/><path d="M14 2v6h6" fill="#F89820"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">JAR</text></svg>`;
+export const go = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#00ADD8"/><path d="M14 2v6h6" fill="#5DC9E2"/><text x="7" y="17" font-size="6" fill="#fff" font-weight="bold">GO</text></svg>`;
+export const rs = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#DEA584"/><path d="M14 2v6h6" fill="#F5D9C2"/><text x="8" y="17" font-size="6" fill="#000" font-weight="bold">RS</text></svg>`;
+export const php = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#777BB4"/><path d="M14 2v6h6" fill="#A8B1D6"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">PHP</text></svg>`;
+export const rb = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#CC342D"/><path d="M14 2v6h6" fill="#E57373"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">RB</text></svg>`;
+export const sh = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#4EAA25"/><path d="M14 2v6h6" fill="#89D65C"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">SH</text></svg>`;
+export const bash = sh;
+export const zsh = sh;
+export const ps1 = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#012456"/><path d="M14 2v6h6" fill="#2D5AA0"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">PS1</text></svg>`;
+export const bat = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#C1F12E"/><path d="M14 2v6h6" fill="#E5F9A0"/><text x="6" y="17" font-size="5" fill="#000" font-weight="bold">BAT</text></svg>`;
+export const cmd = bat;
+export const c = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#A8B9CC"/><path d="M14 2v6h6" fill="#D4DCE4"/><text x="9" y="17" font-size="7" fill="#283593" font-weight="bold">C</text></svg>`;
+export const cpp = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#00599C"/><path d="M14 2v6h6" fill="#4D9FD5"/><text x="5" y="17" font-size="5" fill="#fff" font-weight="bold">C++</text></svg>`;
+export const h = c;
+export const hpp = cpp;
+export const cs = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#68217A"/><path d="M14 2v6h6" fill="#9B4F96"/><text x="7" y="17" font-size="6" fill="#fff" font-weight="bold">C#</text></svg>`;
+export const swift = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#F05138"/><path d="M14 2v6h6" fill="#F58B7C"/><text x="4" y="17" font-size="4" fill="#fff" font-weight="bold">SWIFT</text></svg>`;
+export const kt = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#7F52FF"/><path d="M14 2v6h6" fill="#B39DFF"/><text x="8" y="17" font-size="6" fill="#fff" font-weight="bold">KT</text></svg>`;
+export const dart = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#0175C2"/><path d="M14 2v6h6" fill="#40C4FF"/><text x="5" y="17" font-size="4" fill="#fff" font-weight="bold">DART</text></svg>`;
+export const lua = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#000080"/><path d="M14 2v6h6" fill="#4040BF"/><text x="6" y="17" font-size="5" fill="#fff" font-weight="bold">LUA</text></svg>`;
+export const r = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#276DC3"/><path d="M14 2v6h6" fill="#75AADB"/><text x="9" y="17" font-size="7" fill="#fff" font-weight="bold">R</text></svg>`;
+export const scala = `<svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" fill="#DC322F"/><path d="M14 2v6h6" fill="#E57373"/><text x="4" y="17" font-size="4" fill="#fff" font-weight="bold">SCALA</text></svg>`;
