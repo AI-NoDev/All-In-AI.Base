@@ -33,6 +33,7 @@
   import ConditionBranchNode from './ConditionBranchNode.svelte';
   import IfNode from './IfNode.svelte';
   import DefaultEdge from './DefaultEdge.svelte';
+  import CustomConnectionLine from './CustomConnectionLine.svelte';
   import ActionsPalette from './ActionsPalette.svelte';
   import { applyDagreLayout, layoutSubflowChildren, type LayoutDirection } from '../../layout.js';
   import { parseArrayType, type SchemaProperty } from '../../typeEngine.js';
@@ -1030,7 +1031,7 @@
   <ActionsPalette {actions} onAddAction={handleAddAction} />
   
   <ContextMenu.Trigger class="flex-1 flex flex-col relative" oncontextmenu={handlePaneContextMenu}>
-    <SvelteFlow style="background-color: var(--background)" bind:nodes bind:edges {nodeTypes} {edgeTypes} {isValidConnection} {colorMode} onconnect={handleConnect} onconnectstart={handleConnectStart} onconnectend={handleConnectEndWithAutoCreate} ondelete={handleDelete} onnodedragstop={handleNodeDragStop} proOptions={{ hideAttribution: true }} class="actions-flow">
+    <SvelteFlow style="background-color: var(--background)" bind:nodes bind:edges {nodeTypes} {edgeTypes} connectionLineComponent={CustomConnectionLine} {isValidConnection} {colorMode} onconnect={handleConnect} onconnectstart={handleConnectStart} onconnectend={handleConnectEndWithAutoCreate} ondelete={handleDelete} onnodedragstop={handleNodeDragStop} proOptions={{ hideAttribution: true }} class="actions-flow">
     </SvelteFlow>
   </ContextMenu.Trigger>
   

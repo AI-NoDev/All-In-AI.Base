@@ -64,8 +64,8 @@
 </script>
 
 <div class="min-w-[240px] bg-card border-2 border-chart-3 rounded-lg shadow-sm text-xs relative">
-  <!-- 节点头部 -->
-  <div class="flex items-center gap-2 px-3 border-b border-chart-3/30 bg-chart-3/10 dark:bg-chart-3/20 rounded-t-lg" style="height: {HEADER_HEIGHT}px;">
+  <!-- 节点头部 - 作为拖拽区域 -->
+  <div class="flex items-center gap-2 px-3 border-b border-chart-3/30 bg-chart-3/10 dark:bg-chart-3/20 rounded-t-lg cursor-grab active:cursor-grabbing" style="height: {HEADER_HEIGHT}px;">
     <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-chart-3/20 text-chart-3 dark:bg-chart-3/30">
       VARS
     </span>
@@ -79,14 +79,14 @@
         <!-- 变量名输入 -->
         <input
           type="text"
-          class="w-20 text-[11px] px-1.5 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
+          class="nodrag w-20 text-[11px] px-1.5 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
           value={variable.key}
           oninput={(e) => updateVariable(i, 'key', (e.target as HTMLInputElement).value)}
           placeholder="变量名"
         />
         <!-- 类型选择 -->
         <select
-          class="flex-1 text-[11px] px-1 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
+          class="nodrag flex-1 text-[11px] px-1 py-1 border border-border rounded bg-card focus:outline-none focus:border-chart-3"
           value={variable.type}
           onchange={(e) => updateVariable(i, 'type', (e.target as HTMLSelectElement).value as VariableType)}
         >
@@ -100,7 +100,7 @@
             {#snippet child({ props })}
               <button
                 {...props}
-                class="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors"
+                class="nodrag w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors"
                 onclick={() => removeVariable(i)}
               >
                 <IconClose class="w-3 h-3" />
