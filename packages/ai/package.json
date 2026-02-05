@@ -1,16 +1,39 @@
 {
   "name": "@qiyu-allinai/ai",
-  "module": "index.ts",
+  "version": "0.1.0",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/server/index.ts",
+      "default": "./src/server/index.ts"
+    },
+    "./server": {
+      "types": "./src/server/index.ts",
+      "default": "./src/server/index.ts"
+    },
+    "./client": {
+      "types": "./src/client/index.ts",
+      "svelte": "./src/client/index.ts",
+      "default": "./src/client/index.ts"
+    }
+  },
+  "svelte": "./src/client/index.ts",
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5",
+    "svelte": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "svelte": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^2.0.25",
     "@ai-sdk/provider": "^3.0.6",
+    "@ai-sdk/svelte": "^4.0.70",
     "ai": "^6.0.66",
     "zod": "^4.3.6"
   }

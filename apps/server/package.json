@@ -6,6 +6,7 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@ai-sdk/openai-compatible": "^2.0.25",
     "@bogeychan/elysia-logger": "^0.1.10",
     "@elysiajs/bearer": "^1.4.2",
     "@elysiajs/cors": "^1.4.1",
@@ -16,6 +17,8 @@
     "@faker-js/faker": "^10.2.0",
     "@opuu/elysia-llms-txt": "^1.1.0",
     "@qiyu-allinai/actions": "workspace:*",
+    "@qiyu-allinai/actions-flow-editor": "workspace:*",
+    "@qiyu-allinai/ai": "workspace:*",
     "@qiyu-allinai/db": "workspace:*",
     "@qiyu-allinai/i18n": "workspace:*",
     "@sinclair/typebox-adapter": "^0.9.1",

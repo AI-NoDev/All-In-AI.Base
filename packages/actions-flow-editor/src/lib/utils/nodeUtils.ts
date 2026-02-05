@@ -1,8 +1,5 @@
 import type { Node, Edge } from '@xyflow/svelte';
 import type {
-  ConditionNodeData,
-  LoopBodyNodeData,
-  ConditionBranchNodeData,
   LoopNodeData,
   IfNodeData,
 } from '../types.js';
@@ -11,7 +8,7 @@ import type {
 export type AllNodeData = Record<string, unknown>;
 
 /** SubFlow 类型，用于确定更新哪个 childNodeIds 数组 */
-export type SubflowType = 'loop' | 'if-true' | 'if-false' | 'loopBody' | 'conditionBranch';
+export type SubflowType = 'loop' | 'if-true' | 'if-false';
 
 /**
  * 生成唯一节点 ID
@@ -56,21 +53,15 @@ export function collectCascadeDeleteIds(
   const node = nodes.find((n) => n.id === nodeId);
   if (!node) return;
 
-  // 新的 loop 节点（内嵌 SubFlow）：删除所有子节点
+  // loop 节点（内嵌 SubFlow）：删除所有子节点
   if (node.type === 'loop') {
     const loopData = node.data as LoopNodeData;
     for (const childId of loopData.childNodeIds) {
       collectCascadeDeleteIds(childId, nodes, edges, collected);
     }
-    // 兼容旧版：也检查 output-body 连接
-    for (const e of edges) {
-      if (e.source === nodeId && e.sourceHandle === 'output-body') {
-        collectCascadeDeleteIds(e.target, nodes, edges, collected);
-      }
-    }
   }
 
-  // 新的 if 节点（内嵌 SubFlow）：删除 if 和 else 分支的所有子节点
+  // if 节点（内嵌 SubFlow）：删除 if 和 else 分支的所有子节点
   if (node.type === 'if') {
     const ifData = node.data as IfNodeData;
     for (const childId of ifData.ifChildNodeIds) {
@@ -78,35 +69,6 @@ export function collectCascadeDeleteIds(
     }
     for (const childId of ifData.elseChildNodeIds) {
       collectCascadeDeleteIds(childId, nodes, edges, collected);
-    }
-  }
-
-  // 旧的循环体节点：删除所有子节点（parentId 指向此节点的）
-  if (node.type === 'loopBody') {
-    for (const n of nodes) {
-      if (n.parentId === nodeId) {
-        collectCascadeDeleteIds(n.id, nodes, edges, collected);
-      }
-    }
-  }
-
-  // 旧的条件节点：删除两个分支
-  if (node.type === 'condition') {
-    const condData = node.data as ConditionNodeData;
-    if (condData.trueBranchId) {
-      collectCascadeDeleteIds(condData.trueBranchId, nodes, edges, collected);
-    }
-    if (condData.falseBranchId) {
-      collectCascadeDeleteIds(condData.falseBranchId, nodes, edges, collected);
-    }
-  }
-
-  // 旧的条件分支节点：删除所有子节点（parentId 指向此节点的）
-  if (node.type === 'conditionBranch') {
-    for (const n of nodes) {
-      if (n.parentId === nodeId) {
-        collectCascadeDeleteIds(n.id, nodes, edges, collected);
-      }
     }
   }
 }
@@ -124,7 +86,7 @@ export function updateSubflowChildNodeIds<T extends AllNodeData>(
   action: 'add' | 'remove',
   subflowType?: SubflowType
 ): Node<T> {
-  // 新的 loop 节点
+  // loop 节点
   if (node.type === 'loop') {
     const data = node.data as unknown as LoopNodeData;
     const childNodeIds =
@@ -137,7 +99,7 @@ export function updateSubflowChildNodeIds<T extends AllNodeData>(
     };
   }
 
-  // 新的 if 节点
+  // if 节点
   if (node.type === 'if') {
     const data = node.data as unknown as IfNodeData;
     
@@ -162,32 +124,6 @@ export function updateSubflowChildNodeIds<T extends AllNodeData>(
         data: { ...data, ifChildNodeIds } as unknown as T,
       };
     }
-  }
-
-  // 旧的 loopBody 节点（兼容）
-  if (node.type === 'loopBody') {
-    const data = node.data as unknown as LoopBodyNodeData;
-    const childNodeIds =
-      action === 'add'
-        ? [...data.childNodeIds, childId]
-        : data.childNodeIds.filter((id) => id !== childId);
-    return {
-      ...node,
-      data: { ...data, childNodeIds } as unknown as T,
-    };
-  }
-
-  // 旧的 conditionBranch 节点（兼容）
-  if (node.type === 'conditionBranch') {
-    const data = node.data as unknown as ConditionBranchNodeData;
-    const childNodeIds =
-      action === 'add'
-        ? [...data.childNodeIds, childId]
-        : data.childNodeIds.filter((id) => id !== childId);
-    return {
-      ...node,
-      data: { ...data, childNodeIds } as unknown as T,
-    };
   }
 
   return node;

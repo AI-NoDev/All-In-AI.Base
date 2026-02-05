@@ -7,6 +7,7 @@
   import { imStore } from '@/lib/stores/im.svelte';
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { onMount } from 'svelte';
 
   // 过滤隐藏页面
@@ -35,6 +36,20 @@
   function isContactsPage(path: string): boolean {
     return path === '/dashboard/contacts';
   }
+
+  /**
+   * 判断菜单项是否激活
+   * 支持精确匹配和前缀匹配（子路由也高亮父菜单）
+   */
+  function isMenuActive(itemPath: string, currentPath: string): boolean {
+    // 精确匹配
+    if (currentPath === itemPath) return true;
+    // 首页特殊处理：/dashboard 只精确匹配，不做前缀匹配
+    if (itemPath === '/dashboard') return false;
+    // 前缀匹配：当前路径以菜单路径开头（处理子路由如 /dashboard/users/123）
+    if (currentPath.startsWith(itemPath + '/')) return true;
+    return false;
+  }
 </script>
 
 {#if loaded}
@@ -45,7 +60,10 @@
         <Sidebar.Menu>
           {#each group.items as item}
             <Sidebar.MenuItem>
-              <Sidebar.MenuButton onclick={() => handleNavClick(item)}>
+              <Sidebar.MenuButton 
+                onclick={() => handleNavClick(item)}
+                isActive={isMenuActive(item.path, $page.url.pathname)}
+              >
                 {#if item.icon}
                   <Icon icon={item.icon} class="size-4" />
                 {/if}

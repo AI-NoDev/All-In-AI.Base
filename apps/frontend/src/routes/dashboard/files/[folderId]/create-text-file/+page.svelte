@@ -2,7 +2,6 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import { Button } from '@/lib/components/ui/button';
   import { Input } from '@/lib/components/ui/input';
   import { Label } from '@/lib/components/ui/label';
@@ -58,53 +57,48 @@
   }
 </script>
 
-<div class="px-4 lg:px-6">
-  <Card.Root>
-    <Card.Header>
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <Button variant="ghost" size="sm" class="h-8 w-8 p-0" onclick={handleCancel}>
-            <Icon icon="tdesign:chevron-left" class="size-5" />
-          </Button>
-          <span class="text-lg font-medium">新建文档</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <Button variant="outline" onclick={handleCancel} disabled={saving}>
-            取消
-          </Button>
-          <Button onclick={handleSave} disabled={saving || !form.name.trim()}>
-            {#if saving}
-              <Icon icon="tdesign:loading" class="mr-2 size-4 animate-spin" />
-            {/if}
-            保存
-          </Button>
-        </div>
-      </div>
-    </Card.Header>
-    <Card.Content class="space-y-4">
-      <div class="space-y-2">
-        <Label for="filename">文件名</Label>
-        <div class="flex items-center gap-2">
-          <Input
-            id="filename"
-            bind:value={form.name}
-            placeholder="请输入文件名"
-            class="max-w-md"
-          />
-          <span class="text-muted-foreground">.md</span>
-        </div>
-      </div>
+<div class="flex flex-col gap-6 px-4 lg:px-6">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <Button variant="ghost" size="sm" class="h-8 w-8 p-0" onclick={handleCancel}>
+        <Icon icon="tdesign:chevron-left" class="size-5" />
+      </Button>
+      <span class="text-lg font-medium">新建文档</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <Button variant="outline" onclick={handleCancel} disabled={saving}>
+        取消
+      </Button>
+      <Button onclick={handleSave} disabled={saving || !form.name.trim()}>
+        {#if saving}
+          <Icon icon="tdesign:loading" class="mr-2 size-4 animate-spin" />
+        {/if}
+        保存
+      </Button>
+    </div>
+  </div>
 
-      <div class="space-y-2">
-        <Label>文件内容</Label>
-        <MarkdownEditor
-          value={form.content}
-          placeholder="请输入 Markdown 内容..."
-          height={500}
-          mode="ir"
-          onInput={handleContentChange}
-        />
-      </div>
-    </Card.Content>
-  </Card.Root>
+  <div class="space-y-2">
+    <Label for="filename">文件名</Label>
+    <div class="flex items-center gap-2">
+      <Input
+        id="filename"
+        bind:value={form.name}
+        placeholder="请输入文件名"
+        class="max-w-md"
+      />
+      <span class="text-muted-foreground">.md</span>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <Label>文件内容</Label>
+    <MarkdownEditor
+      value={form.content}
+      placeholder="请输入 Markdown 内容..."
+      height={500}
+      mode="ir"
+      onInput={handleContentChange}
+    />
+  </div>
 </div>

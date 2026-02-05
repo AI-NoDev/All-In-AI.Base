@@ -37,6 +37,7 @@
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"svelte": "^5.45.6",
 		"svelte-check": "^4.3.4",
+		"svelte-sonner": "^1.0.7",
 		"swagger-typescript-api": "^13.2.16",
 		"tailwind-merge": "^3.4.0",
 		"tailwind-variants": "^3.2.2",
@@ -53,8 +54,10 @@
 		"@iconify-svelte/tdesign": "^1.0.1",
 		"@iconify/svelte": "^5.2.1",
 		"@qiyu-allinai/actions-flow-editor": "workspace:*",
+		"@qiyu-allinai/ai": "workspace:*",
 		"@qiyu-allinai/file-icons": "workspace:*",
 		"@qiyu-allinai/i18n": "workspace:*",
+		"@qiyu-allinai/zod-visual-editor": "workspace:*",
 		"@xyflow/svelte": "^1.5.0",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
@@ -63,7 +66,6 @@
 		"mode-watcher": "^1.1.0",
 		"svelte-grid": "^5.1.2",
 		"vditor": "^3.11.2",
-		"zod": "^4.3.6",
-		"@qiyu-allinai/zod-visual-editor": "workspace:*"
+		"zod": "^4.3.6"
 	}
 }

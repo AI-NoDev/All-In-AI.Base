@@ -1,5 +1,5 @@
 import type { Node } from '@xyflow/svelte';
-import type { LoopBodyNodeData, ConditionBranchNodeData, LoopNodeData, IfNodeData } from '../types.js';
+import type { LoopNodeData, IfNodeData } from '../types.js';
 import { sortNodesForParentChild, updateSubflowChildNodeIds, type SubflowType } from './nodeUtils.js';
 
 type AllNodeData = Record<string, unknown>;
@@ -13,7 +13,7 @@ export interface SubflowDetectionResult {
 
 /**
  * 检测节点是否在某个 SubFlow 内
- * 支持新的内嵌 SubFlow 节点 (loop, if) 和旧的独立 SubFlow 节点 (loopBody, conditionBranch)
+ * 支持内嵌 SubFlow 节点 (loop, if)
  */
 export function detectTargetSubflow(
   draggedNode: Node<AllNodeData>,
@@ -42,7 +42,7 @@ export function detectTargetSubflow(
   let targetSubflow: Node<AllNodeData> | null = null;
   let subflowType: SubflowDetectionResult['subflowType'] = undefined;
 
-  // 1. 检测新的内嵌 SubFlow 节点 (loop, if)
+  // 检测内嵌 SubFlow 节点 (loop, if)
   const embeddedSubflowNodes = nodes.filter(
     (n) => n.type === 'loop' || n.type === 'if'
   );
@@ -56,7 +56,6 @@ export function detectTargetSubflow(
     if (container.type === 'loop') {
       // Loop 节点: header(40) + 内部引脚区域 + SubFlow 区域
       const HEADER_HEIGHT = 40;
-      const data = container.data as LoopNodeData;
       // 估算内部引脚区域高度
       const INTERNAL_PINS_HEADER = 28;
       const INTERNAL_PIN_HEIGHT = 24;
@@ -80,8 +79,6 @@ export function detectTargetSubflow(
       // If 节点: header(40) + if SubFlow + (可选) else SubFlow
       const HEADER_HEIGHT = 40;
       const PADDING = 16;
-      const SUBFLOW_HEADER_HEIGHT = 28;
-      const SUBFLOW_GAP = 8;
       const data = container.data as IfNodeData;
       
       const subflowAreaTop = containerY + HEADER_HEIGHT + PADDING / 2;
@@ -105,33 +102,6 @@ export function detectTargetSubflow(
         } else {
           subflowType = 'if-true';
         }
-        break;
-      }
-    }
-  }
-
-  // 2. 如果没找到，检测旧的独立 SubFlow 节点 (loopBody, conditionBranch)
-  if (!targetSubflow) {
-    const legacySubflowNodes = nodes.filter(
-      (n) => n.type === 'loopBody' || n.type === 'conditionBranch'
-    );
-
-    for (const subflow of legacySubflowNodes) {
-      const sfWidth = subflow.measured?.width ?? 300;
-      const sfHeight = subflow.measured?.height ?? 200;
-      const sfX = subflow.position.x;
-      const sfY = subflow.position.y;
-
-      // 检查节点中心是否在 SubFlow 边界内（留出头部区域）
-      const headerHeight = 32;
-      if (
-        nodeCenterX >= sfX &&
-        nodeCenterX <= sfX + sfWidth &&
-        nodeCenterY >= sfY + headerHeight &&
-        nodeCenterY <= sfY + sfHeight
-      ) {
-        targetSubflow = subflow;
-        subflowType = subflow.type === 'loopBody' ? 'loopBody' : 'conditionBranch';
         break;
       }
     }
@@ -261,8 +231,6 @@ function getSubflowTypeForNode(
   if (!parentNode) return undefined;
   
   if (parentNode.type === 'loop') return 'loop';
-  if (parentNode.type === 'loopBody') return 'loopBody';
-  if (parentNode.type === 'conditionBranch') return 'conditionBranch';
   
   if (parentNode.type === 'if') {
     // 需要判断节点在 if 还是 else 区域
@@ -282,11 +250,8 @@ export function determineDragOperation(
   draggedNode: Node<AllNodeData>,
   nodes: Node<AllNodeData>[]
 ): DragOperation {
-  // 不处理 SubFlow 容器节点本身（包括新的 loop 和 if 节点）
+  // 不处理 SubFlow 容器节点本身（loop 和 if 节点）
   if (
-    draggedNode.type === 'loopBody' ||
-    draggedNode.type === 'conditionBranch' ||
-    draggedNode.type === 'loopStart' ||
     draggedNode.type === 'loop' ||
     draggedNode.type === 'if'
   ) {

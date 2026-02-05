@@ -1,14 +1,9 @@
 import { relations } from "drizzle-orm";
 import { provider } from "./provider";
 import { model } from "./model";
-import { skill } from "./skill";
-import { toolGroup } from "./toolGroup";
-import { tool } from "./tool";
 import { agent } from "./agent";
 import { agentSession } from "./agentSession";
 import { agentMessage } from "./agentMessage";
-import { folder } from "../knowledge/folder";
-import { file } from "../knowledge/file";
 
 // 提供商关系
 export const providerRelations = relations(provider, ({ many }) => ({
@@ -23,37 +18,6 @@ export const modelRelations = relations(model, ({ one, many }) => ({
     references: [provider.id],
   }),
   agents: many(agent),
-}));
-
-// 技能关系
-export const skillRelations = relations(skill, ({ one, many }) => ({
-  parent: one(skill, {
-    fields: [skill.parentId],
-    references: [skill.id],
-    relationName: "skillParent",
-  }),
-  children: many(skill, { relationName: "skillParent" }),
-  folder: one(folder, {
-    fields: [skill.folderId],
-    references: [folder.id],
-  }),
-  file: one(file, {
-    fields: [skill.fileId],
-    references: [file.id],
-  }),
-}));
-
-// 工具分组关系
-export const toolGroupRelations = relations(toolGroup, ({ many }) => ({
-  tools: many(tool),
-}));
-
-// 工具关系
-export const toolRelations = relations(tool, ({ one }) => ({
-  group: one(toolGroup, {
-    fields: [tool.groupId],
-    references: [toolGroup.id],
-  }),
 }));
 
 // Agent 关系

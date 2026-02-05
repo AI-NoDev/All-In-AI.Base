@@ -3,6 +3,7 @@
   import { getContext } from 'svelte';
   import IconChevronRight from '@iconify-svelte/tdesign/chevron-right';
   import IconChevronDown from '@iconify-svelte/tdesign/chevron-down';
+  import IconPlay from '@iconify-svelte/tdesign/play';
   import * as Tooltip from '$lib/components/ui/tooltip/index.js';
   import type { StartNodeData, JsonSchemaProperty, EdgesGetter } from '../../types.js';
   import { EDGES_CONTEXT_KEY } from '../../types.js';
@@ -13,6 +14,10 @@
     data: StartNodeData;
     isConnectable?: boolean;
   }
+
+  /** Tooltip/Popover child snippet props type */
+  type SnippetProps = { props: Record<string, unknown> };
+
   let { id, data, isConnectable = true }: Props = $props();
 
   /** 引脚信息 */
@@ -46,6 +51,24 @@
     }
     return paths;
   });
+
+  // 计算需要自动展开的路径（基于已连接的引脚）
+  let autoExpandPaths = $derived.by(() => {
+    const pathsToExpand = new Set<string>();
+    for (const path of connectedOutputPaths) {
+      if (path.includes('.')) {
+        const parts = path.split('.');
+        for (let i = 1; i < parts.length; i++) {
+          const parentPath = parts.slice(0, i).join('.');
+          pathsToExpand.add(parentPath);
+        }
+      }
+    }
+    return pathsToExpand;
+  });
+
+  // 合并手动展开和自动展开的路径
+  let effectiveExpandedPaths = $derived(new Set([...expandedPaths, ...autoExpandPaths]));
 
   // 检查某个路径及其所有子路径是否有连接
   function hasConnectionInSubtree(basePath: string): boolean {
@@ -83,13 +106,38 @@
 
   // 获取 JSON Schema 类型的显示字符串
   function getTypeDisplay(prop: JsonSchemaProperty): string {
+    // 处理 anyOf/oneOf (union types)
+    const unionTypes = prop.anyOf ?? prop.oneOf;
+    if (unionTypes && Array.isArray(unionTypes)) {
+      const types: string[] = [];
+      for (const item of unionTypes) {
+        const itemType = getTypeDisplay(item as JsonSchemaProperty);
+        if (itemType && !types.includes(itemType)) {
+          types.push(itemType);
+        }
+      }
+      if (types.length > 0) {
+        return types.join('|');
+      }
+    }
+    
+    // 处理 const (literal)
+    if (prop.const !== undefined) {
+      if (typeof prop.const === 'string') return 'string';
+      if (typeof prop.const === 'number') return 'number';
+      if (typeof prop.const === 'boolean') return 'boolean';
+      return 'string';
+    }
+    
+    // 处理 array
     if (prop.type === 'array' && prop.items) {
       const items = prop.items as JsonSchemaProperty;
-      if (items.type === 'object') {
-        return 'array<object>';
-      }
-      return `array<${items.type || 'unknown'}>`;
+      const itemType = getTypeDisplay(items);
+      return `array<${itemType}>`;
     }
+    
+    // 处理基本类型
+    if (prop.type === 'integer') return 'number';
     return prop.type || 'unknown';
   }
 
@@ -125,7 +173,7 @@
       });
       
       // 如果已展开，递归添加子字段
-      if (expandable && expandedPaths.has(fullPath) && prop.properties) {
+      if (expandable && effectiveExpandedPaths.has(fullPath) && prop.properties) {
         const childPins = generatePins(prop.properties, fullPath, depth + 1);
         pins.push(...childPins);
       }
@@ -160,7 +208,7 @@
 <div class="min-w-[180px] rounded-lg shadow-md text-primary-foreground relative bg-primary">
   <!-- 节点头部 -->
   <div class="flex items-center gap-2 px-3.5 font-semibold" style="height: {HEADER_HEIGHT}px;">
-    <span class="text-sm">▶</span>
+    <IconPlay class="w-4 h-4" />
     <span class="text-sm">开始</span>
   </div>
 
@@ -168,7 +216,7 @@
   {#if outputPins.length > 0}
     <div class="bg-card rounded-b-lg text-foreground" style="padding: {PINS_PADDING_Y}px 0;">
       {#each outputPins as pin}
-        {@const isExpanded = expandedPaths.has(pin.key)}
+        {@const isExpanded = effectiveExpandedPaths.has(pin.key)}
         {@const canCollapse = !hasConnectionInSubtree(pin.key)}
         <div 
           class="flex items-center justify-end gap-1 px-3.5" 
@@ -178,7 +226,7 @@
           {#if pin.expandable}
             <Tooltip.Root>
               <Tooltip.Trigger>
-                {#snippet child({ props })}
+                {#snippet child({ props }: SnippetProps)}
                   <button
                     {...props}
                     class="w-4 h-4 flex items-center justify-center hover:bg-accent rounded transition-colors {!canCollapse && isExpanded ? 'opacity-50 cursor-not-allowed' : ''}"
@@ -204,7 +252,7 @@
           {#if pin.description}
             <Tooltip.Root>
               <Tooltip.Trigger>
-                {#snippet child({ props })}
+                {#snippet child({ props }: SnippetProps)}
                   <span {...props} class="text-[11px] text-foreground cursor-help border-b border-dashed border-muted-foreground">{getDisplayKey(pin)}</span>
                 {/snippet}
               </Tooltip.Trigger>
@@ -222,7 +270,7 @@
           {#if pin.expandable && !isExpanded}
             <Tooltip.Root>
               <Tooltip.Trigger>
-                {#snippet child({ props })}
+                {#snippet child({ props }: SnippetProps)}
                   <button
                     {...props}
                     class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer bg-chart-4/20 text-chart-4 hover:bg-chart-4/30 dark:bg-chart-4/30"

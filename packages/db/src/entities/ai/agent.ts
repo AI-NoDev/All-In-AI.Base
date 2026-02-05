@@ -50,14 +50,14 @@ const agentOwnFields = {
     comment: f('systemPrompt'),
     config: { canExport: true, canImport: true, exportExcelColumnName: f('systemPrompt'), importExcelColumnName: f('systemPrompt'), cellType: "TEXT" as const }
   },
-  skillIds: {
-    field: jsonb("skill_ids").$type<string[]>().default([]),
-    comment: f('skillIds'),
-    config: { canExport: false, canImport: false }
-  },
   toolIds: {
     field: jsonb("tool_ids").$type<string[]>().default([]),
     comment: f('toolIds'),
+    config: { canExport: false, canImport: false }
+  },
+  nativeTools: {
+    field: jsonb("native_tools").$type<string[]>().default([]),
+    comment: f('nativeTools'),
     config: { canExport: false, canImport: false }
   },
   temperature: {
@@ -118,7 +118,7 @@ export const agentZodSchemas = {
   insert: createInsertZodSchema(agent, {
     ...describeRefinements,
     toolIds: z.array(z.uuid()).describe(agentFields.toolIds.comment()),
-    skillIds: z.array(z.uuid()).describe(agentFields.skillIds.comment()),
+    nativeTools: z.array(z.string()).describe(agentFields.nativeTools.comment()),
     allowedUserIds: z.array(z.uuid()).describe(agentFields.allowedUserIds.comment()),
     allowedRoleIds: z.array(z.uuid()).describe(agentFields.allowedRoleIds.comment()),
     allowedDeptIds: z.array(z.uuid()).describe(agentFields.allowedDeptIds.comment()),
@@ -126,7 +126,7 @@ export const agentZodSchemas = {
   select: createSelectZodSchema(agent, {
     ...describeRefinements,
     toolIds: z.array(z.uuid()).nullable().describe(agentFields.toolIds.comment()),
-    skillIds: z.array(z.uuid()).nullable().describe(agentFields.skillIds.comment()),
+    nativeTools: z.array(z.string()).nullable().describe(agentFields.nativeTools.comment()),
     allowedUserIds: z.array(z.uuid()).nullable().describe(agentFields.allowedUserIds.comment()),
     allowedRoleIds: z.array(z.uuid()).nullable().describe(agentFields.allowedRoleIds.comment()),
     allowedDeptIds: z.array(z.uuid()).nullable().describe(agentFields.allowedDeptIds.comment()),
@@ -134,7 +134,7 @@ export const agentZodSchemas = {
   update: createUpdateZodSchema(agent, {
     ...describeRefinements,
     toolIds: z.array(z.uuid()).optional().describe(agentFields.toolIds.comment()),
-    skillIds: z.array(z.uuid()).optional().describe(agentFields.skillIds.comment()),
+    nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
     allowedUserIds: z.array(z.uuid()).optional().describe(agentFields.allowedUserIds.comment()),
     allowedRoleIds: z.array(z.uuid()).optional().describe(agentFields.allowedRoleIds.comment()),
     allowedDeptIds: z.array(z.uuid()).optional().describe(agentFields.allowedDeptIds.comment()),

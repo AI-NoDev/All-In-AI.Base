@@ -2,6 +2,7 @@
   import { ModeWatcher } from 'mode-watcher';
   import { onMount } from 'svelte';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
+  import { Toaster } from '@/lib/components/ui/sonner';
 
   let { children } = $props();
 
@@ -11,4 +12,5 @@
 </script>
 
 <ModeWatcher defaultMode={preferencesStore.theme} />
+<Toaster />
 {@render children()}

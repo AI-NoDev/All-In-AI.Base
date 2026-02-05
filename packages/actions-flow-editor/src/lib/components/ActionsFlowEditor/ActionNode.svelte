@@ -43,6 +43,9 @@
 
   let { id, data, isConnectable = true }: Props = $props();
 
+  /** Tooltip/Popover child snippet props type */
+  type SnippetProps = { props: Record<string, unknown> };
+
   // 展开状态：存储已展开的路径（如 'result', 'result.user'）
   let expandedInputPaths = $state<Set<string>>(new Set());
   let expandedOutputPaths = $state<Set<string>>(new Set());
@@ -100,6 +103,40 @@
     }
     return paths;
   });
+
+  // 计算需要自动展开的输入路径（基于已连接的引脚）
+  let autoExpandInputPaths = $derived.by(() => {
+    const pathsToExpand = new Set<string>();
+    for (const path of connectedInputPaths) {
+      if (path.includes('.')) {
+        const parts = path.split('.');
+        for (let i = 1; i < parts.length; i++) {
+          const parentPath = parts.slice(0, i).join('.');
+          pathsToExpand.add(parentPath);
+        }
+      }
+    }
+    return pathsToExpand;
+  });
+
+  // 计算需要自动展开的输出路径（基于已连接的引脚）
+  let autoExpandOutputPaths = $derived.by(() => {
+    const pathsToExpand = new Set<string>();
+    for (const path of connectedOutputPaths) {
+      if (path.includes('.')) {
+        const parts = path.split('.');
+        for (let i = 1; i < parts.length; i++) {
+          const parentPath = parts.slice(0, i).join('.');
+          pathsToExpand.add(parentPath);
+        }
+      }
+    }
+    return pathsToExpand;
+  });
+
+  // 合并手动展开和自动展开的路径
+  let effectiveExpandedInputPaths = $derived(new Set([...expandedInputPaths, ...autoExpandInputPaths]));
+  let effectiveExpandedOutputPaths = $derived(new Set([...expandedOutputPaths, ...autoExpandOutputPaths]));
 
   // 检查某个路径及其所有子路径是否有连接
   function hasConnectionInSubtree(basePath: string, isOutput: boolean): boolean {
@@ -239,7 +276,7 @@
   ): PinInfo[] {
     if (!schema) return [];
     
-    const expandedPaths = isOutput ? expandedOutputPaths : expandedInputPaths;
+    const expandedPaths = isOutput ? effectiveExpandedOutputPaths : effectiveExpandedInputPaths;
     let properties: Record<string, SchemaProperty> | undefined;
     let required: string[] = [];
     
@@ -449,7 +486,7 @@
     basePath: string,
     depth: number
   ): PinInfo[] {
-    const expandedPaths = isOutput ? expandedOutputPaths : expandedInputPaths;
+    const expandedPaths = isOutput ? effectiveExpandedOutputPaths : effectiveExpandedInputPaths;
     const childProps = getObjectProperties(schema);
     const childRequired = getRequired(schema);
     if (!childProps) return [];
@@ -543,7 +580,7 @@
     {#if hasResult && hasDebug}
       <Tooltip.Root>
         <Tooltip.Trigger>
-          {#snippet child({ props })}
+          {#snippet child({ props }: SnippetProps)}
             <button
               {...props}
               class="w-5 h-5 rounded-full flex items-center justify-center transition-colors bg-muted hover:bg-muted/80 text-muted-foreground"
@@ -563,7 +600,7 @@
     {#if hasDebug}
       <Tooltip.Root>
         <Tooltip.Trigger>
-          {#snippet child({ props })}
+          {#snippet child({ props }: SnippetProps)}
             <button
               {...props}
               class="w-5 h-5 rounded-full flex items-center justify-center transition-colors {isRunning ? 'bg-primary/70 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'} text-primary-foreground"
@@ -587,7 +624,7 @@
     <!-- 删除按钮 -->
     <Tooltip.Root>
       <Tooltip.Trigger>
-        {#snippet child({ props })}
+        {#snippet child({ props }: SnippetProps)}
           <button
             {...props}
             class="w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:bg-destructive/90 transition-colors"
@@ -611,7 +648,7 @@
   {:else if debugResult?.status === 'error'}
     <Tooltip.Root>
       <Tooltip.Trigger>
-        {#snippet child({ props })}
+        {#snippet child({ props }: SnippetProps)}
           <div {...props} class="absolute -top-2 -left-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center z-10 cursor-help">
             <IconClose class="w-3 h-3" />
           </div>
@@ -639,14 +676,14 @@
         <span class="text-[11px] truncate relative flex items-center gap-0.5" style="padding-left: {(inputPins[i]?.depth ?? 0) * 12}px;">
           {#if inputPins[i]}
             {@const pin = inputPins[i]}
-            {@const isExpanded = expandedInputPaths.has(pin.key)}
+            {@const isExpanded = effectiveExpandedInputPaths.has(pin.key)}
             {@const canCollapse = !hasConnectionInSubtree(pin.key, false)}
             
             <!-- 展开/收起按钮 -->
             {#if pin.expandable}
               <Tooltip.Root>
                 <Tooltip.Trigger>
-                  {#snippet child({ props })}
+                  {#snippet child({ props }: SnippetProps)}
                     <button
                       {...props}
                       class="w-4 h-4 flex items-center justify-center hover:bg-accent rounded transition-colors {!canCollapse && isExpanded ? 'opacity-50 cursor-not-allowed' : ''}"
@@ -672,7 +709,7 @@
             {#if pin.description}
               <Tooltip.Root>
                 <Tooltip.Trigger>
-                  {#snippet child({ props })}
+                  {#snippet child({ props }: SnippetProps)}
                     <span {...props} class="text-foreground cursor-help border-b border-dashed border-muted-foreground">{getDisplayKey(pin)}</span>
                   {/snippet}
                 </Tooltip.Trigger>
@@ -691,7 +728,7 @@
               <!-- 未展开的 object 显示为可点击的 tag -->
               <Tooltip.Root>
                 <Tooltip.Trigger>
-                  {#snippet child({ props })}
+                  {#snippet child({ props }: SnippetProps)}
                     <button
                       {...props}
                       class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer bg-chart-4/20 text-chart-4 hover:bg-chart-4/30 dark:bg-chart-4/30"
@@ -716,13 +753,13 @@
         <span class="text-[11px] truncate text-right relative flex items-center justify-end gap-0.5" style="padding-right: {(outputPins[i]?.depth ?? 0) * 12}px;">
           {#if outputPins[i]}
             {@const pin = outputPins[i]}
-            {@const isExpanded = expandedOutputPaths.has(pin.key)}
+            {@const isExpanded = effectiveExpandedOutputPaths.has(pin.key)}
             {@const canCollapse = !hasConnectionInSubtree(pin.key, true)}
             
             {#if pin.description}
               <Tooltip.Root>
                 <Tooltip.Trigger>
-                  {#snippet child({ props })}
+                  {#snippet child({ props }: SnippetProps)}
                     <span {...props} class="text-foreground cursor-help border-b border-dashed border-muted-foreground">{getDisplayKey(pin)}</span>
                   {/snippet}
                 </Tooltip.Trigger>
@@ -741,7 +778,7 @@
               <!-- 未展开的 object 显示为可点击的 tag -->
               <Tooltip.Root>
                 <Tooltip.Trigger>
-                  {#snippet child({ props })}
+                  {#snippet child({ props }: SnippetProps)}
                     <button
                       {...props}
                       class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer bg-chart-4/20 text-chart-4 hover:bg-chart-4/30 dark:bg-chart-4/30"
@@ -764,7 +801,7 @@
             {#if pin.expandable}
               <Tooltip.Root>
                 <Tooltip.Trigger>
-                  {#snippet child({ props })}
+                  {#snippet child({ props }: SnippetProps)}
                     <button
                       {...props}
                       class="w-4 h-4 flex items-center justify-center hover:bg-accent rounded transition-colors {!canCollapse && isExpanded ? 'opacity-50 cursor-not-allowed' : ''}"

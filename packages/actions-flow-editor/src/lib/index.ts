@@ -2,14 +2,12 @@
 export { default as ActionsFlowEditor } from './components/ActionsFlowEditor/index.svelte';
 export { default as ActionNode } from './components/ActionsFlowEditor/ActionNode.svelte';
 export { default as StartNode } from './components/ActionsFlowEditor/StartNode.svelte';
+export { default as OutputNode } from './components/ActionsFlowEditor/OutputNode.svelte';
 export { default as UtilNode } from './components/ActionsFlowEditor/UtilNode.svelte';
 export { default as VariablePoolNode } from './components/ActionsFlowEditor/VariablePoolNode.svelte';
 export { default as AssignNode } from './components/ActionsFlowEditor/AssignNode.svelte';
-export { default as ConditionNode } from './components/ActionsFlowEditor/ConditionNode.svelte';
 export { default as LoopNode } from './components/ActionsFlowEditor/LoopNode.svelte';
-export { default as LoopBodyNode } from './components/ActionsFlowEditor/LoopBodyNode.svelte';
-export { default as LoopStartNode } from './components/ActionsFlowEditor/LoopStartNode.svelte';
-export { default as ConditionBranchNode } from './components/ActionsFlowEditor/ConditionBranchNode.svelte';
+export { default as IfNode } from './components/ActionsFlowEditor/IfNode.svelte';
 export { default as ObjectTypePopover } from './components/ActionsFlowEditor/ObjectTypePopover.svelte';
 export { default as ActionsPalette } from './components/ActionsFlowEditor/ActionsPalette.svelte';
 export { default as LayoutPanel } from './components/ActionsFlowEditor/LayoutPanel.svelte';
@@ -36,6 +34,7 @@ export type {
   ActionDetail,
   ActionNodeData,
   StartNodeData,
+  OutputNodeData,
   UtilNodeData,
   UtilType,
   BaseType,
@@ -44,21 +43,16 @@ export type {
   VariableDefinition,
   VariablePoolNodeData,
   AssignNodeData,
-  ConditionNodeData,
   LoopNodeData,
-  ConditionBranchNodeData,
-  LoopBodyNodeData,
-  LoopStartNodeData,
+  IfNodeData,
   ActionNode as ActionNodeType,
   StartNode as StartNodeType,
+  OutputNode as OutputNodeType,
   UtilNode as UtilNodeType,
   VariablePoolNode as VariablePoolNodeType,
   AssignNode as AssignNodeType,
-  ConditionNode as ConditionNodeType,
   LoopNode as LoopNodeType,
-  ConditionBranchNode as ConditionBranchNodeType,
-  LoopBodyNode as LoopBodyNodeType,
-  LoopStartNode as LoopStartNodeType,
+  IfNode as IfNodeType,
   FlowNode,
   FlowEdge,
   WorkflowDefinition,
@@ -69,6 +63,8 @@ export type {
   DebugStateMap,
   DebugStateGetter,
   RunNodeFn,
+  AllNodeData,
+  ActionsFlowEditorRef,
 } from './types.js';
 
 // Constants
@@ -110,3 +106,7 @@ export {
   generateMockInput,
   generateMockInputForUtil,
 } from './utils/schemaFaker.js';
+
+// AI Tools
+export { actionsFlowEditorTools, callTool as callActionsFlowEditorTool, getToolsForApi as getActionsFlowEditorToolsForApi } from './tools.js';
+export type { ActionsFlowEditorToolName, ToolCallResult as ActionsFlowEditorToolCallResult, ApiToolDefinition } from './tools.js';

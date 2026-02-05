@@ -201,3 +201,81 @@ export function cloneItem(item: SchemaItem): SchemaItem {
 
   return cloned;
 }
+
+// ==================== Ref Methods Interface ====================
+
+/**
+ * ZodVisualEditor 组件的 ref 方法接口
+ * 用于通过 bind:this 获取组件实例后调用方法
+ * 
+ * @example
+ * ```svelte
+ * <script lang="ts">
+ *   import { ZodVisualEditor, type ZodVisualEditorRef } from '@qiyu-allinai/zod-visual-editor';
+ *   let editorRef: ZodVisualEditorRef;
+ * </script>
+ * 
+ * <ZodVisualEditor bind:this={editorRef} />
+ * <button onclick={() => editorRef.addFieldTo('root', 'string', 'newField')}>Add Field</button>
+ * ```
+ */
+export interface ZodVisualEditorRef {
+  /** 获取当前 Schema */
+  getSchema(): RootSchema;
+  
+  /** 设置整个 Schema */
+  setSchema(newSchema: RootSchema): void;
+  
+  /**
+   * 添加字段到指定父级
+   * @param parentId - 父级 ID，'root' 表示根级别，或者 object/union 类型字段的 ID
+   * @param type - 字段类型
+   * @param name - 字段名称（可选，默认自动生成）
+   * @returns 新创建的字段，如果父级不存在或类型不支持则返回 null
+   */
+  addFieldTo(parentId: string, type: SchemaType, name?: string): SchemaItem | null;
+  
+  /**
+   * 根据 ID 删除字段
+   * @param fieldId - 要删除的字段 ID
+   * @returns 是否删除成功
+   */
+  removeField(fieldId: string): boolean;
+  
+  /**
+   * 根据 ID 获取字段
+   * @param fieldId - 字段 ID
+   * @returns 字段对象，如果不存在则返回 null
+   */
+  getFieldById(fieldId: string): SchemaItem | null;
+  
+  /**
+   * 更新指定字段
+   * @param fieldId - 字段 ID
+   * @param updates - 要更新的属性
+   * @returns 是否更新成功
+   */
+  updateFieldById(fieldId: string, updates: Partial<SchemaItem>): boolean;
+  
+  /**
+   * 复制字段
+   * @param fieldId - 要复制的字段 ID
+   * @returns 新创建的字段，如果原字段不存在则返回 null
+   */
+  duplicateFieldById(fieldId: string): SchemaItem | null;
+  
+  /** 获取所有根级字段 */
+  getRootFields(): SchemaItem[];
+  
+  /** 清空所有字段 */
+  clearAllFields(): void;
+  
+  /** 获取生成的 TypeScript 代码 */
+  getGeneratedCode(): string;
+  
+  /** 切换代码显示 */
+  toggleCodeView(): void;
+  
+  /** 获取代码显示状态 */
+  isCodeViewVisible(): boolean;
+}

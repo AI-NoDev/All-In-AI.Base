@@ -18,6 +18,9 @@
     showRequired?: boolean;
   }
 
+  /** Tooltip/Popover child snippet props type */
+  type SnippetProps = { props: Record<string, unknown> };
+
   let { schema, typeName, depth = 0, showRequired = true }: Props = $props();
 
   // 计算显示类型
@@ -86,7 +89,7 @@
       <Popover.Trigger>
         <Tooltip.Root>
           <Tooltip.Trigger>
-            {#snippet child({ props })}
+            {#snippet child({ props }: SnippetProps)}
               <button
                 {...props}
                 class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer bg-chart-4/20 text-chart-4 hover:bg-chart-4/30 dark:bg-chart-4/30 dark:text-chart-4"

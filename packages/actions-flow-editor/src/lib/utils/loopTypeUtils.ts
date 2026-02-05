@@ -1,6 +1,6 @@
 import type { Node } from '@xyflow/svelte';
 import { parseArrayType, type SchemaProperty } from '../typeEngine.js';
-import type { LoopNodeData, LoopBodyNodeData, LoopStartNodeData } from '../types.js';
+import type { LoopNodeData } from '../types.js';
 
 type AllNodeData = Record<string, unknown>;
 
@@ -47,7 +47,7 @@ export function calculateLoopItemType(
 }
 
 /**
- * 更新循环节点及其相关节点的类型
+ * 更新循环节点的类型
  */
 export function updateLoopNodesType<T extends AllNodeData>(
   nodes: Node<T>[],
@@ -57,34 +57,18 @@ export function updateLoopNodesType<T extends AllNodeData>(
 ): Node<T>[] {
   const { itemType, itemSchema } = loopTypeInfo;
 
-  // 先找出所有属于这个循环节点的循环体 ID
-  const loopBodyIds = new Set<string>();
-  for (const n of nodes) {
-    if (n.type === 'loopBody') {
-      const bodyData = n.data as unknown as LoopBodyNodeData;
-      if (bodyData.parentLoopId === loopNodeId) {
-        loopBodyIds.add(n.id);
-      }
-    }
-  }
-
   return nodes.map((n) => {
     // 更新循环节点
     if (n.id === loopNodeId && n.type === 'loop') {
       const loopData = n.data as unknown as LoopNodeData;
-      return { ...n, data: { ...loopData, inputType } as unknown as T };
-    }
-    // 更新循环体节点
-    if (n.type === 'loopBody' && loopBodyIds.has(n.id)) {
-      const bodyData = n.data as unknown as LoopBodyNodeData;
-      return { ...n, data: { ...bodyData, itemType } as unknown as T };
-    }
-    // 更新循环开始节点（通过 parentId 直接判断）
-    if (n.type === 'loopStart' && n.parentId && loopBodyIds.has(n.parentId)) {
-      const startData = n.data as unknown as LoopStartNodeData;
-      return {
-        ...n,
-        data: { ...startData, outputType: itemType, itemSchema } as unknown as T,
+      return { 
+        ...n, 
+        data: { 
+          ...loopData, 
+          inputType,
+          itemType,
+          itemSchema,
+        } as unknown as T 
       };
     }
     return n;

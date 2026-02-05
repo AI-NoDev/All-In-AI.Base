@@ -1,29 +1,7 @@
-import { pgTable, uuid, varchar, timestamp, boolean, jsonb, text, char, integer, bigint, json, real, primaryKey } from "drizzle-orm/pg-core"
+import { pgTable, uuid, varchar, timestamp, boolean, jsonb, text, char, integer, bigint, json, real, index, uniqueIndex, primaryKey } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
-
-export const aiMcp = pgTable("ai_mcp", {
-	id: uuid().primaryKey().notNull(),
-	createdById: uuid("created_by_id"),
-	createdBy: varchar("created_by", { length: 64 }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-	updatedById: uuid("updated_by_id"),
-	updatedBy: varchar("updated_by", { length: 64 }).notNull(),
-	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
-	isPublic: boolean("is_public").default(false).notNull(),
-	allowedUserIds: jsonb("allowed_user_ids").default([]),
-	allowedRoleIds: jsonb("allowed_role_ids").default([]),
-	allowedDeptIds: jsonb("allowed_dept_ids").default([]),
-	allowSubDepts: boolean("allow_sub_depts").default(false).notNull(),
-	name: varchar({ length: 64 }).notNull(),
-	description: text(),
-	command: varchar({ length: 256 }).notNull(),
-	args: jsonb().default([]),
-	env: jsonb().default({}),
-	remark: text(),
-	status: char({ length: 1 }).default('0'),
-});
 
 export const aiModel = pgTable("ai_model", {
 	id: uuid().primaryKey().notNull(),
@@ -104,44 +82,6 @@ export const aiToolGroup = pgTable("ai_tool_group", {
 	status: char({ length: 1 }).default('0'),
 });
 
-export const knowledgeFile = pgTable("knowledge_file", {
-	id: uuid().primaryKey().notNull(),
-	createdById: uuid("created_by_id"),
-	createdBy: varchar("created_by", { length: 64 }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-	updatedById: uuid("updated_by_id"),
-	updatedBy: varchar("updated_by", { length: 64 }).notNull(),
-	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
-	deletedById: uuid("deleted_by_id"),
-	deletedBy: varchar("deleted_by", { length: 64 }),
-	deletedAt: timestamp("deleted_at", { mode: 'string' }),
-	isPublic: boolean("is_public").default(false).notNull(),
-	allowedUserIds: jsonb("allowed_user_ids").default([]),
-	allowedRoleIds: jsonb("allowed_role_ids").default([]),
-	allowedDeptIds: jsonb("allowed_dept_ids").default([]),
-	allowSubDepts: boolean("allow_sub_depts").default(false).notNull(),
-	folderId: uuid("folder_id"),
-	name: varchar({ length: 255 }).notNull(),
-	originalName: varchar("original_name", { length: 255 }).notNull(),
-	extension: varchar({ length: 32 }),
-	mimeType: varchar("mime_type", { length: 128 }),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	size: bigint({ mode: "number" }).default(0).notNull(),
-	storageKey: varchar("storage_key", { length: 512 }).notNull(),
-	bucket: varchar({ length: 128 }).notNull(),
-	region: varchar({ length: 64 }),
-	etag: varchar({ length: 128 }),
-	versionId: varchar("version_id", { length: 128 }),
-	storageClass: varchar("storage_class", { length: 32 }).default('STANDARD'),
-	metadata: jsonb().default({}),
-	tags: jsonb().default([]),
-	description: text(),
-	processStatus: char("process_status", { length: 1 }).default('0'),
-	processResult: jsonb("process_result"),
-	downloadCount: integer("download_count").default(0).notNull(),
-	status: char({ length: 1 }).default('0'),
-});
-
 export const knowledgeFileVersion = pgTable("knowledge_file_version", {
 	id: uuid().primaryKey().notNull(),
 	fileId: uuid("file_id").notNull(),
@@ -170,10 +110,6 @@ export const knowledgeFolder = pgTable("knowledge_folder", {
 	deletedBy: varchar("deleted_by", { length: 64 }),
 	deletedAt: timestamp("deleted_at", { mode: 'string' }),
 	isPublic: boolean("is_public").default(false).notNull(),
-	allowedUserIds: jsonb("allowed_user_ids").default([]),
-	allowedRoleIds: jsonb("allowed_role_ids").default([]),
-	allowedDeptIds: jsonb("allowed_dept_ids").default([]),
-	allowSubDepts: boolean("allow_sub_depts").default(false).notNull(),
 	parentId: uuid("parent_id"),
 	name: varchar({ length: 255 }).notNull(),
 	path: text().notNull(),
@@ -183,7 +119,7 @@ export const knowledgeFolder = pgTable("knowledge_folder", {
 	orderNum: integer("order_num").default(0).notNull(),
 });
 
-export const knowledgeBase = pgTable("knowledge_base", {
+export const knowledgeFile = pgTable("knowledge_file", {
 	id: uuid().primaryKey().notNull(),
 	createdById: uuid("created_by_id"),
 	createdBy: varchar("created_by", { length: 64 }).notNull(),
@@ -195,25 +131,27 @@ export const knowledgeBase = pgTable("knowledge_base", {
 	deletedBy: varchar("deleted_by", { length: 64 }),
 	deletedAt: timestamp("deleted_at", { mode: 'string' }),
 	isPublic: boolean("is_public").default(false).notNull(),
-	allowedUserIds: jsonb("allowed_user_ids").default([]),
-	allowedRoleIds: jsonb("allowed_role_ids").default([]),
-	allowedDeptIds: jsonb("allowed_dept_ids").default([]),
-	allowSubDepts: boolean("allow_sub_depts").default(false).notNull(),
-	name: varchar({ length: 128 }).notNull(),
+	folderId: uuid("folder_id"),
+	name: varchar({ length: 255 }).notNull(),
+	originalName: varchar("original_name", { length: 255 }).notNull(),
+	extension: varchar({ length: 32 }),
+	mimeType: varchar("mime_type", { length: 128 }),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	size: bigint({ mode: "number" }).default(0).notNull(),
+	storageKey: varchar("storage_key", { length: 512 }).notNull(),
+	bucket: varchar({ length: 128 }).notNull(),
+	region: varchar({ length: 64 }),
+	etag: varchar({ length: 128 }),
+	versionId: varchar("version_id", { length: 128 }),
+	storageClass: varchar("storage_class", { length: 32 }).default('STANDARD'),
+	metadata: jsonb().default({}),
+	tags: jsonb().default([]),
 	description: text(),
-	icon: varchar({ length: 64 }),
-	color: varchar({ length: 32 }),
-	embeddingConfig: jsonb("embedding_config").default({"model":"text-embedding-3-small","chunkSize":1000,"dimensions":1536,"chunkOverlap":200}),
-	s3Config: jsonb("s3_config"),
-	fileCount: integer("file_count").default(0).notNull(),
-	totalSize: integer("total_size").default(0).notNull(),
-	chunkCount: integer("chunk_count").default(0).notNull(),
+	processStatus: char("process_status", { length: 1 }).default('0'),
+	processResult: jsonb("process_result"),
+	downloadCount: integer("download_count").default(0).notNull(),
 	status: char({ length: 1 }).default('0'),
-});
-
-export const knowledgeBaseFolder = pgTable("knowledge_base_folder", {
-	knowledgeBaseId: uuid("knowledge_base_id").notNull(),
-	folderId: uuid("folder_id").notNull(),
+	versionCount: integer("version_count").default(0).notNull(),
 });
 
 export const systemConfig = pgTable("system_config", {
@@ -411,7 +349,6 @@ export const systemPost = pgTable("system_post", {
 	name: varchar({ length: 50 }).notNull(),
 	sort: varchar({ length: 10 }).notNull(),
 	status: char({ length: 1 }).default('0'),
-	flag: char({ length: 1 }).default('0'),
 	deletedById: uuid("deleted_by_id"),
 	deletedBy: varchar("deleted_by", { length: 64 }),
 	deletedAt: timestamp("deleted_at", { mode: 'string' }),
@@ -529,7 +466,6 @@ export const aiAgent = pgTable("ai_agent", {
 	providerId: uuid("provider_id").notNull(),
 	modelId: uuid("model_id").notNull(),
 	systemPrompt: text("system_prompt"),
-	mcpIds: jsonb("mcp_ids").default([]),
 	skillIds: jsonb("skill_ids").default([]),
 	toolIds: jsonb("tool_ids").default([]),
 	temperature: real().default(0.7),
@@ -538,32 +474,6 @@ export const aiAgent = pgTable("ai_agent", {
 	remark: text(),
 	status: char({ length: 1 }).default('0'),
 	contextStrategy: varchar("context_strategy", { length: 64 }),
-});
-
-export const aiSkill = pgTable("ai_skill", {
-	id: uuid().primaryKey().notNull(),
-	createdById: uuid("created_by_id"),
-	createdBy: varchar("created_by", { length: 64 }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-	updatedById: uuid("updated_by_id"),
-	updatedBy: varchar("updated_by", { length: 64 }).notNull(),
-	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
-	isPublic: boolean("is_public").default(false).notNull(),
-	allowedUserIds: jsonb("allowed_user_ids").default([]),
-	allowedRoleIds: jsonb("allowed_role_ids").default([]),
-	allowedDeptIds: jsonb("allowed_dept_ids").default([]),
-	allowSubDepts: boolean("allow_sub_depts").default(false).notNull(),
-	name: varchar({ length: 64 }).notNull(),
-	parentId: uuid("parent_id"),
-	isGroup: boolean("is_group").default(false).notNull(),
-	orderNum: integer("order_num").default(1).notNull(),
-	icon: varchar({ length: 64 }),
-	description: text(),
-	folderId: text("folder_id"),
-	remark: text(),
-	status: char({ length: 1 }).default('0'),
-	fileId: uuid("file_id"),
-	isA2A: boolean("is_a2a").default(false).notNull(),
 });
 
 export const aiAgentMessage = pgTable("ai_agent_message", {
@@ -582,7 +492,10 @@ export const aiAgentMessage = pgTable("ai_agent_message", {
 	finishReason: varchar("finish_reason", { length: 32 }),
 	extra: jsonb().default({}),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-});
+}, (table) => [
+	index("idx_ai_agent_message_created_at").using("btree", table.createdAt.asc().nullsLast().op("timestamp_ops")),
+	index("idx_ai_agent_message_session_seq").using("btree", table.sessionId.asc().nullsLast().op("int8_ops"), table.msgSeq.asc().nullsLast().op("int8_ops")),
+]);
 
 export const aiAgentSession = pgTable("ai_agent_session", {
 	id: uuid().primaryKey().notNull(),
@@ -606,7 +519,11 @@ export const aiAgentSession = pgTable("ai_agent_session", {
 	isPinned: boolean("is_pinned").default(false).notNull(),
 	extra: jsonb().default({}),
 	status: char({ length: 1 }).default('0'),
-});
+}, (table) => [
+	index("idx_ai_agent_session_agent").using("btree", table.agentId.asc().nullsLast().op("uuid_ops")),
+	index("idx_ai_agent_session_last_message").using("btree", table.lastMessageAt.asc().nullsLast().op("timestamp_ops")),
+	index("idx_ai_agent_session_user").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+]);
 
 export const imConversation = pgTable("im_conversation", {
 	id: uuid().primaryKey().notNull(),
@@ -650,7 +567,11 @@ export const imMessage = pgTable("im_message", {
 	recalledById: uuid("recalled_by_id"),
 	extra: jsonb().default({}),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-});
+}, (table) => [
+	index("idx_im_message_conversation_seq").using("btree", table.conversationId.asc().nullsLast().op("uuid_ops"), table.msgSeq.asc().nullsLast().op("int8_ops")),
+	index("idx_im_message_created_at").using("btree", table.createdAt.asc().nullsLast().op("timestamp_ops")),
+	index("idx_im_message_sender").using("btree", table.senderId.asc().nullsLast().op("uuid_ops")),
+]);
 
 export const imTempFile = pgTable("im_temp_file", {
 	id: uuid().primaryKey().notNull(),
@@ -675,6 +596,53 @@ export const imTempFile = pgTable("im_temp_file", {
 	expiresAt: timestamp("expires_at", { mode: 'string' }),
 	metadata: jsonb().default({}),
 	status: char({ length: 1 }).default('0'),
+}, (table) => [
+	index("idx_im_temp_file_conversation").using("btree", table.conversationId.asc().nullsLast().op("uuid_ops")),
+	index("idx_im_temp_file_expires").using("btree", table.expiresAt.asc().nullsLast().op("timestamp_ops")),
+	index("idx_im_temp_file_message").using("btree", table.messageId.asc().nullsLast().op("uuid_ops")),
+]);
+
+export const knowledgeResourcePermission = pgTable("knowledge_resource_permission", {
+	id: uuid().primaryKey().notNull(),
+	createdById: uuid("created_by_id"),
+	createdBy: varchar("created_by", { length: 64 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedById: uuid("updated_by_id"),
+	updatedBy: varchar("updated_by", { length: 64 }).notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+	resourceType: varchar("resource_type", { length: 16 }).notNull(),
+	resourceId: uuid("resource_id").notNull(),
+	granteeType: varchar("grantee_type", { length: 16 }).notNull(),
+	granteeId: uuid("grantee_id").notNull(),
+	permissionLevel: char("permission_level", { length: 1 }).default('r').notNull(),
+}, (table) => [
+	uniqueIndex("resource_permission_unique_idx").using("btree", table.resourceType.asc().nullsLast().op("uuid_ops"), table.resourceId.asc().nullsLast().op("uuid_ops"), table.granteeType.asc().nullsLast().op("text_ops"), table.granteeId.asc().nullsLast().op("uuid_ops")),
+]);
+
+export const aiSkill = pgTable("ai_skill", {
+	id: uuid().primaryKey().notNull(),
+	createdById: uuid("created_by_id"),
+	createdBy: varchar("created_by", { length: 64 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedById: uuid("updated_by_id"),
+	updatedBy: varchar("updated_by", { length: 64 }).notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+	isPublic: boolean("is_public").default(false).notNull(),
+	allowedUserIds: jsonb("allowed_user_ids").default([]),
+	allowedRoleIds: jsonb("allowed_role_ids").default([]),
+	allowedDeptIds: jsonb("allowed_dept_ids").default([]),
+	allowSubDepts: boolean("allow_sub_depts").default(false).notNull(),
+	name: varchar({ length: 64 }).notNull(),
+	parentId: uuid("parent_id"),
+	isGroup: boolean("is_group").default(false).notNull(),
+	orderNum: integer("order_num").default(1).notNull(),
+	icon: varchar({ length: 64 }),
+	description: text(),
+	folderId: uuid("folder_id"),
+	remark: text(),
+	status: char({ length: 1 }).default('0'),
+	fileId: uuid("file_id"),
+	isA2A: boolean("is_a2a").default(false).notNull(),
 });
 
 export const imConversationRead = pgTable("im_conversation_read", {
@@ -685,7 +653,19 @@ export const imConversationRead = pgTable("im_conversation_read", {
 	lastReadAt: timestamp("last_read_at", { mode: 'string' }).defaultNow().notNull(),
 	unreadCount: integer("unread_count").default(0).notNull(),
 }, (table) => [
+	index("idx_im_conversation_read_user").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
 	primaryKey({ columns: [table.conversationId, table.userId], name: "im_conversation_read_conversation_id_user_id_pk"}),
+]);
+
+export const imConversationHidden = pgTable("im_conversation_hidden", {
+	conversationId: uuid("conversation_id").notNull(),
+	userId: uuid("user_id").notNull(),
+	isHidden: boolean("is_hidden").default(true).notNull(),
+	hiddenAt: timestamp("hidden_at", { mode: 'string' }).defaultNow().notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	primaryKey({ columns: [table.conversationId, table.userId], name: "im_conversation_hidden_conversation_id_user_id_pk"}),
 ]);
 
 export const imGroupMember = pgTable("im_group_member", {
@@ -699,5 +679,6 @@ export const imGroupMember = pgTable("im_group_member", {
 	mutedUntil: timestamp("muted_until", { mode: 'string' }),
 	extra: jsonb().default({}),
 }, (table) => [
+	index("idx_im_group_member_user").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
 	primaryKey({ columns: [table.conversationId, table.userId], name: "im_group_member_conversation_id_user_id_pk"}),
 ]);

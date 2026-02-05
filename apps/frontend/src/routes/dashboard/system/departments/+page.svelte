@@ -1,7 +1,35 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface DepartmentsPageSnapshot {
+    showFilter: boolean;
+    allExpanded: boolean;
+    searchForm: {
+      name: string;
+      status: string;
+    };
+  }
+
+  let pageState: DepartmentsPageSnapshot = {
+    showFilter: true,
+    allExpanded: true,
+    searchForm: { name: '', status: '' },
+  };
+
+  let restoreCallback: ((value: DepartmentsPageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<DepartmentsPageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import * as Table from '@/lib/components/ui/table';
   import * as Dialog from '@/lib/components/ui/dialog';
   import * as Select from '@/lib/components/ui/select';
@@ -38,12 +66,25 @@
   let saving = $state(false);
   let dialogOpen = $state(false);
   let editingDept = $state<Dept | null>(null);
-  let allExpanded = $state(true);
-  let showFilter = $state(true);
+  let allExpanded = $state(pageState.allExpanded);
+  let showFilter = $state(pageState.showFilter);
 
-  let searchForm = $state({
-    name: '',
-    status: '',
+  let searchForm = $state({ ...pageState.searchForm });
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    showFilter = value.showFilter;
+    allExpanded = value.allExpanded;
+    searchForm = { ...value.searchForm };
+  };
+
+  // Sync state changes back to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      showFilter,
+      allExpanded,
+      searchForm: { ...searchForm },
+    };
   });
 
   const statusOptions = [
@@ -184,44 +225,42 @@
   onMount(() => loadDepts());
 </script>
 
-<div class="px-4 lg:px-6">
+<div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 搜索表单 -->
   {#if showFilter}
-    <Card.Root class="mb-4">
-      <Card.Content>
-        <div class="flex flex-wrap items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground whitespace-nowrap">部门名称</span>
-            <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground whitespace-nowrap">状态</span>
-            <Select.Root type="single" bind:value={searchForm.status}>
-              <Select.Trigger class="w-24 h-8">
-                {statusOptions.find(o => o.value === searchForm.status)?.label || '全部'}
-              </Select.Trigger>
-              <Select.Content>
-                {#each statusOptions as option}
-                  <Select.Item value={option.value}>{option.label}</Select.Item>
-                {/each}
-              </Select.Content>
-            </Select.Root>
-          </div>
-          <div class="flex gap-2">
-            <Button size="sm" class="h-8" onclick={handleSearch}>
-              <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
-            </Button>
-            <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
-              <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
-            </Button>
-          </div>
+    <div class="py-3 border-b border-border">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground whitespace-nowrap">部门名称</span>
+          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
         </div>
-      </Card.Content>
-    </Card.Root>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground whitespace-nowrap">状态</span>
+          <Select.Root type="single" bind:value={searchForm.status}>
+            <Select.Trigger class="w-24 h-8">
+              {statusOptions.find(o => o.value === searchForm.status)?.label || '全部'}
+            </Select.Trigger>
+            <Select.Content>
+              {#each statusOptions as option}
+                <Select.Item value={option.value}>{option.label}</Select.Item>
+              {/each}
+            </Select.Content>
+          </Select.Root>
+        </div>
+        <div class="flex gap-2">
+          <Button size="sm" class="h-8" onclick={handleSearch}>
+            <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
+          </Button>
+          <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
+            <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
+          </Button>
+        </div>
+      </div>
+    </div>
   {/if}
 
-  <Card.Root>
-    <Card.Header class="pb-3">
+  <div class="flex-1 flex flex-col min-h-0 pt-4">
+    <div class="pb-3">
       <div class="flex items-center justify-between">
         <div class="flex gap-2">
           <Button size="sm" onclick={() => openCreate()}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
@@ -237,8 +276,8 @@
           <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={loadDepts}><Icon icon="tdesign:refresh" class="size-4" /></Button>
         </div>
       </div>
-    </Card.Header>
-    <Card.Content>
+    </div>
+    <div class="flex-1 min-h-0">
       {#if loading}
         <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
       {:else}
@@ -289,8 +328,8 @@
           </Table.Body>
         </Table.Root>
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </div>
+  </div>
 </div>
 
 <Dialog.Root bind:open={dialogOpen}>

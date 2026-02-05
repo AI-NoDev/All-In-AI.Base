@@ -19,6 +19,9 @@
     isConnectable?: boolean;
   }
 
+  /** Tooltip/Popover child snippet props type */
+  type SnippetProps = { props: Record<string, unknown> };
+
   let { id, data, selected = false, isConnectable = true }: Props = $props();
 
   // 从 context 获取调试状态和打开对话框函数
@@ -82,8 +85,8 @@
   minWidth={minNodeWidth} 
   minHeight={minNodeHeight}
   isVisible={selected}
-  lineStyle="border: 1px dashed hsl(var(--primary));"
-  handleStyle="width: 8px; height: 8px; background: hsl(var(--primary)); border-radius: 2px;"
+  lineStyle="border: 1px dashed var(--primary);"
+  handleStyle="width: 8px; height: 8px; background: var(--primary); border-radius: 2px;"
   onResize={handleResize}
 />
 
@@ -97,7 +100,7 @@
     {#if hasResult && hasDebug}
       <Tooltip.Root>
         <Tooltip.Trigger>
-          {#snippet child({ props })}
+          {#snippet child({ props }: SnippetProps)}
             <button
               {...props}
               class="w-5 h-5 rounded-full flex items-center justify-center transition-colors bg-muted hover:bg-muted/80 text-muted-foreground"
@@ -117,7 +120,7 @@
     {#if hasDebug}
       <Tooltip.Root>
         <Tooltip.Trigger>
-          {#snippet child({ props })}
+          {#snippet child({ props }: SnippetProps)}
             <button
               {...props}
               class="w-5 h-5 rounded-full flex items-center justify-center transition-colors {isRunning ? 'bg-primary/70 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'} text-primary-foreground"
@@ -141,7 +144,7 @@
     <!-- 删除按钮 -->
     <Tooltip.Root>
       <Tooltip.Trigger>
-        {#snippet child({ props })}
+        {#snippet child({ props }: SnippetProps)}
           <button
             {...props}
             class="w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:bg-destructive/90 transition-colors"
@@ -165,7 +168,7 @@
   {:else if debugResult?.status === 'error'}
     <Tooltip.Root>
       <Tooltip.Trigger>
-        {#snippet child({ props })}
+        {#snippet child({ props }: SnippetProps)}
           <div {...props} class="absolute -top-2 -left-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center z-10 cursor-help">
             <IconClose class="w-3 h-3" />
           </div>
@@ -204,7 +207,7 @@
             id="internal-output-{pin.key}"
             type="source"
             position={Position.Bottom}
-            style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; background: {getHandleColor(pin.type)}; border: 2px solid hsl(var(--primary-foreground)); border-radius: 50%;"
+            style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; background: {getHandleColor(pin.type)}; border: 2px solid var(--primary-foreground); border-radius: 50%;"
             {isConnectable}
           />
         </div>

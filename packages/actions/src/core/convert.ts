@@ -1,27 +1,39 @@
-import { tool } from 'ai';
-import { z } from 'zod';
+import { tool, jsonSchema } from 'ai';
+import { z } from 'zod/v4';
 import type { ActionDefinition, ActionContext, ActionRegistry } from './types';
 
-/**
- * 合并 action 的所有 schema 为单个输入 schema
- */
-function mergeSchemas(action: ActionDefinition): z.ZodType {
-  const schemas: z.ZodRawShape = {};
+/** 空 JSON Schema 对象 */
+const emptyJsonSchema = jsonSchema<Record<string, never>>({
+  type: 'object',
+  properties: {},
+  required: [],
+  additionalProperties: false,
+});
+
+/** 合并 action 的所有 schema 为单个输入 schema，并转换为 JSON Schema */
+function mergeActionSchemas(action: ActionDefinition) {
+  const shape: Record<string, z.ZodType> = {};
   
   if (action.schemas.querySchema) {
-    const shape = (action.schemas.querySchema as z.ZodObject<any>)._def?.shape?.();
-    if (shape) Object.assign(schemas, shape);
+    shape.query = action.schemas.querySchema as z.ZodType;
   }
   if (action.schemas.paramsSchema) {
-    const shape = (action.schemas.paramsSchema as z.ZodObject<any>)._def?.shape?.();
-    if (shape) Object.assign(schemas, shape);
+    shape.params = action.schemas.paramsSchema as z.ZodType;
   }
   if (action.schemas.bodySchema) {
-    const shape = (action.schemas.bodySchema as z.ZodObject<any>)._def?.shape?.();
-    if (shape) Object.assign(schemas, shape);
+    shape.body = action.schemas.bodySchema as z.ZodType;
   }
   
-  return Object.keys(schemas).length > 0 ? z.object(schemas) : z.object({});
+  // 如果没有任何 schema，返回空 JSON Schema
+  if (Object.keys(shape).length === 0) {
+    return emptyJsonSchema;
+  }
+  
+  // 构建合并后的 Zod schema 并转换为 JSON Schema
+  const mergedSchema = z.object(shape);
+  const jsonSchemaObj = z.toJSONSchema(mergedSchema) as Record<string, unknown>;
+  
+  return jsonSchema<Record<string, unknown>>(jsonSchemaObj);
 }
 
 /**
@@ -31,11 +43,11 @@ export function toAITool(
   action: ActionDefinition,
   context: ActionContext
 ) {
-  const parameters = mergeSchemas(action);
+  const inputSchema = mergeActionSchemas(action);
   
   return tool({
     description: action.meta.description,
-    parameters,
+    inputSchema,
     execute: async (input) => {
       return action.execute(input, context);
     },

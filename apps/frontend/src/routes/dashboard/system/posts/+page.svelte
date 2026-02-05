@@ -1,7 +1,37 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface PostsPageSnapshot {
+    currentPage: number;
+    showFilter: boolean;
+    selectedIds: string[];
+    searchForm: {
+      code: string;
+      name: string;
+    };
+  }
+
+  let pageState: PostsPageSnapshot = {
+    currentPage: 1,
+    showFilter: true,
+    selectedIds: [],
+    searchForm: { code: '', name: '' },
+  };
+
+  let restoreCallback: ((value: PostsPageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PostsPageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import * as Table from '@/lib/components/ui/table';
   import * as Dialog from '@/lib/components/ui/dialog';
   import * as Select from '@/lib/components/ui/select';
@@ -30,16 +60,31 @@
   let saving = $state(false);
   let dialogOpen = $state(false);
   let editingPost = $state<Post | null>(null);
-  let selectedIds = $state<Set<string>>(new Set());
+  let selectedIds = $state<Set<string>>(new Set(pageState.selectedIds));
   let deleting = $state(false);
-  let showFilter = $state(true);
-  let currentPage = $state(1);
+  let showFilter = $state(pageState.showFilter);
+  let currentPage = $state(pageState.currentPage);
   let pageSize = $state(10);
   let total = $state(0);
 
-  let searchForm = $state({
-    code: '',
-    name: '',
+  let searchForm = $state({ ...pageState.searchForm });
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    currentPage = value.currentPage;
+    showFilter = value.showFilter;
+    selectedIds = new Set(value.selectedIds);
+    searchForm = { ...value.searchForm };
+  };
+
+  // Sync state changes back to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      currentPage,
+      showFilter,
+      selectedIds: Array.from(selectedIds),
+      searchForm: { ...searchForm },
+    };
   });
 
   let form = $state({ code: '', name: '', sort: '0', status: '0' });
@@ -164,35 +209,33 @@
   onMount(() => loadPosts());
 </script>
 
-<div class="flex flex-1 min-h-0 flex-col gap-4 px-4 lg:px-6 pb-4">
+<div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 搜索表单 -->
   {#if showFilter}
-    <Card.Root class="mb-4">
-      <Card.Content>
-        <div class="flex flex-wrap items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground whitespace-nowrap">岗位编码</span>
-            <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.code} />
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-muted-foreground whitespace-nowrap">岗位名称</span>
-            <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
-          </div>
-          <div class="flex gap-2">
-            <Button size="sm" class="h-8" onclick={handleSearch}>
-              <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
-            </Button>
-            <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
-              <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
-            </Button>
-          </div>
+    <div class="py-3 border-b border-border">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground whitespace-nowrap">岗位编码</span>
+          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.code} />
         </div>
-      </Card.Content>
-    </Card.Root>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground whitespace-nowrap">岗位名称</span>
+          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
+        </div>
+        <div class="flex gap-2">
+          <Button size="sm" class="h-8" onclick={handleSearch}>
+            <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
+          </Button>
+          <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
+            <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
+          </Button>
+        </div>
+      </div>
+    </div>
   {/if}
 
-  <Card.Root class="flex-1 flex flex-col min-h-0">
-    <Card.Header class="pb-3">
+  <div class="flex-1 flex flex-col min-h-0 pt-4">
+    <div class="pb-3">
       <div class="flex items-center justify-between">
         <div class="flex gap-2">
           <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
@@ -209,8 +252,8 @@
           <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={loadPosts}><Icon icon="tdesign:refresh" class="size-4" /></Button>
         </div>
       </div>
-    </Card.Header>
-    <Card.Content class="flex-1 min-h-0 flex flex-col">
+    </div>
+    <div class="flex-1 min-h-0 flex flex-col">
       {#if loading}
         <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
       {:else}
@@ -275,8 +318,8 @@
           </div>
         {/if}
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </div>
+  </div>
 </div>
 
 <Dialog.Root bind:open={dialogOpen}>

@@ -74,22 +74,6 @@ export interface DeleteApiAiProviderByIdParams {
   id: string;
 }
 
-export interface DeleteApiAiSkillByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiAiSkillByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
 export interface DeleteApiAiToolByIdData {
   data: any;
   /** @default "ok" */
@@ -758,30 +742,6 @@ export interface GetApiAiProviderByIdParams {
 }
 
 export interface GetApiAiProviderSchemaData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiAiSkillByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiAiSkillByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
-export interface GetApiAiSkillSchemaData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1672,6 +1632,20 @@ export interface GetApiSystemUserSchemaData {
   status: number;
 }
 
+export interface PostApiActionsExecuteByNameData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiActionsExecuteByNameParams {
+  name: string;
+}
+
+export type PostApiActionsExecuteByNamePayload = any;
+
 export interface PostApiAiAgentBatchData {
   data: any;
   /** @default "ok" */
@@ -1682,49 +1656,80 @@ export interface PostApiAiAgentBatchData {
 
 export interface PostApiAiAgentBatchPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds: string[];
+    /** Allowed Roles */
     allowedRoleIds: string[];
+    /** Allowed Users */
     allowedUserIds: string[];
+    /** Avatar */
     avatar?: string | null;
+    /** Theme Color */
     color?: string | null;
+    /** Context Strategy */
     contextStrategy?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Loops */
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Model ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId: string;
-    /** @maxLength 64 */
+    /**
+     * Agent Name
+     * @maxLength 64
+     */
     name: string;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
+    /** Remark */
     remark?: string | null;
-    skillIds: string[];
+    /** Status */
     status?: string | null;
+    /** Support Loop */
     supportLoop?: boolean;
+    /** System Prompt */
     systemPrompt?: string | null;
+    /** Temperature */
     temperature?: number | null;
+    /** Tools */
     toolIds: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -1747,32 +1752,46 @@ export interface PostApiAiAgentMessageBatchData {
 
 export interface PostApiAiAgentMessageBatchPayload {
   messages: {
+    /** Content */
     content?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Content Type
      * @minLength 2
      * @maxLength 2
      */
     contentType?: string;
+    /** Created At */
     createdAt?: string;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Finish Reason */
     finishReason?: string | null;
     /**
+     * ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Latency (ms) */
     latencyMs?: number | null;
+    /** Model ID */
     modelId?: string | null;
-    /** @maxLength 16 */
+    /**
+     * Role
+     * @maxLength 16
+     */
     role: string;
+    /** Token Count */
     tokenCount?: number | null;
+    /** Tool Calls */
     toolCalls?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Tool Results */
     toolResults?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
@@ -1794,42 +1813,58 @@ export interface PostApiAiAgentMessageData {
 
 export interface PostApiAiAgentMessagePayload {
   data: {
+    /** Content */
     content?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Content Type
      * @minLength 2
      * @maxLength 2
      */
     contentType?: string;
+    /** Created At */
     createdAt?: string;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Finish Reason */
     finishReason?: string | null;
     /**
+     * ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Latency (ms) */
     latencyMs?: number | null;
+    /** Model ID */
     modelId?: string | null;
     /**
+     * Message Sequence
      * @min -9007199254740991
      * @max 9007199254740991
      */
     msgSeq: number;
-    /** @maxLength 16 */
+    /**
+     * Role
+     * @maxLength 16
+     */
     role: string;
     /**
+     * Session ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     sessionId: string;
+    /** Token Count */
     tokenCount?: number | null;
+    /** Tool Calls */
     toolCalls?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Tool Results */
     toolResults?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
@@ -1906,49 +1941,80 @@ export interface PostApiAiAgentMessageQueryPayload {
 
 export interface PostApiAiAgentPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds: string[];
+    /** Allowed Roles */
     allowedRoleIds: string[];
+    /** Allowed Users */
     allowedUserIds: string[];
+    /** Avatar */
     avatar?: string | null;
+    /** Theme Color */
     color?: string | null;
+    /** Context Strategy */
     contextStrategy?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Loops */
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Model ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId: string;
-    /** @maxLength 64 */
+    /**
+     * Agent Name
+     * @maxLength 64
+     */
     name: string;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
+    /** Remark */
     remark?: string | null;
-    skillIds: string[];
+    /** Status */
     status?: string | null;
+    /** Support Loop */
     supportLoop?: boolean;
+    /** System Prompt */
     systemPrompt?: string | null;
+    /** Temperature */
     temperature?: number | null;
+    /** Tools */
     toolIds: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -2032,44 +2098,69 @@ export interface PostApiAiAgentSessionData {
 export interface PostApiAiAgentSessionPayload {
   data: {
     /**
+     * Agent ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     agentId: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Archived */
     isArchived?: boolean;
+    /** Is Pinned */
     isPinned?: boolean;
+    /** Last Message Time */
     lastMessageAt?: string | null;
     /**
+     * Message Count
      * @min -2147483648
      * @max 2147483647
      */
     messageCount?: number;
+    /** Status */
     status?: string | null;
+    /** Summary */
     summary?: string | null;
+    /** Session Title */
     title?: string | null;
+    /** Token Usage */
     tokenUsage?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -2166,42 +2257,71 @@ export interface PostApiAiModelBatchData {
 
 export interface PostApiAiModelBatchPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds: string[];
+    /** Allowed Roles */
     allowedRoleIds: string[];
+    /** Allowed Users */
     allowedUserIds: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Input Capabilities */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Tokens */
     maxTokens?: number | null;
-    /** @maxLength 128 */
+    /**
+     * Model ID
+     * @maxLength 128
+     */
     modelId: string;
-    /** @maxLength 128 */
+    /**
+     * Model Name
+     * @maxLength 128
+     */
     name: string;
+    /** Output Capabilities */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Support Tools */
     supportTools?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -2216,42 +2336,71 @@ export interface PostApiAiModelData {
 
 export interface PostApiAiModelPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds: string[];
+    /** Allowed Roles */
     allowedRoleIds: string[];
+    /** Allowed Users */
     allowedUserIds: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Input Capabilities */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Tokens */
     maxTokens?: number | null;
-    /** @maxLength 128 */
+    /**
+     * Model ID
+     * @maxLength 128
+     */
     modelId: string;
-    /** @maxLength 128 */
+    /**
+     * Model Name
+     * @maxLength 128
+     */
     name: string;
+    /** Output Capabilities */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Support Tools */
     supportTools?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -2329,25 +2478,45 @@ export interface PostApiAiProviderBatchData {
 
 export interface PostApiAiProviderBatchPayload {
   data: {
-    /** @maxLength 512 */
+    /**
+     * API URL
+     * @maxLength 512
+     */
     baseUrl: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Provider Name
+     * @maxLength 64
+     */
     name: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** API Key */
     token: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -2362,25 +2531,45 @@ export interface PostApiAiProviderData {
 
 export interface PostApiAiProviderPayload {
   data: {
-    /** @maxLength 512 */
+    /**
+     * API URL
+     * @maxLength 512
+     */
     baseUrl: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Provider Name
+     * @maxLength 64
+     */
     name: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** API Key */
     token: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -2439,172 +2628,6 @@ export interface PostApiAiProviderQueryPayload {
   };
 }
 
-export interface PostApiAiSkillBatchData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiAiSkillBatchPayload {
-  data: {
-    isA2a?: boolean;
-    allowSubDepts?: boolean;
-    allowedDeptIds: string[];
-    allowedRoleIds: string[];
-    allowedUserIds: string[];
-    createdAt?: string;
-    /** @maxLength 64 */
-    createdBy: string;
-    createdById?: string | null;
-    description?: string | null;
-    fileId?: string | null;
-    folderId?: string | null;
-    icon?: string | null;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    isGroup?: boolean;
-    isPublic?: boolean;
-    /** @maxLength 64 */
-    name: string;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    parentId?: string | null;
-    remark?: string | null;
-    status?: string | null;
-    updatedAt?: string;
-    /** @maxLength 64 */
-    updatedBy: string;
-    updatedById?: string | null;
-  }[];
-}
-
-export interface PostApiAiSkillData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiAiSkillPayload {
-  data: {
-    isA2a?: boolean;
-    allowSubDepts?: boolean;
-    allowedDeptIds: string[];
-    allowedRoleIds: string[];
-    allowedUserIds: string[];
-    createdAt?: string;
-    /** @maxLength 64 */
-    createdBy: string;
-    createdById?: string | null;
-    description?: string | null;
-    fileId?: string | null;
-    folderId?: string | null;
-    icon?: string | null;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    isGroup?: boolean;
-    isPublic?: boolean;
-    /** @maxLength 64 */
-    name: string;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    parentId?: string | null;
-    remark?: string | null;
-    status?: string | null;
-    updatedAt?: string;
-    /** @maxLength 64 */
-    updatedBy: string;
-    updatedById?: string | null;
-  };
-}
-
-export interface PostApiAiSkillQueryData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiAiSkillQueryFieldEnum {
-  Name = "name",
-  OrderNum = "orderNum",
-  CreatedAt = "createdAt",
-  UpdatedAt = "updatedAt",
-}
-
-export enum PostApiAiSkillQueryOrderEnum {
-  Asc = "asc",
-  Desc = "desc",
-}
-
-export interface PostApiAiSkillQueryPayload {
-  filter?: {
-    isA2a?: boolean;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtStart?: string;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    fileId?: string;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    folderId?: string;
-    ids?: string[];
-    isGroup?: boolean;
-    name?: string;
-    names?: string[];
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    parentId?: string;
-    status?: string;
-  };
-  /**
-   * @min 1
-   * @max 100
-   * @default 20
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-  sort?: {
-    field: PostApiAiSkillQueryFieldEnum;
-    order: PostApiAiSkillQueryOrderEnum;
-  };
-}
-
 export interface PostApiAiToolBatchData {
   data: any;
   /** @default "ok" */
@@ -2615,37 +2638,64 @@ export interface PostApiAiToolBatchData {
 
 export interface PostApiAiToolBatchPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds: string[];
+    /** Allowed Roles */
     allowedRoleIds: string[];
+    /** Allowed Users */
     allowedUserIds: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Group ID */
     groupId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Implementation */
     implementation?: string | null;
+    /** Input Schema */
     inputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Async Execution */
     isAsync?: boolean;
+    /** Is Public */
     isPublic?: boolean;
-    /** @maxLength 64 */
+    /**
+     * Tool Name
+     * @maxLength 64
+     */
     name: string;
+    /** Output Schema */
     outputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -2668,29 +2718,48 @@ export interface PostApiAiToolGroupBatchData {
 
 export interface PostApiAiToolGroupBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Group Name
+     * @maxLength 64
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -2705,29 +2774,48 @@ export interface PostApiAiToolGroupData {
 
 export interface PostApiAiToolGroupPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Group Name
+     * @maxLength 64
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -2789,37 +2877,64 @@ export interface PostApiAiToolGroupQueryPayload {
 
 export interface PostApiAiToolPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds: string[];
+    /** Allowed Roles */
     allowedRoleIds: string[];
+    /** Allowed Users */
     allowedUserIds: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Group ID */
     groupId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Implementation */
     implementation?: string | null;
+    /** Input Schema */
     inputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Async Execution */
     isAsync?: boolean;
+    /** Is Public */
     isPublic?: boolean;
-    /** @maxLength 64 */
+    /**
+     * Tool Name
+     * @maxLength 64
+     */
     name: string;
+    /** Output Schema */
     outputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -3265,44 +3380,71 @@ export interface PostApiImConversationHiddenUnhidePayload {
 
 export interface PostApiImConversationPayload {
   data: {
+    /** Announcement */
     announcement?: string | null;
+    /** Avatar */
     avatar?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Muted */
     isMuted?: boolean;
+    /** Pinned */
     isTop?: boolean;
+    /** Last Message Time */
     lastMessageAt?: string | null;
+    /** Last Message ID */
     lastMessageId?: string | null;
+    /** Max Members */
     maxMembers?: number | null;
     /**
+     * Member Count
      * @min -2147483648
      * @max 2147483647
      */
     memberCount?: number;
+    /** Conversation Name */
     name?: string | null;
+    /** Owner ID */
     ownerId?: string | null;
+    /** Status */
     status?: string | null;
     /**
+     * Conversation Type
      * @minLength 1
      * @maxLength 1
      */
     type?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -3446,24 +3588,33 @@ export interface PostApiImGroupMemberBatchData {
 export interface PostApiImGroupMemberBatchPayload {
   data: {
     /**
+     * Conversation ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId: string;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Invited By */
     invitedById?: string | null;
+    /** Is Muted */
     isMuted?: boolean;
+    /** Joined At */
     joinedAt?: string;
+    /** Muted Until */
     mutedUntil?: string | null;
+    /** Nickname in Group */
     nickname?: string | null;
     /**
+     * Role
      * @minLength 1
      * @maxLength 1
      */
     role?: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -3482,24 +3633,33 @@ export interface PostApiImGroupMemberData {
 export interface PostApiImGroupMemberPayload {
   data: {
     /**
+     * Conversation ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId: string;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Invited By */
     invitedById?: string | null;
+    /** Is Muted */
     isMuted?: boolean;
+    /** Joined At */
     joinedAt?: string;
+    /** Muted Until */
     mutedUntil?: string | null;
+    /** Nickname in Group */
     nickname?: string | null;
     /**
+     * Role
      * @minLength 1
      * @maxLength 1
      */
     role?: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -3581,38 +3741,52 @@ export interface PostApiImMessageData {
 
 export interface PostApiImMessagePayload {
   data: {
+    /** Mentioned User IDs */
     atUserIds: string[];
+    /** Content */
     content: (string | number | boolean | null) | Record<string, any> | any[];
     /**
+     * Conversation ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId: string;
+    /** Created At */
     createdAt?: string;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Forward From Message ID */
     forwardFromId?: string | null;
     /**
+     * ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Recalled */
     isRecalled?: boolean;
     /**
+     * Message Sequence
      * @min -9007199254740991
      * @max 9007199254740991
      */
     msgSeq: number;
     /**
+     * Message Type
      * @minLength 2
      * @maxLength 2
      */
     msgType?: string;
+    /** Recalled At */
     recalledAt?: string | null;
+    /** Recalled By */
     recalledById?: string | null;
+    /** Reply To Message ID */
     replyToId?: string | null;
     /**
+     * Sender ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -3697,42 +3871,75 @@ export interface PostApiImTempFileData {
 
 export interface PostApiImTempFilePayload {
   data: {
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket: string;
+    /** Conversation ID */
     conversationId?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** ETag */
     etag?: string | null;
+    /** Expires At */
     expiresAt?: string | null;
+    /** Extension */
     extension?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Message ID */
     messageId?: string | null;
+    /** Metadata */
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** MIME Type */
     mimeType?: string | null;
-    /** @maxLength 255 */
+    /**
+     * File Name
+     * @maxLength 255
+     */
     name: string;
-    /** @maxLength 255 */
+    /**
+     * Original Name
+     * @maxLength 255
+     */
     originalName: string;
+    /** Region */
     region?: string | null;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
+    /** Status */
     status?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -3836,62 +4043,105 @@ export interface PostApiKnowledgeFileBatchData {
 
 export interface PostApiKnowledgeFileBatchPayload {
   data: {
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Download Count
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
+    /** ETag */
     etag?: string | null;
+    /** Extension */
     extension?: string | null;
+    /** Folder ID */
     folderId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
+    /** Metadata */
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** MIME Type */
     mimeType?: string | null;
-    /** @maxLength 255 */
+    /**
+     * File Name
+     * @maxLength 255
+     */
     name: string;
-    /** @maxLength 255 */
+    /**
+     * Original Name
+     * @maxLength 255
+     */
     originalName: string;
+    /** Process Result */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Process Status */
     processStatus?: string | null;
+    /** Region */
     region?: string | null;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
+    /** Status */
     status?: string | null;
+    /** Storage Class */
     storageClass?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey: string;
+    /** Tags */
     tags: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * knowledge.file.fields.versionCount
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
+    /** Version ID */
     versionId?: string | null;
   }[];
 }
@@ -3906,62 +4156,105 @@ export interface PostApiKnowledgeFileData {
 
 export interface PostApiKnowledgeFilePayload {
   data: {
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Download Count
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
+    /** ETag */
     etag?: string | null;
+    /** Extension */
     extension?: string | null;
+    /** Folder ID */
     folderId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
+    /** Metadata */
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** MIME Type */
     mimeType?: string | null;
-    /** @maxLength 255 */
+    /**
+     * File Name
+     * @maxLength 255
+     */
     name: string;
-    /** @maxLength 255 */
+    /**
+     * Original Name
+     * @maxLength 255
+     */
     originalName: string;
+    /** Process Result */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Process Status */
     processStatus?: string | null;
+    /** Region */
     region?: string | null;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
+    /** Status */
     status?: string | null;
+    /** Storage Class */
     storageClass?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey: string;
+    /** Tags */
     tags: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * knowledge.file.fields.versionCount
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
+    /** Version ID */
     versionId?: string | null;
   };
 }
@@ -4047,33 +4340,53 @@ export interface PostApiKnowledgeFileVersionBatchData {
 
 export interface PostApiKnowledgeFileVersionBatchPayload {
   data: {
+    /** S3 Version ID */
     s3VersionId?: string | null;
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket: string;
+    /** Change Log */
     changeLog?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** ETag */
     etag?: string | null;
     /**
+     * File ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey: string;
-    /** @maxLength 32 */
+    /**
+     * Version Number
+     * @maxLength 32
+     */
     versionNumber: string;
   }[];
 }
@@ -4088,33 +4401,53 @@ export interface PostApiKnowledgeFileVersionData {
 
 export interface PostApiKnowledgeFileVersionPayload {
   data: {
+    /** S3 Version ID */
     s3VersionId?: string | null;
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket: string;
+    /** Change Log */
     changeLog?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** ETag */
     etag?: string | null;
     /**
+     * File ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey: string;
-    /** @maxLength 32 */
+    /**
+     * Version Number
+     * @maxLength 32
+     */
     versionNumber: string;
   };
 }
@@ -4188,34 +4521,58 @@ export interface PostApiKnowledgeFolderBatchData {
 
 export interface PostApiKnowledgeFolderBatchPayload {
   data: {
+    /** Color */
     color?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
-    /** @maxLength 255 */
+    /**
+     * Folder Name
+     * @maxLength 255
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Folder ID */
     parentId?: string | null;
+    /** Path */
     path: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -4230,34 +4587,58 @@ export interface PostApiKnowledgeFolderData {
 
 export interface PostApiKnowledgeFolderPayload {
   data: {
+    /** Color */
     color?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
-    /** @maxLength 255 */
+    /**
+     * Folder Name
+     * @maxLength 255
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Folder ID */
     parentId?: string | null;
+    /** Path */
     path: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -4327,37 +4708,57 @@ export interface PostApiKnowledgeResourcePermissionData {
 
 export interface PostApiKnowledgeResourcePermissionPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Grantee ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     granteeId: string;
-    /** @maxLength 16 */
+    /**
+     * Grantee Type
+     * @maxLength 16
+     */
     granteeType: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
+     * Permission Level
      * @minLength 1
      * @maxLength 1
      */
     permissionLevel?: string;
     /**
+     * Resource ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     resourceId: string;
-    /** @maxLength 16 */
+    /**
+     * Resource Type
+     * @maxLength 16
+     */
     resourceType: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -4472,25 +4873,46 @@ export interface PostApiSystemConfigBatchData {
 
 export interface PostApiSystemConfigBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** System Built-in */
     isSystem?: boolean;
-    /** @maxLength 128 */
+    /**
+     * Config Key
+     * @maxLength 128
+     */
     key: string;
-    /** @maxLength 128 */
+    /**
+     * Config Name
+     * @maxLength 128
+     */
     name: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Config Value
+     * @maxLength 512
+     */
     value: string;
   }[];
 }
@@ -4505,25 +4927,46 @@ export interface PostApiSystemConfigData {
 
 export interface PostApiSystemConfigPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** System Built-in */
     isSystem?: boolean;
-    /** @maxLength 128 */
+    /**
+     * Config Key
+     * @maxLength 128
+     */
     key: string;
-    /** @maxLength 128 */
+    /**
+     * Config Name
+     * @maxLength 128
+     */
     name: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Config Value
+     * @maxLength 512
+     */
     value: string;
   };
 }
@@ -4595,34 +5038,58 @@ export interface PostApiSystemDepartmentBatchData {
 
 export interface PostApiSystemDepartmentBatchPayload {
   data: {
+    /** Ancestors */
     ancestors?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Email */
     email?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Leader */
     leader?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Department Name
+     * @maxLength 50
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Department ID */
     parentId?: string | null;
+    /** Phone */
     phone?: string | null;
+    /** Status */
     status?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -4637,34 +5104,58 @@ export interface PostApiSystemDepartmentData {
 
 export interface PostApiSystemDepartmentPayload {
   data: {
+    /** Ancestors */
     ancestors?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Email */
     email?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Leader */
     leader?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Department Name
+     * @maxLength 50
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Department ID */
     parentId?: string | null;
+    /** Phone */
     phone?: string | null;
+    /** Status */
     status?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -4735,37 +5226,66 @@ export interface PostApiSystemDictBatchData {
 
 export interface PostApiSystemDictBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** CSS Class */
     cssClass?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Dictionary Group
+     * @maxLength 100
+     */
     group: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Default */
     isDefault?: boolean;
-    /** @maxLength 100 */
+    /**
+     * Label
+     * @maxLength 100
+     */
     label: string;
+    /** List Class */
     listClass?: string | null;
+    /** Remark */
     remark?: string | null;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Value
+     * @maxLength 100
+     */
     value: string;
   }[];
 }
@@ -4788,19 +5308,37 @@ export interface PostApiSystemDictGroupBatchData {
 
 export interface PostApiSystemDictGroupBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Group Key
+     * @maxLength 100
+     */
     key: string;
-    /** @maxLength 100 */
+    /**
+     * Group Name
+     * @maxLength 100
+     */
     name: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -4815,19 +5353,37 @@ export interface PostApiSystemDictGroupData {
 
 export interface PostApiSystemDictGroupPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Group Key
+     * @maxLength 100
+     */
     key: string;
-    /** @maxLength 100 */
+    /**
+     * Group Name
+     * @maxLength 100
+     */
     name: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -4895,37 +5451,66 @@ export enum PostApiSystemDictGroupQueryStatusEnum {
 
 export interface PostApiSystemDictPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** CSS Class */
     cssClass?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Dictionary Group
+     * @maxLength 100
+     */
     group: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Default */
     isDefault?: boolean;
-    /** @maxLength 100 */
+    /**
+     * Label
+     * @maxLength 100
+     */
     label: string;
+    /** List Class */
     listClass?: string | null;
+    /** Remark */
     remark?: string | null;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Value
+     * @maxLength 100
+     */
     value: string;
   };
 }
@@ -5251,36 +5836,63 @@ export interface PostApiSystemMenuBatchData {
 
 export interface PostApiSystemMenuBatchPayload {
   data: {
+    /** Component Path */
     component?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Cache */
     isCache?: boolean;
+    /** External Link */
     isFrame?: boolean;
-    /** @maxLength 50 */
+    /**
+     * Menu Name
+     * @maxLength 50
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Menu ID */
     parentId?: string | null;
+    /** Route Path */
     path?: string | null;
+    /** Permission */
     perms?: string | null;
+    /** Remark */
     remark?: string | null;
-    /** @maxLength 1 */
+    /**
+     * Menu Type
+     * @maxLength 1
+     */
     type: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
+    /** Visible */
     visible?: boolean;
   }[];
 }
@@ -5295,36 +5907,63 @@ export interface PostApiSystemMenuData {
 
 export interface PostApiSystemMenuPayload {
   data: {
+    /** Component Path */
     component?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Cache */
     isCache?: boolean;
+    /** External Link */
     isFrame?: boolean;
-    /** @maxLength 50 */
+    /**
+     * Menu Name
+     * @maxLength 50
+     */
     name: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Menu ID */
     parentId?: string | null;
+    /** Route Path */
     path?: string | null;
+    /** Permission */
     perms?: string | null;
+    /** Remark */
     remark?: string | null;
-    /** @maxLength 1 */
+    /**
+     * Menu Type
+     * @maxLength 1
+     */
     type: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
+    /** Visible */
     visible?: boolean;
   };
 }
@@ -5397,24 +6036,43 @@ export interface PostApiSystemNoticeBatchData {
 
 export interface PostApiSystemNoticeBatchPayload {
   data: {
+    /** Content */
     content: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Status */
     status?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Notice Title
+     * @maxLength 50
+     */
     title: string;
-    /** @maxLength 1 */
+    /**
+     * Notice Type
+     * @maxLength 1
+     */
     type: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -5429,24 +6087,43 @@ export interface PostApiSystemNoticeData {
 
 export interface PostApiSystemNoticePayload {
   data: {
+    /** Content */
     content: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Status */
     status?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Notice Title
+     * @maxLength 50
+     */
     title: string;
-    /** @maxLength 1 */
+    /**
+     * Notice Type
+     * @maxLength 1
+     */
     type: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -5592,28 +6269,52 @@ export interface PostApiSystemPostBatchData {
 
 export interface PostApiSystemPostBatchPayload {
   data: {
-    /** @maxLength 64 */
+    /**
+     * Post Code
+     * @maxLength 64
+     */
     code: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 50 */
+    /**
+     * Post Name
+     * @maxLength 50
+     */
     name: string;
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -5628,28 +6329,52 @@ export interface PostApiSystemPostData {
 
 export interface PostApiSystemPostPayload {
   data: {
-    /** @maxLength 64 */
+    /**
+     * Post Code
+     * @maxLength 64
+     */
     code: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 50 */
+    /**
+     * Post Name
+     * @maxLength 50
+     */
     name: string;
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -5727,33 +6452,62 @@ export interface PostApiSystemRoleBatchData {
 
 export interface PostApiSystemRoleBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Data Scope */
     dataScope?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Department IDs */
     deptIds: string[];
+    /** Role Flag */
     flag?: boolean | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 100 */
+    /**
+     * Permission Key
+     * @maxLength 100
+     */
     key: string;
+    /** Menu IDs */
     menuIds: string[];
-    /** @maxLength 30 */
+    /**
+     * Role Name
+     * @maxLength 30
+     */
     name: string;
+    /** Permissions */
     permissions: string[];
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   }[];
 }
@@ -5777,11 +6531,13 @@ export interface PostApiSystemRoleDepartmentBatchData {
 export interface PostApiSystemRoleDepartmentBatchPayload {
   data: {
     /**
+     * Department ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     departmentId: string;
     /**
+     * Role ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -5800,11 +6556,13 @@ export interface PostApiSystemRoleDepartmentData {
 export interface PostApiSystemRoleDepartmentPayload {
   data: {
     /**
+     * Department ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     departmentId: string;
     /**
+     * Role ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -5874,11 +6632,13 @@ export interface PostApiSystemRoleMenuBatchData {
 export interface PostApiSystemRoleMenuBatchPayload {
   data: {
     /**
+     * Menu ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     menuId: string;
     /**
+     * Role ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -5897,11 +6657,13 @@ export interface PostApiSystemRoleMenuData {
 export interface PostApiSystemRoleMenuPayload {
   data: {
     /**
+     * Menu ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     menuId: string;
     /**
+     * Role ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -5962,33 +6724,62 @@ export interface PostApiSystemRoleMenuQueryPayload {
 
 export interface PostApiSystemRolePayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Data Scope */
     dataScope?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Department IDs */
     deptIds: string[];
+    /** Role Flag */
     flag?: boolean | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 100 */
+    /**
+     * Permission Key
+     * @maxLength 100
+     */
     key: string;
+    /** Menu IDs */
     menuIds: string[];
-    /** @maxLength 30 */
+    /**
+     * Role Name
+     * @maxLength 30
+     */
     name: string;
+    /** Permissions */
     permissions: string[];
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -6066,29 +6857,52 @@ export interface PostApiSystemTokenData {
 
 export interface PostApiSystemTokenPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** system.token.fields.exp */
     exp: string;
+    /** system.token.fields.iat */
     iat?: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Revoked */
     isRevoked?: boolean;
-    /** @maxLength 64 */
+    /**
+     * system.token.fields.jti
+     * @maxLength 64
+     */
     jti: string;
+    /** Revoked At */
     revokedAt?: string | null;
+    /** Scopes */
     scopes: string[];
-    /** @maxLength 128 */
+    /**
+     * system.token.fields.sub
+     * @maxLength 128
+     */
     sub: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6207,11 +7021,13 @@ export interface PostApiSystemUserPostBatchData {
 export interface PostApiSystemUserPostBatchPayload {
   data: {
     /**
+     * Post ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     postId: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6230,11 +7046,13 @@ export interface PostApiSystemUserPostData {
 export interface PostApiSystemUserPostPayload {
   data: {
     /**
+     * Post ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     postId: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6390,11 +7208,13 @@ export interface PostApiSystemUserRoleBatchData {
 export interface PostApiSystemUserRoleBatchPayload {
   data: {
     /**
+     * Role ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     roleId: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6413,11 +7233,13 @@ export interface PostApiSystemUserRoleData {
 export interface PostApiSystemUserRolePayload {
   data: {
     /**
+     * Role ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     roleId: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6486,49 +7308,80 @@ export interface PutApiAiAgentBatchData {
 
 export interface PutApiAiAgentBatchPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds?: string[];
+    /** Allowed Roles */
     allowedRoleIds?: string[];
+    /** Allowed Users */
     allowedUserIds?: string[];
+    /** Avatar */
     avatar?: string | null;
+    /** Theme Color */
     color?: string | null;
+    /** Context Strategy */
     contextStrategy?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Loops */
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Model ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId?: string;
-    /** @maxLength 64 */
+    /**
+     * Agent Name
+     * @maxLength 64
+     */
     name?: string;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
+    /** Remark */
     remark?: string | null;
-    skillIds?: string[];
+    /** Status */
     status?: string | null;
+    /** Support Loop */
     supportLoop?: boolean;
+    /** System Prompt */
     systemPrompt?: string | null;
+    /** Temperature */
     temperature?: number | null;
+    /** Tools */
     toolIds?: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -6552,49 +7405,80 @@ export interface PutApiAiAgentByIdParams {
 
 export interface PutApiAiAgentByIdPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds?: string[];
+    /** Allowed Roles */
     allowedRoleIds?: string[];
+    /** Allowed Users */
     allowedUserIds?: string[];
+    /** Avatar */
     avatar?: string | null;
+    /** Theme Color */
     color?: string | null;
+    /** Context Strategy */
     contextStrategy?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Loops */
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Model ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId?: string;
-    /** @maxLength 64 */
+    /**
+     * Agent Name
+     * @maxLength 64
+     */
     name?: string;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
+    /** Remark */
     remark?: string | null;
-    skillIds?: string[];
+    /** Status */
     status?: string | null;
+    /** Support Loop */
     supportLoop?: boolean;
+    /** System Prompt */
     systemPrompt?: string | null;
+    /** Temperature */
     temperature?: number | null;
+    /** Tools */
     toolIds?: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -6638,44 +7522,69 @@ export interface PutApiAiAgentSessionByIdParams {
 export interface PutApiAiAgentSessionByIdPayload {
   data: {
     /**
+     * Agent ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     agentId?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Archived */
     isArchived?: boolean;
+    /** Is Pinned */
     isPinned?: boolean;
+    /** Last Message Time */
     lastMessageAt?: string | null;
     /**
+     * Message Count
      * @min -2147483648
      * @max 2147483647
      */
     messageCount?: number;
+    /** Status */
     status?: string | null;
+    /** Summary */
     summary?: string | null;
+    /** Session Title */
     title?: string | null;
+    /** Token Usage */
     tokenUsage?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6713,42 +7622,71 @@ export interface PutApiAiModelBatchData {
 
 export interface PutApiAiModelBatchPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds?: string[];
+    /** Allowed Roles */
     allowedRoleIds?: string[];
+    /** Allowed Users */
     allowedUserIds?: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Input Capabilities */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Tokens */
     maxTokens?: number | null;
-    /** @maxLength 128 */
+    /**
+     * Model ID
+     * @maxLength 128
+     */
     modelId?: string;
-    /** @maxLength 128 */
+    /**
+     * Model Name
+     * @maxLength 128
+     */
     name?: string;
+    /** Output Capabilities */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Support Tools */
     supportTools?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -6772,42 +7710,71 @@ export interface PutApiAiModelByIdParams {
 
 export interface PutApiAiModelByIdPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds?: string[];
+    /** Allowed Roles */
     allowedRoleIds?: string[];
+    /** Allowed Users */
     allowedUserIds?: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Input Capabilities */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Is Public */
     isPublic?: boolean;
+    /** Max Tokens */
     maxTokens?: number | null;
-    /** @maxLength 128 */
+    /**
+     * Model ID
+     * @maxLength 128
+     */
     modelId?: string;
-    /** @maxLength 128 */
+    /**
+     * Model Name
+     * @maxLength 128
+     */
     name?: string;
+    /** Output Capabilities */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Provider ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Support Tools */
     supportTools?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -6822,25 +7789,45 @@ export interface PutApiAiProviderBatchData {
 
 export interface PutApiAiProviderBatchPayload {
   data: {
-    /** @maxLength 512 */
+    /**
+     * API URL
+     * @maxLength 512
+     */
     baseUrl?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Provider Name
+     * @maxLength 64
+     */
     name?: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** API Key */
     token?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -6864,128 +7851,45 @@ export interface PutApiAiProviderByIdParams {
 
 export interface PutApiAiProviderByIdPayload {
   data: {
-    /** @maxLength 512 */
+    /**
+     * API URL
+     * @maxLength 512
+     */
     baseUrl?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Provider Name
+     * @maxLength 64
+     */
     name?: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** API Key */
     token?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
-    updatedById?: string | null;
-  };
-}
-
-export interface PutApiAiSkillBatchData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiAiSkillBatchPayload {
-  data: {
-    isA2a?: boolean;
-    allowSubDepts?: boolean;
-    allowedDeptIds?: string[];
-    allowedRoleIds?: string[];
-    allowedUserIds?: string[];
-    createdAt?: string;
-    /** @maxLength 64 */
-    createdBy?: string;
-    createdById?: string | null;
-    description?: string | null;
-    fileId?: string | null;
-    folderId?: string | null;
-    icon?: string | null;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    isGroup?: boolean;
-    isPublic?: boolean;
-    /** @maxLength 64 */
-    name?: string;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    parentId?: string | null;
-    remark?: string | null;
-    status?: string | null;
-    updatedAt?: string;
-    /** @maxLength 64 */
-    updatedBy?: string;
-    updatedById?: string | null;
-  };
-  ids: string[];
-}
-
-export interface PutApiAiSkillByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiAiSkillByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
-export interface PutApiAiSkillByIdPayload {
-  data: {
-    isA2a?: boolean;
-    allowSubDepts?: boolean;
-    allowedDeptIds?: string[];
-    allowedRoleIds?: string[];
-    allowedUserIds?: string[];
-    createdAt?: string;
-    /** @maxLength 64 */
-    createdBy?: string;
-    createdById?: string | null;
-    description?: string | null;
-    fileId?: string | null;
-    folderId?: string | null;
-    icon?: string | null;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    isGroup?: boolean;
-    isPublic?: boolean;
-    /** @maxLength 64 */
-    name?: string;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    parentId?: string | null;
-    remark?: string | null;
-    status?: string | null;
-    updatedAt?: string;
-    /** @maxLength 64 */
-    updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -7000,37 +7904,64 @@ export interface PutApiAiToolBatchData {
 
 export interface PutApiAiToolBatchPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds?: string[];
+    /** Allowed Roles */
     allowedRoleIds?: string[];
+    /** Allowed Users */
     allowedUserIds?: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Group ID */
     groupId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Implementation */
     implementation?: string | null;
+    /** Input Schema */
     inputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Async Execution */
     isAsync?: boolean;
+    /** Is Public */
     isPublic?: boolean;
-    /** @maxLength 64 */
+    /**
+     * Tool Name
+     * @maxLength 64
+     */
     name?: string;
+    /** Output Schema */
     outputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -7054,37 +7985,64 @@ export interface PutApiAiToolByIdParams {
 
 export interface PutApiAiToolByIdPayload {
   data: {
+    /** Allow Sub Departments */
     allowSubDepts?: boolean;
+    /** Allowed Departments */
     allowedDeptIds?: string[];
+    /** Allowed Roles */
     allowedRoleIds?: string[];
+    /** Allowed Users */
     allowedUserIds?: string[];
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Group ID */
     groupId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Implementation */
     implementation?: string | null;
+    /** Input Schema */
     inputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Async Execution */
     isAsync?: boolean;
+    /** Is Public */
     isPublic?: boolean;
-    /** @maxLength 64 */
+    /**
+     * Tool Name
+     * @maxLength 64
+     */
     name?: string;
+    /** Output Schema */
     outputSchema?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -7099,29 +8057,48 @@ export interface PutApiAiToolGroupBatchData {
 
 export interface PutApiAiToolGroupBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Group Name
+     * @maxLength 64
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -7145,29 +8122,48 @@ export interface PutApiAiToolGroupByIdParams {
 
 export interface PutApiAiToolGroupByIdPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 64 */
+    /**
+     * Group Name
+     * @maxLength 64
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -7362,44 +8358,71 @@ export interface PutApiImConversationByIdParams {
 
 export interface PutApiImConversationByIdPayload {
   data: {
+    /** Announcement */
     announcement?: string | null;
+    /** Avatar */
     avatar?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Muted */
     isMuted?: boolean;
+    /** Pinned */
     isTop?: boolean;
+    /** Last Message Time */
     lastMessageAt?: string | null;
+    /** Last Message ID */
     lastMessageId?: string | null;
+    /** Max Members */
     maxMembers?: number | null;
     /**
+     * Member Count
      * @min -2147483648
      * @max 2147483647
      */
     memberCount?: number;
+    /** Conversation Name */
     name?: string | null;
+    /** Owner ID */
     ownerId?: string | null;
+    /** Status */
     status?: string | null;
     /**
+     * Conversation Type
      * @minLength 1
      * @maxLength 1
      */
     type?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -7477,24 +8500,33 @@ export interface PutApiImGroupMemberByConversationIdByUserIdParams {
 export interface PutApiImGroupMemberByConversationIdByUserIdPayload {
   data: {
     /**
+     * Conversation ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId?: string;
+    /** Extra Data */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Invited By */
     invitedById?: string | null;
+    /** Is Muted */
     isMuted?: boolean;
+    /** Joined At */
     joinedAt?: string;
+    /** Muted Until */
     mutedUntil?: string | null;
+    /** Nickname in Group */
     nickname?: string | null;
     /**
+     * Role
      * @minLength 1
      * @maxLength 1
      */
     role?: string;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7536,42 +8568,75 @@ export interface PutApiImTempFileByIdParams {
 
 export interface PutApiImTempFileByIdPayload {
   data: {
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket?: string;
+    /** Conversation ID */
     conversationId?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** ETag */
     etag?: string | null;
+    /** Expires At */
     expiresAt?: string | null;
+    /** Extension */
     extension?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Message ID */
     messageId?: string | null;
+    /** Metadata */
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** MIME Type */
     mimeType?: string | null;
-    /** @maxLength 255 */
+    /**
+     * File Name
+     * @maxLength 255
+     */
     name?: string;
-    /** @maxLength 255 */
+    /**
+     * Original Name
+     * @maxLength 255
+     */
     originalName?: string;
+    /** Region */
     region?: string | null;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
+    /** Status */
     status?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -7586,62 +8651,105 @@ export interface PutApiKnowledgeFileBatchData {
 
 export interface PutApiKnowledgeFileBatchPayload {
   data: {
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Download Count
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
+    /** ETag */
     etag?: string | null;
+    /** Extension */
     extension?: string | null;
+    /** Folder ID */
     folderId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
+    /** Metadata */
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** MIME Type */
     mimeType?: string | null;
-    /** @maxLength 255 */
+    /**
+     * File Name
+     * @maxLength 255
+     */
     name?: string;
-    /** @maxLength 255 */
+    /**
+     * Original Name
+     * @maxLength 255
+     */
     originalName?: string;
+    /** Process Result */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Process Status */
     processStatus?: string | null;
+    /** Region */
     region?: string | null;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
+    /** Status */
     status?: string | null;
+    /** Storage Class */
     storageClass?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey?: string;
+    /** Tags */
     tags?: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * knowledge.file.fields.versionCount
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
+    /** Version ID */
     versionId?: string | null;
   };
   ids: string[];
@@ -7665,62 +8773,105 @@ export interface PutApiKnowledgeFileByIdParams {
 
 export interface PutApiKnowledgeFileByIdPayload {
   data: {
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
     /**
+     * Download Count
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
+    /** ETag */
     etag?: string | null;
+    /** Extension */
     extension?: string | null;
+    /** Folder ID */
     folderId?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
+    /** Metadata */
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** MIME Type */
     mimeType?: string | null;
-    /** @maxLength 255 */
+    /**
+     * File Name
+     * @maxLength 255
+     */
     name?: string;
-    /** @maxLength 255 */
+    /**
+     * Original Name
+     * @maxLength 255
+     */
     originalName?: string;
+    /** Process Result */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
+    /** Process Status */
     processStatus?: string | null;
+    /** Region */
     region?: string | null;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
+    /** Status */
     status?: string | null;
+    /** Storage Class */
     storageClass?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey?: string;
+    /** Tags */
     tags?: string[];
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * knowledge.file.fields.versionCount
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
+    /** Version ID */
     versionId?: string | null;
   };
 }
@@ -7735,33 +8886,53 @@ export interface PutApiKnowledgeFileVersionBatchData {
 
 export interface PutApiKnowledgeFileVersionBatchPayload {
   data: {
+    /** S3 Version ID */
     s3VersionId?: string | null;
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket?: string;
+    /** Change Log */
     changeLog?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** ETag */
     etag?: string | null;
     /**
+     * File ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId?: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey?: string;
-    /** @maxLength 32 */
+    /**
+     * Version Number
+     * @maxLength 32
+     */
     versionNumber?: string;
   };
   ids: string[];
@@ -7785,33 +8956,53 @@ export interface PutApiKnowledgeFileVersionByIdParams {
 
 export interface PutApiKnowledgeFileVersionByIdPayload {
   data: {
+    /** S3 Version ID */
     s3VersionId?: string | null;
-    /** @maxLength 128 */
+    /**
+     * Bucket
+     * @maxLength 128
+     */
     bucket?: string;
+    /** Change Log */
     changeLog?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** ETag */
     etag?: string | null;
     /**
+     * File ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId?: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
+     * File Size
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** @maxLength 512 */
+    /**
+     * Storage Key
+     * @maxLength 512
+     */
     storageKey?: string;
-    /** @maxLength 32 */
+    /**
+     * Version Number
+     * @maxLength 32
+     */
     versionNumber?: string;
   };
 }
@@ -7826,34 +9017,58 @@ export interface PutApiKnowledgeFolderBatchData {
 
 export interface PutApiKnowledgeFolderBatchPayload {
   data: {
+    /** Color */
     color?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
-    /** @maxLength 255 */
+    /**
+     * Folder Name
+     * @maxLength 255
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Folder ID */
     parentId?: string | null;
+    /** Path */
     path?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -7877,34 +9092,58 @@ export interface PutApiKnowledgeFolderByIdParams {
 
 export interface PutApiKnowledgeFolderByIdPayload {
   data: {
+    /** Color */
     color?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Description */
     description?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Public */
     isPublic?: boolean;
-    /** @maxLength 255 */
+    /**
+     * Folder Name
+     * @maxLength 255
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Folder ID */
     parentId?: string | null;
+    /** Path */
     path?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -7919,25 +9158,46 @@ export interface PutApiSystemConfigBatchData {
 
 export interface PutApiSystemConfigBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** System Built-in */
     isSystem?: boolean;
-    /** @maxLength 128 */
+    /**
+     * Config Key
+     * @maxLength 128
+     */
     key?: string;
-    /** @maxLength 128 */
+    /**
+     * Config Name
+     * @maxLength 128
+     */
     name?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Config Value
+     * @maxLength 512
+     */
     value?: string;
   };
   ids: string[];
@@ -7961,25 +9221,46 @@ export interface PutApiSystemConfigByIdParams {
 
 export interface PutApiSystemConfigByIdPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** System Built-in */
     isSystem?: boolean;
-    /** @maxLength 128 */
+    /**
+     * Config Key
+     * @maxLength 128
+     */
     key?: string;
-    /** @maxLength 128 */
+    /**
+     * Config Name
+     * @maxLength 128
+     */
     name?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 512 */
+    /**
+     * Config Value
+     * @maxLength 512
+     */
     value?: string;
   };
 }
@@ -7994,34 +9275,58 @@ export interface PutApiSystemDepartmentBatchData {
 
 export interface PutApiSystemDepartmentBatchPayload {
   data: {
+    /** Ancestors */
     ancestors?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Email */
     email?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Leader */
     leader?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Department Name
+     * @maxLength 50
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Department ID */
     parentId?: string | null;
+    /** Phone */
     phone?: string | null;
+    /** Status */
     status?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -8045,34 +9350,58 @@ export interface PutApiSystemDepartmentByIdParams {
 
 export interface PutApiSystemDepartmentByIdPayload {
   data: {
+    /** Ancestors */
     ancestors?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Email */
     email?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Leader */
     leader?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Department Name
+     * @maxLength 50
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Department ID */
     parentId?: string | null;
+    /** Phone */
     phone?: string | null;
+    /** Status */
     status?: boolean;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -8087,37 +9416,66 @@ export interface PutApiSystemDictBatchData {
 
 export interface PutApiSystemDictBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** CSS Class */
     cssClass?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Dictionary Group
+     * @maxLength 100
+     */
     group?: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Default */
     isDefault?: boolean;
-    /** @maxLength 100 */
+    /**
+     * Label
+     * @maxLength 100
+     */
     label?: string;
+    /** List Class */
     listClass?: string | null;
+    /** Remark */
     remark?: string | null;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Value
+     * @maxLength 100
+     */
     value?: string;
   };
   ids: string[];
@@ -8141,37 +9499,66 @@ export interface PutApiSystemDictByIdParams {
 
 export interface PutApiSystemDictByIdPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** CSS Class */
     cssClass?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Dictionary Group
+     * @maxLength 100
+     */
     group?: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Default */
     isDefault?: boolean;
-    /** @maxLength 100 */
+    /**
+     * Label
+     * @maxLength 100
+     */
     label?: string;
+    /** List Class */
     listClass?: string | null;
+    /** Remark */
     remark?: string | null;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Value
+     * @maxLength 100
+     */
     value?: string;
   };
 }
@@ -8186,19 +9573,37 @@ export interface PutApiSystemDictGroupBatchData {
 
 export interface PutApiSystemDictGroupBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Group Key
+     * @maxLength 100
+     */
     key?: string;
-    /** @maxLength 100 */
+    /**
+     * Group Name
+     * @maxLength 100
+     */
     name?: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   keys: string[];
@@ -8222,19 +9627,37 @@ export interface PutApiSystemDictGroupByKeyParams {
 
 export interface PutApiSystemDictGroupByKeyPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
-    /** @maxLength 100 */
+    /**
+     * Group Key
+     * @maxLength 100
+     */
     key?: string;
-    /** @maxLength 100 */
+    /**
+     * Group Name
+     * @maxLength 100
+     */
     name?: string;
+    /** Remark */
     remark?: string | null;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -8297,36 +9720,63 @@ export interface PutApiSystemMenuBatchData {
 
 export interface PutApiSystemMenuBatchPayload {
   data: {
+    /** Component Path */
     component?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Cache */
     isCache?: boolean;
+    /** External Link */
     isFrame?: boolean;
-    /** @maxLength 50 */
+    /**
+     * Menu Name
+     * @maxLength 50
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Menu ID */
     parentId?: string | null;
+    /** Route Path */
     path?: string | null;
+    /** Permission */
     perms?: string | null;
+    /** Remark */
     remark?: string | null;
-    /** @maxLength 1 */
+    /**
+     * Menu Type
+     * @maxLength 1
+     */
     type?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
+    /** Visible */
     visible?: boolean;
   };
   ids: string[];
@@ -8350,36 +9800,63 @@ export interface PutApiSystemMenuByIdParams {
 
 export interface PutApiSystemMenuByIdPayload {
   data: {
+    /** Component Path */
     component?: string | null;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Icon */
     icon?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Cache */
     isCache?: boolean;
+    /** External Link */
     isFrame?: boolean;
-    /** @maxLength 50 */
+    /**
+     * Menu Name
+     * @maxLength 50
+     */
     name?: string;
     /**
+     * Sort Order
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
+    /** Parent Menu ID */
     parentId?: string | null;
+    /** Route Path */
     path?: string | null;
+    /** Permission */
     perms?: string | null;
+    /** Remark */
     remark?: string | null;
-    /** @maxLength 1 */
+    /**
+     * Menu Type
+     * @maxLength 1
+     */
     type?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
+    /** Visible */
     visible?: boolean;
   };
 }
@@ -8394,24 +9871,43 @@ export interface PutApiSystemNoticeBatchData {
 
 export interface PutApiSystemNoticeBatchPayload {
   data: {
+    /** Content */
     content?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Status */
     status?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Notice Title
+     * @maxLength 50
+     */
     title?: string;
-    /** @maxLength 1 */
+    /**
+     * Notice Type
+     * @maxLength 1
+     */
     type?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -8435,24 +9931,43 @@ export interface PutApiSystemNoticeByIdParams {
 
 export interface PutApiSystemNoticeByIdPayload {
   data: {
+    /** Content */
     content?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Status */
     status?: string | null;
-    /** @maxLength 50 */
+    /**
+     * Notice Title
+     * @maxLength 50
+     */
     title?: string;
-    /** @maxLength 1 */
+    /**
+     * Notice Type
+     * @maxLength 1
+     */
     type?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -8467,28 +9982,52 @@ export interface PutApiSystemPostBatchData {
 
 export interface PutApiSystemPostBatchPayload {
   data: {
-    /** @maxLength 64 */
+    /**
+     * Post Code
+     * @maxLength 64
+     */
     code?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 50 */
+    /**
+     * Post Name
+     * @maxLength 50
+     */
     name?: string;
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort?: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -8512,28 +10051,52 @@ export interface PutApiSystemPostByIdParams {
 
 export interface PutApiSystemPostByIdPayload {
   data: {
-    /** @maxLength 64 */
+    /**
+     * Post Code
+     * @maxLength 64
+     */
     code?: string;
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 50 */
+    /**
+     * Post Name
+     * @maxLength 50
+     */
     name?: string;
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort?: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -8548,33 +10111,62 @@ export interface PutApiSystemRoleBatchData {
 
 export interface PutApiSystemRoleBatchPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Data Scope */
     dataScope?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Department IDs */
     deptIds?: string[];
+    /** Role Flag */
     flag?: boolean | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 100 */
+    /**
+     * Permission Key
+     * @maxLength 100
+     */
     key?: string;
+    /** Menu IDs */
     menuIds?: string[];
-    /** @maxLength 30 */
+    /**
+     * Role Name
+     * @maxLength 30
+     */
     name?: string;
+    /** Permissions */
     permissions?: string[];
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort?: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -8598,33 +10190,62 @@ export interface PutApiSystemRoleByIdParams {
 
 export interface PutApiSystemRoleByIdPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** Data Scope */
     dataScope?: string | null;
+    /** Deleted At */
     deletedAt?: string | null;
+    /** Deleted By */
     deletedBy?: string | null;
+    /** Deleted By ID */
     deletedById?: string | null;
+    /** Department IDs */
     deptIds?: string[];
+    /** Role Flag */
     flag?: boolean | null;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** @maxLength 100 */
+    /**
+     * Permission Key
+     * @maxLength 100
+     */
     key?: string;
+    /** Menu IDs */
     menuIds?: string[];
-    /** @maxLength 30 */
+    /**
+     * Role Name
+     * @maxLength 30
+     */
     name?: string;
+    /** Permissions */
     permissions?: string[];
-    /** @maxLength 10 */
+    /**
+     * Sort Order
+     * @maxLength 10
+     */
     sort?: string;
+    /** Status */
     status?: string | null;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
   };
 }
@@ -8647,29 +10268,52 @@ export interface PutApiSystemTokenByIdParams {
 
 export interface PutApiSystemTokenByIdPayload {
   data: {
+    /** Created At */
     createdAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Created By
+     * @maxLength 64
+     */
     createdBy?: string;
+    /** Created By ID */
     createdById?: string | null;
+    /** system.token.fields.exp */
     exp?: string;
+    /** system.token.fields.iat */
     iat?: string;
     /**
+     * Primary Key ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
+    /** Is Revoked */
     isRevoked?: boolean;
-    /** @maxLength 64 */
+    /**
+     * system.token.fields.jti
+     * @maxLength 64
+     */
     jti?: string;
+    /** Revoked At */
     revokedAt?: string | null;
+    /** Scopes */
     scopes?: string[];
-    /** @maxLength 128 */
+    /**
+     * system.token.fields.sub
+     * @maxLength 128
+     */
     sub?: string;
+    /** Updated At */
     updatedAt?: string;
-    /** @maxLength 64 */
+    /**
+     * Updated By
+     * @maxLength 64
+     */
     updatedBy?: string;
+    /** Updated By ID */
     updatedById?: string | null;
     /**
+     * User ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -8964,6 +10608,24 @@ export namespace Actions {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = any;
+  }
+
+  /**
+   * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据。
+   * @tags actions
+   * @name PostApiActionsExecuteByName
+   * @summary 通过名称执行Action
+   * @request POST:/api/actions/execute/{name}
+   * @response `200` `PostApiActionsExecuteByNameData` Response for status 200
+   */
+  export namespace PostApiActionsExecuteByName {
+    export type RequestParams = {
+      name: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PostApiActionsExecuteByNamePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiActionsExecuteByNameData;
   }
 }
 
@@ -11459,28 +13121,6 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除技能
-   * @tags ai, skill
-   * @name DeleteApiAiSkillById
-   * @summary 删除技能
-   * @request DELETE:/api/ai/skill/{id}
-   * @response `200` `DeleteApiAiSkillByIdData` Response for status 200
-   */
-  export namespace DeleteApiAiSkillById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiSkillByIdData;
-  }
-
-  /**
    * @description 根据ID删除工具
    * @tags ai, tool
    * @name DeleteApiAiToolById
@@ -11746,44 +13386,6 @@ export namespace Ai {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiAiProviderSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个技能
-   * @tags ai, skill
-   * @name GetApiAiSkillById
-   * @summary 根据ID查询技能
-   * @request GET:/api/ai/skill/{id}
-   * @response `200` `GetApiAiSkillByIdData` Response for status 200
-   */
-  export namespace GetApiAiSkillById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiSkillByIdData;
-  }
-
-  /**
-   * @description 获取AI技能表的JSON Schema
-   * @tags ai, skill
-   * @name GetApiAiSkillSchema
-   * @summary 获取AI技能Schema
-   * @request GET:/api/ai/skill/schema
-   * @response `200` `GetApiAiSkillSchemaData` Response for status 200
-   */
-  export namespace GetApiAiSkillSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiSkillSchemaData;
   }
 
   /**
@@ -12087,54 +13689,6 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个技能
-   * @tags ai, skill
-   * @name PostApiAiSkill
-   * @summary 创建技能
-   * @request POST:/api/ai/skill
-   * @response `200` `PostApiAiSkillData` Response for status 200
-   */
-  export namespace PostApiAiSkill {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiSkillPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiSkillData;
-  }
-
-  /**
-   * @description 批量创建多个技能
-   * @tags ai, skill
-   * @name PostApiAiSkillBatch
-   * @summary 批量创建技能
-   * @request POST:/api/ai/skill/batch
-   * @response `200` `PostApiAiSkillBatchData` Response for status 200
-   */
-  export namespace PostApiAiSkillBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiSkillBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiSkillBatchData;
-  }
-
-  /**
-   * @description 分页查询技能列表
-   * @tags ai, skill
-   * @name PostApiAiSkillQuery
-   * @summary 分页查询技能
-   * @request POST:/api/ai/skill/query
-   * @response `200` `PostApiAiSkillQueryData` Response for status 200
-   */
-  export namespace PostApiAiSkillQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiSkillQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiSkillQueryData;
-  }
-
-  /**
    * @description 创建单个工具
    * @tags ai, tool
    * @name PostApiAiTool
@@ -12408,44 +13962,6 @@ export namespace Ai {
     export type RequestBody = PutApiAiProviderByIdPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiAiProviderByIdData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新技能
-   * @tags ai, skill
-   * @name PutApiAiSkillBatch
-   * @summary 批量更新技能
-   * @request PUT:/api/ai/skill/batch
-   * @response `200` `PutApiAiSkillBatchData` Response for status 200
-   */
-  export namespace PutApiAiSkillBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiSkillBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiSkillBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个技能
-   * @tags ai, skill
-   * @name PutApiAiSkillById
-   * @summary 更新技能
-   * @request PUT:/api/ai/skill/{id}
-   * @response `200` `PutApiAiSkillByIdData` Response for status 200
-   */
-  export namespace PutApiAiSkillById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiSkillByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiSkillByIdData;
   }
 
   /**
@@ -14879,6 +16395,29 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<any, any>({
         path: `/api/actions/${name}`,
         method: "GET",
+        ...params,
+      }),
+
+    /**
+     * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据。
+     *
+     * @tags actions
+     * @name PostApiActionsExecuteByName
+     * @summary 通过名称执行Action
+     * @request POST:/api/actions/execute/{name}
+     * @response `200` `PostApiActionsExecuteByNameData` Response for status 200
+     */
+    postApiActionsExecuteByName: (
+      { name, ...query }: PostApiActionsExecuteByNameParams,
+      data: PostApiActionsExecuteByNamePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiActionsExecuteByNameData, any>({
+        path: `/api/actions/execute/${name}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
   };
@@ -17613,26 +19152,6 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除技能
-     *
-     * @tags ai, skill
-     * @name DeleteApiAiSkillById
-     * @summary 删除技能
-     * @request DELETE:/api/ai/skill/{id}
-     * @response `200` `DeleteApiAiSkillByIdData` Response for status 200
-     */
-    deleteApiAiSkillById: (
-      { id, ...query }: DeleteApiAiSkillByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiAiSkillByIdData, any>({
-        path: `/api/ai/skill/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description 根据ID删除工具
      *
      * @tags ai, tool
@@ -17873,43 +19392,6 @@ export class Api<SecurityDataType extends unknown> {
     getApiAiProviderSchema: (params: RequestParams = {}) =>
       this.http.request<GetApiAiProviderSchemaData, any>({
         path: `/api/ai/provider/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个技能
-     *
-     * @tags ai, skill
-     * @name GetApiAiSkillById
-     * @summary 根据ID查询技能
-     * @request GET:/api/ai/skill/{id}
-     * @response `200` `GetApiAiSkillByIdData` Response for status 200
-     */
-    getApiAiSkillById: (
-      { id, ...query }: GetApiAiSkillByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiSkillByIdData, any>({
-        path: `/api/ai/skill/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取AI技能表的JSON Schema
-     *
-     * @tags ai, skill
-     * @name GetApiAiSkillSchema
-     * @summary 获取AI技能Schema
-     * @request GET:/api/ai/skill/schema
-     * @response `200` `GetApiAiSkillSchemaData` Response for status 200
-     */
-    getApiAiSkillSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiSkillSchemaData, any>({
-        path: `/api/ai/skill/schema`,
         method: "GET",
         format: "json",
         ...params,
@@ -18292,69 +19774,6 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个技能
-     *
-     * @tags ai, skill
-     * @name PostApiAiSkill
-     * @summary 创建技能
-     * @request POST:/api/ai/skill
-     * @response `200` `PostApiAiSkillData` Response for status 200
-     */
-    postApiAiSkill: (data: PostApiAiSkillPayload, params: RequestParams = {}) =>
-      this.http.request<PostApiAiSkillData, any>({
-        path: `/api/ai/skill`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个技能
-     *
-     * @tags ai, skill
-     * @name PostApiAiSkillBatch
-     * @summary 批量创建技能
-     * @request POST:/api/ai/skill/batch
-     * @response `200` `PostApiAiSkillBatchData` Response for status 200
-     */
-    postApiAiSkillBatch: (
-      data: PostApiAiSkillBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiSkillBatchData, any>({
-        path: `/api/ai/skill/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询技能列表
-     *
-     * @tags ai, skill
-     * @name PostApiAiSkillQuery
-     * @summary 分页查询技能
-     * @request POST:/api/ai/skill/query
-     * @response `200` `PostApiAiSkillQueryData` Response for status 200
-     */
-    postApiAiSkillQuery: (
-      data: PostApiAiSkillQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiSkillQueryData, any>({
-        path: `/api/ai/skill/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description 创建单个工具
      *
      * @tags ai, tool
@@ -18680,51 +20099,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PutApiAiProviderByIdData, any>({
         path: `/api/ai/provider/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新技能
-     *
-     * @tags ai, skill
-     * @name PutApiAiSkillBatch
-     * @summary 批量更新技能
-     * @request PUT:/api/ai/skill/batch
-     * @response `200` `PutApiAiSkillBatchData` Response for status 200
-     */
-    putApiAiSkillBatch: (
-      data: PutApiAiSkillBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiSkillBatchData, any>({
-        path: `/api/ai/skill/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个技能
-     *
-     * @tags ai, skill
-     * @name PutApiAiSkillById
-     * @summary 更新技能
-     * @request PUT:/api/ai/skill/{id}
-     * @response `200` `PutApiAiSkillByIdData` Response for status 200
-     */
-    putApiAiSkillById: (
-      { id, ...query }: PutApiAiSkillByIdParams,
-      data: PutApiAiSkillByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiSkillByIdData, any>({
-        path: `/api/ai/skill/${id}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,

@@ -18,7 +18,7 @@
     "@aws-sdk/client-s3": "^3.975.0",
     "@aws-sdk/s3-request-presigner": "^3.975.0",
     "@qiyu-allinai/db": "workspace:*",
-    "ai": "^4.3.16",
+    "ai": "^6.0.66",
     "drizzle-orm": "^0.45.1",
     "zod": "^4.3.6"
   }

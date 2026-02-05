@@ -52,7 +52,7 @@ Qiyu AllInAI is a **ready-to-use AI application foundation system** that provide
 - **Ready to Use** - Complete user management, permission control, AI model management out of the box
 - **Highly Extensible** - Modular architecture supporting flexible feature extension and customization
 - **Modern Tech Stack** - Built with Bun + SvelteKit + Elysia for exceptional performance
-- **AI Native** - Built-in AI Agent, tool orchestration, skill management and other core AI capabilities
+- **AI Native** - Built-in AI Agent, tool orchestration and other core AI capabilities
 - **Enterprise Grade** - Complete RBAC permissions, audit logs, multi-tenant support
 
 ---
@@ -75,7 +75,6 @@ Qiyu AllInAI is a **ready-to-use AI application foundation system** that provide
 - **Model Management** - Multi-provider (OpenAI, Anthropic, Azure, etc.) model configuration
 - **Agent Management** - AI Agent creation, configuration, and session management
 - **Tool Management** - AI tool definition and grouping
-- **Skill Management** - Agent skill tree configuration
 - **Workflow Editor** - Visual AI workflow orchestration (Actions Flow Editor)
 
 ### 💬 Instant Messaging (IM)

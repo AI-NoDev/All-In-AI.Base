@@ -3,7 +3,6 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import { Button } from '@/lib/components/ui/button';
   import { Skeleton } from '@/lib/components/ui/skeleton';
   import { MarkdownEditor } from '@/lib/components/common';
@@ -73,7 +72,6 @@
     try {
       await api.files.putApiFilesByIdContent({ id: fileData.id }, { content });
       hasChanges = false;
-      // 更新原始内容
       fileData = { ...fileData, content };
     } catch (err) {
       console.error('保存失败:', err);
@@ -91,63 +89,58 @@
   }
 </script>
 
-<div class="px-4 lg:px-6 flex-1 flex flex-col min-h-0">
-  <Card.Root class="flex-1 flex flex-col min-h-0">
-    <Card.Header class="shrink-0">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <Button variant="ghost" size="sm" class="h-8 w-8 p-0" onclick={handleBack}>
-            <Icon icon="tdesign:chevron-left" class="size-5" />
-          </Button>
-          {#if loading}
-            <Skeleton class="h-6 w-48" />
-          {:else if fileData}
-            <span class="text-lg font-medium">{fileData.name}</span>
-            {#if hasChanges}
-              <span class="text-xs text-muted-foreground">(未保存)</span>
-            {/if}
-          {:else}
-            <span class="text-lg font-medium text-muted-foreground">编辑文件</span>
-          {/if}
-        </div>
-        <div class="flex items-center gap-2">
-          <Button variant="outline" onclick={handleBack} disabled={saving}>
-            {hasChanges ? '放弃更改' : '返回'}
-          </Button>
-          <Button onclick={handleSave} disabled={saving || !hasChanges || !fileData}>
-            {#if saving}
-              <Icon icon="tdesign:loading" class="mr-2 size-4 animate-spin" />
-            {/if}
-            保存
-          </Button>
-        </div>
-      </div>
-    </Card.Header>
-    <Card.Content class="flex-1 flex flex-col min-h-0">
+<div class="flex flex-col gap-6 px-4 lg:px-6 flex-1 min-h-0">
+  <div class="flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2">
+      <Button variant="ghost" size="sm" class="h-8 w-8 p-0" onclick={handleBack}>
+        <Icon icon="tdesign:chevron-left" class="size-5" />
+      </Button>
       {#if loading}
-        <div class="space-y-3">
-          <Skeleton class="h-8 w-full" />
-          <Skeleton class="h-[400px] w-full" />
-        </div>
-      {:else if error}
-        <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
-          <Icon icon="tdesign:file-blocked" class="size-16 mb-4 opacity-50" />
-          <p class="text-lg">{error}</p>
-          <Button variant="outline" class="mt-4" onclick={handleBack}>
-            返回文件列表
-          </Button>
-        </div>
+        <Skeleton class="h-6 w-48" />
       {:else if fileData}
-        <div class="flex-1 min-h-0">
-          <MarkdownEditor
-            value={content}
-            placeholder="请输入内容..."
-            height={600}
-            mode="ir"
-            onInput={handleContentChange}
-          />
-        </div>
+        <span class="text-lg font-medium">{fileData.name}</span>
+        {#if hasChanges}
+          <span class="text-xs text-muted-foreground">(未保存)</span>
+        {/if}
+      {:else}
+        <span class="text-lg font-medium text-muted-foreground">编辑文件</span>
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </div>
+    <div class="flex items-center gap-2">
+      <Button variant="outline" onclick={handleBack} disabled={saving}>
+        {hasChanges ? '放弃更改' : '返回'}
+      </Button>
+      <Button onclick={handleSave} disabled={saving || !hasChanges || !fileData}>
+        {#if saving}
+          <Icon icon="tdesign:loading" class="mr-2 size-4 animate-spin" />
+        {/if}
+        保存
+      </Button>
+    </div>
+  </div>
+
+  <div class="flex-1 min-h-0">
+    {#if loading}
+      <div class="space-y-3">
+        <Skeleton class="h-8 w-full" />
+        <Skeleton class="h-[400px] w-full" />
+      </div>
+    {:else if error}
+      <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
+        <Icon icon="tdesign:file-blocked" class="size-16 mb-4 opacity-50" />
+        <p class="text-lg">{error}</p>
+        <Button variant="outline" class="mt-4" onclick={handleBack}>
+          返回文件列表
+        </Button>
+      </div>
+    {:else if fileData}
+      <MarkdownEditor
+        value={content}
+        placeholder="请输入内容..."
+        height={600}
+        mode="ir"
+        onInput={handleContentChange}
+      />
+    {/if}
+  </div>
 </div>

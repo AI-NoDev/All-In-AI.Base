@@ -108,6 +108,13 @@ export interface StartNodeData extends Record<string, unknown> {
   onDelete?: (nodeId: string) => void;
 }
 
+/** Output 节点数据（结束节点，只有输入引脚） */
+export interface OutputNodeData extends Record<string, unknown> {
+  outputSchema: Record<string, JsonSchemaProperty>;
+  inputMappings: Record<string, { nodeId: string; outputKey: string }>;
+  onDelete?: (nodeId: string) => void;
+}
+
 /** 工具节点类型枚举 */
 export type UtilType = 
   // 类型转换
@@ -533,8 +540,6 @@ export interface LoopNodeData extends Record<string, unknown> {
   onDelete?: (nodeId: string) => void;
   /** 尺寸变更回调 */
   onSizeChange?: (nodeId: string, size: { width: number; height: number }) => void;
-  /** @deprecated 旧版兼容：循环体节点 ID */
-  loopBodyId?: string;
 }
 
 // ============ 新的条件节点设计 ============
@@ -562,61 +567,19 @@ export interface IfNodeData extends Record<string, unknown> {
   onSizeChange?: (nodeId: string, ifSize: { width: number; height: number }, elseSize?: { width: number; height: number }) => void;
 }
 
-// ============ 保留旧类型用于兼容（后续可删除） ============
-
-/** @deprecated 使用 IfNodeData 替代 */
-export interface ConditionNodeData extends Record<string, unknown> {
-  inputMappings: Record<string, { nodeId: string; outputKey: string }>;
-  trueBranchId?: string;
-  falseBranchId?: string;
-  onDelete?: (nodeId: string) => void;
-}
-
-/** @deprecated 不再使用独立的分支节点 */
-export interface ConditionBranchNodeData extends Record<string, unknown> {
-  branchType: 'true' | 'false';
-  parentConditionId: string;
-  childNodeIds: string[];
-  onDelete?: (nodeId: string) => void;
-}
-
-/** @deprecated 不再使用独立的循环体节点 */
-export interface LoopBodyNodeData extends Record<string, unknown> {
-  parentLoopId: string;
-  itemType: string;
-  childNodeIds: string[];
-  onDelete?: (nodeId: string) => void;
-}
-
-/** @deprecated 不再使用独立的循环开始节点 */
-export interface LoopStartNodeData extends Record<string, unknown> {
-  outputType: string;
-  itemSchema?: JsonSchemaProperty;
-  indexType: 'number';
-  onDelete?: (nodeId: string) => void;
-}
-
 // ============ 节点类型定义 ============
 
 export type ActionNode = Node<ActionNodeData, 'action'>;
 export type StartNode = Node<StartNodeData, 'start'>;
+export type OutputNode = Node<OutputNodeData, 'end'>;
 export type UtilNode = Node<UtilNodeData, 'util'>;
 export type VariablePoolNode = Node<VariablePoolNodeData, 'variablePool'>;
 export type AssignNode = Node<AssignNodeData, 'assign'>;
 export type LoopNode = Node<LoopNodeData, 'loop'>;
 export type IfNode = Node<IfNodeData, 'if'>;
 
-/** @deprecated */
-export type ConditionNode = Node<ConditionNodeData, 'condition'>;
-/** @deprecated */
-export type ConditionBranchNode = Node<ConditionBranchNodeData, 'conditionBranch'>;
-/** @deprecated */
-export type LoopBodyNode = Node<LoopBodyNodeData, 'loopBody'>;
-/** @deprecated */
-export type LoopStartNode = Node<LoopStartNodeData, 'loopStart'>;
-
 /** 流程节点类型 */
-export type FlowNode = ActionNode | StartNode | UtilNode | VariablePoolNode | AssignNode | LoopNode | IfNode;
+export type FlowNode = ActionNode | StartNode | OutputNode | UtilNode | VariablePoolNode | AssignNode | LoopNode | IfNode;
 
 /** 流程边类型 */
 export type FlowEdge = Edge;
@@ -637,4 +600,223 @@ export interface ActionsFlowEditorProps {
   getActionDetail: (name: string) => Promise<ActionDetail>;
   initialWorkflow?: WorkflowDefinition;
   onWorkflowChange?: (workflow: WorkflowDefinition) => void;
+}
+
+// ==================== Ref Methods Interface ====================
+
+/** 所有节点数据类型的联合 */
+export type AllNodeData = ActionNodeData | StartNodeData | OutputNodeData | UtilNodeData | VariablePoolNodeData | AssignNodeData | LoopNodeData | IfNodeData;
+
+/** 布局方向 */
+export type LayoutDirection = 'LR' | 'TB' | 'RL' | 'BT';
+
+/**
+ * ActionsFlowEditor 组件的 ref 方法接口
+ * 用于通过 bind:this 获取组件实例后调用方法
+ * 
+ * @example
+ * ```svelte
+ * <script lang="ts">
+ *   import { ActionsFlowEditor, type ActionsFlowEditorRef } from '@qiyu-allinai/actions-flow-editor';
+ *   let editorRef: ActionsFlowEditorRef;
+ * </script>
+ * 
+ * <ActionsFlowEditor bind:this={editorRef} {actions} {getActionDetail} />
+ * <button onclick={() => editorRef.addActionNode('user.getById')}>Add Node</button>
+ * ```
+ */
+export interface ActionsFlowEditorRef {
+  // ============ 工作流方法 ============
+  
+  /** 获取当前工作流定义 */
+  getWorkflow(): WorkflowDefinition;
+  
+  /**
+   * 验证工作流（检查是否有未连接的必填输入）
+   * @returns 验证结果，包含是否有效和错误列表
+   */
+  validateWorkflow(): { valid: boolean; errors: string[] };
+  
+  // ============ 节点方法 ============
+  
+  /** 获取所有节点 */
+  getNodes(): Node<AllNodeData>[];
+  
+  /** 根据 ID 获取节点 */
+  getNodeById(nodeId: string): Node<AllNodeData> | undefined;
+  
+  /** 根据类型获取节点 */
+  getNodesByType(type: string): Node<AllNodeData>[];
+  
+  /**
+   * 添加 Action 节点
+   * @param actionName - Action 名称
+   * @param position - 节点位置（可选）
+   * @returns 新创建的节点，如果 Action 不存在则返回 null
+   */
+  addActionNode(actionName: string, position?: { x: number; y: number }): Promise<Node<ActionNodeData> | null>;
+  
+  /**
+   * 添加 Util 节点
+   * @param utilType - 工具类型
+   * @param position - 节点位置（可选）
+   * @returns 新创建的节点
+   */
+  addUtilNodeAt(utilType: UtilType, position?: { x: number; y: number }): Node<UtilNodeData>;
+  
+  /**
+   * 添加赋值节点
+   * @param position - 节点位置（可选）
+   * @returns 新创建的节点
+   */
+  addAssignNodeAt(position?: { x: number; y: number }): Node<AssignNodeData>;
+  
+  /**
+   * 添加条件节点 (If)
+   * @param position - 节点位置（可选）
+   * @returns 新创建的节点
+   */
+  addIfNodeAt(position?: { x: number; y: number }): Node<IfNodeData>;
+  
+  /**
+   * 添加循环节点 (Loop)
+   * @param position - 节点位置（可选）
+   * @returns 新创建的节点
+   */
+  addLoopNodeAt(position?: { x: number; y: number }): Node<LoopNodeData>;
+  
+  /**
+   * 删除节点
+   * @param nodeId - 节点 ID
+   * @returns 是否删除成功（开始节点和变量池节点不可删除）
+   */
+  removeNode(nodeId: string): boolean;
+  
+  /**
+   * 更新节点位置
+   * @param nodeId - 节点 ID
+   * @param position - 新位置
+   * @returns 是否更新成功
+   */
+  updateNodePosition(nodeId: string, position: { x: number; y: number }): boolean;
+  
+  /**
+   * 更新节点数据
+   * @param nodeId - 节点 ID
+   * @param data - 要更新的数据
+   * @returns 是否更新成功
+   */
+  updateNodeData(nodeId: string, data: Partial<AllNodeData>): boolean;
+  
+  // ============ 边方法 ============
+  
+  /** 获取所有边 */
+  getEdges(): Edge[];
+  
+  /** 根据 ID 获取边 */
+  getEdgeById(edgeId: string): Edge | undefined;
+  
+  /**
+   * 获取连接到指定节点的所有边
+   * @param nodeId - 节点 ID
+   * @returns 入边和出边
+   */
+  getEdgesByNodeId(nodeId: string): { incoming: Edge[]; outgoing: Edge[] };
+  
+  /**
+   * 连接两个节点
+   * @param sourceNodeId - 源节点 ID
+   * @param sourceHandle - 源节点输出引脚 ID (如 'output-result')
+   * @param targetNodeId - 目标节点 ID
+   * @param targetHandle - 目标节点输入引脚 ID (如 'input-data')
+   * @returns 是否连接成功
+   */
+  connectNodes(
+    sourceNodeId: string,
+    sourceHandle: string,
+    targetNodeId: string,
+    targetHandle: string
+  ): boolean;
+  
+  /**
+   * 断开连接（删除边）
+   * @param edgeId - 边 ID
+   * @returns 是否删除成功
+   */
+  disconnectNodes(edgeId: string): boolean;
+  
+  /**
+   * 断开指定节点的所有连接
+   * @param nodeId - 节点 ID
+   * @returns 删除的边数量
+   */
+  disconnectAllFromNode(nodeId: string): number;
+  
+  // ============ Action 方法 ============
+  
+  /** 获取所有可用的 Actions */
+  getActions(): ActionSummary[];
+  
+  /** 根据名称获取 Action */
+  getActionByName(name: string): ActionSummary | undefined;
+  
+  /**
+   * 根据名称模糊搜索 Actions
+   * @param keyword - 搜索关键词
+   * @returns 匹配的 Actions
+   */
+  searchActions(keyword: string): ActionSummary[];
+  
+  // ============ 变量方法 ============
+  
+  /** 获取变量池中的所有变量 */
+  getVariables(): VariableDefinition[];
+  
+  /**
+   * 添加变量到变量池
+   * @param variable - 变量定义
+   * @returns 是否添加成功
+   */
+  addVariable(variable: VariableDefinition): boolean;
+  
+  /**
+   * 删除变量
+   * @param variableKey - 变量 key
+   * @returns 是否删除成功
+   */
+  removeVariable(variableKey: string): boolean;
+  
+  // ============ 布局方法 ============
+  
+  /**
+   * 应用自动布局
+   * @param direction - 布局方向，默认 'LR'（从左到右）
+   */
+  applyLayout(direction?: LayoutDirection): void;
+  
+  // ============ 调试方法 ============
+  
+  /** 获取调试状态 */
+  getDebugState(): DebugStateMap;
+  
+  /**
+   * 获取节点的调试结果
+   * @param nodeId - 节点 ID
+   * @returns 调试结果
+   */
+  getNodeDebugResult(nodeId: string): NodeDebugResult | undefined;
+  
+  /** 清除所有调试状态 */
+  clearDebugState(): void;
+  
+  /**
+   * 清除指定节点的调试状态
+   * @param nodeId - 节点 ID
+   */
+  clearNodeDebugState(nodeId: string): void;
+  
+  // ============ 其他方法 ============
+  
+  /** 获取 Start 节点的输入 Schema */
+  getInputSchema(): Record<string, JsonSchemaProperty> | undefined;
 }

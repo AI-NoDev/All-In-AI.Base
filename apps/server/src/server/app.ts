@@ -12,6 +12,7 @@ import {
   oauth2Plugin,
   initAdminPlugin,
   actionsPlugin,
+  aiPlugin,
 } from "./plugins";
 import { authRouter, wsRouter } from "../routers";
 
@@ -30,6 +31,7 @@ export const app = base
   .use(llmsPlugin)
   .use(oauth2Plugin)
   .use(initAdminPlugin)
+  .use(aiPlugin)
   .use(authRouter)
   .use(wsRouter)
   .get("/", () => ({ message: "Hello AI Drive System" }))

@@ -23,14 +23,11 @@
   import IconLoop from '@iconify-svelte/tdesign/refresh';
   import ActionNode from './ActionNode.svelte';
   import StartNode from './StartNode.svelte';
+  import OutputNode from './OutputNode.svelte';
   import UtilNode from './UtilNode.svelte';
   import VariablePoolNode from './VariablePoolNode.svelte';
   import AssignNode from './AssignNode.svelte';
-  import ConditionNode from './ConditionNode.svelte';
   import LoopNode from './LoopNode.svelte';
-  import LoopBodyNode from './LoopBodyNode.svelte';
-  import LoopStartNode from './LoopStartNode.svelte';
-  import ConditionBranchNode from './ConditionBranchNode.svelte';
   import IfNode from './IfNode.svelte';
   import DefaultEdge from './DefaultEdge.svelte';
   import CustomConnectionLine from './CustomConnectionLine.svelte';
@@ -42,16 +39,13 @@
     ActionDetail,
     ActionNodeData,
     StartNodeData,
+    OutputNodeData,
     UtilNodeData,
     UtilType,
     VariablePoolNodeData,
     VariableDefinition,
     AssignNodeData,
-    ConditionNodeData,
     LoopNodeData,
-    LoopBodyNodeData,
-    LoopStartNodeData,
-    ConditionBranchNodeData,
     IfNodeData,
     FlowNode,
     FlowEdge,
@@ -77,10 +71,6 @@
     createUtilNode,
     createVariablePoolNode,
     createAssignNode,
-    createConditionNode,
-    createLoopNode,
-    createConditionBranchNode,
-    createLoopBodyWithStart,
     createNewLoopNode,
     createNewIfNode,
     determineDragOperation,
@@ -153,6 +143,8 @@
     onWorkflowChange?: (workflow: WorkflowDefinition) => void;
     /** 开始节点的输入 Schema（JSON Schema 格式） */
     inputSchema?: Record<string, JsonSchemaProperty>;
+    /** 输出节点的输出 Schema（JSON Schema 格式） */
+    outputSchema?: Record<string, JsonSchemaProperty>;
     /** 连接错误回调（用于显示 toast 提示） */
     onConnectionError?: (reason: string) => void;
     /** 运行单个节点的回调（用于调试或执行） */
@@ -161,19 +153,16 @@
     colorMode?: 'light' | 'dark';
   }
 
-  let { actions, getActionDetail, initialWorkflow, onWorkflowChange, inputSchema, onConnectionError, onRunNode, colorMode }: Props = $props();
+  let { actions, getActionDetail, initialWorkflow, onWorkflowChange, inputSchema, outputSchema, onConnectionError, onRunNode, colorMode }: Props = $props();
 
   const nodeTypes: NodeTypes = {
     action: ActionNode,
     start: StartNode,
+    end: OutputNode,
     util: UtilNode,
     variablePool: VariablePoolNode,
     assign: AssignNode,
-    condition: ConditionNode,
     loop: LoopNode,
-    loopBody: LoopBodyNode,
-    loopStart: LoopStartNode,
-    conditionBranch: ConditionBranchNode,
     if: IfNode,
   };
 
@@ -181,9 +170,10 @@
     default: DefaultEdge,
   };
 
-  type AllNodeData = ActionNodeData | StartNodeData | UtilNodeData | VariablePoolNodeData | AssignNodeData | ConditionNodeData | LoopNodeData | LoopBodyNodeData | LoopStartNodeData | ConditionBranchNodeData | IfNodeData;
+  type AllNodeData = ActionNodeData | StartNodeData | OutputNodeData | UtilNodeData | VariablePoolNodeData | AssignNodeData | LoopNodeData | IfNodeData;
 
-  // 初始化节点：如果没有开始节点或变量池节点，自动创建
+  // 初始化节点：如果没有开始节点、输出节点或变量池节点，自动创建
+  // 同时为已存在的节点附加回调函数
   function initializeNodes(initialNodes: Node<AllNodeData>[]): Node<AllNodeData>[] {
     const sorted = sortNodesForParentChild(initialNodes);
     const result = [...sorted];
@@ -194,13 +184,100 @@
       result.unshift(startNode);
     }
     
+    // 检查是否已有输出节点
+    if (!result.some((n) => n.type === 'end')) {
+      const outputNode = createOutputNode(undefined, outputSchema);
+      result.push(outputNode);
+    }
+    
     // 检查是否已有变量池节点
     if (!result.some((n) => n.type === 'variablePool')) {
       const variablePoolNode = createVariablePoolNode(handleVariablesChange, undefined);
       result.push(variablePoolNode);
     }
     
-    return result;
+    // 为已存在的节点附加回调函数
+    return result.map((n) => {
+      if (n.type === 'variablePool') {
+        const vpData = n.data as VariablePoolNodeData;
+        return {
+          ...n,
+          data: {
+            ...vpData,
+            onVariablesChange: handleVariablesChange,
+          },
+        };
+      }
+      if (n.type === 'action') {
+        const actionData = n.data as ActionNodeData;
+        return {
+          ...n,
+          data: {
+            ...actionData,
+            onDelete: handleNodeDelete,
+          },
+        };
+      }
+      if (n.type === 'util') {
+        const utilData = n.data as UtilNodeData;
+        return {
+          ...n,
+          data: {
+            ...utilData,
+            onConfigChange: handleUtilConfigChange,
+            onDelete: handleNodeDelete,
+          },
+        };
+      }
+      if (n.type === 'assign') {
+        const assignData = n.data as AssignNodeData;
+        return {
+          ...n,
+          data: {
+            ...assignData,
+            onTargetChange: handleAssignTargetChange,
+            onDelete: handleNodeDelete,
+          },
+        };
+      }
+      if (n.type === 'loop') {
+        const loopData = n.data as LoopNodeData;
+        return {
+          ...n,
+          data: {
+            ...loopData,
+            onDelete: handleNodeDelete,
+            onSizeChange: handleLoopSizeChange,
+          },
+        };
+      }
+      if (n.type === 'if') {
+        const ifData = n.data as IfNodeData;
+        return {
+          ...n,
+          data: {
+            ...ifData,
+            onDelete: handleNodeDelete,
+            onElseToggle: handleElseToggle,
+            onSizeChange: handleIfSizeChange,
+          },
+        };
+      }
+      return n;
+    });
+  }
+
+  // 创建输出节点
+  function createOutputNode(position?: { x: number; y: number }, schema?: Record<string, JsonSchemaProperty>): Node<OutputNodeData> {
+    return {
+      id: 'end',
+      type: 'end',
+      position: position ?? { x: 600, y: 100 },
+      data: {
+        outputSchema: schema ?? {},
+        inputMappings: {},
+      },
+    };
   }
 
   let nodes = $state<Node<AllNodeData>[]>(
@@ -208,8 +285,73 @@
   );
   let edges = $state<Edge[]>(initialWorkflow?.edges ?? []);
 
+  // 监听 inputSchema 变化，更新 Start 节点
+  $effect(() => {
+    const currentInputSchema = inputSchema;
+    // 找到 Start 节点并更新其 inputSchema
+    const startNodeIndex = nodes.findIndex((n) => n.type === 'start');
+    if (startNodeIndex !== -1) {
+      const startNode = nodes[startNodeIndex];
+      const startData = startNode.data as StartNodeData;
+      // 只有当 inputSchema 真正变化时才更新
+      if (JSON.stringify(startData.inputSchema) !== JSON.stringify(currentInputSchema ?? {})) {
+        nodes = nodes.map((n) => {
+          if (n.type === 'start') {
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                inputSchema: currentInputSchema ?? {},
+              },
+            };
+          }
+          return n;
+        });
+        notifyChange();
+      }
+    }
+  });
+
+  // 监听 outputSchema 变化，更新 Output 节点
+  $effect(() => {
+    const currentOutputSchema = outputSchema;
+    // 找到 Output 节点并更新其 outputSchema
+    const outputNodeIndex = nodes.findIndex((n) => n.type === 'end');
+    if (outputNodeIndex !== -1) {
+      const outputNode = nodes[outputNodeIndex];
+      const outputData = outputNode.data as OutputNodeData;
+      // 只有当 outputSchema 真正变化时才更新
+      if (JSON.stringify(outputData.outputSchema) !== JSON.stringify(currentOutputSchema ?? {})) {
+        nodes = nodes.map((n) => {
+          if (n.type === 'end') {
+            return {
+              ...n,
+              data: {
+                ...n.data,
+                outputSchema: currentOutputSchema ?? {},
+              },
+            };
+          }
+          return n;
+        });
+        notifyChange();
+      }
+    }
+  });
+
   setContext(NODES_CONTEXT_KEY, () => nodes);
   setContext(EDGES_CONTEXT_KEY, () => edges);
+
+  // 初始化后立即通知父组件当前工作流状态
+  // 这确保即使用户没有做任何修改，父组件也能获取到初始化的节点（如 start、variablePool）
+  let initialNotified = false;
+  $effect(() => {
+    if (!initialNotified && nodes.length > 0) {
+      initialNotified = true;
+      // 使用 setTimeout 确保在下一个 tick 执行，避免在 effect 中直接修改状态
+      setTimeout(() => notifyChange(), 0);
+    }
+  });
 
   // 调试状态管理
   let debugState = $state<DebugStateMap>(new Map());
@@ -305,11 +447,11 @@
     }
   });
 
-  // 删除单个节点（开始节点和变量池节点不可删除）
+  // 删除单个节点（开始节点、输出节点和变量池节点不可删除）
   function handleNodeDelete(nodeId: string) {
     const nodeToDelete = nodes.find((n) => n.id === nodeId);
-    // 开始节点和变量池节点不可删除
-    if (nodeToDelete?.type === 'start' || nodeToDelete?.type === 'variablePool') {
+    // 开始节点、输出节点和变量池节点不可删除
+    if (nodeToDelete?.type === 'start' || nodeToDelete?.type === 'end' || nodeToDelete?.type === 'variablePool') {
       return;
     }
     
@@ -439,22 +581,6 @@
     const variables = getVariablePoolVariables();
     const newNode = createAssignNode(position, variables, handleAssignTargetChange, handleNodeDelete);
     nodes = [...nodes, newNode];
-    notifyChange();
-  }
-
-  function addConditionNode() {
-    const position = { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
-    const result = createConditionNode(position, handleNodeDelete);
-    nodes = [...nodes, result.conditionNode, result.trueBranchNode, result.falseBranchNode];
-    edges = [...edges, ...result.edges];
-    notifyChange();
-  }
-
-  function addLoopNode() {
-    const position = { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
-    const result = createLoopNode(position, handleNodeDelete);
-    nodes = [...nodes, result.loopNode, result.loopBodyNode, result.loopStartNode];
-    edges = [...edges, result.edge];
     notifyChange();
   }
 
@@ -673,90 +799,7 @@
     // 重置状态
     lastConnectionError = null;
     connectionSucceeded = false;
-    
-    if (!savedConnectingSource) {
-      connectingSource = null;
-      return;
-    }
-
-    const { nodeId: sourceNodeId, handleId: sourceHandleId } = savedConnectingSource;
     connectingSource = null;
-
-    const sourceNode = nodes.find((n) => n.id === sourceNodeId);
-    if (!sourceNode) return;
-
-    let clientX: number, clientY: number;
-    if ('touches' in event) {
-      clientX = event.changedTouches[0].clientX;
-      clientY = event.changedTouches[0].clientY;
-    } else {
-      clientX = event.clientX;
-      clientY = event.clientY;
-    }
-
-    const flowContainer = (event.target as HTMLElement)?.closest('.svelte-flow');
-    if (!flowContainer) return;
-
-    const rect = flowContainer.getBoundingClientRect();
-    const position = { x: clientX - rect.left, y: clientY - rect.top };
-
-    // 处理条件节点的 true/false 输出
-    if (sourceNode.type === 'condition') {
-      if (sourceHandleId !== 'output-true' && sourceHandleId !== 'output-false') return;
-
-      const conditionData = sourceNode.data as ConditionNodeData;
-      const branchType = sourceHandleId === 'output-true' ? 'true' : 'false';
-      const existingBranchId = branchType === 'true' ? conditionData.trueBranchId : conditionData.falseBranchId;
-
-      if (existingBranchId && nodes.find((n) => n.id === existingBranchId)) return;
-      if (edges.find((e) => e.source === sourceNodeId && e.sourceHandle === sourceHandleId)) return;
-
-      const { node: branchNode, edge: branchEdge } = createConditionBranchNode(position, branchType, sourceNodeId, handleNodeDelete);
-      nodes = [...nodes, branchNode];
-      edges = [...edges, branchEdge];
-
-      nodes = nodes.map((n) => {
-        if (n.id === sourceNodeId && n.type === 'condition') {
-          const data = n.data as ConditionNodeData;
-          return { ...n, data: { ...data, [branchType === 'true' ? 'trueBranchId' : 'falseBranchId']: branchNode.id } };
-        }
-        return n;
-      });
-
-      notifyChange();
-      return;
-    }
-
-    // 处理循环节点的 body 输出
-    if (sourceNode.type === 'loop') {
-      if (sourceHandleId !== 'output-body') return;
-
-      const loopData = sourceNode.data as LoopNodeData;
-      let itemType = 'object';
-      if (loopData.inputType === 'number') {
-        itemType = 'number';
-      } else {
-        const inner = parseArrayType(loopData.inputType);
-        if (inner) itemType = inner;
-      }
-
-      const { loopBodyNode, loopStartNode, edge } = createLoopBodyWithStart(position, sourceNodeId, itemType, handleNodeDelete);
-      nodes = [...nodes, loopBodyNode, loopStartNode];
-      edges = [...edges, edge];
-
-      if (!loopData.loopBodyId) {
-        nodes = nodes.map((n) => {
-          if (n.id === sourceNodeId && n.type === 'loop') {
-            const data = n.data as LoopNodeData;
-            return { ...n, data: { ...data, loopBodyId: loopBodyNode.id } };
-          }
-          return n;
-        });
-      }
-
-      notifyChange();
-      return;
-    }
   }
 
   function handleConnect(connection: Connection) {
@@ -777,7 +820,7 @@
     connectingSource = null;
 
     const targetNode = nodes.find((n) => n.id === connection.target);
-    if (targetNode && (targetNode.type === 'action' || targetNode.type === 'util' || targetNode.type === 'assign' || targetNode.type === 'condition' || targetNode.type === 'loop')) {
+    if (targetNode && (targetNode.type === 'action' || targetNode.type === 'util' || targetNode.type === 'assign' || targetNode.type === 'if' || targetNode.type === 'loop')) {
       const inputKey = connection.targetHandle?.replace('input-', '') ?? '';
       const outputKey = connection.sourceHandle?.replace('output-', '') ?? '';
 
@@ -789,7 +832,7 @@
         nodes = updateLoopNodesType(nodes, targetNode.id, sourceType, loopTypeInfo);
       }
 
-      type NodeWithMappings = ActionNodeData | UtilNodeData | AssignNodeData | ConditionNodeData | LoopNodeData;
+      type NodeWithMappings = ActionNodeData | UtilNodeData | AssignNodeData | IfNodeData | LoopNodeData;
       const nodeData = targetNode.data as NodeWithMappings;
       const updatedData = { ...nodeData, inputMappings: { ...nodeData.inputMappings, [inputKey]: { nodeId: connection.source ?? '', outputKey } } };
       nodes = nodes.map((n) => n.id === connection.target ? { ...n, data: updatedData } : n);
@@ -1022,6 +1065,347 @@
       nodes: nodes as unknown as FlowNode[],
       edges: edges as FlowEdge[],
     };
+  }
+
+  // ==================== Exported Ref Methods ====================
+
+  /**
+   * 获取所有节点
+   */
+  export function getNodes(): Node<AllNodeData>[] {
+    return nodes;
+  }
+
+  /**
+   * 根据 ID 获取节点
+   */
+  export function getNodeById(nodeId: string): Node<AllNodeData> | undefined {
+    return nodes.find(n => n.id === nodeId);
+  }
+
+  /**
+   * 根据类型获取节点
+   */
+  export function getNodesByType(type: string): Node<AllNodeData>[] {
+    return nodes.filter(n => n.type === type);
+  }
+
+  /**
+   * 获取所有边
+   */
+  export function getEdges(): Edge[] {
+    return edges;
+  }
+
+  /**
+   * 根据 ID 获取边
+   */
+  export function getEdgeById(edgeId: string): Edge | undefined {
+    return edges.find(e => e.id === edgeId);
+  }
+
+  /**
+   * 获取连接到指定节点的所有边
+   */
+  export function getEdgesByNodeId(nodeId: string): { incoming: Edge[]; outgoing: Edge[] } {
+    return {
+      incoming: edges.filter(e => e.target === nodeId),
+      outgoing: edges.filter(e => e.source === nodeId),
+    };
+  }
+
+  /**
+   * 获取所有可用的 Actions
+   */
+  export function getActions(): ActionSummary[] {
+    return actions;
+  }
+
+  /**
+   * 根据名称获取 Action
+   */
+  export function getActionByName(name: string): ActionSummary | undefined {
+    return actions.find(a => a.name === name);
+  }
+
+  /**
+   * 根据名称模糊搜索 Actions
+   */
+  export function searchActions(keyword: string): ActionSummary[] {
+    const lowerKeyword = keyword.toLowerCase();
+    return actions.filter(a => 
+      a.name.toLowerCase().includes(lowerKeyword) || 
+      a.displayName.toLowerCase().includes(lowerKeyword)
+    );
+  }
+
+  /**
+   * 添加 Action 节点
+   */
+  export async function addActionNode(actionName: string, position?: { x: number; y: number }): Promise<Node<ActionNodeData> | null> {
+    const actionSummary = actions.find(a => a.name === actionName);
+    if (!actionSummary) return null;
+
+    const detail = await getActionDetail(actionSummary.name);
+    const pos = position ?? { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
+    const newNode = createActionNode(detail, pos, handleNodeDelete);
+    nodes = [...nodes, newNode];
+    notifyChange();
+    return newNode as Node<ActionNodeData>;
+  }
+
+  /**
+   * 添加 Util 节点
+   */
+  export function addUtilNodeAt(utilType: UtilType, position?: { x: number; y: number }): Node<UtilNodeData> {
+    const pos = position ?? { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
+    const newNode = createUtilNode(utilType, pos, handleUtilConfigChange, handleNodeDelete);
+    nodes = [...nodes, newNode];
+    notifyChange();
+    return newNode as Node<UtilNodeData>;
+  }
+
+  /**
+   * 添加赋值节点
+   */
+  export function addAssignNodeAt(position?: { x: number; y: number }): Node<AssignNodeData> {
+    const variables = getVariablePoolVariables();
+    const pos = position ?? { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
+    const newNode = createAssignNode(pos, variables, handleAssignTargetChange, handleNodeDelete);
+    nodes = [...nodes, newNode];
+    notifyChange();
+    return newNode as Node<AssignNodeData>;
+  }
+
+  /**
+   * 添加条件节点 (If)
+   */
+  export function addIfNodeAt(position?: { x: number; y: number }): Node<IfNodeData> {
+    const pos = position ?? { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
+    const result = createNewIfNode(pos, handleNodeDelete, handleElseToggle);
+    const ifNode = {
+      ...result.ifNode,
+      data: {
+        ...result.ifNode.data,
+        onSizeChange: handleIfSizeChange,
+      },
+    };
+    nodes = [...nodes, ifNode];
+    notifyChange();
+    return ifNode as Node<IfNodeData>;
+  }
+
+  /**
+   * 添加循环节点 (Loop)
+   */
+  export function addLoopNodeAt(position?: { x: number; y: number }): Node<LoopNodeData> {
+    const pos = position ?? { x: 300 + nodes.length * 50, y: 100 + nodes.length * 30 };
+    const result = createNewLoopNode(pos, handleNodeDelete);
+    const loopNode = {
+      ...result.loopNode,
+      data: {
+        ...result.loopNode.data,
+        onSizeChange: handleLoopSizeChange,
+      },
+    };
+    nodes = [...nodes, loopNode];
+    notifyChange();
+    return loopNode as Node<LoopNodeData>;
+  }
+
+  /**
+   * 删除节点
+   */
+  export function removeNode(nodeId: string): boolean {
+    const nodeToDelete = nodes.find(n => n.id === nodeId);
+    if (!nodeToDelete) return false;
+    // 开始节点和变量池节点不可删除
+    if (nodeToDelete.type === 'start' || nodeToDelete.type === 'variablePool') {
+      return false;
+    }
+    handleNodeDelete(nodeId);
+    return true;
+  }
+
+  /**
+   * 连接两个节点
+   * @param sourceNodeId - 源节点 ID
+   * @param sourceHandle - 源节点输出引脚 ID (如 'output-result')
+   * @param targetNodeId - 目标节点 ID
+   * @param targetHandle - 目标节点输入引脚 ID (如 'input-data')
+   * @returns 是否连接成功
+   */
+  export function connectNodes(
+    sourceNodeId: string,
+    sourceHandle: string,
+    targetNodeId: string,
+    targetHandle: string
+  ): boolean {
+    const connection: Connection = {
+      source: sourceNodeId,
+      sourceHandle,
+      target: targetNodeId,
+      targetHandle,
+    };
+
+    // 验证连接
+    if (!validateConnection(connection, nodes, edges)) {
+      return false;
+    }
+
+    // 创建边
+    const newEdge: Edge = {
+      id: `edge_${sourceNodeId}_${sourceHandle}_${targetNodeId}_${targetHandle}`,
+      source: sourceNodeId,
+      sourceHandle,
+      target: targetNodeId,
+      targetHandle,
+      type: 'default',
+    };
+
+    edges = [...edges, newEdge];
+    notifyChange();
+    return true;
+  }
+
+  /**
+   * 断开连接（删除边）
+   */
+  export function disconnectNodes(edgeId: string): boolean {
+    const edgeExists = edges.some(e => e.id === edgeId);
+    if (!edgeExists) return false;
+    handleEdgeDelete(edgeId);
+    return true;
+  }
+
+  /**
+   * 断开指定节点的所有连接
+   */
+  export function disconnectAllFromNode(nodeId: string): number {
+    const edgesToRemove = edges.filter(e => e.source === nodeId || e.target === nodeId);
+    const count = edgesToRemove.length;
+    edges = edges.filter(e => e.source !== nodeId && e.target !== nodeId);
+    if (count > 0) notifyChange();
+    return count;
+  }
+
+  /**
+   * 更新节点位置
+   */
+  export function updateNodePosition(nodeId: string, position: { x: number; y: number }): boolean {
+    const nodeIndex = nodes.findIndex(n => n.id === nodeId);
+    if (nodeIndex === -1) return false;
+    nodes = nodes.map(n => n.id === nodeId ? { ...n, position } : n);
+    notifyChange();
+    return true;
+  }
+
+  /**
+   * 更新节点数据
+   */
+  export function updateNodeData(nodeId: string, data: Partial<AllNodeData>): boolean {
+    const nodeIndex = nodes.findIndex(n => n.id === nodeId);
+    if (nodeIndex === -1) return false;
+    nodes = nodes.map(n => n.id === nodeId ? { ...n, data: { ...n.data, ...data } } : n);
+    notifyChange();
+    return true;
+  }
+
+  /**
+   * 获取变量池中的所有变量
+   */
+  export function getVariables(): VariableDefinition[] {
+    return getVariablePoolVariables();
+  }
+
+  /**
+   * 添加变量到变量池
+   */
+  export function addVariable(variable: VariableDefinition): boolean {
+    const poolNode = nodes.find(n => n.type === 'variablePool');
+    if (!poolNode) return false;
+    const poolData = poolNode.data as VariablePoolNodeData;
+    const newVariables = [...poolData.variables, variable];
+    handleVariablesChange(poolNode.id, newVariables);
+    return true;
+  }
+
+  /**
+   * 删除变量
+   */
+  export function removeVariable(variableKey: string): boolean {
+    const poolNode = nodes.find(n => n.type === 'variablePool');
+    if (!poolNode) return false;
+    const poolData = poolNode.data as VariablePoolNodeData;
+    const newVariables = poolData.variables.filter(v => v.key !== variableKey);
+    if (newVariables.length === poolData.variables.length) return false;
+    handleVariablesChange(poolNode.id, newVariables);
+    return true;
+  }
+
+  /**
+   * 应用自动布局
+   */
+  export function applyLayout(direction: LayoutDirection = 'LR'): void {
+    handleApplyLayout(direction);
+  }
+
+  /**
+   * 获取调试状态
+   */
+  export function getDebugState(): DebugStateMap {
+    return debugState;
+  }
+
+  /**
+   * 获取节点的调试结果
+   */
+  export function getNodeDebugResult(nodeId: string): NodeDebugResult | undefined {
+    return debugState.get(nodeId);
+  }
+
+  /**
+   * 清除所有调试状态
+   */
+  export function clearDebugState(): void {
+    debugState = new Map();
+  }
+
+  /**
+   * 清除指定节点的调试状态
+   */
+  export function clearNodeDebugState(nodeId: string): void {
+    const newState = new Map(debugState);
+    newState.delete(nodeId);
+    debugState = newState;
+  }
+
+  /**
+   * 获取 Start 节点的输入 Schema
+   */
+  export function getInputSchema(): Record<string, JsonSchemaProperty> | undefined {
+    const startNode = nodes.find(n => n.type === 'start');
+    if (!startNode) return undefined;
+    return (startNode.data as StartNodeData).inputSchema;
+  }
+
+  /**
+   * 验证工作流（检查是否有未连接的必填输入）
+   */
+  export function validateWorkflow(): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+    
+    for (const node of nodes) {
+      if (node.type === 'start' || node.type === 'variablePool') continue;
+      
+      // 检查是否有连接到此节点的边
+      const incomingEdges = edges.filter(e => e.target === node.id);
+      if (incomingEdges.length === 0 && node.type !== 'loopStart') {
+        errors.push(`节点 "${(node.data as { action?: { displayName: string } }).action?.displayName ?? node.id}" 没有输入连接`);
+      }
+    }
+    
+    return { valid: errors.length === 0, errors };
   }
 </script>
 

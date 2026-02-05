@@ -36,6 +36,27 @@
       "when": 1769931466588,
       "tag": "0004_lazy_shape",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770219043487,
+      "tag": "0005_drop_skill",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770266565835,
+      "tag": "0006_cultured_saracen",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1770287891556,
+      "tag": "0007_light_ezekiel",
+      "breakpoints": true
     }
   ]
 }

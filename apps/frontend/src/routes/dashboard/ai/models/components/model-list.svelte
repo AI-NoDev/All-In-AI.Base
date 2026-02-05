@@ -1,6 +1,5 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import * as Table from '@/lib/components/ui/table';
   import { Button } from '@/lib/components/ui/button';
   import { Badge } from '@/lib/components/ui/badge';
@@ -49,25 +48,23 @@
   }
 </script>
 
-<Card.Root class="flex-1 flex flex-col min-h-0">
-  <Card.Header class="pb-3">
-    <div class="flex items-center justify-between">
-      <div class="flex gap-2">
-        <Button size="sm" onclick={onCreate}>
-          <Icon icon="mdi:plus" class="mr-1 size-4" />新增模型
-        </Button>
-        {#if selectedIds.size > 0}
-          <Button size="sm" variant="destructive" onclick={onBatchDelete}>
-            <Icon icon="mdi:delete" class="mr-1 size-4" />删除({selectedIds.size})
-          </Button>
-        {/if}
-      </div>
-      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onRefresh}>
-        <Icon icon="mdi:refresh" class="size-4" />
+<div class="flex-1 flex flex-col min-h-0 pl-4">
+  <div class="py-3 flex items-center justify-between border-b border-border">
+    <div class="flex gap-2">
+      <Button size="sm" onclick={onCreate}>
+        <Icon icon="mdi:plus" class="mr-1 size-4" />新增模型
       </Button>
+      {#if selectedIds.size > 0}
+        <Button size="sm" variant="destructive" onclick={onBatchDelete}>
+          <Icon icon="mdi:delete" class="mr-1 size-4" />删除({selectedIds.size})
+        </Button>
+      {/if}
     </div>
-  </Card.Header>
-  <Card.Content class="flex-1 min-h-0 flex flex-col">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onRefresh}>
+      <Icon icon="mdi:refresh" class="size-4" />
+    </Button>
+  </div>
+  <div class="flex-1 min-h-0 flex flex-col pt-4">
     {#if loading}
       <div class="space-y-3">
         {#each [1, 2, 3, 4, 5] as _}
@@ -133,5 +130,5 @@
         </ScrollArea>
       </div>
     {/if}
-  </Card.Content>
-</Card.Root>
+  </div>
+</div>

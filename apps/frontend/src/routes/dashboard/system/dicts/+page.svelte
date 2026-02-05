@@ -1,7 +1,30 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface DictsPageSnapshot {
+    selectedGroup: string | null;
+    selectedIds: string[];
+  }
+
+  let pageState: DictsPageSnapshot = {
+    selectedGroup: null,
+    selectedIds: [],
+  };
+
+  let restoreCallback: ((value: DictsPageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<DictsPageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import * as Table from '@/lib/components/ui/table';
   import * as Dialog from '@/lib/components/ui/dialog';
   import * as Select from '@/lib/components/ui/select';
@@ -38,7 +61,7 @@
 
   let dictGroups = $state<DictGroup[]>([]);
   let dicts = $state<Dict[]>([]);
-  let selectedGroup = $state<string | null>(null);
+  let selectedGroup = $state<string | null>(pageState.selectedGroup);
   let loading = $state(true);
   let dictLoading = $state(false);
   let saving = $state(false);
@@ -46,8 +69,22 @@
   let groupDialogOpen = $state(false);
   let editingDict = $state<Dict | null>(null);
   let editingGroup = $state<DictGroup | null>(null);
-  let selectedIds = $state<Set<string>>(new Set());
+  let selectedIds = $state<Set<string>>(new Set(pageState.selectedIds));
   let deleting = $state(false);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    selectedGroup = value.selectedGroup;
+    selectedIds = new Set(value.selectedIds);
+  };
+
+  // Sync state changes back to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      selectedGroup,
+      selectedIds: Array.from(selectedIds),
+    };
+  });
 
   let dictForm = $state({ group: '', label: '', value: '', sort: 0, cssClass: '', listClass: '', isDefault: false, status: '0', remark: '' });
   let groupForm = $state({ key: '', name: '', status: '0', remark: '' });
@@ -167,16 +204,14 @@
   onMount(async () => { await loadGroups(); loading = false; });
 </script>
 
-<div class="flex flex-1 min-h-0 gap-4 px-4 lg:px-6 pb-4">
+<div class="flex flex-1 min-h-0 px-4 lg:px-6 pb-4">
   <!-- 左侧字典分组 -->
-  <Card.Root class="w-64 shrink-0 flex flex-col">
-    <Card.Header class="pb-2">
-      <div class="flex items-center justify-between">
-        <Card.Title class="text-base">字典分组</Card.Title>
-        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={openCreateGroup}><Icon icon="tdesign:add" class="size-4" /></Button>
-      </div>
-    </Card.Header>
-    <Card.Content class="p-0 flex-1 min-h-0">
+  <div class="w-64 shrink-0 flex flex-col pr-4 border-r border-border">
+    <div class="py-3 px-2 flex items-center justify-between">
+      <h3 class="text-base font-semibold">字典分组</h3>
+      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={openCreateGroup}><Icon icon="tdesign:add" class="size-4" /></Button>
+    </div>
+    <div class="flex-1 min-h-0">
       <ScrollArea class="h-full">
         {#if loading}
           <div class="space-y-2 p-4">{#each [1,2,3,4,5] as _}<Skeleton class="h-10 w-full" />{/each}</div>
@@ -199,25 +234,23 @@
           </div>
         {/if}
       </ScrollArea>
-    </Card.Content>
-  </Card.Root>
+    </div>
+  </div>
 
   <!-- 右侧字典项列表 -->
-  <Card.Root class="flex-1 flex flex-col min-h-0">
-    <Card.Header class="pb-3">
-      <div class="flex items-center justify-between">
-        <div class="flex gap-2">
-          <Button size="sm" onclick={openCreateDict} disabled={!selectedGroup}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
-          {#if selectedIds.size > 0}
-            <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
-              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />删除({selectedIds.size})
-            </Button>
-          {/if}
-        </div>
-        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={loadDicts}><Icon icon="tdesign:refresh" class="size-4" /></Button>
+  <div class="flex-1 flex flex-col min-h-0 pl-4">
+    <div class="py-3 flex items-center justify-between border-b border-border">
+      <div class="flex gap-2">
+        <Button size="sm" onclick={openCreateDict} disabled={!selectedGroup}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
+        {#if selectedIds.size > 0}
+          <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
+            <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />删除({selectedIds.size})
+          </Button>
+        {/if}
       </div>
-    </Card.Header>
-    <Card.Content class="flex-1 min-h-0 flex flex-col">
+      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={loadDicts}><Icon icon="tdesign:refresh" class="size-4" /></Button>
+    </div>
+    <div class="flex-1 min-h-0 flex flex-col pt-4">
       {#if !selectedGroup}
         <div class="h-48 flex items-center justify-center text-muted-foreground">请选择左侧字典分组</div>
       {:else if dictLoading}
@@ -261,8 +294,8 @@
         </ScrollArea>
         </div>
       {/if}
-    </Card.Content>
-  </Card.Root>
+    </div>
+  </div>
 </div>
 
 <!-- 字典分组弹窗 -->

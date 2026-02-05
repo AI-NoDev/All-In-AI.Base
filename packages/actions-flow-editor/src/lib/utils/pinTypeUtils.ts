@@ -11,7 +11,6 @@ import type {
   UtilNodeData,
   VariablePoolNodeData,
   AssignNodeData,
-  LoopStartNodeData,
   LoopNodeData,
   IfNodeData,
 } from '../types.js';
@@ -63,20 +62,9 @@ export function getOutputPinType(
     return variable?.type ?? null;
   }
 
-  // 条件节点输出 (true/false 分支连接)
-  if (node.type === 'condition') {
-    if (key === 'true' || key === 'false') {
-      return 'branch';
-    }
-    return null;
-  }
-
-  // 循环节点输出 (循环体连接) - 旧版兼容
+  // 循环节点输出
   if (node.type === 'loop') {
-    if (key === 'body') {
-      return 'loopBody';
-    }
-    // 新版：内部输出引脚 (index, item, item.xxx)
+    // 内部输出引脚 (index, item, item.xxx)
     const loopData = node.data as LoopNodeData;
     if (key === 'index') {
       return 'number';
@@ -89,49 +77,6 @@ export function getOutputPinType(
       const subPath = key.slice(5);
       const parts = subPath.split('.');
       let currentSchema: SchemaProperty | undefined = loopData.itemSchema as SchemaProperty;
-
-      for (const part of parts) {
-        if (!currentSchema) return null;
-        let props: Record<string, SchemaProperty> | undefined;
-        if (currentSchema.properties) {
-          props = currentSchema.properties as Record<string, SchemaProperty>;
-        } else {
-          const unionTypes = (currentSchema.anyOf ??
-            currentSchema.oneOf) as SchemaProperty[] | undefined;
-          if (unionTypes) {
-            for (const item of unionTypes) {
-              if (item.type === 'object' && item.properties) {
-                props = item.properties as Record<string, SchemaProperty>;
-                break;
-              }
-            }
-          }
-        }
-        if (!props || !props[part]) return null;
-        currentSchema = props[part];
-      }
-
-      if (currentSchema) {
-        return getDisplayType(currentSchema);
-      }
-    }
-    return null;
-  }
-
-  // 循环开始节点输出
-  if (node.type === 'loopStart') {
-    const startData = node.data as LoopStartNodeData;
-    if (key === 'item') {
-      return startData.outputType;
-    }
-    if (key === 'index') {
-      return 'number';
-    }
-    // 处理展开的子路径（如 item.id, item.name）
-    if (key.startsWith('item.') && startData.itemSchema) {
-      const subPath = key.slice(5);
-      const parts = subPath.split('.');
-      let currentSchema: SchemaProperty | undefined = startData.itemSchema;
 
       for (const part of parts) {
         if (!currentSchema) return null;
@@ -209,15 +154,7 @@ export function getOutputPinSchema(
     return null;
   }
 
-  if (node.type === 'loopStart') {
-    const startData = node.data as LoopStartNodeData;
-    if (key === 'item') {
-      return startData.itemSchema ?? null;
-    }
-    return null;
-  }
-
-  // 新版循环节点内部输出 schema
+  // 循环节点内部输出 schema
   if (node.type === 'loop') {
     const loopData = node.data as LoopNodeData;
     if (key === 'item') {
@@ -277,14 +214,7 @@ export function getInputPinType(
     return null;
   }
 
-  if (node.type === 'condition') {
-    if (key === 'condition') {
-      return 'boolean';
-    }
-    return null;
-  }
-
-  // 新版 if 节点
+  // if 节点
   if (node.type === 'if') {
     if (key === 'condition') {
       return 'boolean';
@@ -295,20 +225,6 @@ export function getInputPinType(
   if (node.type === 'loop') {
     if (key === 'source') {
       return 'number|array';
-    }
-    return null;
-  }
-
-  if (node.type === 'conditionBranch') {
-    if (key === 'branch') {
-      return 'branch';
-    }
-    return null;
-  }
-
-  if (node.type === 'loopBody') {
-    if (key === 'loop') {
-      return 'loopBody';
     }
     return null;
   }

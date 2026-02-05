@@ -1,6 +1,5 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Card from '@/lib/components/ui/card';
   import { Button } from '@/lib/components/ui/button';
   import { Badge } from '@/lib/components/ui/badge';
   import { Skeleton } from '@/lib/components/ui/skeleton';
@@ -27,16 +26,14 @@
   let { providers, loading, selectedId, onSelect, onCreate, onEdit, onDelete }: Props = $props();
 </script>
 
-<Card.Root class="w-72 shrink-0 flex flex-col">
-  <Card.Header>
-    <div class="flex items-center justify-between">
-      <Card.Title class="text-base">AI 服务提供商</Card.Title>
-      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onCreate}>
-        <Icon icon="mdi:plus" class="size-4" />
-      </Button>
-    </div>
-  </Card.Header>
-  <Card.Content class="p-0 flex-1 min-h-0">
+<div class="w-72 shrink-0 flex flex-col pr-4 border-r border-border">
+  <div class="py-3 px-2 flex items-center justify-between">
+    <h3 class="text-base font-semibold">AI 服务提供商</h3>
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onCreate}>
+      <Icon icon="mdi:plus" class="size-4" />
+    </Button>
+  </div>
+  <div class="flex-1 min-h-0">
     <ScrollArea class="h-full">
       {#if loading}
         <div class="space-y-2 p-4">
@@ -91,5 +88,5 @@
         </div>
       {/if}
     </ScrollArea>
-  </Card.Content>
-</Card.Root>
+  </div>
+</div>

@@ -6,8 +6,6 @@ export { agentSession } from './agentSession';
 export { agentMessage } from './agentMessage';
 export { model } from './model';
 export { provider } from './provider';
-export { skill } from './skill';
-export { tool } from './tool';
 export { toolGroup } from './toolGroup';
 
 // Relations

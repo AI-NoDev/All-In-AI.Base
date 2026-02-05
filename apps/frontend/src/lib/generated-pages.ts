@@ -119,25 +119,11 @@ export const pages: PageMeta[] = [
     "order": 17
   },
   {
-    "path": "/dashboard/ai/tools",
-    "title": "工具管理",
-    "icon": "mdi:tools",
-    "group": "智能体",
-    "order": 20
-  },
-  {
     "path": "/dashboard/ai/agents",
     "title": "智能体管理",
     "icon": "mdi:robot",
     "group": "智能体",
     "order": 30
-  },
-  {
-    "path": "/dashboard/ai/skills",
-    "title": "技能管理",
-    "icon": "mdi:lightning-bolt",
-    "group": "智能体",
-    "order": 40
   },
   {
     "path": "/dashboard/preferences",
@@ -154,20 +140,6 @@ export const pages: PageMeta[] = [
     "icon": "tdesign:setting",
     "group": "系统设置",
     "order": 101
-  },
-  {
-    "path": "/dashboard/ai/tools/[id]",
-    "title": "编辑工具",
-    "icon": "mdi:tools",
-    "group": "智能体",
-    "hidden": true
-  },
-  {
-    "path": "/dashboard/ai/tools/new",
-    "title": "新建工具",
-    "icon": "mdi:tools",
-    "group": "智能体",
-    "hidden": true
   },
   {
     "path": "/dashboard/files/[folderId]/create-text-file",
@@ -217,13 +189,9 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/dicts': "字典管理",
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
-  '/dashboard/ai/tools': "工具管理",
   '/dashboard/ai/agents': "智能体管理",
-  '/dashboard/ai/skills': "技能管理",
   '/dashboard/preferences': "个性化",
   '/dashboard/system-config': "系统参数",
-  '/dashboard/ai/tools/[id]': "编辑工具",
-  '/dashboard/ai/tools/new': "新建工具",
   '/dashboard/files/[folderId]/create-text-file': "新建文本文件",
   '/dashboard/files/[folderId]/edit/[fileId]': "编辑文件",
   '/dashboard/system/users/[id]': "编辑用户",
@@ -268,39 +236,11 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "order": 10
     },
     {
-      "path": "/dashboard/ai/tools",
-      "title": "工具管理",
-      "icon": "mdi:tools",
-      "group": "智能体",
-      "order": 20
-    },
-    {
       "path": "/dashboard/ai/agents",
       "title": "智能体管理",
       "icon": "mdi:robot",
       "group": "智能体",
       "order": 30
-    },
-    {
-      "path": "/dashboard/ai/skills",
-      "title": "技能管理",
-      "icon": "mdi:lightning-bolt",
-      "group": "智能体",
-      "order": 40
-    },
-    {
-      "path": "/dashboard/ai/tools/[id]",
-      "title": "编辑工具",
-      "icon": "mdi:tools",
-      "group": "智能体",
-      "hidden": true
-    },
-    {
-      "path": "/dashboard/ai/tools/new",
-      "title": "新建工具",
-      "icon": "mdi:tools",
-      "group": "智能体",
-      "hidden": true
     }
   ],
   "系统管理": [

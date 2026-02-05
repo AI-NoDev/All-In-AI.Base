@@ -126,7 +126,7 @@ export function generateSchema(root: RootSchema): z.ZodObject<Record<string, z.Z
 
 // Generate TypeScript code representation
 export function generateTypeScriptCode(root: RootSchema): string {
-  const lines: string[] = ['import { z } from "zod";', '', 'export const schema = z.object({'];
+  const lines: string[] = ['import { z } from "zod/v4";', '', 'export const schema = z.object({'];
   
   function generateFieldCode(item: SchemaItem, indent: number): string {
     const pad = '  '.repeat(indent);

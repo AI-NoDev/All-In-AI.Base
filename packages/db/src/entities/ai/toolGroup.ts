@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, char, integer } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, char, integer, jsonb } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
   createZodSchemas, createPermissions,
@@ -26,6 +26,11 @@ const toolGroupOwnFields = {
     field: varchar("icon", { length: 64 }),
     comment: f('icon'),
     config: { canExport: true, canImport: true, exportExcelColumnName: f('icon'), importExcelColumnName: f('icon'), cellType: "STRING" as const }
+  },
+  tools: {
+    field: jsonb("tools").$type<string[]>().default([]),
+    comment: f('tools'),
+    config: { canExport: false, canImport: false }
   },
   orderNum: {
     field: integer("order_num").notNull().default(1),
