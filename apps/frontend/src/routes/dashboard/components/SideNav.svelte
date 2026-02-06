@@ -8,7 +8,7 @@
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
 
   // 过滤隐藏页面
   const visibleGroups = Object.entries(groupedPages)
@@ -20,12 +20,38 @@
     .filter((g) => g.items.length > 0);
 
   let loaded = $state(false);
+  let zoomLevel = $state(100);
+
+  function detectZoom(): number {
+    return Math.round(window.devicePixelRatio * 100);
+  }
+
+  function handleResize() {
+    zoomLevel = detectZoom();
+  }
+
+  let mediaQuery: MediaQueryList | undefined;
+  function handleMediaChange() {
+    zoomLevel = detectZoom();
+  }
 
   onMount(() => {
     const timer = setTimeout(() => {
       loaded = true;
     }, 800);
-    return () => clearTimeout(timer);
+
+    zoomLevel = detectZoom();
+    window.addEventListener('resize', handleResize);
+
+    // 监听 devicePixelRatio 变化（更精确地捕获缩放）
+    mediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    mediaQuery.addEventListener('change', handleMediaChange);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+      mediaQuery?.removeEventListener('change', handleMediaChange);
+    };
   });
 
   function handleNavClick(item: PageMeta) {
@@ -80,6 +106,17 @@
       </Sidebar.GroupContent>
     </Sidebar.Group>
   {/each}
+
+  {#if zoomLevel !== 100}
+    <Sidebar.Group>
+      <Sidebar.GroupContent>
+        <div class="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
+          <Icon icon="tdesign:search" class="size-3.5" />
+          <span>缩放 {zoomLevel}%</span>
+        </div>
+      </Sidebar.GroupContent>
+    </Sidebar.Group>
+  {/if}
 {:else}
   {#each [1, 2] as _}
     <Sidebar.Group>
