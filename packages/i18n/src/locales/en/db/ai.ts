@@ -57,6 +57,9 @@ export const ai = {
       supportLoop: 'Support Loop',
       maxLoops: 'Max Loops',
       contextStrategy: 'Context Strategy',
+      inputSchema: 'Input Schema',
+      structuredOutput: 'Structured Output',
+      outputSchema: 'Output Schema',
       remark: 'Remark',
       status: 'Status',
     },
@@ -142,6 +145,22 @@ export const ai = {
       latencyMs: 'Latency (ms)',
       finishReason: 'Finish Reason',
       extra: 'Extra Data',
+    },
+  },
+
+  schema: {
+    _meta: {
+      name: 'ai_schema',
+      displayName: 'Schema Definition',
+      verboseName: 'Schema',
+      verboseNamePlural: 'Schemas',
+    },
+    fields: {
+      name: 'Schema Name',
+      description: 'Description',
+      schema: 'Schema Content',
+      remark: 'Remark',
+      status: 'Status',
     },
   },
 };

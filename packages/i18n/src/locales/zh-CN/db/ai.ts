@@ -60,6 +60,9 @@ export const ai = {
       supportLoop: '支持循环',
       maxLoops: '最大循环次数',
       contextStrategy: '上下文压缩策略',
+      inputSchema: '输入参数Schema',
+      structuredOutput: '结构化输出',
+      outputSchema: '输出参数Schema',
       remark: '备注',
       status: '状态',
     },
@@ -150,6 +153,23 @@ export const ai = {
       latencyMs: '延迟(毫秒)',
       finishReason: '结束原因',
       extra: '扩展数据',
+    },
+  },
+
+  // Schema表
+  schema: {
+    _meta: {
+      name: 'ai_schema',
+      displayName: 'Schema定义',
+      verboseName: 'Schema',
+      verboseNamePlural: 'Schema列表',
+    },
+    fields: {
+      name: 'Schema名称',
+      description: '描述',
+      schema: 'Schema内容',
+      remark: '备注',
+      status: '状态',
     },
   },
 };

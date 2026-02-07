@@ -7,6 +7,7 @@
 	import ThemeEditorControls from './components/ThemeEditorControls.svelte';
 	import ContextMenu from './components/ContextMenu.svelte';
 	import RightPanel from './components/RightPanel.svelte';
+	import GlobalActions from './components/GlobalActions.svelte';
 
 	const nodeTypes = {
 		start: StartNode,
@@ -32,6 +33,31 @@
 		}
 		// 如果没有选中节点，不做任何操作（保持 panel 状态）
 	});
+
+	// 全局操作回调
+	function handleTestRun() {
+		console.log('Test run');
+	}
+
+	function handleViewHistory() {
+		console.log('View run history');
+	}
+
+	function handleViewIssues() {
+		console.log('View issues');
+	}
+
+	function handlePublish() {
+		console.log('Publish to production');
+	}
+
+	function handlePublishDraft() {
+		console.log('Save as draft');
+	}
+
+	function handleVersionHistory() {
+		console.log('Version history');
+	}
 </script>
 
 <SvelteFlowProvider>
@@ -51,6 +77,16 @@
 			</Controls>
 		</SvelteFlow>
 		<ContextMenu bind:this={contextMenu} />
+		
+		<!-- 全局操作栏 -->
+		<GlobalActions
+			onTestRun={handleTestRun}
+			onViewHistory={handleViewHistory}
+			onViewIssues={handleViewIssues}
+			onPublish={handlePublish}
+			onPublishDraft={handlePublishDraft}
+			onVersionHistory={handleVersionHistory}
+		/>
 		
 		<!-- 右侧配置面板 -->
 		<RightPanel />

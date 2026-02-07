@@ -7,6 +7,7 @@ export type { ToolCall, ToolResult, TextMessageContent, ImageMessageContent, Fil
 export { model, modelFields, modelMeta, modelConfig, modelZodSchemas } from './model';
 export { provider, providerFields, providerMeta, providerConfig, providerZodSchemas } from './provider';
 export { toolGroup, toolGroupFields, toolGroupMeta, toolGroupConfig, toolGroupZodSchemas } from './toolGroup';
+export { schema, schemaFields, schemaMeta, schemaConfig, schemaZodSchemas } from './schema';
 
 // Relations
 export * from './relations';

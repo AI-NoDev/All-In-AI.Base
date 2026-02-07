@@ -21,6 +21,9 @@
 	let sourceConnected = $derived(workflowState.edges.some(e => e.source === id));
 	let targetConnected = $derived(workflowState.edges.some(e => e.target === id));
 
+	// Agent 颜色
+	let agentColor = $derived(data.agentColor ?? '#14b8a6');
+
 	onMount(() => {
 		configPanelRegistry.register('agent', ConfigPanel);
 	});
@@ -35,7 +38,7 @@
 <BaseNode nodeId={id} nodeData={data} {menuItems}>
 	{#snippet content(nodeData)}
 		<div class="flex items-center gap-3">
-			<Avatar.Root class="rounded-lg bg-teal-500 text-white h-8 w-8">
+			<Avatar.Root class="rounded-lg text-white h-8 w-8" style="background-color: {agentColor}">
 				<div class="flex items-center justify-center w-full h-full">
 					<Icon icon="mdi:robot-outline" width="18" height="18" />
 				</div>
@@ -44,6 +47,8 @@
 				<span class="text-sm font-semibold text-foreground tracking-tight">{nodeData.title || 'Agent'}</span>
 				{#if nodeData.agentName}
 					<span class="text-xs text-muted-foreground">{nodeData.agentName}</span>
+				{:else}
+					<span class="text-xs text-amber-500">未选择智能体</span>
 				{/if}
 			</div>
 		</div>

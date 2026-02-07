@@ -1,178 +1,155 @@
+/**
+ * 解析器 - 将 Zod Schema / JSON Schema 转换为简化数据结构
+ */
+
 import { z } from 'zod';
-import type { SchemaItem, RootSchema } from './types.js';
+import type { SchemaType, Field, RootSchema } from './types.js';
 import { generateId } from './types.js';
 
-// Internal type for accessing Zod's internal structure
-interface ZodInternalDef {
+// ==================== Zod Schema 解析 ====================
+
+interface ZodDef {
   typeName?: string;
   innerType?: z.ZodTypeAny;
   type?: z.ZodTypeAny;
   value?: string | number | boolean;
+  values?: readonly (string | number)[];
   shape?: Record<string, z.ZodTypeAny>;
   options?: z.ZodTypeAny[];
-  defaultValue?: () => unknown;
 }
 
-interface ZodInternal {
-  _zod?: {
-    def?: ZodInternalDef;
-  };
+function getZodDef(schema: z.ZodTypeAny): ZodDef | undefined {
+  const s = schema as unknown as { _zod?: { def?: ZodDef }; _def?: ZodDef };
+  return s._zod?.def ?? s._def;
 }
 
-function getZodDef(schema: z.ZodTypeAny): ZodInternalDef | undefined {
-  return (schema as unknown as ZodInternal)._zod?.def;
-}
+function zodToSchemaType(schema: z.ZodTypeAny): SchemaType {
+  const def = getZodDef(schema);
+  if (!def) return { id: generateId(), type: 'string' };
 
-/**
- * Parse a Zod schema into the visual editor IR format.
- * Note: This is a best-effort parser and may not handle all Zod schema types.
- * Works with Zod v4.
- */
-export function parseZodSchema(schema: z.ZodTypeAny, name: string = ''): SchemaItem | null {
-  const item: SchemaItem = {
-    id: generateId(),
-    name,
-    type: 'string',
-    required: true,
-    isArray: false,
-  };
+  const typeName = def.typeName;
 
-  const zodDef = getZodDef(schema);
-  
-  if (!zodDef) {
-    // Try to infer type from schema behavior
-    try {
-      schema.parse('test');
-      item.type = 'string';
-    } catch {
-      try {
-        schema.parse(123);
-        item.type = 'number';
-      } catch {
-        try {
-          schema.parse(true);
-          item.type = 'boolean';
-        } catch {
-          // Default to string
-        }
-      }
-    }
-    return item;
+  // Handle wrappers
+  if (typeName === 'ZodOptional' && def.innerType) {
+    const inner = zodToSchemaType(def.innerType);
+    return { ...inner, optional: true };
+  }
+  if (typeName === 'ZodNullable' && def.innerType) {
+    // Treat nullable as optional since we removed nullable support
+    const inner = zodToSchemaType(def.innerType);
+    return { ...inner, optional: true };
   }
 
-  const typeName = zodDef.typeName;
-
-  // Handle optional
-  if (typeName === 'ZodOptional') {
-    const innerType = zodDef.innerType;
-    if (innerType) {
-      const inner = parseZodSchema(innerType, name);
-      if (inner) {
-        return { ...inner, required: false };
-      }
-    }
-    item.required = false;
-    return item;
-  }
-
-  // Handle array
-  if (typeName === 'ZodArray') {
-    const elementType = zodDef.type;
-    if (elementType) {
-      const inner = parseZodSchema(elementType, name);
-      if (inner) {
-        return { ...inner, isArray: true };
-      }
-    }
-    item.isArray = true;
-    return item;
-  }
-
-  // Handle default
-  if (typeName === 'ZodDefault') {
-    const innerType = zodDef.innerType;
-    const defaultValue = zodDef.defaultValue;
-    if (innerType) {
-      const inner = parseZodSchema(innerType, name);
-      if (inner) {
-        return { ...inner, default: defaultValue?.() };
-      }
-    }
-    return item;
-  }
-
-  // Handle basic types
   switch (typeName) {
     case 'ZodString':
-      item.type = 'string';
-      break;
+      return { id: generateId(), type: 'string' };
     case 'ZodNumber':
-      item.type = 'number';
-      break;
+      return { id: generateId(), type: 'number' };
     case 'ZodBoolean':
-      item.type = 'boolean';
-      break;
+      return { id: generateId(), type: 'boolean' };
     case 'ZodLiteral':
-      item.type = 'literal';
-      item.literalValue = zodDef.value;
-      break;
-    case 'ZodObject':
-      item.type = 'object';
-      item.fields = [];
-      const shape = zodDef.shape;
-      if (shape) {
-        for (const [key, value] of Object.entries(shape)) {
-          const field = parseZodSchema(value, key);
-          if (field) {
-            item.fields.push(field);
-          }
+      return { id: generateId(), type: 'literal', value: def.value as string | number | boolean };
+    case 'ZodEnum':
+      return { id: generateId(), type: 'enum', values: [...(def.values || [])] as (string | number)[] };
+    case 'ZodArray': {
+      const item = def.type ? zodToSchemaType(def.type) : { id: generateId(), type: 'string' as const };
+      return { id: generateId(), type: 'array', item };
+    }
+    case 'ZodUnion': {
+      const options = (def.options || []).map(zodToSchemaType);
+      return { id: generateId(), type: 'union', options: options.length > 0 ? options : [{ id: generateId(), type: 'string' }] };
+    }
+    case 'ZodObject': {
+      const fields: Field[] = [];
+      if (def.shape) {
+        for (const [name, value] of Object.entries(def.shape)) {
+          const schemaType = zodToSchemaType(value);
+          fields.push({ ...schemaType, name } as Field);
         }
       }
-      break;
-    case 'ZodUnion':
-      item.type = 'union';
-      item.options = [];
-      const options = zodDef.options;
-      if (options) {
-        for (let i = 0; i < options.length; i++) {
-          const option = parseZodSchema(options[i], `option_${i + 1}`);
-          if (option) {
-            item.options.push(option);
-          }
-        }
-      }
-      break;
+      return { id: generateId(), type: 'object', fields };
+    }
     default:
-      // Unknown type, default to string
-      item.type = 'string';
+      return { id: generateId(), type: 'string' };
   }
-
-  return item;
 }
 
-/**
- * Parse a Zod object schema into a RootSchema
- */
-export function parseZodObjectToRoot(schema: z.ZodObject<z.ZodRawShape>): RootSchema {
-  const root: RootSchema = {
-    type: 'object',
-    id: 'root',
-    fields: [],
-  };
+/** 从 Zod Schema 解析为 RootSchema */
+export function fromZodSchema(schema: z.ZodObject<z.ZodRawShape>): RootSchema {
+  const result = zodToSchemaType(schema);
+  if (result.type === 'object') {
+    return { type: 'object', id: 'root', fields: result.fields };
+  }
+  return { type: 'object', id: 'root', fields: [] };
+}
 
-  const zodDef = getZodDef(schema);
-  
-  if (zodDef) {
-    const shape = zodDef.shape;
-    if (shape) {
-      for (const [key, value] of Object.entries(shape)) {
-        const field = parseZodSchema(value, key);
-        if (field) {
-          root.fields.push(field);
-        }
+// ==================== JSON Schema 解析 ====================
+
+function jsonSchemaToSchemaType(json: Record<string, unknown>, name?: string): SchemaType | Field {
+  const id = generateId();
+  const description = json.description as string | undefined;
+  const type = json.type as string | string[];
+  const nullable = Array.isArray(type) && type.includes('null');
+  const actualType = Array.isArray(type) ? type.find(t => t !== 'null') : type;
+
+  let result: SchemaType;
+
+  if (json.const !== undefined) {
+    result = { id, type: 'literal', value: json.const as string | number | boolean };
+  } else if (json.enum) {
+    result = { id, type: 'enum', values: json.enum as (string | number)[] };
+  } else if (json.oneOf || json.anyOf) {
+    const options = ((json.oneOf || json.anyOf) as Record<string, unknown>[]).map(o => jsonSchemaToSchemaType(o) as SchemaType);
+    result = { id, type: 'union', options };
+  } else if (actualType === 'string') {
+    result = { id, type: 'string' };
+  } else if (actualType === 'number' || actualType === 'integer') {
+    result = { id, type: 'number' };
+  } else if (actualType === 'boolean') {
+    result = { id, type: 'boolean' };
+  } else if (actualType === 'array') {
+    const items = json.items as Record<string, unknown> | undefined;
+    const item = items ? jsonSchemaToSchemaType(items) as SchemaType : { id: generateId(), type: 'string' as const };
+    result = { id, type: 'array', item };
+  } else if (actualType === 'object') {
+    const properties = json.properties as Record<string, Record<string, unknown>> | undefined;
+    const required = json.required as string[] | undefined;
+    const fields: Field[] = [];
+    if (properties) {
+      for (const [key, value] of Object.entries(properties)) {
+        const field = jsonSchemaToSchemaType(value, key) as Field;
+        field.optional = !required?.includes(key);
+        fields.push(field);
       }
+    }
+    result = { id, type: 'object', fields };
+  } else {
+    result = { id, type: 'string' };
+  }
+
+  if (description) result.description = description;
+  // Treat nullable as optional since we removed nullable support
+  if (nullable) result.optional = true;
+
+  if (name !== undefined) {
+    return { ...result, name } as Field;
+  }
+  return result;
+}
+
+/** 从 JSON Schema 解析为 RootSchema */
+export function fromJsonSchema(json: Record<string, unknown>): RootSchema {
+  const properties = json.properties as Record<string, Record<string, unknown>> | undefined;
+  const required = json.required as string[] | undefined;
+  const fields: Field[] = [];
+
+  if (properties) {
+    for (const [name, value] of Object.entries(properties)) {
+      const field = jsonSchemaToSchemaType(value, name) as Field;
+      field.optional = !required?.includes(name);
+      fields.push(field);
     }
   }
 
-  return root;
+  return { type: 'object', id: 'root', fields };
 }

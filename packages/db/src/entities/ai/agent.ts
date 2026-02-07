@@ -81,6 +81,24 @@ const agentOwnFields = {
     comment: f('contextStrategy'),
     config: { canExport: true, canImport: true, exportExcelColumnName: f('contextStrategy'), importExcelColumnName: f('contextStrategy'), cellType: "STRING" as const }
   },
+  // 输入参数 Schema (JSON Schema 格式)
+  inputSchema: {
+    field: jsonb("input_schema").$type<Record<string, unknown>>(),
+    comment: f('inputSchema'),
+    config: { canExport: false, canImport: false }
+  },
+  // 是否启用结构化输出
+  structuredOutput: {
+    field: boolean("structured_output").notNull().default(false),
+    comment: f('structuredOutput'),
+    config: { canExport: true, canImport: true, exportExcelColumnName: f('structuredOutput'), importExcelColumnName: f('structuredOutput'), cellType: "STRING" as const }
+  },
+  // 输出参数 Schema (JSON Schema 格式)
+  outputSchema: {
+    field: jsonb("output_schema").$type<Record<string, unknown>>(),
+    comment: f('outputSchema'),
+    config: { canExport: false, canImport: false }
+  },
   remark: {
     field: text("remark"),
     comment: f('remark'),
@@ -119,6 +137,8 @@ export const agentZodSchemas = {
     ...describeRefinements,
     toolIds: z.array(z.uuid()).describe(agentFields.toolIds.comment()),
     nativeTools: z.array(z.string()).describe(agentFields.nativeTools.comment()),
+    inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
+    outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
     allowedUserIds: z.array(z.uuid()).describe(agentFields.allowedUserIds.comment()),
     allowedRoleIds: z.array(z.uuid()).describe(agentFields.allowedRoleIds.comment()),
     allowedDeptIds: z.array(z.uuid()).describe(agentFields.allowedDeptIds.comment()),
@@ -127,6 +147,8 @@ export const agentZodSchemas = {
     ...describeRefinements,
     toolIds: z.array(z.uuid()).nullable().describe(agentFields.toolIds.comment()),
     nativeTools: z.array(z.string()).nullable().describe(agentFields.nativeTools.comment()),
+    inputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.inputSchema.comment()),
+    outputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.outputSchema.comment()),
     allowedUserIds: z.array(z.uuid()).nullable().describe(agentFields.allowedUserIds.comment()),
     allowedRoleIds: z.array(z.uuid()).nullable().describe(agentFields.allowedRoleIds.comment()),
     allowedDeptIds: z.array(z.uuid()).nullable().describe(agentFields.allowedDeptIds.comment()),
@@ -135,6 +157,8 @@ export const agentZodSchemas = {
     ...describeRefinements,
     toolIds: z.array(z.uuid()).optional().describe(agentFields.toolIds.comment()),
     nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
+    inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
+    outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
     allowedUserIds: z.array(z.uuid()).optional().describe(agentFields.allowedUserIds.comment()),
     allowedRoleIds: z.array(z.uuid()).optional().describe(agentFields.allowedRoleIds.comment()),
     allowedDeptIds: z.array(z.uuid()).optional().describe(agentFields.allowedDeptIds.comment()),

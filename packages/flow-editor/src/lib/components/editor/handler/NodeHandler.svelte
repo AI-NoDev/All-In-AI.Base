@@ -9,7 +9,7 @@
 		top?: number;
 	}
 
-	let { type = 'source', position = Position.Right, connected = false, top, class: className, style, ...rest }: Props = $props();
+	let { type = 'source', position = Position.Right, connected = false, top, class: className, style, id, ...rest }: Props = $props();
 
 	// 构建 style 字符串
 	let computedStyle = $derived.by(() => {
@@ -24,7 +24,7 @@
 	});
 </script>
 
-<Handle {type} {position} class="node-handle {connected ? 'connected' : ''} {className ?? ''}" style={computedStyle} {...rest}>
+<Handle {type} {position} {id} class="node-handle {connected ? 'connected' : ''} {className ?? ''}" style={computedStyle} {...rest}>
 	<!-- 默认扁平引脚 -->
 	<div class="handle-flat"></div>
 	<!-- hover/选中/连接时的圆形按钮 -->
@@ -35,12 +35,29 @@
 
 <style>
 	:global(.node-handle) {
-		/* Handle 尺寸设为扁平引脚大小，让连接点在引脚位置 */
+		/* Handle 尺寸设为扁平引脚的实际尺寸，连接线会从这里出来 */
 		width: 2px !important;
 		height: 8px !important;
 		background: transparent !important;
 		border: none !important;
 		z-index: 1000 !important;
+	}
+
+	/* 扩大点击区域 */
+	:global(.node-handle)::before {
+		content: '';
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	/* 隐藏的 handle - 使用 visibility 而不是 display:none，保持位置计算 */
+	:global(.node-handle.hidden) {
+		visibility: hidden !important;
+		pointer-events: none !important;
 	}
 
 	/* 扁平引脚 - 默认显示，相对于 handle 居中 */
@@ -54,6 +71,7 @@
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+		pointer-events: none;
 	}
 
 	/* 已连接时扁平引脚高亮 */
@@ -79,6 +97,7 @@
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+		pointer-events: none;
 	}
 
 	/* hover 时显示圆形，隐藏扁平 */

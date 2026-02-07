@@ -7,6 +7,7 @@ export { agentMessage } from './agentMessage';
 export { model } from './model';
 export { provider } from './provider';
 export { toolGroup } from './toolGroup';
+export { schema } from './schema';
 
 // Relations
 export * from './relations';

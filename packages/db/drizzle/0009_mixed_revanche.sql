@@ -1,0 +1,1 @@
+ALTER TABLE "ai_agent" ADD COLUMN "structured_output" boolean DEFAULT false NOT NULL;

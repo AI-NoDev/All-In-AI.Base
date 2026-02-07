@@ -165,11 +165,11 @@
     </svg>
 
     <!-- Zoom Controls -->
-    <ButtonGroup.Root class="w-full mt-2">
+    <ButtonGroup.Root class="w-full mt-1">
       <Button onclick={handleZoomOut} aria-label="Zoom out" size="icon" variant="outline">
         <Icon icon="ic:outline-zoom-out" width="20" height="20" />
       </Button>
-      <div class="flex flex-1 items-center justify-center border-y border-border bg-background text-sm">
+      <div class="flex flex-1 items-center justify-center bg-background text-sm">
         {(zoomLevel * 100).toFixed(0)}%
       </div>
       <Button onclick={handleZoomIn} aria-label="Zoom in" size="icon" variant="outline">

@@ -21,9 +21,11 @@
 		quickActions?: Snippet;
 		/** 下拉菜单项 */
 		menuItems?: MenuItem[];
+		/** 固定宽度 (默认 min-w-[240px]) */
+		width?: number;
 	}
 
-	let { nodeId, nodeData, content, quickActions, menuItems = [] }: Props = $props();
+	let { nodeId, nodeData, content, quickActions, menuItems = [], width }: Props = $props();
 
 	// 是否有描述
 	let hasDesc = $derived(!!nodeData.desc);
@@ -33,8 +35,10 @@
 </script>
 
 <div
-	class="group relative min-w-[240px] rounded-lg border border-border bg-card text-xs shadow-sm transition-all
+	class="group relative rounded-lg border border-border bg-card text-xs shadow-sm transition-all
 		{isHighlighted ? 'outline outline-1 outline-primary outline-offset-1 shadow-primary/15 shadow-lg' : ''}"
+	style:width={width ? `${width}px` : undefined}
+	style:min-width={width ? undefined : '240px'}
 >
 	<!-- Toolbar: 快捷按钮 + 三点菜单 -->
 	<div class="absolute -top-9 right-0 flex items-center gap-1 opacity-0 transition-opacity
@@ -81,7 +85,7 @@
 
 	<!-- 描述 Footer -->
 	{#if hasDesc}
-		<div class="border-t border-border px-3 py-2 text-xs text-muted-foreground">
+		<div class="border-t border-border px-3 py-2 text-xs text-muted-foreground break-words">
 			{nodeData.desc}
 		</div>
 	{/if}

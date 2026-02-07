@@ -5,6 +5,7 @@
 	import BaseNode from '../BaseNode.svelte';
 	import NodeHandler from '../../handler/NodeHandler.svelte';
 	import type { StartNodeData, InputFieldType } from './types.js';
+	import { BUILTIN_USER_FILES_FIELD } from './types.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
@@ -20,17 +21,19 @@
 	// 检查 source handle 是否已连接
 	let sourceConnected = $derived(workflowState.edges.some(e => e.source === id));
 
-	// 输入字段列表
-	let inputs = $derived(data.inputs ?? []);
+	// 输入字段列表（内置字段 + 用户自定义字段）
+	let allInputs = $derived([BUILTIN_USER_FILES_FIELD, ...(data.inputs ?? [])]);
 
 	// 字段类型图标映射
 	const fieldTypeIcons: Record<InputFieldType, string> = {
 		text: 'mdi:format-text',
 		paragraph: 'mdi:text-long',
-		number: 'mdi:numeric',
 		select: 'mdi:form-dropdown',
+		number: 'mdi:numeric',
+		checkbox: 'mdi:checkbox-marked-outline',
 		file: 'mdi:file-outline',
 		files: 'mdi:file-multiple-outline',
+		json: 'mdi:code-json',
 	};
 
 	// 注册配置面板
@@ -45,27 +48,33 @@
 	];
 </script>
 
-<BaseNode nodeId={id} nodeData={data} {menuItems}>
+<BaseNode nodeId={id} nodeData={data} {menuItems} width={240}>
 	{#snippet content(nodeData)}
 		<!-- Header -->
 		<div class="flex items-center gap-3">
-			<Avatar.Root class="rounded-lg bg-green-500 text-white h-8 w-8">
+			<Avatar.Root class="rounded-lg bg-green-500 text-white h-8 w-8 shrink-0">
 				<div class="flex items-center justify-center w-full h-full">
 					<Icon icon="material-symbols:play-arrow" width="18" height="18" />
 				</div>
 			</Avatar.Root>
-			<span class="text-sm font-semibold text-foreground tracking-tight">{nodeData.title || '开始'}</span>
+			<span class="text-sm font-semibold text-foreground tracking-tight truncate">{nodeData.title || '开始'}</span>
 		</div>
 
 		<!-- 输入字段列表 -->
-		{#if inputs.length > 0}
+		{#if allInputs.length > 0}
 			<div class="mt-3 border-t border-border -mx-3 px-3 pt-2 space-y-1">
-				{#each inputs as field (field.id)}
-					<div class="flex items-center gap-2 py-1.5 text-xs">
+				{#each allInputs as field (field.id)}
+					<div class="flex items-center gap-2 py-1.5 text-xs {field.hidden ? 'opacity-50' : ''}">
 						<Icon icon={fieldTypeIcons[field.type]} class="w-3.5 h-3.5 text-muted-foreground shrink-0" />
 						<span class="text-foreground truncate">{field.label}</span>
+						{#if field.builtin}
+							<Icon icon="mdi:lock" class="w-3 h-3 text-muted-foreground shrink-0" />
+						{/if}
 						{#if field.required}
-							<span class="text-destructive text-xs">*</span>
+							<span class="text-destructive text-xs font-bold">*</span>
+						{/if}
+						{#if field.hidden}
+							<Icon icon="mdi:eye-off" class="w-3 h-3 text-muted-foreground shrink-0" />
 						{/if}
 						<span class="ml-auto text-muted-foreground font-mono text-[10px] truncate max-w-[80px]">{field.variable}</span>
 					</div>

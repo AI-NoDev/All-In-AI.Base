@@ -1,28 +1,39 @@
-// Components
-export { ZodVisualEditor, SchemaItem as SchemaItemComponent, SchemaPreview } from './components/editor/index.js';
-
 // Types
-export type { SchemaItem, SchemaType, RootSchema, EditorLabels, ZodVisualEditorRef } from './types.js';
-export {
-  isObjectType,
-  isUnionType,
-  isContainerType,
-  isLeafType,
-  generateId,
-  createDefaultItem,
-  createRootSchema,
-  findItemById,
-  getRefTargets,
-  cloneItem,
-  defaultLabels,
+export type {
+  FieldType,
+  SchemaType,
+  Field,
+  RootSchema,
+  StringSchema,
+  NumberSchema,
+  BooleanSchema,
+  LiteralSchema,
+  EnumSchema,
+  ArraySchema,
+  UnionSchema,
+  ObjectSchema,
 } from './types.js';
 
-// Generator
-export { generateSchema, generateTypeScriptCode } from './generator.js';
+// Type utilities
+export {
+  TYPE_ICONS,
+  generateId,
+  createSchemaType,
+  createField,
+  createRootSchema,
+  cloneSchemaType,
+  cloneField,
+} from './types.js';
 
-// Parser
-export { parseZodSchema, parseZodObjectToRoot } from './parser.js';
+// Generator (RootSchema → Zod/JSON Schema/TypeScript)
+export { toZodSchema, toJsonSchema, toTypeScriptCode } from './generator.js';
 
-// AI Tools
-export { zodSchemaEditorTools, callTool as callZodSchemaEditorTool, getToolsForApi as getZodSchemaEditorToolsForApi } from './tools.js';
-export type { ZodSchemaEditorToolName, ToolCallResult as ZodSchemaEditorToolCallResult, ApiToolDefinition } from './tools.js';
+// Parser (Zod/JSON Schema → RootSchema)
+export { fromZodSchema, fromJsonSchema } from './parser.js';
+
+// Examples
+export { examples } from './examples.js';
+
+// Components
+export { default as ZodVisualEditor } from './components/editor/zod-visual-editor.svelte';
+export { default as FieldItem } from './components/editor/field-item.svelte';
