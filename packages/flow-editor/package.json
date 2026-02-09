@@ -79,6 +79,10 @@
 		"d3-interpolate": "^3.0.1",
 		"d3-selection": "^3.0.0",
 		"d3-zoom": "^3.0.0",
-		"paneforge": "^1.0.2"
+		"html-to-image": "^1.11.13",
+		"lexical": "0.33.1",
+		"paneforge": "^1.0.2",
+		"svelte-lexical": "^0.6.3",
+		"yaml": "^2.8.2"
 	}
 }

@@ -1,14 +1,12 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Position } from '@xyflow/svelte';
 	import { onMount } from 'svelte';
 	import BaseNode from '../BaseNode.svelte';
-	import NodeHandler from '../../handler/NodeHandler.svelte';
 	import type { StartNodeData, InputFieldType } from './types.js';
 	import { BUILTIN_USER_FILES_FIELD } from './types.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
-	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
+	import { configPanelRegistry } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
 
 	interface Props {
@@ -17,9 +15,6 @@
 	}
 
 	let { id, data }: Props = $props();
-
-	// 检查 source handle 是否已连接
-	let sourceConnected = $derived(workflowState.edges.some(e => e.source === id));
 
 	// 输入字段列表（内置字段 + 用户自定义字段）
 	let allInputs = $derived([BUILTIN_USER_FILES_FIELD, ...(data.inputs ?? [])]);
@@ -43,12 +38,11 @@
 
 	const menuItems = [
 		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
-		{ label: '复制', icon: 'mdi:content-copy', action: () => console.log('copy', id) },
-		{ label: '删除', icon: 'mdi:delete', action: () => console.log('delete', id), variant: 'destructive' as const },
 	];
 </script>
 
-<BaseNode nodeId={id} nodeData={data} {menuItems} width={240}>
+<!-- 开始节点：无输入引脚，有输出引脚（ID 为 'source'） -->
+<BaseNode nodeId={id} nodeData={data} {menuItems} showInput={false} outputId="source" width={240}>
 	{#snippet content(nodeData)}
 		<!-- Header -->
 		<div class="flex items-center gap-3">
@@ -89,6 +83,3 @@
 		</Button>
 	{/snippet}
 </BaseNode>
-
-<!-- 输出引脚对齐 header 中心：padding(12) + avatar高度(32)/2 = 28px -->
-<NodeHandler type="source" position={Position.Right} connected={sourceConnected} top={28} />

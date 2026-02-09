@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Position } from '@xyflow/svelte';
 	import { onMount } from 'svelte';
 	import BaseNode from '../BaseNode.svelte';
-	import NodeHandler from '../../handler/NodeHandler.svelte';
 	import type { AgentNodeData } from './types.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
@@ -17,10 +15,6 @@
 
 	let { id, data }: Props = $props();
 
-	// 检查 handle 是否已连接
-	let sourceConnected = $derived(workflowState.edges.some(e => e.source === id));
-	let targetConnected = $derived(workflowState.edges.some(e => e.target === id));
-
 	// Agent 颜色
 	let agentColor = $derived(data.agentColor ?? '#14b8a6');
 
@@ -31,11 +25,11 @@
 	const menuItems = [
 		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
 		{ label: '复制', icon: 'mdi:content-copy', action: () => console.log('copy', id) },
-		{ label: '删除', icon: 'mdi:delete', action: () => console.log('delete', id), variant: 'destructive' as const },
+		{ label: '删除', icon: 'mdi:delete', action: () => workflowState.removeNode(id), variant: 'destructive' as const },
 	];
 </script>
 
-<BaseNode nodeId={id} nodeData={data} {menuItems}>
+<BaseNode nodeId={id} nodeData={data} {menuItems} outputId="source">
 	{#snippet content(nodeData)}
 		<div class="flex items-center gap-3">
 			<Avatar.Root class="rounded-lg text-white h-8 w-8" style="background-color: {agentColor}">
@@ -60,7 +54,3 @@
 		</Button>
 	{/snippet}
 </BaseNode>
-
-<!-- 输入/输出引脚对齐 header 中心：padding(12) + avatar高度(32)/2 = 28px -->
-<NodeHandler type="target" position={Position.Left} connected={targetConnected} top={28} />
-<NodeHandler type="source" position={Position.Right} connected={sourceConnected} top={28} />

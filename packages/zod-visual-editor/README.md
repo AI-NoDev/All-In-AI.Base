@@ -9,10 +9,10 @@ A visual editor for building [Zod](https://zod.dev) schemas in Svelte 5. Build c
 
 - 🎨 **Visual Schema Builder** - Intuitive interface for building Zod schemas
 - 🔄 **Real-time Code Generation** - See generated Zod/TypeScript code as you build
-- 🌐 **i18n Support** - Fully customizable labels for internationalization
+- 🌐 **i18n Support** - Pass a translation function for internationalization
 - 📦 **Zod v4 Compatible** - Works with the latest Zod version
 - 🎯 **Type Safe** - Full TypeScript support with exported types
-- ↕️ **Reorder Fields** - Move fields up/down with arrow buttons
+- ↕️ **Drag & Drop Reorder** - Reorder fields with drag and drop
 - 🎨 **Tailwind CSS** - Styled with Tailwind CSS and shadcn-svelte components
 
 ## Installation
@@ -35,13 +35,13 @@ bun add zod-visual-editor zod
 
 ```svelte
 <script lang="ts">
+  import { ZodVisualEditor, toZodSchema, createRootSchema, type RootSchema } from '@qiyu-allinai/zod-visual-editor';
   import { z } from 'zod';
-  import { ZodVisualEditor, generateSchema, createRootSchema, type RootSchema } from 'zod-visual-editor';
 
   let schema = $state<RootSchema>(createRootSchema());
 
   function handleExport() {
-    const zodSchema = generateSchema(schema);
+    const zodSchema = toZodSchema(schema);
     const jsonSchema = z.toJSONSchema(zodSchema);
     console.log(JSON.stringify(jsonSchema, null, 2));
   }
@@ -53,43 +53,43 @@ bun add zod-visual-editor zod
 
 ## Internationalization (i18n)
 
-Customize all UI labels by passing a `labels` prop:
+Customize all UI labels by passing a `t` function prop:
 
 ```svelte
 <script lang="ts">
-  import { ZodVisualEditor, type EditorLabels } from 'zod-visual-editor';
+  import { ZodVisualEditor } from '@qiyu-allinai/zod-visual-editor';
 
-  const zhLabels: EditorLabels = {
-    // Type labels
-    string: '字符串',
-    number: '数字',
-    boolean: '布尔',
-    datetime: '日期时间',
-    literal: '字面量',
-    object: '对象',
-    union: '联合类型',
-    // UI labels
-    required: '必填',
-    array: '数组',
-    reference: '引用',
-    description: '描述',
-    descriptionPlaceholder: '字段描述 (用于 AI 理解)',
-    literalValue: '字面量值',
-    literalValuePlaceholder: '输入字面量值',
-    selectReference: '选择引用',
-    fieldName: '字段名',
-    addField: '添加字段',
-    showCode: '显示代码',
-    hideCode: '隐藏代码',
-    schemaEditor: 'Schema 编辑器',
-    noFieldsTitle: '暂无字段',
-    noFieldsDescription: '点击"添加字段"开始构建 Schema',
-    objectEmptyHint: '暂无字段，点击 + 添加',
-    unionEmptyHint: '暂无选项，点击 + 添加 (至少2个)',
-  };
+  // Translation function
+  function t(key: string, fallback?: string): string {
+    const translations: Record<string, string> = {
+      'schemaEditor.title': 'Schema 编辑器',
+      'schemaEditor.visual': '可视化',
+      'schemaEditor.code': '代码',
+      'schemaEditor.addField': '添加字段',
+      'schemaEditor.editField': '编辑字段',
+      'schemaEditor.noFields': '暂无字段',
+      'schemaEditor.noFieldsHint': '点击"添加字段"开始',
+      'schemaEditor.fieldName': '字段名',
+      'schemaEditor.fieldType': '类型',
+      'schemaEditor.optional': '可选',
+      'schemaEditor.literalValue': '字面量值',
+      'schemaEditor.enumValues': '枚举值',
+      'schemaEditor.itemType': '元素类型',
+      'schemaEditor.unionOptions': 'Union 选项',
+      'schemaEditor.types.string': '字符串',
+      'schemaEditor.types.number': '数字',
+      'schemaEditor.types.boolean': '布尔',
+      'schemaEditor.types.literal': '字面量',
+      'schemaEditor.types.enum': '枚举',
+      'schemaEditor.types.array': '数组',
+      'schemaEditor.types.union': '联合',
+      'schemaEditor.types.object': '对象',
+    };
+    return translations[key] ?? fallback ?? key;
+  }
 </script>
 
-<ZodVisualEditor bind:schema labels={zhLabels} />
+<ZodVisualEditor bind:schema {t} />
 ```
 
 ## Supported Types
@@ -99,17 +99,16 @@ Customize all UI labels by passing a `labels` prop:
 | `string` | String values |
 | `number` | Numeric values |
 | `boolean` | True/false values |
-| `datetime` | ISO datetime strings |
-| `literal` | Literal/constant values |
-| `object` | Nested object with fields |
+| `literal` | Literal/constant values (string, number, or boolean) |
+| `enum` | Enumeration of string or number values |
+| `array` | Array of any type |
 | `union` | Union of multiple types |
+| `object` | Nested object with fields |
 
 ### Type Modifiers
 
-- **Required/Optional** - Toggle whether a field is required
-- **Array** - Wrap any type in an array
-- **Reference (Lazy)** - Create recursive schema references
-- **Description** - Add descriptions for documentation/AI
+- **Optional** - Toggle whether a field is optional
+- **Description** - Add descriptions for documentation
 
 ## API Reference
 
@@ -122,53 +121,75 @@ Main editor component.
 ```typescript
 interface Props {
   schema?: RootSchema;           // The schema to edit (bindable)
-  labels?: EditorLabels;         // Custom labels for i18n
   onSchemaChange?: (schema: RootSchema) => void;  // Change callback
   height?: string;               // Editor height (default: '600px')
+  title?: string;                // Custom title
+  t?: (key: string, fallback?: string) => string;  // Translation function
+  actions?: Snippet;             // Custom actions slot
 }
 ```
 
 ### Functions
 
-#### `generateSchema(root: RootSchema): z.ZodObject`
+#### `toZodSchema(root: RootSchema): z.ZodObject`
 
 Convert the visual schema to a Zod schema object.
 
 ```typescript
-import { generateSchema } from 'zod-visual-editor';
+import { toZodSchema } from '@qiyu-allinai/zod-visual-editor';
 import { z } from 'zod';
 
-const zodSchema = generateSchema(schema);
+const zodSchema = toZodSchema(schema);
 const jsonSchema = z.toJSONSchema(zodSchema);
 ```
 
-#### `generateTypeScriptCode(root: RootSchema): string`
+#### `toTypeScriptCode(root: RootSchema): string`
 
 Generate TypeScript code representation of the schema.
 
 ```typescript
-import { generateTypeScriptCode } from 'zod-visual-editor';
+import { toTypeScriptCode } from '@qiyu-allinai/zod-visual-editor';
 
-const code = generateTypeScriptCode(schema);
+const code = toTypeScriptCode(schema);
 // Returns: import { z } from "zod"; export const schema = z.object({...});
 ```
+
+#### `toJsonSchema(root: RootSchema): object`
+
+Convert to JSON Schema format.
+
+#### `fromZodSchema(zodSchema: z.ZodObject): RootSchema`
+
+Parse a Zod schema into the visual editor format.
+
+#### `fromJsonSchema(jsonSchema: object): RootSchema`
+
+Parse a JSON Schema into the visual editor format.
 
 #### `createRootSchema(): RootSchema`
 
 Create an empty root schema.
 
-#### `createDefaultItem(type: SchemaType, name?: string): SchemaItem`
+#### `createField(type: FieldType, name?: string): Field`
 
-Create a new schema item with default values.
+Create a new field with default values.
 
 ### Types
 
 ```typescript
 import type { 
-  SchemaItem,      // Individual field definition
-  SchemaType,      // 'string' | 'number' | 'boolean' | 'datetime' | 'literal' | 'object' | 'union'
+  Field,           // Individual field definition (SchemaType + name)
+  FieldType,       // 'string' | 'number' | 'boolean' | 'literal' | 'enum' | 'array' | 'union' | 'object'
+  SchemaType,      // Base schema type (without name)
   RootSchema,      // Root schema container
-  EditorLabels     // i18n labels interface
+  StringSchema,
+  NumberSchema,
+  BooleanSchema,
+  LiteralSchema,
+  EnumSchema,
+  ArraySchema,
+  UnionSchema,
+  ObjectSchema,
 } from '@qiyu-allinai/zod-visual-editor';
 ```
 
@@ -177,25 +198,30 @@ import type {
 The editor uses an intermediate representation (IR) that maps to Zod schemas:
 
 ```typescript
-interface SchemaItem {
+interface BaseSchema {
   id: string;
-  name: string;
-  type: SchemaType;
-  required: boolean;
-  isArray: boolean;
+  type: FieldType;
   description?: string;
-  default?: unknown;
-  fields?: SchemaItem[];      // For object type
-  options?: SchemaItem[];     // For union type
-  lazy?: { refId: string };   // For recursive references
-  literalValue?: string | number | boolean;  // For literal type
+  optional?: boolean;
 }
+
+type Field = SchemaType & { name: string };
 
 interface RootSchema {
   type: 'object';
   id: 'root';
-  fields: SchemaItem[];
+  fields: Field[];
 }
+
+// Type-specific schemas
+interface StringSchema extends BaseSchema { type: 'string'; }
+interface NumberSchema extends BaseSchema { type: 'number'; }
+interface BooleanSchema extends BaseSchema { type: 'boolean'; }
+interface LiteralSchema extends BaseSchema { type: 'literal'; value: string | number | boolean; }
+interface EnumSchema extends BaseSchema { type: 'enum'; values: (string | number)[]; }
+interface ArraySchema extends BaseSchema { type: 'array'; item: SchemaType; }
+interface UnionSchema extends BaseSchema { type: 'union'; options: SchemaType[]; }
+interface ObjectSchema extends BaseSchema { type: 'object'; fields: Field[]; }
 ```
 
 ## Styling

@@ -1,0 +1,17 @@
+{
+  "pk_id": "Primary Key ID",
+  "audit_createdById": "Created By ID",
+  "audit_createdBy": "Created By",
+  "audit_createdAt": "Created At",
+  "audit_updatedById": "Updated By ID",
+  "audit_updatedBy": "Updated By",
+  "audit_updatedAt": "Updated At",
+  "deleted_deletedById": "Deleted By ID",
+  "deleted_deletedBy": "Deleted By",
+  "deleted_deletedAt": "Deleted At",
+  "permission_isPublic": "Is Public",
+  "permission_allowedUserIds": "Allowed Users",
+  "permission_allowedRoleIds": "Allowed Roles",
+  "permission_allowedDeptIds": "Allowed Departments",
+  "permission_allowSubDepts": "Allow Sub Departments"
+}

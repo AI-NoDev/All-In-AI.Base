@@ -116,21 +116,21 @@
 		return allVariables.find((v) => v.path === path);
 	}
 
-	// 显示文本
+	// 显示文本（优先显示 label，没有则显示 path）
 	let displayText = $derived.by(() => {
 		if (multiple) {
 			const paths = value as string[];
 			if (!paths || paths.length === 0) return placeholder;
 			if (paths.length === 1) {
 				const v = getVariable(paths[0]);
-				return v?.path ?? paths[0];
+				return v?.label || v?.path || paths[0];
 			}
 			return `已选择 ${paths.length} 个变量`;
 		} else {
 			const path = value as string | undefined;
 			if (!path) return placeholder;
 			const v = getVariable(path);
-			return v?.path ?? path;
+			return v?.label || v?.path || path;
 		}
 	});
 
@@ -183,7 +183,7 @@
 				<span class={hasValue ? '' : 'text-muted-foreground'}>{displayText}</span>
 			</div>
 		</Select.Trigger>
-		<Select.Content class="w-[var(--bits-floating-anchor-width)] max-h-80">
+		<Select.Content class="min-w-[280px] max-h-80">
 			{#each variableGroups as group (group.id)}
 				<Select.Group>
 					<Select.GroupHeading class="flex items-center gap-2 text-xs">
@@ -214,15 +214,9 @@
 			<div class="flex items-center gap-2 truncate">
 				<Icon icon="mdi:code-braces" class="w-4 h-4 shrink-0 {hasValue ? 'text-primary' : 'text-muted-foreground'}" />
 				<span class={hasValue ? '' : 'text-muted-foreground'}>{displayText}</span>
-				{#if hasValue}
-					{@const v = getVariable(value as string)}
-					{#if v}
-						<span class="text-xs ml-auto {getTypeColor(v.type)}">{v.type}</span>
-					{/if}
-				{/if}
 			</div>
 		</Select.Trigger>
-		<Select.Content class="w-[var(--bits-floating-anchor-width)] max-h-80">
+		<Select.Content class="min-w-[280px] max-h-80">
 			{#each variableGroups as group (group.id)}
 				<Select.Group>
 					<Select.GroupHeading class="flex items-center gap-2 text-xs">

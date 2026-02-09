@@ -19,38 +19,31 @@
     TYPE_ICONS,
   } from '$lib/types.js';
   import { toTypeScriptCode, toJsonSchema } from '$lib/generator.js';
+  import { m } from '@qiyu-allinai/i18n';
 
   type ViewMode = 'visual' | 'code';
-  type TFunction = (key: string, fallback?: string) => string;
+  type MessageFn = (inputs?: Record<string, unknown>, options?: { locale?: string }) => string;
+  type Messages = Record<string, MessageFn>;
+  const msg = m as unknown as Messages;
 
   interface Props {
     schema?: RootSchema;
     onSchemaChange?: (schema: RootSchema) => void;
     height?: string;
     title?: string;
-    t?: TFunction;
     actions?: Snippet;
   }
 
-  // Default fallback translations
-  const defaultT: TFunction = (key: string, fallback?: string) => {
-    const defaults: Record<string, string> = {
-      'schemaEditor.title': 'Schema Editor',
-      'schemaEditor.visual': 'Visual',
-      'schemaEditor.code': 'Code',
-      'schemaEditor.addField': 'Add Field',
-      'schemaEditor.noFields': 'No fields yet',
-      'schemaEditor.noFieldsHint': 'Click "Add Field" to start',
-      'schemaEditor.types.string': 'String',
-      'schemaEditor.types.number': 'Number',
-      'schemaEditor.types.boolean': 'Boolean',
-      'schemaEditor.types.literal': 'Literal',
-      'schemaEditor.types.enum': 'Enum',
-      'schemaEditor.types.array': 'Array',
-      'schemaEditor.types.union': 'Union',
-      'schemaEditor.types.object': 'Object',
-    };
-    return defaults[key] ?? fallback ?? key;
+  // Type label mapping
+  const typeLabels: Record<FieldType, MessageFn> = {
+    string: msg['schemaEditor_types_string'],
+    number: msg['schemaEditor_types_number'],
+    boolean: msg['schemaEditor_types_boolean'],
+    literal: msg['schemaEditor_types_literal'],
+    enum: msg['schemaEditor_types_enum'],
+    array: msg['schemaEditor_types_array'],
+    union: msg['schemaEditor_types_union'],
+    object: msg['schemaEditor_types_object'],
   };
 
   let {
@@ -58,7 +51,6 @@
     onSchemaChange,
     height = '600px',
     title,
-    t = defaultT,
     actions,
   }: Props = $props();
 
@@ -69,7 +61,7 @@
   const typeOptions: FieldType[] = ['string', 'number', 'boolean', 'literal', 'enum', 'array', 'union', 'object'];
 
   function getTypeLabel(type: FieldType): string {
-    return t(`schemaEditor.types.${type}`, type);
+    return typeLabels[type]?.() ?? type;
   }
 
   function notifyChange() {
@@ -122,7 +114,7 @@
   let jsonSchema = $derived(JSON.stringify(toJsonSchema(schema), null, 2));
 
   // Display title
-  let displayTitle = $derived(title ?? t('schemaEditor.title', 'Schema Editor'));
+  let displayTitle = $derived(title ?? msg['schemaEditor_title']());
 
   // Exported methods
   export function getSchema(): RootSchema {
@@ -154,11 +146,11 @@
         <ToggleGroup.Root type="single" value={viewMode} onValueChange={(v: string) => v && (viewMode = v as ViewMode)}>
           <ToggleGroup.Item value="visual" class="h-8 px-3 gap-1.5">
             <LayoutGrid class="size-4" />
-            <span class="text-xs">{t('schemaEditor.visual', 'Visual')}</span>
+            <span class="text-xs">{msg['schemaEditor_visual']()}</span>
           </ToggleGroup.Item>
           <ToggleGroup.Item value="code" class="h-8 px-3 gap-1.5">
             <Code class="size-4" />
-            <span class="text-xs">{t('schemaEditor.code', 'Code')}</span>
+            <span class="text-xs">{msg['schemaEditor_code']()}</span>
           </ToggleGroup.Item>
         </ToggleGroup.Root>
       </div>
@@ -175,7 +167,6 @@
                 {#each schema.fields as field, index (field.id)}
                   <FieldItem
                     {field}
-                    {t}
                     onUpdate={(updated: Field) => updateField(index, updated)}
                     onDelete={() => deleteField(index)}
                     onDuplicate={() => duplicateField(index)}
@@ -186,8 +177,8 @@
           {:else}
             <div class="flex flex-col items-center justify-center h-48 text-muted-foreground border-2 border-dashed border-muted rounded-lg">
               <FileCode class="size-10 mb-3 opacity-50" />
-              <p class="text-sm">{t('schemaEditor.noFields', 'No fields yet')}</p>
-              <p class="text-xs mt-1">{t('schemaEditor.noFieldsHint', 'Click "Add Field" to start')}</p>
+              <p class="text-sm">{msg['schemaEditor_noFields']()}</p>
+              <p class="text-xs mt-1">{msg['schemaEditor_noFieldsHint']()}</p>
             </div>
           {/if}
 
@@ -196,7 +187,7 @@
             <Popover.Trigger class="w-full">
               <Button variant="outline" class="w-full h-10 border-dashed">
                 <Plus class="size-4 mr-2" />
-                {t('schemaEditor.addField', 'Add Field')}
+                {msg['schemaEditor_addField']()}
               </Button>
             </Popover.Trigger>
             <Popover.Content class="w-56 p-1" align="center">

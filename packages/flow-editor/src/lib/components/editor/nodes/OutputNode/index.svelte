@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Position } from '@xyflow/svelte';
 	import { onMount } from 'svelte';
 	import BaseNode from '../BaseNode.svelte';
-	import NodeHandler from '../../handler/NodeHandler.svelte';
 	import type { OutputNodeData } from './types.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
@@ -17,8 +15,8 @@
 
 	let { id, data }: Props = $props();
 
-	// 检查 target handle 是否已连接
-	let targetConnected = $derived(workflowState.edges.some(e => e.target === id));
+	// 获取变量数量
+	let variableCount = $derived(data.variables?.length ?? 0);
 
 	onMount(() => {
 		configPanelRegistry.register('output', ConfigPanel);
@@ -27,11 +25,12 @@
 	const menuItems = [
 		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
 		{ label: '复制', icon: 'mdi:content-copy', action: () => console.log('copy', id) },
-		{ label: '删除', icon: 'mdi:delete', action: () => console.log('delete', id), variant: 'destructive' as const },
+		{ label: '删除', icon: 'mdi:delete', action: () => workflowState.removeNode(id), variant: 'destructive' as const },
 	];
 </script>
 
-<BaseNode nodeId={id} nodeData={data} {menuItems}>
+<!-- 输出节点：有输入引脚，无输出引脚 -->
+<BaseNode nodeId={id} nodeData={data} {menuItems} showOutput={false}>
 	{#snippet content(nodeData)}
 		<div class="flex items-center gap-3">
 			<Avatar.Root class="rounded-lg bg-orange-500 text-white h-8 w-8">
@@ -41,8 +40,10 @@
 			</Avatar.Root>
 			<div class="flex flex-col">
 				<span class="text-sm font-semibold text-foreground tracking-tight">{nodeData.title || '输出'}</span>
-				{#if nodeData.outputVariable}
-					<span class="text-xs text-muted-foreground">{nodeData.outputVariable}</span>
+				{#if variableCount > 0}
+					<span class="text-xs text-muted-foreground">{variableCount} 个输出变量</span>
+				{:else}
+					<span class="text-xs text-muted-foreground">未配置输出变量</span>
 				{/if}
 			</div>
 		</div>
@@ -54,6 +55,3 @@
 		</Button>
 	{/snippet}
 </BaseNode>
-
-<!-- 输入引脚对齐 header 中心：padding(12) + avatar高度(32)/2 = 28px -->
-<NodeHandler type="target" position={Position.Left} connected={targetConnected} top={28} />

@@ -6,6 +6,8 @@
 	import * as Kbd from '$lib/components/ui/kbd';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
+	import { workflowState } from '$lib/components/editor/contexts/index.js';
+	import { useStore } from '@xyflow/svelte';
 
 	interface Props {
 		issueCount?: number;
@@ -26,7 +28,40 @@
 		onPublishDraft,
 		onVersionHistory,
 	}: Props = $props();
+
+	let fileInputRef = $state<HTMLInputElement | null>(null);
+	const store = useStore();
+
+	function handleExport() {
+		const name = workflowState.metadata.name || 'workflow';
+		const viewport = store.viewport;
+		workflowState.exportToFile(`${name}.yml`, viewport);
+	}
+
+	function handleImportClick() {
+		fileInputRef?.click();
+	}
+
+	async function handleFileChange(e: Event) {
+		const input = e.target as HTMLInputElement;
+		const file = input.files?.[0];
+		if (file) {
+			const success = await workflowState.importFromFile(file);
+			if (!success) {
+				alert('导入失败，请检查文件格式');
+			}
+			input.value = '';
+		}
+	}
 </script>
+
+<input
+	bind:this={fileInputRef}
+	type="file"
+	accept=".yml,.yaml"
+	class="hidden"
+	onchange={handleFileChange}
+/>
 
 <Tooltip.Provider>
 	<div class="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -86,8 +121,30 @@
 			</Tooltip.Root>
 		</div>
 
-		<!-- 按钮组2：环境变量、系统变量 -->
+		<!-- 按钮组2：导入导出、环境变量、系统变量 -->
 		<div class="flex items-center bg-background border border-border rounded-lg shadow-sm">
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props })}
+						<Button {...props} variant="ghost" size="icon" class="h-8 w-8 rounded-r-none" onclick={handleImportClick}>
+							<Icon icon="mdi:import" class="w-4 h-4" />
+						</Button>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>导入 DSL</Tooltip.Content>
+			</Tooltip.Root>
+			<Separator orientation="vertical" class="h-5" />
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props })}
+						<Button {...props} variant="ghost" size="icon" class="h-8 w-8 rounded-none" onclick={handleExport}>
+							<Icon icon="mdi:export" class="w-4 h-4" />
+						</Button>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>导出 DSL</Tooltip.Content>
+			</Tooltip.Root>
+			<Separator orientation="vertical" class="h-5" />
 			<Popover.Root>
 				<Tooltip.Root>
 					<Popover.Trigger>
@@ -175,6 +232,15 @@
 				<DropdownMenu.Item onclick={onPublishDraft}>
 					<Icon icon="mdi:file-document-edit-outline" class="w-4 h-4 mr-2" />
 					保存为草稿
+				</DropdownMenu.Item>
+				<DropdownMenu.Separator />
+				<DropdownMenu.Item onclick={handleImportClick}>
+					<Icon icon="mdi:import" class="w-4 h-4 mr-2" />
+					导入 YAML
+				</DropdownMenu.Item>
+				<DropdownMenu.Item onclick={handleExport}>
+					<Icon icon="mdi:export" class="w-4 h-4 mr-2" />
+					导出 YAML
 				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item onclick={onVersionHistory}>

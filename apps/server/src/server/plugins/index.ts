@@ -10,3 +10,4 @@ export { oauth2Plugin } from "./oauth2";
 export { initAdminPlugin } from "./initAdmin";
 export { actionsPlugin } from "./actions";
 export { aiPlugin } from "./ai";
+export { i18nPlugin } from "./i18n";

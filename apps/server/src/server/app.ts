@@ -13,6 +13,7 @@ import {
   initAdminPlugin,
   actionsPlugin,
   aiPlugin,
+  i18nPlugin,
 } from "./plugins";
 import { authRouter, wsRouter } from "../routers";
 
@@ -24,6 +25,7 @@ export const app = base
   .use(corsPlugin)
   .use(loggerPlugin)
   .use(serverTimingPlugin)
+  .use(i18nPlugin)
   .use(bearerPlugin)
   .use(jwtPlugin)
   .use(openapiPlugin)

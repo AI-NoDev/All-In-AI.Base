@@ -7,9 +7,11 @@
 		connected?: boolean;
 		/** 自定义 top 位置（像素值，用于对齐 header 或特定行） */
 		top?: number;
+		/** 点击事件回调（用于弹出节点选择器） */
+		onclick?: (e: MouseEvent) => void;
 	}
 
-	let { type = 'source', position = Position.Right, connected = false, top, class: className, style, id, ...rest }: Props = $props();
+	let { type = 'source', position = Position.Right, connected = false, top, class: className, style, id, onclick, ...rest }: Props = $props();
 
 	// 构建 style 字符串
 	let computedStyle = $derived.by(() => {
@@ -22,9 +24,18 @@
 		}
 		return styles.length > 0 ? styles.join('; ') : undefined;
 	});
+
+	function handleClick(e: MouseEvent) {
+		if (onclick) {
+			e.stopPropagation();
+			onclick(e);
+		}
+	}
 </script>
 
-<Handle {type} {position} {id} class="node-handle {connected ? 'connected' : ''} {className ?? ''}" style={computedStyle} {...rest}>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<Handle {type} {position} {id} class="node-handle {connected ? 'connected' : ''} {onclick ? 'clickable' : ''} {className ?? ''}" style={computedStyle} {...rest} onclick={handleClick}>
 	<!-- 默认扁平引脚 -->
 	<div class="handle-flat"></div>
 	<!-- hover/选中/连接时的圆形按钮 -->
@@ -41,6 +52,11 @@
 		background: transparent !important;
 		border: none !important;
 		z-index: 1000 !important;
+	}
+
+	/* 可点击的 handle */
+	:global(.node-handle.clickable) {
+		cursor: pointer !important;
 	}
 
 	/* 扩大点击区域 */

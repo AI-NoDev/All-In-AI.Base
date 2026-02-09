@@ -5,11 +5,9 @@
 
 export {
   type SchemaType,
-  type SchemaItem,
+  type Field,
   type RootSchema,
-  type ZodVisualEditorRef,
-  type EditorLabels,
   createRootSchema,
-  createDefaultItem,
+  createField,
   generateId,
 } from '@qiyu-allinai/zod-visual-editor';

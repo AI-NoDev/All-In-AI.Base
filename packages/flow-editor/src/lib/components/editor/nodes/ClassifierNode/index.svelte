@@ -1,10 +1,8 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Position } from '@xyflow/svelte';
 	import { onMount, tick } from 'svelte';
-	import BaseNode from '../BaseNode.svelte';
-	import NodeHandler from '../../handler/NodeHandler.svelte';
-	import type { ClassifierNodeData } from './types.js';
+	import BaseNode, { type OutputHandle } from '../BaseNode.svelte';
+	import type { ClassifierNodeData, ClassifierOption } from './types.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
@@ -17,13 +15,11 @@
 
 	let { id, data }: Props = $props();
 
-	// 检查 target handle 是否已连接
-	let targetConnected = $derived(workflowState.edges.some(e => e.target === id));
-
-	// 检查每个分类选项的 source handle 是否已连接
-	function isOptionConnected(optionId: string): boolean {
-		return workflowState.edges.some(e => e.source === id && e.sourceHandle === optionId);
-	}
+	// 响应式获取当前节点数据
+	let currentData = $derived.by(() => {
+		const node = workflowState.getNode(id);
+		return (node?.data as ClassifierNodeData) ?? data;
+	});
 
 	onMount(() => {
 		configPanelRegistry.register('classifier', ConfigPanel);
@@ -32,17 +28,17 @@
 	const menuItems = [
 		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
 		{ label: '复制', icon: 'mdi:content-copy', action: () => console.log('copy', id) },
-		{ label: '删除', icon: 'mdi:delete', action: () => console.log('delete', id), variant: 'destructive' as const },
+		{ label: '删除', icon: 'mdi:delete', action: () => workflowState.removeNode(id), variant: 'destructive' as const },
 	];
 
-	let options = $derived(data.options ?? []);
+	let options = $derived<ClassifierOption[]>(currentData.options ?? []);
 
-	// 存储每个选项行的 DOM 引用
-	let optionRefs: HTMLDivElement[] = [];
+	// DOM 引用用于计算引脚位置
 	let nodeRef: HTMLDivElement | undefined = $state();
+	let optionRefs: HTMLDivElement[] = $state([]);
 	let handleTops: number[] = $state([]);
 
-	// 当选项或 DOM 变化时，重新计算位置
+	// 动态计算引脚位置
 	$effect(() => {
 		if (nodeRef && options.length > 0) {
 			tick().then(() => {
@@ -50,16 +46,21 @@
 				handleTops = optionRefs.map(ref => {
 					if (!ref) return 0;
 					const rect = ref.getBoundingClientRect();
-					// 计算选项行中心相对于节点顶部的位置
 					return rect.top - nodeRect.top + rect.height / 2;
 				});
 			});
 		}
 	});
+
+	// 构建输出引脚配置
+	let outputs = $derived<OutputHandle[]>(
+		options.map((opt, i) => ({ id: opt.id, top: handleTops[i] ?? 0 }))
+	);
 </script>
 
 <div bind:this={nodeRef}>
-	<BaseNode nodeId={id} nodeData={data} {menuItems}>
+	<!-- 分类器节点：有输入引脚，无默认输出引脚（使用 outputs 配置分支引脚） -->
+	<BaseNode nodeId={id} nodeData={data} {menuItems} showOutput={false} {outputs}>
 		{#snippet content(nodeData)}
 			<!-- Header -->
 			<div class="flex items-center gap-3">
@@ -101,17 +102,3 @@
 		{/snippet}
 	</BaseNode>
 </div>
-
-<!-- 输入引脚对齐 header 中心：padding(12) + avatar高度(32)/2 = 28px -->
-<NodeHandler type="target" position={Position.Left} connected={targetConnected} top={28} />
-
-<!-- 每个分类选项对应一个输出引脚，位置动态计算 -->
-{#each options as option, index (option.id)}
-	<NodeHandler 
-		type="source" 
-		position={Position.Right} 
-		id={option.id}
-		connected={isOptionConnected(option.id)} 
-		top={handleTops[index] ?? 0} 
-	/>
-{/each}

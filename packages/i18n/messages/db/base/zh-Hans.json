@@ -1,0 +1,17 @@
+{
+  "pk_id": "主键ID",
+  "audit_createdById": "创建者ID",
+  "audit_createdBy": "创建者",
+  "audit_createdAt": "创建时间",
+  "audit_updatedById": "更新者ID",
+  "audit_updatedBy": "更新者",
+  "audit_updatedAt": "更新时间",
+  "deleted_deletedById": "删除者ID",
+  "deleted_deletedBy": "删除者",
+  "deleted_deletedAt": "删除时间",
+  "permission_isPublic": "是否公开",
+  "permission_allowedUserIds": "允许访问的用户",
+  "permission_allowedRoleIds": "允许访问的角色",
+  "permission_allowedDeptIds": "允许访问的部门",
+  "permission_allowSubDepts": "子部门可访问"
+}

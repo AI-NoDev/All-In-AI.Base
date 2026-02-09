@@ -1,20 +1,41 @@
 {
   "name": "@qiyu-allinai/i18n",
   "version": "0.1.0",
-  "module": "index.ts",
   "type": "module",
+  "main": "./paraglide/messages.js",
+  "module": "./paraglide/messages.js",
+  "types": "./paraglide/messages.d.ts",
   "exports": {
-    ".": "./index.ts",
-    "./locales": "./src/locales/index.ts",
-    "./locales/*": "./src/locales/*/index.ts"
+    ".": {
+      "types": "./paraglide/messages.d.ts",
+      "import": "./paraglide/messages.js"
+    },
+    "./runtime": {
+      "types": "./paraglide/runtime.d.ts",
+      "import": "./paraglide/runtime.js"
+    },
+    "./messages": {
+      "types": "./paraglide/messages.d.ts",
+      "import": "./paraglide/messages.js"
+    },
+    "./server": {
+      "import": "./paraglide/server.js"
+    }
+  },
+  "files": [
+    "paraglide/",
+    "messages/"
+  ],
+  "scripts": {
+    "build": "paraglide-js compile --project ./project.inlang --outdir ./paraglide && bun run generate-types",
+    "generate-types": "bun scripts/generate-types.ts",
+    "machine-translate": "inlang machine translate --project project.inlang"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@inlang/paraglide-js": "^2.10.0"
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "i18next": "^25.8.0"
   }
 }

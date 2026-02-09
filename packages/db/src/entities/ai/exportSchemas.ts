@@ -6,6 +6,7 @@ export { agentSession } from './agentSession';
 export { agentMessage } from './agentMessage';
 export { model } from './model';
 export { provider } from './provider';
+export { tool } from './tool';
 export { toolGroup } from './toolGroup';
 export { schema } from './schema';
 

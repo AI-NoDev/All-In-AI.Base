@@ -6,6 +6,7 @@ export { agentMessage, agentMessageFields, agentMessageMeta, agentMessageConfig,
 export type { ToolCall, ToolResult, TextMessageContent, ImageMessageContent, FileMessageContent, AgentMessageContent } from './agentMessage';
 export { model, modelFields, modelMeta, modelConfig, modelZodSchemas } from './model';
 export { provider, providerFields, providerMeta, providerConfig, providerZodSchemas } from './provider';
+export { tool, toolFields, toolMeta, toolConfig, toolZodSchemas } from './tool';
 export { toolGroup, toolGroupFields, toolGroupMeta, toolGroupConfig, toolGroupZodSchemas } from './toolGroup';
 export { schema, schemaFields, schemaMeta, schemaConfig, schemaZodSchemas } from './schema';
 

@@ -1,11 +1,11 @@
 <script lang="ts">
   import { ZodVisualEditor, type RootSchema } from '$lib/index.js';
   import { examples } from '$lib/examples.js';
-  import { createI18n, addResources, defaultResources, changeLanguage } from '@qiyu-allinai/i18n';
+  import { getLocale, setLocale } from '@qiyu-allinai/i18n/runtime';
   import Icon from '@iconify/svelte';
 
+  type Locale = 'zh-Hans' | 'en';
   type ExampleKey = keyof typeof examples;
-  type Language = 'zh-CN' | 'en';
 
   const exampleKeys: ExampleKey[] = ['apiResponse', 'eventSystem', 'organization', 'config'];
   const exampleLabels: Record<ExampleKey, string> = {
@@ -15,26 +15,14 @@
     config: '插件配置 (Union Config)',
   };
 
-  const languageLabels: Record<Language, string> = {
-    'zh-CN': '中文',
+  const languageLabels: Record<Locale, string> = {
+    'zh-Hans': '中文',
     'en': 'English',
   };
 
-  // 创建 i18n 实例
-  const i18n = createI18n({ lng: 'zh-CN', defaultNS: 'schemaEditor', ns: ['common', 'schemaEditor'] });
-  addResources(i18n, defaultResources);
-
   let schema = $state<RootSchema>(examples.apiResponse);
   let currentExample = $state<ExampleKey>('apiResponse');
-  let currentLang = $state<Language>('zh-CN');
-
-  // 翻译函数 - 将 schemaEditor.xxx.yyy 转换为 schemaEditor:xxx.yyy 格式
-  function t(key: string, fallback?: string): string {
-    // 将 namespace.key 格式转换为 namespace:key (i18next namespace 格式)
-    // 例如: schemaEditor.types.string -> schemaEditor:types.string
-    const nsKey = key.replace(/^(schemaEditor|common|error|validation|db)\./, '$1:');
-    return i18n.t(nsKey, { defaultValue: fallback ?? key });
-  }
+  let currentLang = $state<Locale>(getLocale() as Locale);
 
   // 强制更新翻译的 key
   let langKey = $state(0);
@@ -49,8 +37,8 @@
     schema = examples[key];
   }
 
-  async function switchLanguage(lang: Language) {
-    await changeLanguage(i18n, lang);
+  function switchLanguage(lang: Locale) {
+    setLocale(lang, { reload: false });
     currentLang = lang;
     langKey++; // 触发重新渲染
   }
@@ -63,7 +51,7 @@
         <h1 class="text-3xl font-bold">Zod Visual Editor</h1>
         <div class="flex items-center gap-2">
           <Icon icon="mdi:translate" class="size-5 text-muted-foreground" />
-          {#each (['zh-CN', 'en'] as Language[]) as lang}
+          {#each (['zh-Hans', 'en'] as Locale[]) as lang}
             <button
               class="px-3 py-1 text-sm rounded-md transition-colors {currentLang === lang ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}"
               onclick={() => switchLanguage(lang)}
@@ -93,7 +81,6 @@
         bind:schema
         onSchemaChange={handleSchemaChange}
         height="500px"
-        {t}
       />
     {/key}
 

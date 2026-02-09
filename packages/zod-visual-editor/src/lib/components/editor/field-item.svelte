@@ -26,48 +26,33 @@
     cloneField,
     TYPE_ICONS,
   } from '$lib/types.js';
+  import { m } from '@qiyu-allinai/i18n';
 
-  type TFunction = (key: string, fallback?: string) => string;
+  type MessageFn = (inputs?: Record<string, unknown>, options?: { locale?: string }) => string;
+  type Messages = Record<string, MessageFn>;
+  const msg = m as unknown as Messages;
 
   interface Props {
     field: Field;
     depth?: number;
-    t?: TFunction;
     onUpdate: (field: Field) => void;
     onDelete: () => void;
     onDuplicate: () => void;
   }
 
-  // Default fallback translations
-  const defaultT: TFunction = (key: string, fallback?: string) => {
-    const defaults: Record<string, string> = {
-      'schemaEditor.editField': 'Edit Field',
-      'schemaEditor.fieldName': 'Name',
-      'schemaEditor.fieldType': 'Type',
-      'schemaEditor.optional': 'Optional',
-      'schemaEditor.literalValue': 'Literal Value',
-      'schemaEditor.literalValueHint': 'String, number, or boolean (true/false)',
-      'schemaEditor.enumValues': 'Enum Values',
-      'schemaEditor.enumValuePlaceholder': 'Enter value, press Enter',
-      'schemaEditor.itemType': 'Item Type',
-      'schemaEditor.unionOptions': 'Union Options',
-      'schemaEditor.noChildFields': 'No fields, click to add',
-      'schemaEditor.types.string': 'String',
-      'schemaEditor.types.number': 'Number',
-      'schemaEditor.types.boolean': 'Boolean',
-      'schemaEditor.types.literal': 'Literal',
-      'schemaEditor.types.enum': 'Enum',
-      'schemaEditor.types.array': 'Array',
-      'schemaEditor.types.union': 'Union',
-      'schemaEditor.types.object': 'Object',
-      'common.actions.save': 'Save',
-      'common.actions.cancel': 'Cancel',
-      'common.actions.add': 'Add',
-    };
-    return defaults[key] ?? fallback ?? key;
+  // Type label mapping
+  const typeLabels: Record<FieldType, MessageFn> = {
+    string: msg['schemaEditor_types_string'],
+    number: msg['schemaEditor_types_number'],
+    boolean: msg['schemaEditor_types_boolean'],
+    literal: msg['schemaEditor_types_literal'],
+    enum: msg['schemaEditor_types_enum'],
+    array: msg['schemaEditor_types_array'],
+    union: msg['schemaEditor_types_union'],
+    object: msg['schemaEditor_types_object'],
   };
 
-  let { field, depth = 0, t = defaultT, onUpdate, onDelete, onDuplicate }: Props = $props();
+  let { field, depth = 0, onUpdate, onDelete, onDuplicate }: Props = $props();
 
   let isModalOpen = $state(false);
   let expanded = $state(false);
@@ -97,7 +82,7 @@
   const typeOptions: FieldType[] = ['string', 'number', 'boolean', 'literal', 'enum', 'array', 'union', 'object'];
 
   function getTypeLabel(type: FieldType): string {
-    return t(`schemaEditor.types.${type}`, type);
+    return typeLabels[type]?.() ?? type;
   }
 
   // Derived
@@ -448,7 +433,6 @@
               <Self
                 field={child}
                 depth={depth + 1}
-                {t}
                 onUpdate={(updated: Field) => updateChild(index, updated)}
                 onDelete={() => deleteChild(index)}
                 onDuplicate={() => duplicateChild(index)}
@@ -463,7 +447,6 @@
               <Self
                 field={child}
                 depth={depth + 1}
-                {t}
                 onUpdate={(updated: Field) => updateArrayItemChild(index, updated)}
                 onDelete={() => deleteArrayItemChild(index)}
                 onDuplicate={() => duplicateArrayItemChild(index)}
@@ -473,7 +456,7 @@
         </DndContext>
       {:else if field.type === 'union' && unionOptions.length > 0}
         <div class="space-y-2">
-          <div class="text-xs text-muted-foreground mb-2">{t('schemaEditor.unionOptions', 'Union Options')}:</div>
+          <div class="text-xs text-muted-foreground mb-2">{msg['schemaEditor_unionOptions']()}:</div>
           {#each unionOptions as opt, optIndex (opt.id)}
             <div class="border rounded bg-muted/20">
               <div class="flex items-center gap-2 p-2">
@@ -492,7 +475,6 @@
                           <Self
                             field={child}
                             depth={depth + 1}
-                            {t}
                             onUpdate={(updated: Field) => updateUnionOptionChild(optIndex, childIndex, updated)}
                             onDelete={() => deleteUnionOptionChild(optIndex, childIndex)}
                             onDuplicate={() => duplicateUnionOptionChild(optIndex, childIndex)}
@@ -501,7 +483,7 @@
                       </SortableContext>
                     </DndContext>
                   {:else}
-                    <div class="text-xs text-muted-foreground py-2 text-center">{t('schemaEditor.noChildFields', 'No fields, click to add')}</div>
+                    <div class="text-xs text-muted-foreground py-2 text-center">{msg['schemaEditor_noChildFields']()}</div>
                   {/if}
                   <div class="flex gap-1 flex-wrap pt-1">
                     {#each typeOptions as typeOpt}
@@ -524,7 +506,7 @@
       {/if}
 
       {#if (field.type === 'object' && children.length === 0) || (field.type === 'array' && arrayItemFields.length === 0)}
-        <div class="text-xs text-muted-foreground py-2 text-center">{t('schemaEditor.noChildFields', 'No fields, click to add')}</div>
+        <div class="text-xs text-muted-foreground py-2 text-center">{msg['schemaEditor_noChildFields']()}</div>
       {/if}
 
       {#if field.type === 'object' || (field.type === 'array' && (field as ArraySchema).item.type === 'object')}
@@ -550,17 +532,17 @@
 <Dialog.Root bind:open={isModalOpen}>
   <Dialog.Content class="max-w-lg max-h-[85vh] overflow-y-auto">
     <Dialog.Header>
-      <Dialog.Title>{t('schemaEditor.editField', 'Edit Field')}</Dialog.Title>
+      <Dialog.Title>{msg['schemaEditor_editField']()}</Dialog.Title>
     </Dialog.Header>
 
     <div class="space-y-4 py-4">
       <div class="grid grid-cols-2 gap-3">
         <div class="space-y-1.5">
-          <Label class="text-xs">{t('schemaEditor.fieldName', 'Name')}</Label>
+          <Label class="text-xs">{msg['schemaEditor_fieldName']()}</Label>
           <Input bind:value={formName} placeholder="field_name" class="h-9" />
         </div>
         <div class="space-y-1.5">
-          <Label class="text-xs">{t('schemaEditor.fieldType', 'Type')}</Label>
+          <Label class="text-xs">{msg['schemaEditor_fieldType']()}</Label>
           <Select.Root type="single" value={formType} onValueChange={(v: string) => formType = v as FieldType}>
             <Select.Trigger class="h-9">
               <Icon icon={TYPE_ICONS[formType]} class="size-4 mr-2" />
@@ -579,36 +561,36 @@
       </div>
 
       <div class="space-y-1.5">
-        <Label class="text-xs">{t('common.fields.description', 'Description')}</Label>
+        <Label class="text-xs">{msg['common_fields_description']()}</Label>
         <Input bind:value={formDescription} placeholder="Field description" class="h-9" />
       </div>
 
       <div class="flex gap-6">
         <div class="flex items-center gap-2">
         <Switch bind:checked={formOptional} />
-        <Label class="text-sm">{t('schemaEditor.optional', 'Optional')}</Label>
+        <Label class="text-sm">{msg['schemaEditor_optional']()}</Label>
       </div>
     </div>
 
       {#if formType === 'literal'}
         <div class="space-y-1.5">
-          <Label class="text-xs">{t('schemaEditor.literalValue', 'Literal Value')}</Label>
+          <Label class="text-xs">{msg['schemaEditor_literalValue']()}</Label>
           <Input bind:value={formLiteralValue} placeholder="Enter value" class="h-9" />
-          <p class="text-xs text-muted-foreground">{t('schemaEditor.literalValueHint', 'String, number, or boolean (true/false)')}</p>
+          <p class="text-xs text-muted-foreground">{msg['schemaEditor_literalValueHint']()}</p>
         </div>
       {/if}
 
       {#if formType === 'enum'}
         <div class="space-y-2">
-          <Label class="text-xs">{t('schemaEditor.enumValues', 'Enum Values')}</Label>
+          <Label class="text-xs">{msg['schemaEditor_enumValues']()}</Label>
           <div class="flex gap-2">
             <Input
               bind:value={newEnumValue}
-              placeholder={t('schemaEditor.enumValuePlaceholder', 'Enter value, press Enter')}
+              placeholder={msg['schemaEditor_enumValuePlaceholder']()}
               class="h-9 flex-1"
               onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && addEnumValue()}
             />
-            <Button size="sm" variant="outline" class="h-9" onclick={addEnumValue}>{t('common.actions.add', 'Add')}</Button>
+            <Button size="sm" variant="outline" class="h-9" onclick={addEnumValue}>{msg['common_actions_add']()}</Button>
           </div>
           {#if formEnumValues.length > 0}
             <div class="flex flex-wrap gap-1">
@@ -625,7 +607,7 @@
 
       {#if formType === 'array'}
         <div class="space-y-3 p-3 bg-muted/30 rounded-lg">
-          <Label class="text-xs">{t('schemaEditor.itemType', 'Item Type')}</Label>
+          <Label class="text-xs">{msg['schemaEditor_itemType']()}</Label>
           <Select.Root type="single" value={formArrayItemType} onValueChange={(v: string) => formArrayItemType = v as FieldType}>
             <Select.Trigger class="h-9">
               <Icon icon={TYPE_ICONS[formArrayItemType]} class="size-4 mr-2" />
@@ -645,7 +627,7 @@
 
       {#if formType === 'union'}
         <div class="space-y-3 p-3 bg-muted/30 rounded-lg">
-          <Label class="text-xs">{t('schemaEditor.unionOptions', 'Union Options')}</Label>
+          <Label class="text-xs">{msg['schemaEditor_unionOptions']()}</Label>
           {#if formUnionOptions.length > 0}
             <div class="space-y-2">
               {#each formUnionOptions as opt, i (opt.id)}
@@ -686,8 +668,8 @@
     </div>
 
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => isModalOpen = false}>{t('common.actions.cancel', 'Cancel')}</Button>
-      <Button onclick={saveField}>{t('common.actions.save', 'Save')}</Button>
+      <Button variant="outline" onclick={() => isModalOpen = false}>{msg['common_actions_cancel']()}</Button>
+      <Button onclick={saveField}>{msg['common_actions_save']()}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

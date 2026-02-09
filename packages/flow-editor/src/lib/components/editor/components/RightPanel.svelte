@@ -26,7 +26,9 @@
 		llm: { icon: 'mdi:robot', color: 'bg-blue-500', label: 'LLM' },
 		knowledge: { icon: 'mdi:database-search', color: 'bg-purple-500', label: '知识检索' },
 		agent: { icon: 'mdi:robot-outline', color: 'bg-teal-500', label: 'Agent' },
-		classifier: { icon: 'mdi:source-branch', color: 'bg-amber-500', label: '问题分类器' },
+		classifier: { icon: 'mdi:tag-multiple', color: 'bg-amber-500', label: '问题分类器' },
+		if: { icon: 'mdi:source-branch', color: 'bg-cyan-500', label: '条件分支' },
+		loop: { icon: 'mdi:infinity', color: 'bg-pink-500', label: '循环' },
 		output: { icon: 'mdi:export', color: 'bg-orange-500', label: '输出' },
 	};
 
