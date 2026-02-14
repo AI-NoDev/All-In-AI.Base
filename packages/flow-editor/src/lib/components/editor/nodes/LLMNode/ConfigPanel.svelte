@@ -8,7 +8,7 @@
 	import { START_NODE_ID } from '$lib/components/editor/contexts/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import RunStatusBadge from '../../components/RunStatusBadge.svelte';
+	import NodeRunResult from '../../components/NodeRunResult.svelte';
 
 	// Sub-components
 	import {
@@ -18,7 +18,6 @@
 		OutputVariables,
 		RetrySettings,
 		ExceptionHandling,
-		LastRunTab,
 		SchemaEditorDialog,
 	} from './components/index.js';
 
@@ -50,7 +49,7 @@
 	let retryInterval = $derived(currentData?.retryInterval ?? 1000);
 	let exceptionHandling = $derived(currentData?.exceptionHandling ?? 'none');
 	let defaultValue = $derived(currentData?.defaultValue ?? '');
-	let lastRun = $derived(currentData?.lastRun);
+	let runData = $derived(currentData?._run);
 
 	// 上下文变量路径列表
 	let contextPaths = $derived(context.map(c => c.path));
@@ -131,10 +130,8 @@
 			<Tabs.Trigger value="settings">设置</Tabs.Trigger>
 			<Tabs.Trigger value="lastRun">
 				上次运行
-				{#if lastRun && lastRun.status !== 'idle'}
-					<span class="ml-1.5">
-						<RunStatusBadge status={lastRun.status} size="sm" />
-					</span>
+				{#if runData && runData.status !== 'idle'}
+					<span class="ml-1.5 w-2 h-2 rounded-full {runData.status === 'success' ? 'bg-green-500' : runData.status === 'error' ? 'bg-destructive' : 'bg-blue-500'}"></span>
 				{/if}
 			</Tabs.Trigger>
 		</Tabs.List>
@@ -202,7 +199,7 @@
 
 		<!-- 上次运行 Tab -->
 		<Tabs.Content value="lastRun" class="mt-0">
-			<LastRunTab {lastRun} />
+			<NodeRunResult runData={runData} />
 		</Tabs.Content>
 	</Tabs.Root>
 </Tooltip.Provider>

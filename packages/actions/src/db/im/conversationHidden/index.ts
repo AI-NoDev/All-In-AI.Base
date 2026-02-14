@@ -10,7 +10,7 @@ type ConversationHiddenSelect = typeof conversationHidden.$inferSelect;
 export const conversationHiddenHide = defineAction({
   meta: { name: 'im.conversationHidden.hide', displayName: '隐藏会话', description: '隐藏会话（不再显示在消息列表）', tags: ['im', 'conversationHidden'], method: 'POST', path: '/api/im/conversation-hidden/hide' },
   schemas: {
-    bodySchema: z.object({ conversationId: z.uuid() }),
+    bodySchema: z.object({ conversationId: z.string() }),
     outputSchema: conversationHiddenZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -51,7 +51,7 @@ export const conversationHiddenHide = defineAction({
 export const conversationHiddenUnhide = defineAction({
   meta: { name: 'im.conversationHidden.unhide', displayName: '取消隐藏会话', description: '取消隐藏会话（新消息到达时调用）', tags: ['im', 'conversationHidden'], method: 'POST', path: '/api/im/conversation-hidden/unhide' },
   schemas: {
-    bodySchema: z.object({ conversationId: z.uuid(), userId: z.uuid() }),
+    bodySchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {
@@ -73,7 +73,7 @@ export const conversationHiddenUnhide = defineAction({
 export const conversationHiddenGetList = defineAction({
   meta: { name: 'im.conversationHidden.getList', displayName: '获取隐藏会话列表', description: '获取当前用户隐藏的会话ID列表', tags: ['im', 'conversationHidden'], method: 'GET', path: '/api/im/conversation-hidden/list' },
   schemas: {
-    outputSchema: z.array(z.uuid()),
+    outputSchema: z.array(z.string()),
   },
   execute: async (_input, context) => {
     const userId = context.currentUserId;

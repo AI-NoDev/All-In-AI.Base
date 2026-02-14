@@ -9,7 +9,7 @@
   import { Skeleton } from '@/lib/components/ui/skeleton';
   import { ScrollArea } from '@/lib/components/ui/scroll-area';
   import { Checkbox } from '@/lib/components/ui/checkbox';
-  import { authStore } from '@/lib/stores/auth.svelte';
+  import { authStore } from '@/lib/storess/auth.svelte';
 
   interface User {
     id: string;
@@ -41,6 +41,7 @@
     onResetPassword: (user: User) => void;
     onToggleSelect: (id: string) => void;
     onToggleSelectAll: () => void;
+    onAssignRoles: (user: User) => void;
   }
 
   let { 
@@ -60,7 +61,8 @@
     onContact,
     onResetPassword,
     onToggleSelect,
-    onToggleSelectAll
+    onToggleSelectAll,
+    onAssignRoles
   }: Props = $props();
 
   function isSystemAdmin(user: User): boolean {
@@ -200,6 +202,22 @@
                     </Tooltip.Trigger>
                     <Tooltip.Content>
                       {isSysAdmin ? '系统管理员不允许重置密码' : '重置密码'}
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger>
+                      {#if isSysAdmin}
+                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 opacity-50 cursor-not-allowed">
+                          <Icon icon="tdesign:usergroup" class="size-4" />
+                        </Button>
+                      {:else}
+                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onAssignRoles(user)}>
+                          <Icon icon="tdesign:usergroup" class="size-4" />
+                        </Button>
+                      {/if}
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      {isSysAdmin ? '系统管理员拥有所有角色' : '分配角色'}
                     </Tooltip.Content>
                   </Tooltip.Root>
                   <Tooltip.Root>

@@ -5,6 +5,9 @@ import YAML from 'yaml';
 /** 开始节点默认 ID */
 export const START_NODE_ID = 'start';
 
+/** 循环节点 header 高度（子节点不能移入此区域） */
+export const LOOP_HEADER_HEIGHT = 60;
+
 /** 待放置节点模板 */
 export interface PendingNodeTemplate {
 	type: string;
@@ -143,14 +146,17 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 					maxIterations: 10
 				};
 				// 添加真实节点到 nodes 数组（循环节点需要固定尺寸）
+				const loopWidth = 500;
+				const loopHeight = 350;
 				nodes = [...nodes, {
 					id,
 					type: template.type,
 					position: pos,
 					data: nodeData as T,
-					style: 'width: 500px; height: 350px;',
-					width: 500,
-					height: 350
+					style: `width: ${loopWidth}px; height: ${loopHeight}px;`,
+					width: loopWidth,
+					height: loopHeight,
+					measured: { width: loopWidth, height: loopHeight }
 				}];
 				
 				// 设置放置状态
@@ -350,8 +356,10 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 				
 				if (childNodes.length === 0) {
 					// 第一个子节点，放在入口节点右边
-					// 如果有 handleOffsetY，使用它来对齐
-					const yOffset = handleOffsetY !== undefined ? handleOffsetY - TARGET_HANDLE_OFFSET : 40;
+					// 如果有 handleOffsetY，使用它来对齐，但确保不小于 header 高度
+					const yOffset = handleOffsetY !== undefined 
+						? Math.max(handleOffsetY - TARGET_HANDLE_OFFSET, LOOP_HEADER_HEIGHT) 
+						: LOOP_HEADER_HEIGHT;
 					newPosition = { x: 100, y: yOffset };
 				} else {
 					// 找到最右边的子节点，放在其右边
@@ -360,7 +368,7 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 					, childNodes[0]);
 					newPosition = { 
 						x: rightmostNode.position.x + 280, 
-						y: rightmostNode.position.y 
+						y: Math.max(rightmostNode.position.y, LOOP_HEADER_HEIGHT)
 					};
 				}
 				
@@ -444,13 +452,16 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 			const currentHeight = loopNode.height ?? 350;
 			
 			if (minWidth > currentWidth || minHeight > currentHeight) {
+				const newWidth = Math.max(currentWidth, minWidth);
+				const newHeight = Math.max(currentHeight, minHeight);
 				nodes = nodes.map(n => 
 					n.id === loopNodeId 
 						? { 
 							...n, 
-							width: Math.max(currentWidth, minWidth),
-							height: Math.max(currentHeight, minHeight),
-							style: `width: ${Math.max(currentWidth, minWidth)}px; height: ${Math.max(currentHeight, minHeight)}px;`
+							width: newWidth,
+							height: newHeight,
+							measured: { width: newWidth, height: newHeight },
+							style: `width: ${newWidth}px; height: ${newHeight}px;`
 						} 
 						: n
 				);

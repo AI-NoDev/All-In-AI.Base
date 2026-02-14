@@ -11,7 +11,7 @@ type JobLogInsert = typeof jobLog.$inferInsert;
 // ============ Filter Schema ============
 const jobLogFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   jobNames: z.array(z.string()).optional(),
   jobGroups: z.array(z.string()).optional(),
   // 精确匹配
@@ -84,7 +84,7 @@ export const jobLogGetByPagination = defineAction({
 
 export const jobLogGetByPk = defineAction({
   meta: { name: 'system.jobLog.getByPk', displayName: '根据ID查询任务日志', description: '根据主键ID查询单个任务日志', tags: ['system', 'jobLog'], method: 'GET', path: '/api/system/job-log/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: jobLogZodSchemas.select.nullable() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: jobLogZodSchemas.select.nullable() },
   execute: async (input, _context) => { const [result] = await db.select().from(jobLog).where(eq(jobLog.id, input.id)).limit(1); return (result as JobLogSelect) ?? null; },
 });
 
@@ -103,19 +103,19 @@ export const jobLogCreateMany = defineAction({
 
 export const jobLogUpdate = defineAction({
   meta: { name: 'system.jobLog.update', displayName: '更新任务日志', description: '根据ID更新单个任务日志', tags: ['system', 'jobLog'], method: 'PUT', path: '/api/system/job-log/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), bodySchema: z.object({ data: jobLogZodSchemas.update }), outputSchema: jobLogZodSchemas.select },
+  schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: jobLogZodSchemas.update }), outputSchema: jobLogZodSchemas.select },
   execute: async (input, _context) => { const [result] = await db.update(jobLog).set(input.data as Partial<JobLogInsert>).where(eq(jobLog.id, input.id)).returning(); return result as JobLogSelect; },
 });
 
 export const jobLogUpdateMany = defineAction({
   meta: { name: 'system.jobLog.updateMany', displayName: '批量更新任务日志', description: '根据ID列表批量更新任务日志', tags: ['system', 'jobLog'], method: 'PUT', path: '/api/system/job-log/batch' },
-  schemas: { bodySchema: z.object({ ids: z.array(z.uuid()), data: jobLogZodSchemas.update }), outputSchema: z.array(jobLogZodSchemas.select) },
+  schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: jobLogZodSchemas.update }), outputSchema: z.array(jobLogZodSchemas.select) },
   execute: async (input, _context) => { const results: JobLogSelect[] = []; for (const id of input.ids) { const [result] = await db.update(jobLog).set(input.data as Partial<JobLogInsert>).where(eq(jobLog.id, id)).returning(); if (result) results.push(result as JobLogSelect); } return results; },
 });
 
 export const jobLogDeleteByPk = defineAction({
   meta: { name: 'system.jobLog.deleteByPk', displayName: '删除任务日志', description: '根据ID删除任务日志', tags: ['system', 'jobLog'], method: 'DELETE', path: '/api/system/job-log/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: z.boolean() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
   execute: async (input, _context) => { const [result] = await db.delete(jobLog).where(eq(jobLog.id, input.id)).returning(); return !!result; },
 });
 

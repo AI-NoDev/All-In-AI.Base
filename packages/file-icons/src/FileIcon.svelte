@@ -1,31 +1,32 @@
 <script lang="ts">
-  import { getIconByExtension } from './icons/index';
+  import Icon from '@iconify/svelte';
+  import { getIconByExtension, getIconByFilename, getFolderIcon } from './icons/index';
 
   interface Props {
+    /** 文件扩展名或完整文件名 */
     type: string;
+    /** 图标大小 (px) */
     size?: number;
+    /** 是否为文件夹 */
+    isFolder?: boolean;
+    /** 文件夹是否展开 */
+    isOpen?: boolean;
+    /** 自定义 class */
+    class?: string;
   }
 
-  let { type, size = 24 }: Props = $props();
+  let { type, size = 20, isFolder = false, isOpen = false, class: className = '' }: Props = $props();
 
-  let svgContent = $derived(getIconByExtension(type));
+  let iconName = $derived.by(() => {
+    if (isFolder) {
+      return getFolderIcon(type, isOpen);
+    }
+    // 如果包含点号，认为是完整文件名
+    if (type.includes('.')) {
+      return getIconByFilename(type);
+    }
+    return getIconByExtension(type);
+  });
 </script>
 
-<span
-  class="file-icon"
-  style="width: {size}px; height: {size}px; display: inline-flex;"
->
-  {@html svgContent}
-</span>
-
-<style>
-  .file-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .file-icon :global(svg) {
-    width: 100%;
-    height: 100%;
-  }
-</style>
+<Icon icon={iconName} width={size} height={size} class={className} />

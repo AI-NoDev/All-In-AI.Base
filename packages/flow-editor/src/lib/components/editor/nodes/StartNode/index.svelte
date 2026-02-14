@@ -4,7 +4,6 @@
 	import BaseNode from '../BaseNode.svelte';
 	import type { StartNodeData, InputFieldType } from './types.js';
 	import { BUILTIN_USER_FILES_FIELD } from './types.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
@@ -35,14 +34,10 @@
 	onMount(() => {
 		configPanelRegistry.register('start', ConfigPanel);
 	});
-
-	const menuItems = [
-		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
-	];
 </script>
 
 <!-- 开始节点：无输入引脚，有输出引脚（ID 为 'source'） -->
-<BaseNode nodeId={id} nodeData={data} {menuItems} showInput={false} outputId="source" width={240}>
+<BaseNode nodeId={id} nodeData={data} showInput={false} outputId="source" width={240}>
 	{#snippet content(nodeData)}
 		<!-- Header -->
 		<div class="flex items-center gap-3">
@@ -75,11 +70,5 @@
 				{/each}
 			</div>
 		{/if}
-	{/snippet}
-
-	{#snippet quickActions()}
-		<Button variant="outline" size="icon" class="h-7 w-7 bg-background">
-			<Icon icon="mdi:pencil" width="14" height="14" />
-		</Button>
 	{/snippet}
 </BaseNode>

@@ -60,6 +60,37 @@ export interface ConversationVariable extends Variable {
 }
 
 /**
+ * 节点运行状态
+ */
+export type NodeRunStatus = 'idle' | 'waiting' | 'running' | 'success' | 'error';
+
+/**
+ * 节点运行数据 - 类似 Dify 的运行状态
+ */
+export interface NodeRunData {
+	/** 运行状态 */
+	status: NodeRunStatus;
+	/** 运行开始时间 */
+	startTime?: number;
+	/** 运行结束时间 */
+	endTime?: number;
+	/** 运行耗时（毫秒） */
+	elapsed?: number;
+	/** 输入数据 */
+	inputs?: Record<string, unknown>;
+	/** 输出数据 */
+	outputs?: Record<string, unknown>;
+	/** 错误信息 */
+	error?: string;
+	/** Token 使用量（LLM 节点） */
+	tokens?: {
+		prompt: number;
+		completion: number;
+		total: number;
+	};
+}
+
+/**
  * 节点数据基础类型
  */
 export interface BaseNodeData extends Record<string, unknown> {
@@ -69,6 +100,8 @@ export interface BaseNodeData extends Record<string, unknown> {
 	desc?: string;
 	/** 节点类型 */
 	type: string;
+	/** 运行状态数据 */
+	_run?: NodeRunData;
 }
 
 /**

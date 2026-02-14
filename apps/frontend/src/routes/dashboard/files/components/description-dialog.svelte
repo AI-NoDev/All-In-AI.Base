@@ -1,7 +1,7 @@
 <script lang="ts">
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import { Button } from '@/lib/components/ui/button';
-  import { Textarea } from '@/lib/components/ui/textarea';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Textarea } from '$lib/components/ui/textarea';
 
   interface Props {
     open: boolean;

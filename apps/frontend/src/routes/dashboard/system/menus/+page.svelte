@@ -1,17 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '@/lib/components/ui/table';
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { Switch } from '@/lib/components/ui/switch';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import * as Alert from '$lib/components/ui/alert';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Switch } from '$lib/components/ui/switch';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@/lib/api/Api';
+  import { pages } from '@/lib/generated-pages';
+  import MissingMenuDialog from './components/missing-menu-dialog.svelte';
 
   interface Menu {
     id: string;
@@ -23,9 +26,11 @@
     visible: boolean;
     isCache: boolean;
     isFrame: boolean;
+    isSystem: boolean;
+    linkUrl: string | null;
+    linkTarget: string | null;
     perms: string | null;
     icon: string | null;
-    component: string | null;
     createdAt: string;
   }
 
@@ -49,6 +54,10 @@
     visible: '',
   });
 
+  // 缺失菜单检测
+  let missingCount = $state(0);
+  let missingDialogOpen = $state(false);
+
   let form = $state({
     name: '',
     parentId: '' as string,
@@ -60,14 +69,36 @@
     isFrame: false,
     perms: '',
     icon: '',
-    component: '',
+    linkUrl: '',
+    linkTarget: '_self',
   });
 
   const typeOptions = [
     { value: 'M', label: '目录' },
     { value: 'C', label: '菜单' },
-    { value: 'F', label: '按钮' },
+    { value: 'L', label: '外链' },
   ];
+
+  // 可选的类型列表：有父级时不能选择目录
+  let availableTypeOptions = $derived.by(() => {
+    if (form.parentId) {
+      return typeOptions.filter(o => o.value !== 'M');
+    }
+    return typeOptions;
+  });
+
+  const linkTargetOptions = [
+    { value: '_self', label: '当前窗口（iframe）' },
+    { value: '_blank', label: '新窗口' },
+  ];
+
+  // 获取可选的父级菜单列表
+  let parentOptions = $derived.by(() => {
+    if (form.type === 'M') {
+      return [];
+    }
+    return flatMenus.filter(m => m.id !== editingMenu?.id && m.type === 'M');
+  });
 
   const visibleOptions = [
     { value: '', label: '全部' },
@@ -151,26 +182,40 @@
 
   function openCreate(parentId: string | null = null) {
     editingMenu = null;
-    form = { name: '', parentId: parentId || '', orderNum: 1, path: '', type: 'M', visible: true, isCache: true, isFrame: false, perms: '', icon: '', component: '' };
+    const defaultType = parentId ? 'C' : 'M';
+    form = { name: '', parentId: parentId || '', orderNum: 1, path: '', type: defaultType, visible: true, isCache: true, isFrame: false, perms: '', icon: '', linkUrl: '', linkTarget: '_self' };
     dialogOpen = true;
   }
 
   function openEdit(menu: Menu) {
     editingMenu = menu;
-    form = { name: menu.name, parentId: menu.parentId || '', orderNum: menu.orderNum, path: menu.path || '', type: menu.type, visible: menu.visible, isCache: menu.isCache, isFrame: menu.isFrame, perms: menu.perms || '', icon: menu.icon || '', component: menu.component || '' };
+    form = { name: menu.name, parentId: menu.parentId || '', orderNum: menu.orderNum, path: menu.path || '', type: menu.type, visible: menu.visible, isCache: menu.isCache, isFrame: menu.isFrame, perms: menu.perms || '', icon: menu.icon || '', linkUrl: menu.linkUrl || '', linkTarget: menu.linkTarget || '_self' };
     dialogOpen = true;
   }
 
   async function handleSave() {
     if (!form.name.trim()) return alert('请填写菜单名称');
+    if (form.type === 'L' && !form.linkUrl.trim()) return alert('请填写外链地址');
     saving = true;
     try {
       const api = authStore.createApi(true);
-      const data = { ...form, orderNum: Number(form.orderNum), parentId: form.parentId || null, path: form.path || null, perms: form.perms || null, icon: form.icon || null, component: form.component || null };
+      const parentId = form.type === 'M' ? null : (form.parentId || null);
+      const isFrame = form.type === 'L' ? true : form.isFrame;
+      const data = { 
+        ...form, 
+        orderNum: Number(form.orderNum), 
+        parentId, 
+        isFrame,
+        path: form.path || null, 
+        perms: form.perms || null, 
+        icon: form.icon || null, 
+        linkUrl: form.linkUrl || null,
+        linkTarget: form.linkTarget || null,
+      };
       if (editingMenu) {
-        await api.system.putApiSystemMenuById({ id: editingMenu.id }, { data: data as any });
+        await api.system.putApiSystemMenuById({ id: editingMenu.id }, { data: data as Parameters<typeof api.system.putApiSystemMenuById>[1]['data'] });
       } else {
-        await api.system.postApiSystemMenu({ data: data as any });
+        await api.system.postApiSystemMenu({ data: data as Parameters<typeof api.system.postApiSystemMenu>[0]['data'] });
       }
       dialogOpen = false;
       loadMenus();
@@ -198,10 +243,39 @@
     return typeOptions.find(o => o.value === type)?.label || type;
   }
 
-  onMount(() => loadMenus());
+  function detectMissingMenus() {
+    const existingPaths = new Set(flatMenus.map(m => m.path).filter(Boolean));
+    const visiblePages = pages.filter(p => 
+      !p.hidden && 
+      p.group && 
+      !p.path.includes('[') && 
+      p.path.startsWith('/dashboard')
+    );
+    missingCount = visiblePages.filter(p => !existingPaths.has(p.path)).length;
+  }
+
+  function handleMissingCreated() {
+    loadMenus().then(() => detectMissingMenus());
+  }
+
+  onMount(() => loadMenus().then(() => detectMissingMenus()));
 </script>
 
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
+  <!-- 缺失菜单警告 -->
+  {#if missingCount > 0}
+    <Alert.Root variant="destructive" class="mt-3">
+      <Icon icon="tdesign:error-circle" class="size-4" />
+      <Alert.Title>检测到缺失菜单</Alert.Title>
+      <Alert.Description class="flex items-center justify-between">
+        <span>发现 {missingCount} 个页面在菜单中不存在，可能导致用户无法访问。</span>
+        <Button size="sm" variant="outline" onclick={() => missingDialogOpen = true}>
+          <Icon icon="tdesign:tools" class="mr-1 size-4" />处理
+        </Button>
+      </Alert.Description>
+    </Alert.Root>
+  {/if}
+
   <!-- 搜索表单 -->
   {#if showFilter}
     <div class="py-3 border-b border-border">
@@ -253,57 +327,69 @@
         </div>
       </div>
     </div>
-    <div class="flex-1 min-h-0">
+    <div class="flex-1 min-h-0 flex flex-col">
       {#if loading}
         <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
       {:else}
-        <Table.Root>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head class="w-64">菜单名称</Table.Head>
-              <Table.Head class="w-16">图标</Table.Head>
-              <Table.Head class="w-20">排序</Table.Head>
-              <Table.Head>权限标识</Table.Head>
-              <Table.Head>路由地址</Table.Head>
-              <Table.Head class="w-20">类型</Table.Head>
-              <Table.Head class="w-20">可见</Table.Head>
-              <Table.Head class="w-28 text-right">操作</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {#each visibleMenus as menu}
-              <Table.Row>
-                <Table.Cell>
-                  <div class="flex items-center" style="padding-left: {(menu.level || 0) * 20}px">
-                    {#if menu.children && menu.children.length > 0}
-                      <button class="p-0.5 hover:bg-muted rounded mr-1" onclick={() => toggleExpand(menu)}>
-                        <Icon icon={menu.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
-                      </button>
-                    {:else}
-                      <span class="w-5 mr-1"></span>
-                    {/if}
-                    <span class="font-medium">{menu.name}</span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>{#if menu.icon}<Icon icon={menu.icon} class="size-4" />{:else}-{/if}</Table.Cell>
-                <Table.Cell>{menu.orderNum}</Table.Cell>
-                <Table.Cell class="text-muted-foreground">{menu.perms || '-'}</Table.Cell>
-                <Table.Cell class="text-muted-foreground">{menu.path || '-'}</Table.Cell>
-                <Table.Cell><Badge variant={menu.type === 'M' ? 'default' : menu.type === 'C' ? 'secondary' : 'outline'}>{getTypeLabel(menu.type)}</Badge></Table.Cell>
-                <Table.Cell><Badge variant={menu.visible ? 'default' : 'secondary'}>{menu.visible ? '是' : '否'}</Badge></Table.Cell>
-                <Table.Cell class="text-right">
-                  <div class="flex justify-end gap-1">
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(menu.id)} title="新增子菜单"><Icon icon="tdesign:add" class="size-4" /></Button>
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(menu)}><Icon icon="tdesign:edit" class="size-4" /></Button>
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(menu.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            {:else}
-              <Table.Row><Table.Cell colspan={8} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
+        <div class="border rounded-md flex flex-col min-h-0 flex-1 overflow-hidden">
+          <div class="overflow-x-auto overflow-y-hidden">
+            <Table.Root class="table-fixed w-full" style="min-width: 910px">
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head style="width: 240px">菜单名称</Table.Head>
+                  <Table.Head style="width: 60px">图标</Table.Head>
+                  <Table.Head style="width: 60px">排序</Table.Head>
+                  <Table.Head style="width: 140px">权限标识</Table.Head>
+                  <Table.Head style="width: 180px">路由地址</Table.Head>
+                  <Table.Head style="width: 70px">类型</Table.Head>
+                  <Table.Head style="width: 60px">可见</Table.Head>
+                  <Table.Head style="width: 100px" class="text-center">操作</Table.Head>
+                </Table.Row>
+              </Table.Header>
+            </Table.Root>
+          </div>
+          <div class="flex-1 overflow-auto">
+            <Table.Root class="table-fixed w-full" style="min-width: 910px">
+              <Table.Body>
+                {#each visibleMenus as menu}
+                  <Table.Row>
+                    <Table.Cell style="width: 240px">
+                      <div class="flex items-center" style="padding-left: {(menu.level || 0) * 20}px">
+                        {#if menu.children && menu.children.length > 0}
+                          <button class="p-0.5 hover:bg-muted rounded mr-1" onclick={() => toggleExpand(menu)}>
+                            <Icon icon={menu.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
+                          </button>
+                        {:else}
+                          <span class="w-5 mr-1"></span>
+                        {/if}
+                        <span class="font-medium truncate">{menu.name}</span>
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell style="width: 60px">{#if menu.icon}<Icon icon={menu.icon} class="size-4" />{:else}-{/if}</Table.Cell>
+                    <Table.Cell style="width: 60px">{menu.orderNum}</Table.Cell>
+                    <Table.Cell style="width: 140px" class="text-muted-foreground truncate">{menu.perms || '-'}</Table.Cell>
+                    <Table.Cell style="width: 180px" class="text-muted-foreground truncate">{menu.path || '-'}</Table.Cell>
+                    <Table.Cell style="width: 70px"><Badge variant={menu.type === 'M' ? 'default' : menu.type === 'C' ? 'secondary' : 'outline'}>{getTypeLabel(menu.type)}</Badge></Table.Cell>
+                    <Table.Cell style="width: 60px"><Badge variant={menu.visible ? 'default' : 'secondary'}>{menu.visible ? '是' : '否'}</Badge></Table.Cell>
+                    <Table.Cell style="width: 100px">
+                      <div class="flex justify-center gap-1">
+                        {#if menu.type === 'M'}
+                          <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(menu.id)} title="新增子菜单"><Icon icon="tdesign:add" class="size-4" /></Button>
+                        {/if}
+                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(menu)}><Icon icon="tdesign:edit" class="size-4" /></Button>
+                        {#if !menu.isSystem || menu.type === 'M'}
+                          <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(menu.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
+                        {/if}
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                {:else}
+                  <Table.Row><Table.Cell colspan={8} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
+                {/each}
+              </Table.Body>
+            </Table.Root>
+          </div>
+        </div>
       {/if}
     </div>
   </div>
@@ -315,24 +401,12 @@
       <Dialog.Title>{editingMenu ? '编辑菜单' : '新增菜单'}</Dialog.Title>
     </Dialog.Header>
     <div class="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
-      <div class="grid gap-2">
-        <Label>上级菜单</Label>
-        <Select.Root type="single" bind:value={form.parentId}>
-          <Select.Trigger>{flatMenus.find(m => m.id === form.parentId)?.name || '无（顶级菜单）'}</Select.Trigger>
-          <Select.Content>
-            <Select.Item value="">无（顶级菜单）</Select.Item>
-            {#each flatMenus.filter(m => m.id !== editingMenu?.id && m.type !== 'F') as menu}
-              <Select.Item value={menu.id}>{menu.name}</Select.Item>
-            {/each}
-          </Select.Content>
-        </Select.Root>
-      </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
           <Label>菜单类型 *</Label>
-          <Select.Root type="single" bind:value={form.type}>
+          <Select.Root type="single" bind:value={form.type} onValueChange={() => { if (form.type === 'M') form.parentId = ''; }}>
             <Select.Trigger>{typeOptions.find(o => o.value === form.type)?.label}</Select.Trigger>
-            <Select.Content>{#each typeOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
+            <Select.Content>{#each availableTypeOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
           </Select.Root>
         </div>
         <div class="grid gap-2">
@@ -340,48 +414,80 @@
           <Input bind:value={form.name} placeholder="请输入" />
         </div>
       </div>
-      {#if form.type !== 'F'}
-        <div class="grid grid-cols-2 gap-4">
-          <div class="grid gap-2">
-            <Label>图标</Label>
-            <Input bind:value={form.icon} placeholder="如 tdesign:home" />
-          </div>
-          <div class="grid gap-2">
-            <Label>排序</Label>
-            <Input bind:value={form.orderNum} type="number" />
-          </div>
+      {#if form.type !== 'M'}
+        <div class="grid gap-2">
+          <Label>上级目录</Label>
+          <Select.Root type="single" bind:value={form.parentId}>
+            <Select.Trigger>{flatMenus.find(m => m.id === form.parentId)?.name || '无（顶级）'}</Select.Trigger>
+            <Select.Content>
+              <Select.Item value="">无（顶级）</Select.Item>
+              {#each parentOptions as menu}
+                <Select.Item value={menu.id}>{menu.name}</Select.Item>
+              {/each}
+            </Select.Content>
+          </Select.Root>
         </div>
+      {/if}
+      <div class="grid grid-cols-2 gap-4">
+        <div class="grid gap-2">
+          <Label>图标</Label>
+          <Input bind:value={form.icon} placeholder="如：tdesign:home" />
+        </div>
+        <div class="grid gap-2">
+          <Label>排序</Label>
+          <Input bind:value={form.orderNum} type="number" />
+        </div>
+      </div>
+      {#if form.type === 'C'}
         <div class="grid gap-2">
           <Label>路由地址</Label>
           <Input bind:value={form.path} placeholder="请输入路由地址" />
         </div>
+        <div class="flex items-center gap-2">
+          <Label>是否外链</Label>
+          <Switch bind:checked={form.isFrame} />
+        </div>
+        {#if form.isFrame}
+          <div class="grid gap-2">
+            <Label>外链地址</Label>
+            <Input bind:value={form.linkUrl} placeholder="如：https://example.com" />
+          </div>
+          <div class="grid gap-2">
+            <Label>打开方式</Label>
+            <Select.Root type="single" bind:value={form.linkTarget}>
+              <Select.Trigger>{linkTargetOptions.find(o => o.value === form.linkTarget)?.label || '当前窗口（iframe）'}</Select.Trigger>
+              <Select.Content>{#each linkTargetOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
+            </Select.Root>
+          </div>
+        {/if}
       {/if}
-      {#if form.type === 'C'}
+      {#if form.type === 'L'}
         <div class="grid gap-2">
-          <Label>组件路径</Label>
-          <Input bind:value={form.component} placeholder="请输入组件路径" />
+          <Label>外链地址 *</Label>
+          <Input bind:value={form.linkUrl} placeholder="如：https://example.com" />
+        </div>
+        <div class="grid gap-2">
+          <Label>打开方式</Label>
+          <Select.Root type="single" bind:value={form.linkTarget}>
+            <Select.Trigger>{linkTargetOptions.find(o => o.value === form.linkTarget)?.label || '当前窗口（iframe）'}</Select.Trigger>
+            <Select.Content>{#each linkTargetOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
+          </Select.Root>
         </div>
       {/if}
       <div class="grid gap-2">
         <Label>权限标识</Label>
-        <Input bind:value={form.perms} placeholder="如 system:user:list" />
+        <Input bind:value={form.perms} placeholder="如：system:user:list" />
       </div>
-      {#if form.type !== 'F'}
-        <div class="flex flex-wrap gap-6">
-          <div class="flex items-center gap-2">
-            <Label>显示状态</Label>
-            <Switch bind:checked={form.visible} />
-          </div>
-          <div class="flex items-center gap-2">
-            <Label>是否缓存</Label>
-            <Switch bind:checked={form.isCache} />
-          </div>
-          <div class="flex items-center gap-2">
-            <Label>是否外链</Label>
-            <Switch bind:checked={form.isFrame} />
-          </div>
+      <div class="flex flex-wrap gap-6">
+        <div class="flex items-center gap-2">
+          <Label>显示状态</Label>
+          <Switch bind:checked={form.visible} />
         </div>
-      {/if}
+        <div class="flex items-center gap-2">
+          <Label>是否缓存</Label>
+          <Switch bind:checked={form.isCache} />
+        </div>
+      </div>
     </div>
     <Dialog.Footer>
       <Button variant="outline" onclick={() => dialogOpen = false}>取消</Button>
@@ -389,3 +495,6 @@
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
+
+<!-- 缺失菜单处理对话框 -->
+<MissingMenuDialog bind:open={missingDialogOpen} menus={flatMenus} onCreated={handleMissingCreated} />

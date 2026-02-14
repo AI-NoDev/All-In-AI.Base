@@ -1,10 +1,10 @@
 <script lang="ts">
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Textarea } from '@/lib/components/ui/textarea';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Textarea } from '$lib/components/ui/textarea';
 
   interface Provider {
     id: string;
@@ -48,11 +48,11 @@
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
         <Label>名称 *</Label>
-        <Input bind:value={form.name} placeholder="如 OpenAI、Claude" />
+        <Input bind:value={form.name} placeholder="如：OpenAI、Claude" />
       </div>
       <div class="grid gap-2">
         <Label>API 地址 *</Label>
-        <Input bind:value={form.baseUrl} placeholder="如 https://api.openai.com/v1" />
+        <Input bind:value={form.baseUrl} placeholder="如：https://api.openai.com/v1" />
       </div>
       <div class="grid gap-2">
         <Label>API Token *</Label>

@@ -24,6 +24,73 @@ ai-drive-system/
 
 ---
 
+## 菜单结构与种子数据
+
+### 知识库菜单结构
+
+知识库是一个菜单分组（目录），包含 4 个子菜单页面，不是单页面内的 Tab：
+
+```
+知识库 (KNOWLEDGE) - 目录 type='M'
+├── 我的知识库 (MY_FILES) - /dashboard/knowledge/my-files
+│   - 完整文件管理：创建、上传、删除、编辑、共享、复制/粘贴
+│   - 权限：knowledge:view
+├── 收到的共享 (SHARED_WITH_ME) - /dashboard/knowledge/shared-with-me
+│   - 他人共享给当前用户的文件（根据权限只读或可编辑）
+│   - 权限：knowledge:view
+├── 我的共享 (MY_SHARED) - /dashboard/knowledge/my-shared
+│   - 当前用户共享给他人的文件（可修改共享设置）
+│   - 权限：knowledge:view
+└── 收藏 (FAVORITES) - /dashboard/knowledge/favorites
+    - 收藏的文件和文件夹（可查看和取消收藏）
+    - 权限：knowledge:view
+```
+
+### 菜单种子数据
+
+位于 `packages/db/src/seedData/menu.ts`，使用固定 UUID 确保数据一致性：
+
+```typescript
+const MENU_IDS = {
+  // 知识库目录
+  KNOWLEDGE: '10000000-0000-0000-0000-000000000007',
+  // 知识库子菜单
+  MY_FILES: '20000000-0000-0000-0000-000000000040',
+  SHARED_WITH_ME: '20000000-0000-0000-0000-000000000041',
+  MY_SHARED: '20000000-0000-0000-0000-000000000042',
+  FAVORITES: '20000000-0000-0000-0000-000000000043',
+};
+```
+
+### 角色菜单关联
+
+位于 `packages/db/src/seedData/roleMenu.ts`，配置各角色可访问的菜单：
+
+```typescript
+// 管理员和普通用户都可以访问知识库
+const adminMenus = [
+  MENU_IDS.KNOWLEDGE,
+  MENU_IDS.MY_FILES,
+  MENU_IDS.SHARED_WITH_ME,
+  MENU_IDS.MY_SHARED,
+  MENU_IDS.FAVORITES,
+  // ...
+];
+```
+
+### 相关 API Actions
+
+- `packages/actions/src/files/fileShare.ts` - 共享相关
+  - `fileShareGetMyShared` - 获取我共享的资源
+  - `fileShareGetSharedWithMe` - 获取收到的共享
+- `packages/actions/src/db/knowledge/favorite/index.ts` - 收藏相关
+  - `favoriteAdd` - 添加收藏
+  - `favoriteRemove` - 取消收藏
+  - `favoriteCheck` - 检查收藏状态
+  - `favoriteList` - 获取收藏列表
+
+---
+
 ## packages/db - 数据库层
 
 ### 作用

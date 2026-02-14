@@ -19,7 +19,7 @@ async function checkIsAdminRole(id: string): Promise<boolean> {
 // ============ Filter Schema ============
 const roleFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   keys: z.array(z.string()).optional(),
   // 精确匹配
@@ -91,7 +91,7 @@ export const roleGetByPagination = defineAction({
 export const roleGetByPk = defineAction({
   meta: { name: 'system.role.getByPk', displayName: '根据ID查询角色', description: '根据主键ID查询单个角色', tags: ['system', 'role'], method: 'GET', path: '/api/system/role/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: roleZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -127,7 +127,7 @@ export const roleCreateMany = defineAction({
 export const roleUpdate = defineAction({
   meta: { name: 'system.role.update', displayName: '更新角色', description: '根据ID更新单个角色', tags: ['system', 'role'], method: 'PUT', path: '/api/system/role/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: roleZodSchemas.update }),
     outputSchema: roleZodSchemas.select,
   },
@@ -144,7 +144,7 @@ export const roleUpdate = defineAction({
 export const roleUpdateMany = defineAction({
   meta: { name: 'system.role.updateMany', displayName: '批量更新角色', description: '根据ID列表批量更新角色', tags: ['system', 'role'], method: 'PUT', path: '/api/system/role/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: roleZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: roleZodSchemas.update }),
     outputSchema: z.array(roleZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -164,7 +164,7 @@ export const roleUpdateMany = defineAction({
 export const roleDeleteByPk = defineAction({
   meta: { name: 'system.role.deleteByPk', displayName: '删除角色', description: '根据ID软删除角色', tags: ['system', 'role'], method: 'DELETE', path: '/api/system/role/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

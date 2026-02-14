@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Dialog from '@/lib/components/ui/dialog';
+  import * as Dialog from '$lib/components/ui/dialog';
 
   interface Props {
     open: boolean;

@@ -1,14 +1,14 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Popover from '@/lib/components/ui/popover';
-  import * as Tooltip from '@/lib/components/ui/tooltip';
-  import { Button } from '@/lib/components/ui/button';
-  import { Textarea } from '@/lib/components/ui/textarea';
-  import { Kbd } from '@/lib/components/ui/kbd';
+  import * as Popover from '$lib/components/ui/popover';
+  import * as Tooltip from '$lib/components/ui/tooltip';
+  import { Button } from '$lib/components/ui/button';
+  import { Textarea } from '$lib/components/ui/textarea';
+  import { Kbd } from '$lib/components/ui/kbd';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { imStore } from '@/lib/stores/im.svelte';
-  import { wsStore } from '@/lib/stores/websocket.svelte';
-  import { preferencesStore } from '@/lib/stores/preferences.svelte';
+  import { imStore } from '@/lib/stores/im';
+  import { wsStore } from '@/lib/stores/websocket';
+  import { preferencesStore } from '@/lib/stores/preferences';
 	import { theme } from 'mode-watcher';
 
   interface PendingFile {

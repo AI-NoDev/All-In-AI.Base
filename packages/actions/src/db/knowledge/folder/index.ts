@@ -11,10 +11,10 @@ type FolderInsert = typeof folder.$inferInsert;
 // ============ Filter Schema ============
 const folderFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   // 精确匹配
-  parentId: z.uuid().nullable().optional(),
+  parentId: z.string().nullable().optional(),
   // 模糊匹配
   name: z.string().optional(),
   // 时间范围
@@ -81,7 +81,7 @@ export const folderGetByPagination = defineAction({
 export const folderGetByPk = defineAction({
   meta: { name: 'knowledge.folder.getByPk', displayName: '根据ID查询文件夹', description: '根据主键ID查询单个文件夹', tags: ['knowledge', 'folder'], method: 'GET', path: '/api/knowledge/folder/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: folderZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -148,7 +148,7 @@ export const folderCreateMany = defineAction({
 export const folderUpdate = defineAction({
   meta: { name: 'knowledge.folder.update', displayName: '更新文件夹', description: '根据ID更新单个文件夹', tags: ['knowledge', 'folder'], method: 'PUT', path: '/api/knowledge/folder/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: folderZodSchemas.update }),
     outputSchema: folderZodSchemas.select,
   },
@@ -175,7 +175,7 @@ export const folderUpdate = defineAction({
 export const folderUpdateMany = defineAction({
   meta: { name: 'knowledge.folder.updateMany', displayName: '批量更新文件夹', description: '根据ID列表批量更新文件夹', tags: ['knowledge', 'folder'], method: 'PUT', path: '/api/knowledge/folder/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: folderZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: folderZodSchemas.update }),
     outputSchema: z.array(folderZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -191,7 +191,7 @@ export const folderUpdateMany = defineAction({
 export const folderDeleteByPk = defineAction({
   meta: { name: 'knowledge.folder.deleteByPk', displayName: '删除文件夹', description: '根据ID软删除文件夹', tags: ['knowledge', 'folder'], method: 'DELETE', path: '/api/knowledge/folder/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

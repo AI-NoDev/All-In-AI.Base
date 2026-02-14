@@ -2,6 +2,10 @@
  * 系统参数种子数据
  */
 
+import { eq } from 'drizzle-orm';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { config } from '../entities/system/config';
+
 export interface SystemConfigSeed {
   name: string;
   key: string;
@@ -93,3 +97,39 @@ export const systemConfigSeeds: SystemConfigSeed[] = [
     isSystem: true,
   },
 ];
+
+/**
+ * 初始化系统配置种子数据
+ */
+export async function initSystemConfigSeeds(db: PostgresJsDatabase): Promise<void> {
+  console.log('🔧 Initializing system config seeds...');
+  
+  let created = 0;
+  let skipped = 0;
+
+  for (const seed of systemConfigSeeds) {
+    // 检查是否已存在
+    const [existing] = await db.select().from(config)
+      .where(eq(config.key, seed.key))
+      .limit(1);
+
+    if (existing) {
+      skipped++;
+      continue;
+    }
+
+    // 创建配置
+    await db.insert(config).values({
+      name: seed.name,
+      key: seed.key,
+      value: seed.value,
+      isSystem: seed.isSystem,
+      createdBy: 'system',
+      updatedBy: 'system',
+    });
+
+    created++;
+  }
+
+  console.log(`✅ System config seeds: ${created} created, ${skipped} skipped`);
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import { Button } from '@/lib/components/ui/button';
-  import { Badge } from '@/lib/components/ui/badge';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
   import Icon from '@iconify/svelte';
   import type { ConflictMode, PasteConflictItem } from './types';
 

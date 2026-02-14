@@ -11,7 +11,7 @@ type LoginInfoInsert = typeof loginInfo.$inferInsert;
 // ============ Filter Schema ============
 const loginInfoFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   loginNames: z.array(z.string()).optional(),
   // 精确匹配
   status: z.enum(['0', '1']).optional(),
@@ -82,7 +82,7 @@ export const loginInfoGetByPagination = defineAction({
 
 export const loginInfoGetByPk = defineAction({
   meta: { name: 'system.loginInfo.getByPk', displayName: '根据ID查询登录日志', description: '根据主键ID查询单个登录日志', tags: ['system', 'loginInfo'], method: 'GET', path: '/api/system/login-info/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: loginInfoZodSchemas.select.nullable() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: loginInfoZodSchemas.select.nullable() },
   execute: async (input, _context) => { const [result] = await db.select().from(loginInfo).where(eq(loginInfo.id, input.id)).limit(1); return (result as LoginInfoSelect) ?? null; },
 });
 
@@ -94,7 +94,7 @@ export const loginInfoCreate = defineAction({
 
 export const loginInfoDeleteByPk = defineAction({
   meta: { name: 'system.loginInfo.deleteByPk', displayName: '删除登录日志', description: '根据ID删除登录日志', tags: ['system', 'loginInfo'], method: 'DELETE', path: '/api/system/login-info/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: z.boolean() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
   execute: async (input, _context) => { const [result] = await db.delete(loginInfo).where(eq(loginInfo.id, input.id)).returning(); return !!result; },
 });
 

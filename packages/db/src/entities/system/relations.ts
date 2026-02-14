@@ -11,16 +11,14 @@ import { userRole } from "./userRole";
 import { userPost } from "./userPost";
 import { roleMenu } from "./roleMenu";
 import { roleDepartment } from "./roleDepartment";
+import { casbinRule } from "./casbinRule";
+import { permission } from "./permission";
 
 // 用户关系
 export const userRelations = relations(user, ({ one, many }) => ({
   department: one(department, {
     fields: [user.deptId],
     references: [department.id],
-  }),
-  role: one(role, {
-    fields: [user.roleId],
-    references: [role.id],
   }),
   userRoles: many(userRole),
   userPosts: many(userPost),
@@ -49,7 +47,6 @@ export const departmentRelations = relations(department, ({ one, many }) => ({
 
 // 角色关系
 export const roleRelations = relations(role, ({ many }) => ({
-  users: many(user),
   userRoles: many(userRole),
   roleMenus: many(roleMenu),
   roleDepartments: many(roleDepartment),
@@ -130,4 +127,14 @@ export const roleDepartmentRelations = relations(roleDepartment, ({ one }) => ({
     fields: [roleDepartment.departmentId],
     references: [department.id],
   }),
+}));
+
+// 权限关系（树形结构）
+export const permissionRelations = relations(permission, ({ one, many }) => ({
+  parent: one(permission, {
+    fields: [permission.parentId],
+    references: [permission.id],
+    relationName: "permissionParent",
+  }),
+  children: many(permission, { relationName: "permissionParent" }),
 }));

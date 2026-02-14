@@ -11,7 +11,7 @@ type NoticeInsert = typeof notice.$inferInsert;
 // ============ Filter Schema ============
 const noticeFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   titles: z.array(z.string()).optional(),
   types: z.array(z.string()).optional(),
   // 精确匹配
@@ -81,7 +81,7 @@ export const noticeGetByPagination = defineAction({
 export const noticeGetByPk = defineAction({
   meta: { name: 'system.notice.getByPk', displayName: '根据ID查询通知', description: '根据主键ID查询单个通知', tags: ['system', 'notice'], method: 'GET', path: '/api/system/notice/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: noticeZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -118,7 +118,7 @@ export const noticeCreateMany = defineAction({
 export const noticeUpdate = defineAction({
   meta: { name: 'system.notice.update', displayName: '更新通知', description: '根据ID更新单个通知', tags: ['system', 'notice'], method: 'PUT', path: '/api/system/notice/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: noticeZodSchemas.update }),
     outputSchema: noticeZodSchemas.select,
   },
@@ -131,7 +131,7 @@ export const noticeUpdate = defineAction({
 export const noticeUpdateMany = defineAction({
   meta: { name: 'system.notice.updateMany', displayName: '批量更新通知', description: '根据ID列表批量更新通知', tags: ['system', 'notice'], method: 'PUT', path: '/api/system/notice/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: noticeZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: noticeZodSchemas.update }),
     outputSchema: z.array(noticeZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -147,7 +147,7 @@ export const noticeUpdateMany = defineAction({
 export const noticeDeleteByPk = defineAction({
   meta: { name: 'system.notice.deleteByPk', displayName: '删除通知', description: '根据ID删除通知', tags: ['system', 'notice'], method: 'DELETE', path: '/api/system/notice/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

@@ -10,14 +10,14 @@ type AgentMessageInsert = typeof agentMessage.$inferInsert;
 
 // ============ Filter Schema ============
 const agentMessageFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
-  sessionId: z.uuid().optional(),
-  sessionIds: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
+  sessionId: z.string().optional(),
+  sessionIds: z.array(z.string()).optional(),
   role: z.string().optional(),
   roles: z.array(z.string()).optional(),
   contentType: z.string().optional(),
   contentTypes: z.array(z.string()).optional(),
-  modelId: z.uuid().optional(),
+  modelId: z.string().optional(),
   finishReason: z.string().optional(),
   msgSeqStart: z.number().optional(),
   msgSeqEnd: z.number().optional(),
@@ -77,7 +77,7 @@ export const agentMessageGetByPagination = defineAction({
 export const agentMessageGetByPk = defineAction({
   meta: { name: 'ai.agentMessage.getByPk', displayName: '根据ID查询Agent消息', description: '根据主键ID查询单个Agent消息', tags: ['ai', 'agentMessage'], method: 'GET', path: '/api/ai/agent-message/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: agentMessageZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -127,7 +127,7 @@ export const agentMessageCreateMany = defineAction({
   meta: { name: 'ai.agentMessage.createMany', displayName: '批量创建Agent消息', description: '批量创建Agent消息', tags: ['ai', 'agentMessage'], method: 'POST', path: '/api/ai/agent-message/batch' },
   schemas: {
     bodySchema: z.object({ 
-      sessionId: z.uuid(),
+      sessionId: z.string(),
       messages: z.array(agentMessageZodSchemas.insert.omit({ sessionId: true, msgSeq: true }))
     }),
     outputSchema: z.array(agentMessageZodSchemas.select),
@@ -183,7 +183,7 @@ export const agentMessageCreateMany = defineAction({
 export const agentMessageGetHistory = defineAction({
   meta: { name: 'ai.agentMessage.getHistory', displayName: '获取会话历史', description: '获取指定会话的消息历史', tags: ['ai', 'agentMessage'], method: 'GET', path: '/api/ai/agent-message/history/:sessionId' },
   schemas: {
-    paramsSchema: z.object({ sessionId: z.uuid() }),
+    paramsSchema: z.object({ sessionId: z.string() }),
     querySchema: z.object({ 
       limit: z.coerce.number().int().min(1).max(200).default(50),
       beforeSeq: z.coerce.number().int().optional()

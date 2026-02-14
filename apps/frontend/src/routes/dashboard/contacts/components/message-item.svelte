@@ -1,9 +1,9 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as ContextMenu from '@/lib/components/ui/context-menu';
-  import { Avatar, AvatarFallback, AvatarImage } from '@/lib/components/ui/avatar';
+  import * as ContextMenu from '$lib/components/ui/context-menu';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { imStore } from '@/lib/stores/im.svelte';
+  import { imStore } from '@/lib/stores/im';
   import { FileIcon } from '@qiyu-allinai/file-icons';
 
   interface MessageContent {

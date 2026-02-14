@@ -1,3 +1,3 @@
 export { base } from "./base";
-export { app, type App } from "./app";
+export { createApp } from "./app";
 export * from "./plugins";

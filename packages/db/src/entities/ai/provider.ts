@@ -4,38 +4,45 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tAi, tAiMeta } from '../../i18n';
+import {
+  "db_ai_provider_meta_displayName" as meta_displayName,
+  "db_ai_provider_meta_verboseName" as meta_verboseName,
+  "db_ai_provider_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_ai_provider_name" as f_name,
+  "db_ai_provider_baseUrl" as f_baseUrl,
+  "db_ai_provider_token" as f_token,
+  "db_ai_provider_remark" as f_remark,
+  "db_ai_provider_status" as f_status,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-
-const f = (field: string) => tAi('provider', field);
 
 // ============ Fields ============
 const providerOwnFields = {
   name: {
     field: varchar("name", { length: 64 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: f_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_name, importExcelColumnName: f_name, cellType: "STRING" as const }
   },
   baseUrl: {
     field: varchar("base_url", { length: 512 }).notNull(),
-    comment: f('baseUrl'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('baseUrl'), importExcelColumnName: f('baseUrl'), cellType: "STRING" as const }
+    comment: f_baseUrl,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_baseUrl, importExcelColumnName: f_baseUrl, cellType: "STRING" as const }
   },
   token: {
     field: text("token").notNull(),
-    comment: f('token'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('token'), cellType: "STRING" as const }
+    comment: f_token,
+    config: { canExport: false, canImport: true, importExcelColumnName: f_token, cellType: "STRING" as const }
   },
   remark: {
     field: text("remark"),
-    comment: f('remark'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('remark'), importExcelColumnName: f('remark'), cellType: "TEXT" as const }
+    comment: f_remark,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_remark, importExcelColumnName: f_remark, cellType: "TEXT" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: f_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_status, importExcelColumnName: f_status, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -44,9 +51,9 @@ export const providerFields = mergeFields(pkSchema, auditSchema, providerOwnFiel
 // ============ Meta ============
 export const providerMeta: EntityMeta = {
   name: 'ai_provider',
-  displayName: tAiMeta('provider', 'displayName'),
-  verboseName: tAiMeta('provider', 'verboseName'),
-  verboseNamePlural: tAiMeta('provider', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('ai_provider'),
 };
 

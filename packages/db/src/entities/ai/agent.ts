@@ -4,110 +4,124 @@ import {
   createPermissions, createDescribeRefinements,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tAi, tAiMeta } from '../../i18n';
-import { pkSchema } from '../base/pkSchema';
-import { auditSchema } from '../base/auditSchema';
-import { permissionSchema } from '../base/permissionSchema';
+import {
+  "db_ai_agent_meta_displayName" as meta_displayName,
+  "db_ai_agent_meta_verboseName" as meta_verboseName,
+  "db_ai_agent_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_ai_agent_name" as f_name,
+  "db_ai_agent_description" as f_description,
+  "db_ai_agent_avatar" as f_avatar,
+  "db_ai_agent_color" as f_color,
+  "db_ai_agent_providerId" as f_providerId,
+  "db_ai_agent_modelId" as f_modelId,
+  "db_ai_agent_systemPrompt" as f_systemPrompt,
+  "db_ai_agent_toolIds" as f_toolIds,
+  "db_ai_agent_temperature" as f_temperature,
+  "db_ai_agent_supportLoop" as f_supportLoop,
+  "db_ai_agent_maxLoops" as f_maxLoops,
+  "db_ai_agent_contextStrategy" as f_contextStrategy,
+  "db_ai_agent_remark" as f_remark,
+  "db_ai_agent_status" as f_status,
+} from '@qiyu-allinai/i18n';
+import { pkSchema,auditSchema,permissionSchema } from '../base';
 import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
 import { z } from "zod/v4";
-
-const f = (field: string) => tAi('agent', field);
 
 // ============ Fields ============
 const agentOwnFields = {
   name: {
     field: varchar("name", { length: 64 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: f_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_name, importExcelColumnName: f_name, cellType: "STRING" as const }
   },
   description: {
     field: text("description"),
-    comment: f('description'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('description'), importExcelColumnName: f('description'), cellType: "TEXT" as const }
+    comment: f_description,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_description, importExcelColumnName: f_description, cellType: "TEXT" as const }
   },
   avatar: {
     field: varchar("avatar", { length: 255 }),
-    comment: f('avatar'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('avatar'), cellType: "IMAGE" as const }
+    comment: f_avatar,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_avatar, cellType: "IMAGE" as const }
   },
   color: {
     field: varchar("color", { length: 32 }),
-    comment: f('color'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('color'), importExcelColumnName: f('color'), cellType: "STRING" as const }
+    comment: f_color,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_color, importExcelColumnName: f_color, cellType: "STRING" as const }
   },
   providerId: {
     field: uuid("provider_id").notNull(),
-    comment: f('providerId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('providerId'), cellType: "STRING" as const }
+    comment: f_providerId,
+    config: { canExport: false, canImport: true, importExcelColumnName: f_providerId, cellType: "STRING" as const }
   },
   modelId: {
     field: uuid("model_id").notNull(),
-    comment: f('modelId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('modelId'), cellType: "STRING" as const }
+    comment: f_modelId,
+    config: { canExport: false, canImport: true, importExcelColumnName: f_modelId, cellType: "STRING" as const }
   },
   systemPrompt: {
     field: text("system_prompt"),
-    comment: f('systemPrompt'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('systemPrompt'), importExcelColumnName: f('systemPrompt'), cellType: "TEXT" as const }
+    comment: f_systemPrompt,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_systemPrompt, importExcelColumnName: f_systemPrompt, cellType: "TEXT" as const }
   },
   toolIds: {
     field: jsonb("tool_ids").$type<string[]>().default([]),
-    comment: f('toolIds'),
+    comment: f_toolIds,
     config: { canExport: false, canImport: false }
   },
   nativeTools: {
     field: jsonb("native_tools").$type<string[]>().default([]),
-    comment: f('nativeTools'),
+    comment: f_toolIds,
     config: { canExport: false, canImport: false }
   },
   temperature: {
     field: real("temperature").default(0.7),
-    comment: f('temperature'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('temperature'), importExcelColumnName: f('temperature'), cellType: "NUMERIC" as const }
+    comment: f_temperature,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_temperature, importExcelColumnName: f_temperature, cellType: "NUMERIC" as const }
   },
   supportLoop: {
     field: boolean("support_loop").notNull().default(false),
-    comment: f('supportLoop'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('supportLoop'), importExcelColumnName: f('supportLoop'), cellType: "STRING" as const }
+    comment: f_supportLoop,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_supportLoop, importExcelColumnName: f_supportLoop, cellType: "STRING" as const }
   },
   maxLoops: {
     field: jsonb("max_loops").$type<number>().default(10),
-    comment: f('maxLoops'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('maxLoops'), importExcelColumnName: f('maxLoops'), cellType: "NUMERIC" as const }
+    comment: f_maxLoops,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_maxLoops, importExcelColumnName: f_maxLoops, cellType: "NUMERIC" as const }
   },
   // 上下文压缩策略
   contextStrategy: {
     field: varchar("context_strategy", { length: 64 }),
-    comment: f('contextStrategy'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('contextStrategy'), importExcelColumnName: f('contextStrategy'), cellType: "STRING" as const }
+    comment: f_contextStrategy,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_contextStrategy, importExcelColumnName: f_contextStrategy, cellType: "STRING" as const }
   },
   // 输入参数 Schema (JSON Schema 格式)
   inputSchema: {
     field: jsonb("input_schema").$type<Record<string, unknown>>(),
-    comment: f('inputSchema'),
+    comment: f_description,
     config: { canExport: false, canImport: false }
   },
   // 是否启用结构化输出
   structuredOutput: {
     field: boolean("structured_output").notNull().default(false),
-    comment: f('structuredOutput'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('structuredOutput'), importExcelColumnName: f('structuredOutput'), cellType: "STRING" as const }
+    comment: f_description,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_description, importExcelColumnName: f_description, cellType: "STRING" as const }
   },
   // 输出参数 Schema (JSON Schema 格式)
   outputSchema: {
     field: jsonb("output_schema").$type<Record<string, unknown>>(),
-    comment: f('outputSchema'),
+    comment: f_description,
     config: { canExport: false, canImport: false }
   },
   remark: {
     field: text("remark"),
-    comment: f('remark'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('remark'), importExcelColumnName: f('remark'), cellType: "TEXT" as const }
+    comment: f_remark,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_remark, importExcelColumnName: f_remark, cellType: "TEXT" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: f_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_status, importExcelColumnName: f_status, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -116,9 +130,9 @@ export const agentFields = mergeFields(pkSchema, auditSchema, permissionSchema, 
 // ============ Meta ============
 export const agentMeta: EntityMeta = {
   name: 'ai_agent',
-  displayName: tAiMeta('agent', 'displayName'),
-  verboseName: tAiMeta('agent', 'verboseName'),
-  verboseNamePlural: tAiMeta('agent', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('ai_agent'),
 };
 
@@ -135,32 +149,32 @@ const describeRefinements = createDescribeRefinements(agentFields) as any;
 export const agentZodSchemas = {
   insert: createInsertZodSchema(agent, {
     ...describeRefinements,
-    toolIds: z.array(z.uuid()).describe(agentFields.toolIds.comment()),
+    toolIds: z.array(z.string()).describe(agentFields.toolIds.comment()),
     nativeTools: z.array(z.string()).describe(agentFields.nativeTools.comment()),
     inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
     outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
-    allowedUserIds: z.array(z.uuid()).describe(agentFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.uuid()).describe(agentFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.uuid()).describe(agentFields.allowedDeptIds.comment()),
+    allowedUserIds: z.array(z.string()).describe(agentFields.allowedUserIds.comment()),
+    allowedRoleIds: z.array(z.string()).describe(agentFields.allowedRoleIds.comment()),
+    allowedDeptIds: z.array(z.string()).describe(agentFields.allowedDeptIds.comment()),
   }),
   select: createSelectZodSchema(agent, {
     ...describeRefinements,
-    toolIds: z.array(z.uuid()).nullable().describe(agentFields.toolIds.comment()),
+    toolIds: z.array(z.string()).nullable().describe(agentFields.toolIds.comment()),
     nativeTools: z.array(z.string()).nullable().describe(agentFields.nativeTools.comment()),
     inputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.inputSchema.comment()),
     outputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.outputSchema.comment()),
-    allowedUserIds: z.array(z.uuid()).nullable().describe(agentFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.uuid()).nullable().describe(agentFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.uuid()).nullable().describe(agentFields.allowedDeptIds.comment()),
+    allowedUserIds: z.array(z.string()).nullable().describe(agentFields.allowedUserIds.comment()),
+    allowedRoleIds: z.array(z.string()).nullable().describe(agentFields.allowedRoleIds.comment()),
+    allowedDeptIds: z.array(z.string()).nullable().describe(agentFields.allowedDeptIds.comment()),
   }),
   update: createUpdateZodSchema(agent, {
     ...describeRefinements,
-    toolIds: z.array(z.uuid()).optional().describe(agentFields.toolIds.comment()),
+    toolIds: z.array(z.string()).optional().describe(agentFields.toolIds.comment()),
     nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
     inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
     outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
-    allowedUserIds: z.array(z.uuid()).optional().describe(agentFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.uuid()).optional().describe(agentFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.uuid()).optional().describe(agentFields.allowedDeptIds.comment()),
+    allowedUserIds: z.array(z.string()).optional().describe(agentFields.allowedUserIds.comment()),
+    allowedRoleIds: z.array(z.string()).optional().describe(agentFields.allowedRoleIds.comment()),
+    allowedDeptIds: z.array(z.string()).optional().describe(agentFields.allowedDeptIds.comment()),
   }),
 };

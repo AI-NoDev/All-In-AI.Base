@@ -1,40 +1,44 @@
 {
-  "name": "@qiyu-allinai/db",
-  "module": "index.ts",
-  "type": "module",
-  "exports": {
-    ".": "./index.ts",
-    "./connect": "./src/connect/index.ts",
-    "./entities": "./src/entities/index.ts",
-    "./entities/system": "./src/entities/system/index.ts",
-    "./entities/ai": "./src/entities/ai/index.ts",
-    "./entities/knowledge": "./src/entities/knowledge/index.ts",
-    "./entities/im": "./src/entities/im/index.ts",
-    "./types": "./src/types.ts",
-    "./utils": "./src/utils/entity.ts"
-  },
-  "scripts": {
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate",
-    "seed": "bun scripts/seed.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/pg": "^8.16.0",
-    "drizzle-kit": "^0.31.8",
-    "tsx": "^4.21.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@qiyu-allinai/i18n": "workspace:*",
-    "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.45.1",
-    "drizzle-zod": "^0.8.3",
-    "elysia": "^1.4.22",
-    "pg": "^8.17.2",
-    "postgres": "^3.4.8",
-    "zod": "^4.3.6"
-  }
+	"name": "@qiyu-allinai/db",
+	"module": "index.ts",
+	"type": "module",
+	"exports": {
+		".": "./index.ts",
+		"./connect": "./src/connect/index.ts",
+		"./entities": "./src/entities/index.ts",
+		"./entities/system": "./src/entities/system/index.ts",
+		"./entities/ai": "./src/entities/ai/index.ts",
+		"./entities/knowledge": "./src/entities/knowledge/index.ts",
+		"./entities/im": "./src/entities/im/index.ts",
+		"./seedData": "./src/seedData/index.ts",
+		"./casbin": "./src/casbin/index.ts",
+		"./types": "./src/types.ts",
+		"./utils": "./src/utils/entity.ts"
+	},
+	"scripts": {
+		"generate": "drizzle-kit generate",
+		"migrate": "drizzle-kit migrate",
+		"push": "drizzle-kit push",
+		"seed": "bun scripts/seed.ts",
+		"resetSeedData": "bun scripts/resetSeedData.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/pg": "^8.16.0",
+		"drizzle-kit": "^0.31.8",
+		"tsx": "^4.21.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@qiyu-allinai/i18n": "workspace:*",
+		"dotenv": "^17.2.3",
+		"drizzle-orm": "^0.45.1",
+		"drizzle-zod": "^0.8.3",
+		"elysia": "^1.4.22",
+		"pg": "^8.17.2",
+		"postgres": "^3.4.8",
+		"zod": "^4.3.6"
+	}
 }

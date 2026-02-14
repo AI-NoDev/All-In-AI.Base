@@ -6,3 +6,6 @@ export * from './entities';
 
 // Seed Data
 export * from './seedData';
+
+// Casbin adapter
+export * from './casbin';

@@ -5,10 +5,24 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tAi, tAiMeta } from '../../i18n';
+import {
+  "db_ai_agentMessage_meta_displayName" as meta_displayName,
+  "db_ai_agentMessage_meta_verboseName" as meta_verboseName,
+  "db_ai_agentMessage_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_ai_agentMessage_sessionId" as f_sessionId,
+  "db_ai_agentMessage_msgSeq" as f_msgSeq,
+  "db_ai_agentMessage_role" as f_role,
+  "db_ai_agentMessage_content" as f_content,
+  "db_ai_agentMessage_contentType" as f_contentType,
+  "db_ai_agentMessage_toolCalls" as f_toolCalls,
+  "db_ai_agentMessage_toolResults" as f_toolResults,
+  "db_ai_agentMessage_tokenCount" as f_tokenCount,
+  "db_ai_agentMessage_modelId" as f_modelId,
+  "db_ai_agentMessage_latencyMs" as f_latencyMs,
+  "db_ai_agentMessage_finishReason" as f_finishReason,
+  "db_ai_agentMessage_extra" as f_extra,
+} from '@qiyu-allinai/i18n';
 import { randomUUID } from "crypto";
-
-const f = (field: string) => tAi('agentMessage', field);
 
 // Tool call type
 export type ToolCall = {
@@ -41,62 +55,62 @@ const agentMessageFields = {
   },
   sessionId: {
     field: uuid("session_id").notNull(),
-    comment: f('sessionId'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('sessionId'), cellType: "STRING" as const }
+    comment: f_sessionId,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_sessionId, cellType: "STRING" as const }
   },
   msgSeq: {
     field: bigint("msg_seq", { mode: "number" }).notNull(),
-    comment: f('msgSeq'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('msgSeq'), cellType: "NUMERIC" as const }
+    comment: f_msgSeq,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_msgSeq, cellType: "NUMERIC" as const }
   },
   role: {
     field: varchar("role", { length: 16 }).notNull(),
-    comment: f('role'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('role'), cellType: "STRING" as const }
+    comment: f_role,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_role, cellType: "STRING" as const }
   },
   content: {
     field: jsonb("content").$type<AgentMessageContent>(),
-    comment: f('content'),
+    comment: f_content,
     config: { canExport: false, canImport: false }
   },
   contentType: {
     field: char("content_type", { length: 2 }).notNull().default("01"),
-    comment: f('contentType'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('contentType'), cellType: "STRING" as const }
+    comment: f_contentType,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_contentType, cellType: "STRING" as const }
   },
   toolCalls: {
     field: jsonb("tool_calls").$type<ToolCall[]>(),
-    comment: f('toolCalls'),
+    comment: f_toolCalls,
     config: { canExport: false, canImport: false }
   },
   toolResults: {
     field: jsonb("tool_results").$type<ToolResult[]>(),
-    comment: f('toolResults'),
+    comment: f_toolResults,
     config: { canExport: false, canImport: false }
   },
   tokenCount: {
     field: integer("token_count").default(0),
-    comment: f('tokenCount'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('tokenCount'), cellType: "NUMERIC" as const }
+    comment: f_tokenCount,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_tokenCount, cellType: "NUMERIC" as const }
   },
   modelId: {
     field: uuid("model_id"),
-    comment: f('modelId'),
+    comment: f_modelId,
     config: { canExport: false, canImport: false }
   },
   latencyMs: {
     field: integer("latency_ms"),
-    comment: f('latencyMs'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('latencyMs'), cellType: "NUMERIC" as const }
+    comment: f_latencyMs,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_latencyMs, cellType: "NUMERIC" as const }
   },
   finishReason: {
     field: varchar("finish_reason", { length: 32 }),
-    comment: f('finishReason'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('finishReason'), cellType: "STRING" as const }
+    comment: f_finishReason,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_finishReason, cellType: "STRING" as const }
   },
   extra: {
     field: jsonb("extra").$type<Record<string, unknown>>().default({}),
-    comment: f('extra'),
+    comment: f_extra,
     config: { canExport: false, canImport: false }
   },
   createdAt: {
@@ -111,9 +125,9 @@ export { agentMessageFields };
 // ============ Meta ============
 export const agentMessageMeta: EntityMeta = {
   name: 'ai_agent_message',
-  displayName: tAiMeta('agentMessage', 'displayName'),
-  verboseName: tAiMeta('agentMessage', 'verboseName'),
-  verboseNamePlural: tAiMeta('agentMessage', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('ai_agent_message'),
 };
 

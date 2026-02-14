@@ -4,7 +4,7 @@
 export { folder } from './folder';
 export { file } from './file';
 export { fileVersion } from './fileVersion';
-export { resourcePermission } from './resourcePermission';
+export { favorite } from './favorite';
 
 // Relations
 export * from './relations';

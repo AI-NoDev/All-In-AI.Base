@@ -3,8 +3,8 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import { Button } from '@/lib/components/ui/button';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
+  import { Button } from '$lib/components/ui/button';
+  import { Skeleton } from '$lib/components/ui/skeleton';
   import { MarkdownEditor } from '@/lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
 

@@ -1,7 +1,7 @@
 /**
  * useActionsFlowEditorAgent
  * 
- * 封装 useChat，集成 ActionsFlowEditor 的 AI 工具
+ * 封装 useChat，集�?ActionsFlowEditor �?AI 工具
  */
 
 import { Chat, DefaultChatTransport, type UIMessage } from '@qiyu-allinai/ai/client';
@@ -15,18 +15,18 @@ import {
 interface UseActionsFlowEditorAgentOptions {
   /** API 端点 */
   api?: string;
-  /** 编辑器 ref */
+  /** 编辑�?ref */
   editorRef: ActionsFlowEditorRef;
   /** 初始消息 */
   initialMessages?: UIMessage[];
-  /** 请求体附加数据 */
+  /** 请求体附加数�?*/
   body?: Record<string, unknown>;
-  /** 请求头 */
+  /** 请求�?*/
   headers?: Record<string, string>;
 }
 
 /**
- * 创建集成 ActionsFlowEditor 工具的 Chat 实例
+ * 创建集成 ActionsFlowEditor 工具�?Chat 实例
  * @param options - 配置选项
  * @returns Chat 实例
  */
@@ -41,7 +41,7 @@ export function useActionsFlowEditorAgent(options: UseActionsFlowEditorAgentOpti
       headers,
     }),
     async onToolCall({ toolCall }) {
-      // 跳过动态工具
+      // 跳过动态工�?
       if (toolCall.dynamic) return;
 
       const toolName = toolCall.toolName as ActionsFlowEditorToolName;

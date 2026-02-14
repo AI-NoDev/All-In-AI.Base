@@ -10,12 +10,12 @@ type AgentInsert = typeof agent.$inferInsert;
 
 // ============ Filter Schema ============
 const agentFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
-  providerId: z.uuid().optional(),
-  providerIds: z.array(z.uuid()).optional(),
-  modelId: z.uuid().optional(),
-  modelIds: z.array(z.uuid()).optional(),
+  providerId: z.string().optional(),
+  providerIds: z.array(z.string()).optional(),
+  modelId: z.string().optional(),
+  modelIds: z.array(z.string()).optional(),
   name: z.string().optional(),
   status: z.string().optional(),
   supportLoop: z.boolean().optional(),
@@ -74,7 +74,7 @@ export const agentGetByPagination = defineAction({
 export const agentGetByPk = defineAction({
   meta: { name: 'ai.agent.getByPk', displayName: '根据ID查询AI智能体', description: '根据主键ID查询单个AI智能体', tags: ['ai', 'agent'], method: 'GET', path: '/api/ai/agent/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: agentZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -110,7 +110,7 @@ export const agentCreateMany = defineAction({
 export const agentUpdate = defineAction({
   meta: { name: 'ai.agent.update', displayName: '更新AI智能体', description: '根据ID更新单个AI智能体', tags: ['ai', 'agent'], method: 'PUT', path: '/api/ai/agent/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: agentZodSchemas.update }),
     outputSchema: agentZodSchemas.select,
   },
@@ -123,7 +123,7 @@ export const agentUpdate = defineAction({
 export const agentUpdateMany = defineAction({
   meta: { name: 'ai.agent.updateMany', displayName: '批量更新AI智能体', description: '根据ID列表批量更新AI智能体', tags: ['ai', 'agent'], method: 'PUT', path: '/api/ai/agent/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: agentZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: agentZodSchemas.update }),
     outputSchema: z.array(agentZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -139,7 +139,7 @@ export const agentUpdateMany = defineAction({
 export const agentDeleteByPk = defineAction({
   meta: { name: 'ai.agent.deleteByPk', displayName: '删除AI智能体', description: '根据ID删除AI智能体', tags: ['ai', 'agent'], method: 'DELETE', path: '/api/ai/agent/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

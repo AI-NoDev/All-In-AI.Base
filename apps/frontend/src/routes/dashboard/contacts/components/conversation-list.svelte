@@ -1,12 +1,12 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Avatar, AvatarFallback, AvatarImage } from '@/lib/components/ui/avatar';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { imStore } from '@/lib/stores/im.svelte';
-  import { wsStore } from '@/lib/stores/websocket.svelte';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Badge } from '$lib/components/ui/badge';
+  import { imStore } from '@/lib/stores/im';
+  import { wsStore } from '@/lib/stores/websocket';
 
   interface Props {
     onCreateGroup: () => void;

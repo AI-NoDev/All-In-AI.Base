@@ -1,4 +1,13 @@
 // Main exports
 export { default as FileIcon } from './src/FileIcon.svelte';
-export { iconMap, getIconByExtension, getIconByFilename } from './src/icons/index';
-export * from './src/icons/index';
+export {
+  extensionIconMap,
+  filenameIconMap,
+  folderIcons,
+  defaultIcon,
+  defaultFolderIcon,
+  defaultFolderOpenIcon,
+  getIconByExtension,
+  getIconByFilename,
+  getFolderIcon,
+} from './src/icons/index';

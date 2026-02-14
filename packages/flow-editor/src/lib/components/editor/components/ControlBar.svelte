@@ -6,6 +6,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import NodePicker, { type NodeTemplate } from './NodePicker.svelte';
+	import ELK from 'elkjs/lib/elk.bundled.js';
 
 	type ExportFormat = 'png' | 'jpeg' | 'svg';
 	type ExportScope = 'viewport' | 'full';
@@ -13,6 +14,7 @@
 	const { fitView, getNodes, screenToFlowPosition } = useSvelteFlow();
 
 	let nodePickerOpen = $state(false);
+	let isLayouting = $state(false);
 	
 	// 使用共享的交互模式状态
 	const mode = $derived(workflowState.interactionMode);
@@ -59,59 +61,226 @@
 		}, initialPos);
 	}
 
-	function autoLayout() {
-		const nodes = getNodes();
-		const startNode = nodes.find(n => n.type === 'start');
-		if (!startNode) return;
+	// ELK 实例
+	const elk = new ELK();
 
-		const adjacency = new Map<string, string[]>();
-		workflowState.edges.forEach(e => {
-			if (!adjacency.has(e.source)) adjacency.set(e.source, []);
-			adjacency.get(e.source)!.push(e.target);
+	// 节点尺寸常量
+	const NODE_WIDTH = 240;
+	const NODE_HEIGHT = 80;
+	const LOOP_MIN_WIDTH = 400;
+	const LOOP_MIN_HEIGHT = 220;
+	// 循环节点内部布局偏移
+	const LOOP_PADDING_LEFT = 76;
+	const LOOP_PADDING_TOP = 74;
+	const LOOP_PADDING_RIGHT = 30;
+	const LOOP_PADDING_BOTTOM = 30;
+
+	/** 使用 ELK 进行自动布局 */
+	async function autoLayout() {
+		if (isLayouting) return;
+		isLayouting = true;
+
+		try {
+			const nodes = getNodes();
+			const edges = workflowState.edges;
+
+			// 构建 ELK 图结构
+			const elkGraph = buildElkGraph(nodes, edges);
+			
+			console.log('ELK Graph:', JSON.stringify(elkGraph, null, 2));
+			
+			// 执行布局
+			const layoutedGraph = await elk.layout(elkGraph);
+			
+			console.log('Layouted Graph:', JSON.stringify(layoutedGraph, null, 2));
+			
+			// 应用布局结果
+			applyLayout(layoutedGraph, nodes);
+			
+			// 适应视图
+			setTimeout(() => fitView({ padding: 0.1, duration: 300 }), 50);
+		} catch (error) {
+			console.error('ELK layout failed:', error);
+		} finally {
+			isLayouting = false;
+		}
+	}
+
+	interface ElkNodeInput {
+		id: string;
+		width: number;
+		height: number;
+		children?: ElkNodeInput[];
+		layoutOptions?: Record<string, string>;
+	}
+
+	interface ElkEdgeInput {
+		id: string;
+		sources: string[];
+		targets: string[];
+	}
+
+	interface ElkGraphInput {
+		id: string;
+		layoutOptions: Record<string, string>;
+		children: ElkNodeInput[];
+		edges: ElkEdgeInput[];
+	}
+
+	/** 构建 ELK 图结构 - 简化版，让 ELK 处理所有布局 */
+	function buildElkGraph(nodes: ReturnType<typeof getNodes>, edges: typeof workflowState.edges): ElkGraphInput {
+		// 分离主流程节点和循环内子节点
+		const mainNodes = nodes.filter(n => !n.parentId && n.type !== 'note');
+		const childNodesByParent = new Map<string, typeof nodes>();
+		
+		nodes.filter(n => n.parentId).forEach(n => {
+			if (!childNodesByParent.has(n.parentId!)) {
+				childNodesByParent.set(n.parentId!, []);
+			}
+			childNodesByParent.get(n.parentId!)!.push(n);
 		});
 
-		const levels = new Map<string, number>();
-		const queue = [startNode.id];
-		levels.set(startNode.id, 0);
+		// 构建 ELK 节点（简化：不使用端口，让 ELK 自动处理）
+		const elkChildren: ElkNodeInput[] = mainNodes.map(node => {
+			const isLoop = node.type === 'loop';
+			const children = childNodesByParent.get(node.id);
+			
+			if (isLoop && children && children.length > 0) {
+				// 循环节点：包含子节点，让 ELK 自动计算尺寸
+				return {
+					id: node.id,
+					width: LOOP_MIN_WIDTH,
+					height: LOOP_MIN_HEIGHT,
+					layoutOptions: {
+						'elk.algorithm': 'layered',
+						'elk.direction': 'RIGHT',
+						'elk.spacing.nodeNode': '20',
+						'elk.layered.spacing.nodeNodeBetweenLayers': '50',
+						'elk.padding': `[top=${LOOP_PADDING_TOP},left=${LOOP_PADDING_LEFT},bottom=${LOOP_PADDING_BOTTOM},right=${LOOP_PADDING_RIGHT}]`
+					},
+					children: children.map(child => ({
+						id: child.id,
+						width: NODE_WIDTH,
+						height: NODE_HEIGHT
+					}))
+				};
+			}
+			
+			return {
+				id: node.id,
+				width: node.width ?? NODE_WIDTH,
+				height: node.height ?? NODE_HEIGHT
+			};
+		});
 
-		while (queue.length > 0) {
-			const current = queue.shift()!;
-			const currentLevel = levels.get(current)!;
-			const children = adjacency.get(current) ?? [];
-			children.forEach(child => {
-				if (!levels.has(child)) {
-					levels.set(child, currentLevel + 1);
-					queue.push(child);
+		// 构建 ELK 边（简化：直接使用节点 ID）
+		const elkEdges: ElkEdgeInput[] = [];
+		const nodeIds = new Set(nodes.map(n => n.id));
+
+		edges.forEach(edge => {
+			// 跳过无效边
+			if (!nodeIds.has(edge.source) || !nodeIds.has(edge.target)) return;
+			
+			// 跳过 loop-entry 边（这是循环内部的入口边，需要特殊处理）
+			if (edge.sourceHandle === 'loop-entry') {
+				// 循环入口边：从循环节点到子节点
+				// ELK 会自动处理层级边
+				elkEdges.push({
+					id: edge.id,
+					sources: [edge.source],
+					targets: [edge.target]
+				});
+				return;
+			}
+			
+			elkEdges.push({
+				id: edge.id,
+				sources: [edge.source],
+				targets: [edge.target]
+			});
+		});
+
+		return {
+			id: 'root',
+			layoutOptions: {
+				'elk.algorithm': 'layered',
+				'elk.direction': 'RIGHT',
+				'elk.spacing.nodeNode': '40',
+				'elk.layered.spacing.nodeNodeBetweenLayers': '80',
+				'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
+				'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+				'elk.edgeRouting': 'ORTHOGONAL',
+				'elk.hierarchyHandling': 'INCLUDE_CHILDREN',
+				// 关键：让 ELK 根据边的顺序排列节点
+				'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
+				'elk.layered.crossingMinimization.forceNodeModelOrder': 'true'
+			},
+			children: elkChildren,
+			edges: elkEdges
+		};
+	}
+
+	interface ElkLayoutedNode {
+		id: string;
+		x?: number;
+		y?: number;
+		width?: number;
+		height?: number;
+		children?: ElkLayoutedNode[];
+	}
+
+	interface ElkLayoutedGraph {
+		children?: ElkLayoutedNode[];
+	}
+
+	/** 应用 ELK 布局结果 */
+	function applyLayout(layoutedGraph: ElkLayoutedGraph, originalNodes: ReturnType<typeof getNodes>) {
+		if (!layoutedGraph.children) return;
+
+		const positionMap = new Map<string, { x: number; y: number; width?: number; height?: number }>();
+
+		// 递归收集所有节点位置
+		function collectPositions(elkNodes: ElkLayoutedNode[] | undefined) {
+			elkNodes?.forEach(elkNode => {
+				positionMap.set(elkNode.id, {
+					x: elkNode.x ?? 0,
+					y: elkNode.y ?? 0,
+					width: elkNode.width,
+					height: elkNode.height
+				});
+
+				// 递归处理子节点（循环内的节点）
+				if (elkNode.children && elkNode.children.length > 0) {
+					collectPositions(elkNode.children);
 				}
 			});
 		}
 
-		const levelGroups = new Map<number, string[]>();
-		levels.forEach((level, nodeId) => {
-			if (!levelGroups.has(level)) levelGroups.set(level, []);
-			levelGroups.get(level)!.push(nodeId);
-		});
+		collectPositions(layoutedGraph.children);
 
-		const horizontalGap = 300;
-		const verticalGap = 150;
-		const startX = 100;
-		const startY = 200;
-
+		// 应用位置到 workflowState
 		workflowState.nodes = workflowState.nodes.map(node => {
-			const level = levels.get(node.id);
-			if (level === undefined) return node;
+			if (node.type === 'note') return node; // 跳过注释节点
+			
+			const pos = positionMap.get(node.id);
+			if (!pos) return node;
 
-			const nodesInLevel = levelGroups.get(level)!;
-			const indexInLevel = nodesInLevel.indexOf(node.id);
-			const totalInLevel = nodesInLevel.length;
-			const offsetY = (indexInLevel - (totalInLevel - 1) / 2) * verticalGap;
+			// 循环节点：更新尺寸（同时设置 width, height, measured, style）
+			if (node.type === 'loop' && pos.width && pos.height) {
+				return {
+					...node,
+					position: { x: pos.x, y: pos.y },
+					width: pos.width,
+					height: pos.height,
+					measured: { width: pos.width, height: pos.height },
+					style: `width: ${pos.width}px; height: ${pos.height}px;`
+				};
+			}
 
+			// 普通节点和子节点
 			return {
 				...node,
-				position: {
-					x: startX + level * horizontalGap,
-					y: startY + offsetY
-				}
+				position: { x: pos.x, y: pos.y }
 			};
 		});
 	}

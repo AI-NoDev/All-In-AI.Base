@@ -11,10 +11,10 @@ type TokenInsert = typeof token.$inferInsert;
 // ============ Filter Schema ============
 const tokenFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
-  userIds: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
+  userIds: z.array(z.string()).optional(),
   // 精确匹配
-  userId: z.uuid().optional(),
+  userId: z.string().optional(),
   isRevoked: z.boolean().optional(),
   // 时间范围
   createdAtStart: z.iso.datetime().optional(),
@@ -79,7 +79,7 @@ export const tokenGetByPagination = defineAction({
 export const tokenGetByPk = defineAction({
   meta: { name: 'system.token.getByPk', displayName: '根据ID查询令牌', description: '根据主键ID查询单个令牌', tags: ['system', 'token'], method: 'GET', path: '/api/system/token/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: tokenZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -104,7 +104,7 @@ export const tokenCreate = defineAction({
 export const tokenUpdate = defineAction({
   meta: { name: 'system.token.update', displayName: '更新令牌', description: '根据ID更新单个令牌', tags: ['system', 'token'], method: 'PUT', path: '/api/system/token/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: tokenZodSchemas.update }),
     outputSchema: tokenZodSchemas.select,
   },
@@ -117,7 +117,7 @@ export const tokenUpdate = defineAction({
 export const tokenDeleteByPk = defineAction({
   meta: { name: 'system.token.deleteByPk', displayName: '删除令牌', description: '根据ID删除令牌', tags: ['system', 'token'], method: 'DELETE', path: '/api/system/token/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

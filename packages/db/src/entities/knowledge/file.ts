@@ -4,96 +4,118 @@ import {
   createPermissions, createDescribeRefinements,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tKnowledge, tKnowledgeMeta } from '../../i18n';
+import {
+  "db_knowledge_file_meta_displayName" as meta_displayName,
+  "db_knowledge_file_meta_verboseName" as meta_verboseName,
+  "db_knowledge_file_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_knowledge_file_folderId" as f_folderId,
+  "db_knowledge_file_name" as f_name,
+  "db_knowledge_file_originalName" as f_originalName,
+  "db_knowledge_file_extension" as f_extension,
+  "db_knowledge_file_mimeType" as f_mimeType,
+  "db_knowledge_file_size" as f_size,
+  "db_knowledge_file_storageKey" as f_storageKey,
+  "db_knowledge_file_bucket" as f_bucket,
+  "db_knowledge_file_region" as f_region,
+  "db_knowledge_file_etag" as f_etag,
+  "db_knowledge_file_versionId" as f_versionId,
+  "db_knowledge_file_storageClass" as f_storageClass,
+  "db_knowledge_file_metadata" as f_metadata,
+  "db_knowledge_file_tags" as f_tags,
+  "db_knowledge_file_description" as f_description,
+  "db_knowledge_file_processStatus" as f_processStatus,
+  "db_knowledge_file_processResult" as f_processResult,
+  "db_knowledge_file_downloadCount" as f_downloadCount,
+  "db_knowledge_file_status" as f_status,
+  "db_knowledge_file_isPublic" as f_isPublic,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { deletedSchema } from '../base/deletedSchema';
 import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
 import { z } from "zod/v4";
 
-const f = (field: string) => tKnowledge('file', field);
-
 // ============ Fields ============
 const fileOwnFields = {
   folderId: {
     field: uuid("folder_id"),
-    comment: f('folderId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('folderId'), cellType: "STRING" as const }
+    comment: f_folderId,
+    config: { canExport: false, canImport: true, importExcelColumnName: f_folderId, cellType: "STRING" as const }
   },
   name: {
     field: varchar("name", { length: 255 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: f_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_name, importExcelColumnName: f_name, cellType: "STRING" as const }
   },
   originalName: {
     field: varchar("original_name", { length: 255 }).notNull(),
-    comment: f('originalName'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('originalName'), cellType: "STRING" as const }
+    comment: f_originalName,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_originalName, cellType: "STRING" as const }
   },
   extension: {
     field: varchar("extension", { length: 32 }),
-    comment: f('extension'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('extension'), cellType: "STRING" as const }
+    comment: f_extension,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_extension, cellType: "STRING" as const }
   },
   mimeType: {
     field: varchar("mime_type", { length: 128 }),
-    comment: f('mimeType'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('mimeType'), cellType: "STRING" as const }
+    comment: f_mimeType,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_mimeType, cellType: "STRING" as const }
   },
   size: {
     field: bigint("size", { mode: "number" }).notNull().default(0),
-    comment: f('size'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('size'), cellType: "NUMERIC" as const }
+    comment: f_size,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_size, cellType: "NUMERIC" as const }
   },
   storageKey: {
     field: varchar("storage_key", { length: 512 }).notNull(),
-    comment: f('storageKey'),
+    comment: f_storageKey,
     config: { canExport: false, canImport: false }
   },
   bucket: {
     field: varchar("bucket", { length: 128 }).notNull(),
-    comment: f('bucket'),
+    comment: f_bucket,
     config: { canExport: false, canImport: false }
   },
   region: {
     field: varchar("region", { length: 64 }),
-    comment: f('region'),
+    comment: f_region,
     config: { canExport: false, canImport: false }
   },
   etag: {
     field: varchar("etag", { length: 128 }),
-    comment: f('etag'),
+    comment: f_etag,
     config: { canExport: false, canImport: false }
   },
   versionId: {
     field: varchar("version_id", { length: 128 }),
-    comment: f('versionId'),
+    comment: f_versionId,
     config: { canExport: false, canImport: false }
   },
   storageClass: {
     field: varchar("storage_class", { length: 32 }).default('STANDARD'),
-    comment: f('storageClass'),
+    comment: f_storageClass,
     config: { canExport: false, canImport: false }
   },
   metadata: {
     field: jsonb("metadata").$type<Record<string, string>>().default({}),
-    comment: f('metadata'),
+    comment: f_metadata,
     config: { canExport: false, canImport: false }
   },
   tags: {
     field: jsonb("tags").$type<string[]>().default([]),
-    comment: f('tags'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('tags'), importExcelColumnName: f('tags'), cellType: "STRING" as const }
+    comment: f_tags,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_tags, importExcelColumnName: f_tags, cellType: "STRING" as const }
   },
   description: {
     field: text("description"),
-    comment: f('description'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('description'), importExcelColumnName: f('description'), cellType: "TEXT" as const }
+    comment: f_description,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_description, importExcelColumnName: f_description, cellType: "TEXT" as const }
   },
   processStatus: {
     field: char("process_status", { length: 1 }).default("0"),
-    comment: f('processStatus'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('processStatus'), cellType: "STRING" as const }
+    comment: f_processStatus,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_processStatus, cellType: "STRING" as const }
   },
   processResult: {
     field: jsonb("process_result").$type<{
@@ -101,28 +123,28 @@ const fileOwnFields = {
       chunks?: number;
       error?: string;
     }>(),
-    comment: f('processResult'),
+    comment: f_processResult,
     config: { canExport: false, canImport: false }
   },
   downloadCount: {
     field: integer("download_count").notNull().default(0),
-    comment: f('downloadCount'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('downloadCount'), cellType: "NUMERIC" as const }
+    comment: f_downloadCount,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_downloadCount, cellType: "NUMERIC" as const }
   },
   versionCount: {
     field: integer("version_count").notNull().default(0),
-    comment: f('versionCount'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('versionCount'), cellType: "NUMERIC" as const }
+    comment: f_downloadCount,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_downloadCount, cellType: "NUMERIC" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: f_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_status, importExcelColumnName: f_status, cellType: "STRING" as const }
   },
   isPublic: {
     field: boolean("is_public").notNull().default(false),
-    comment: f('isPublic'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('isPublic'), importExcelColumnName: f('isPublic'), cellType: "STRING" as const }
+    comment: f_isPublic,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_isPublic, importExcelColumnName: f_isPublic, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -131,9 +153,9 @@ export const fileFields = mergeFields(pkSchema, auditSchema, deletedSchema, file
 // ============ Meta ============
 export const fileMeta: EntityMeta = {
   name: 'knowledge_file',
-  displayName: tKnowledgeMeta('file', 'displayName'),
-  verboseName: tKnowledgeMeta('file', 'verboseName'),
-  verboseNamePlural: tKnowledgeMeta('file', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('knowledge_file'),
 };
 

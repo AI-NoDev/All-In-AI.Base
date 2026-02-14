@@ -2,13 +2,8 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge.svelte';
-  import {
-    PostApiKnowledgeResourcePermissionSetResourceTypeEnum,
-    PostApiKnowledgeResourcePermissionSetGranteeTypeEnum,
-    PostApiKnowledgeResourcePermissionSetPermissionLevelEnum,
-    PostApiFilesUploadForceConflictModeEnum,
-  } from '@/lib/api/Api';
+  import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge';
+  import { PostApiFilesUploadForceConflictModeEnum } from '@/lib/api/Api';
   import {
     FileBreadcrumb,
     FileToolbar,
@@ -153,7 +148,7 @@
           }
         }
       } catch (err) {
-        console.error('检查文件冲突失败:', err);
+        console.error('检查文件冲突失败', err);
       }
     }
     
@@ -388,7 +383,7 @@
   }
 
   function handleDownloadFolder(f: FolderItem) {
-    console.log('下载文件夹:', f.name);
+    console.log('下载文件夹', f.name);
   }
 
   function handleShowFolderInfo(f: FolderItem) {
@@ -496,7 +491,7 @@
   async function handleRename(newName: string) {
     if (!renameTarget) return;
     // TODO: Use api.files rename endpoints after API regeneration
-    console.log('重命名:', renameTarget.type, renameTarget.id, '->', newName);
+    console.log('重命名', renameTarget.type, renameTarget.id, '->', newName);
     renameDialogOpen = false;
     renameTarget = null;
     await knowledgeStore.refresh();
@@ -505,7 +500,7 @@
   async function handleSaveDescription(desc: string | null) {
     if (!descriptionTarget) return;
     // TODO: Use api.files description endpoints after API regeneration
-    console.log('保存简介:', descriptionTarget.type, descriptionTarget.id, desc);
+    console.log('保存简介', descriptionTarget.type, descriptionTarget.id, desc);
     descriptionDialogOpen = false;
     descriptionTarget = null;
     await knowledgeStore.refresh();
@@ -513,38 +508,20 @@
 
   async function handleSaveFolderStyle(icon: string | null, color: string | null) {
     if (!styleTarget) return;
-    // TODO: Use api.files.putApiFilesFoldersIdStyle after API regeneration
-    console.log('保存样式:', styleTarget.id, icon, color);
-    folderStyleDialogOpen = false;
-    styleTarget = null;
-    await knowledgeStore.refresh();
+    try {
+      await api.files.putApiFilesFoldersByIdStyle(
+        { id: styleTarget.id },
+        { icon, color }
+      );
+      folderStyleDialogOpen = false;
+      styleTarget = null;
+      await knowledgeStore.refresh();
+    } catch (err) {
+      console.error('保存文件夹样式失败', err);
+    }
   }
 
   // Map local types to API enum types
-  function mapResourceType(type: 'folder' | 'file'): PostApiKnowledgeResourcePermissionSetResourceTypeEnum {
-    return type === 'folder' 
-      ? PostApiKnowledgeResourcePermissionSetResourceTypeEnum.Folder 
-      : PostApiKnowledgeResourcePermissionSetResourceTypeEnum.File;
-  }
-
-  function mapGranteeType(type: 'user' | 'role' | 'dept'): PostApiKnowledgeResourcePermissionSetGranteeTypeEnum {
-    const map: Record<string, PostApiKnowledgeResourcePermissionSetGranteeTypeEnum> = {
-      user: PostApiKnowledgeResourcePermissionSetGranteeTypeEnum.User,
-      role: PostApiKnowledgeResourcePermissionSetGranteeTypeEnum.Role,
-      dept: PostApiKnowledgeResourcePermissionSetGranteeTypeEnum.Dept,
-    };
-    return map[type];
-  }
-
-  function mapPermissionLevel(level: 'r' | 'w' | 'm'): PostApiKnowledgeResourcePermissionSetPermissionLevelEnum {
-    const map: Record<string, PostApiKnowledgeResourcePermissionSetPermissionLevelEnum> = {
-      r: PostApiKnowledgeResourcePermissionSetPermissionLevelEnum.R,
-      w: PostApiKnowledgeResourcePermissionSetPermissionLevelEnum.W,
-      m: PostApiKnowledgeResourcePermissionSetPermissionLevelEnum.M,
-    };
-    return map[level];
-  }
-
   function mapConflictMode(mode: ConflictMode): PostApiFilesUploadForceConflictModeEnum {
     // Only 'overwrite' and 'newVersion' are supported by the API
     // 'skip' is handled client-side, 'copy' falls back to 'newVersion'
@@ -570,20 +547,16 @@
         );
       }
 
-      // Set permissions using the new resourcePermission API
-      if (api.knowledge.postApiKnowledgeResourcePermissionSet) {
-        await api.knowledge.postApiKnowledgeResourcePermissionSet({
-          resourceType: mapResourceType(permissionTarget.type),
-          resourceId: permissionTarget.id,
-          permissions: permissions.map(p => ({
-            granteeType: mapGranteeType(p.granteeType),
-            granteeId: p.granteeId,
-            permissionLevel: mapPermissionLevel(p.permissionLevel),
-          })),
-        });
-      } else {
-        console.warn('resourcePermission API not available - please regenerate API client');
-      }
+      // Set permissions using Casbin-based file permission API
+      await api.files.postApiFilesPermissionByResourceTypeByResourceId(
+        { resourceType: permissionTarget.type, resourceId: permissionTarget.id },
+        { permissions: permissions.map(p => ({
+          subjectType: p.subjectType,
+          subjectId: p.subjectId,
+          permission: p.permission,
+          effect: p.effect,
+        })) }
+      );
 
       permissionSheetOpen = false;
       permissionTarget = null;
@@ -889,7 +862,7 @@
           }
         }
       } catch (err) {
-        console.error('创建文件夹失败:', folderPath, err);
+        console.error('创建文件夹失败', folderPath, err);
         folderMap.set(folderPath, '__FAILED__');
       }
     }
@@ -990,21 +963,21 @@
   aria-label="文件管理区域"
 >
   <div class={`${isDragging ? 'ring-2 ring-primary ring-offset-2' : ''} flex-1 flex gap-2 flex-col min-h-0`}>
-      <div class="flex items-center justify-between">
-        <FileBreadcrumb pathStack={knowledgeStore.pathStack} onNavigate={knowledgeStore.navigateToPath} />
-        <FileToolbar
-          hasSelection={knowledgeStore.hasSelection}
-          hasClipboard={knowledgeStore.hasClipboard}
-          clipboardCount={knowledgeStore.clipboardCount}
-          onNewFolder={() => (newFolderDialogOpen = true)}
-          onNewTextFile={handleNewTextFile}
-          onCopy={knowledgeStore.copySelected}
-          onPaste={handlePaste}
-          onDelete={handleBatchDelete}
-          onSearch={() => (searchOpen = true)}
-          onRefresh={knowledgeStore.refresh}
-        />
-      </div>
+    <div class="flex items-center justify-between">
+      <FileBreadcrumb pathStack={knowledgeStore.pathStack} onNavigate={knowledgeStore.navigateToPath} />
+      <FileToolbar
+        hasSelection={knowledgeStore.hasSelection}
+        hasClipboard={knowledgeStore.hasClipboard}
+        clipboardCount={knowledgeStore.clipboardCount}
+        onNewFolder={() => (newFolderDialogOpen = true)}
+        onNewTextFile={handleNewTextFile}
+        onCopy={knowledgeStore.copySelected}
+        onPaste={handlePaste}
+        onDelete={handleBatchDelete}
+        onSearch={() => (searchOpen = true)}
+        onRefresh={knowledgeStore.refresh}
+      />
+    </div>
     <div class="flex-1 flex flex-col min-h-0">
       {#if isDragging}
         <div

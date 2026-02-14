@@ -1,0 +1,376 @@
+# 扩展应用包开发规范
+
+本文档定义了如何创建和开发 monorepo 扩展应用包（app-xxx），用于扩展主应用的功能。
+
+## 目录结构
+
+```
+packages/app-xxx/
+├── package.json          # 包配置
+├── index.ts              # 包入口（可选）
+├── actions/              # Actions 定义（后端自动加载）
+│   └── index.ts          # 导出 actions 数组
+├── client/               # 前端代码
+│   ├── routes/           # SvelteKit 路由（自动同步到主应用）
+│   │   ├── +page.ts      # 页面元数据
+│   │   ├── +page.svelte  # 页面组件
+│   │   └── components/   # 页面私有组件
+│   └── $lib/             # 共享组件和工具
+│       ├── components/   # 可复用组件
+│       ├── stores/       # 状态管理
+│       └── utils/        # 工具函数
+└── server/               # 后端代码（可选）
+    └── index.ts          # Elysia 插件导出
+```
+
+---
+
+## package.json 配置
+
+```json
+{
+  "name": "@qiyu-allinai/app-xxx",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./actions": "./actions/index.ts",
+    "./client/$lib/*": "./client/$lib/*",
+    "./server": "./server/index.ts"
+  },
+  "dependencies": {
+    "@qiyu-allinai/actions": "workspace:*",
+    "@qiyu-allinai/db": "workspace:*"
+  },
+  "devDependencies": {
+    "svelte": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+---
+
+## Actions 定义
+
+### 基本结构
+
+```typescript
+// actions/index.ts
+import { defineAction } from '@qiyu-allinai/actions';
+import { z } from 'zod';
+
+// 定义单个 Action
+export const xxxGetList = defineAction({
+  meta: {
+    name: 'app-xxx.getList',
+    displayName: '获取列表',
+    description: '获取 XXX 列表数据',
+    tags: ['app-xxx', 'query'],
+    method: 'POST',
+    path: '/api/app-xxx/list',
+  },
+  schemas: {
+    bodySchema: z.object({
+      filter: z.object({}).optional(),
+      limit: z.number().max(100).default(20),
+      offset: z.number().default(0),
+    }),
+    outputSchema: z.object({
+      data: z.array(z.object({ id: z.string(), name: z.string() })),
+      total: z.number(),
+    }),
+  },
+  execute: async (input, context) => {
+    // 业务逻辑
+    return { data: [], total: 0 };
+  },
+});
+
+// 导出 actions 数组（必须）
+export const actions = [xxxGetList];
+```
+
+### Action 命名规范
+
+| 类型 | 命名格式 | 示例 |
+|------|----------|------|
+| 查询列表 | `{module}GetList` | `crmGetCustomerList` |
+| 查询详情 | `{module}GetById` | `crmGetCustomerById` |
+| 创建 | `{module}Create` | `crmCreateCustomer` |
+| 更新 | `{module}Update` | `crmUpdateCustomer` |
+| 删除 | `{module}Delete` | `crmDeleteCustomer` |
+
+### API 路径规范
+
+- 基础路径：`/api/app-xxx/`
+- 查询：`POST /api/app-xxx/{entity}/query`
+- 详情：`GET /api/app-xxx/{entity}/:id`
+- 创建：`POST /api/app-xxx/{entity}`
+- 更新：`PUT /api/app-xxx/{entity}/:id`
+- 删除：`DELETE /api/app-xxx/{entity}/:id`
+
+---
+
+## 前端路由
+
+### 页面元数据 (+page.ts)
+
+```typescript
+// client/routes/+page.ts
+import type { PageMeta } from 'vite-plugin-sveltekit-page-meta';
+
+export const _meta: PageMeta = {
+  title: '功能名称',
+  icon: 'tdesign:app',
+  group: '扩展应用',
+  order: 100,
+  permission: 'app-xxx:view',
+};
+```
+
+### 页面组件 (+page.svelte)
+
+```svelte
+<!-- client/routes/+page.svelte -->
+<script lang="ts">
+  import { authStore } from '@/lib/stores/auth.svelte';
+  // 使用扩展包内的组件
+  import MyComponent from '@qiyu-allinai/app-xxx/client/$lib/components/MyComponent.svelte';
+
+  interface DataItem {
+    id: string;
+    name: string;
+  }
+
+  let items = $state<DataItem[]>([]);
+  let loading = $state(false);
+
+  const api = authStore.createApi(true);
+
+  async function loadData() {
+    loading = true;
+    try {
+      const res = await api.appXxx.postApiAppXxxList({
+        limit: 20,
+        offset: 0,
+      });
+      items = res.data.data;
+    } finally {
+      loading = false;
+    }
+  }
+</script>
+
+<div class="p-4">
+  <h1 class="text-xl font-bold mb-4">功能名称</h1>
+  <MyComponent {items} />
+</div>
+```
+
+### 导入路径规则
+
+在扩展包的 `client/routes` 中：
+
+```typescript
+// ❌ 错误 - 不能使用主应用的 $lib
+import { Button } from '$lib/components/ui/button';
+
+// ✅ 正确 - 使用扩展包自己的 $lib
+import { MyButton } from '@qiyu-allinai/app-xxx/client/$lib/components/my-button';
+
+// ✅ 正确 - 使用主应用的 stores（会被插件自动转换）
+import { authStore } from '@/lib/stores/auth.svelte';
+```
+
+> 注意：插件会自动将 `$lib` 转换为 `@qiyu-allinai/app-xxx/client/$lib`，
+> 但主应用的核心 stores 如 `auth.svelte` 应保持使用 `$lib`。
+
+---
+
+## 后端配置
+
+### 注册扩展包
+
+```typescript
+// apps/server/src/config/index.ts
+export const config = {
+  // ...其他配置
+  extendsPluginPackages: [
+    { package: '@qiyu-allinai/app-crm' },
+    { package: '@qiyu-allinai/app-erp', enabled: false },
+  ],
+};
+```
+
+### Elysia 插件（可选）
+
+```typescript
+// server/index.ts
+import { Elysia } from 'elysia';
+
+export const appXxxPlugin = new Elysia({ prefix: '/app-xxx' })
+  .ws('/realtime', {
+    open(ws) {
+      console.log('WebSocket connected');
+    },
+    message(ws, message) {
+      ws.send(message);
+    },
+  });
+```
+
+---
+
+## 前端配置
+
+### 注册扩展包
+
+```typescript
+// apps/frontend/vite.config.ts
+import { extendsAppPlugin } from 'vite-plugin-sveltekit-extends-app';
+
+export default defineConfig({
+  plugins: [
+    // ...其他插件
+    extendsAppPlugin({
+      apps: [
+        { package: '@qiyu-allinai/app-crm', basePath: '/dashboard/crm' },
+        { package: '@qiyu-allinai/app-erp', basePath: '/dashboard/erp' },
+      ],
+    }),
+  ],
+});
+```
+
+---
+
+## 菜单配置
+
+扩展包的菜单需要在主应用的 seed data 中配置：
+
+```typescript
+// packages/db/src/seedData/menu.ts
+{
+  id: 'app-xxx-root',
+  name: '扩展应用',
+  path: '/dashboard/app-xxx',
+  icon: 'tdesign:app',
+  menuType: '0',
+  orderNum: 100,
+  children: [
+    {
+      id: 'app-xxx-list',
+      name: '功能列表',
+      path: '/dashboard/app-xxx/list',
+      icon: 'tdesign:list',
+      menuType: '1',
+      orderNum: 1,
+    },
+  ],
+}
+```
+
+---
+
+## 开发流程
+
+1. **创建包目录**
+   ```bash
+   mkdir -p packages/app-xxx/{actions,client/{routes,$lib/components},server}
+   ```
+
+2. **初始化 package.json**
+   ```bash
+   cd packages/app-xxx
+   bun init
+   ```
+
+3. **编写 Actions**
+   - 在 `actions/index.ts` 定义业务逻辑
+   - 导出 `actions` 数组
+
+4. **编写前端页面**
+   - 在 `client/routes/` 创建 SvelteKit 路由
+   - 在 `client/$lib/` 创建共享组件
+
+5. **配置主应用**
+   - 后端：添加到 `config.extendsPluginPackages`
+   - 前端：添加到 `extendsAppPlugin.apps`
+
+6. **重新生成 API 客户端**
+   ```bash
+   cd apps/frontend
+   bun run generate:api
+   ```
+
+7. **启动开发服务器**
+   ```bash
+   bun run dev
+   ```
+
+---
+
+## 最佳实践
+
+### 1. 保持独立性
+
+扩展包应尽量独立，减少对主应用的依赖：
+
+```typescript
+// ✅ 好 - 使用扩展包内的组件
+import { DataTable } from '@qiyu-allinai/app-xxx/client/$lib/components/data-table';
+
+// ⚠️ 谨慎 - 依赖主应用组件（可能导致耦合）
+import { Button } from '$lib/components/ui/button';
+```
+
+### 2. 统一错误处理
+
+```typescript
+execute: async (input, context) => {
+  if (!context.currentUserId) {
+    throw new Error('error.auth.unauthorized');
+  }
+  
+  // 使用 i18n key 作为错误消息
+  throw new Error('error.app-xxx.custom-error');
+},
+```
+
+### 3. 类型安全
+
+```typescript
+// 定义明确的接口
+interface Customer {
+  id: string;
+  name: string;
+  email: string | null;
+  status: string;
+}
+
+// 使用 Zod Schema 推导类型
+const customerSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().nullable(),
+  status: z.string(),
+});
+
+type Customer = z.infer<typeof customerSchema>;
+```
+
+### 4. 权限控制
+
+```typescript
+// +page.ts
+export const _meta: PageMeta = {
+  permission: 'app-xxx:customer:view',
+};
+
+// Action
+execute: async (input, context) => {
+  // 权限由主应用的中间件统一处理
+  // Action 内可添加额外的业务权限校验
+},
+```

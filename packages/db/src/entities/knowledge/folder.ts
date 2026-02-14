@@ -4,54 +4,51 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tKnowledge, tKnowledgeMeta } from '../../i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { deletedSchema } from '../base/deletedSchema';
-
-const f = (field: string) => tKnowledge('folder', field);
 
 // ============ Fields ============
 const folderOwnFields = {
   parentId: {
     field: uuid("parent_id"),
-    comment: f('parentId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('parentId'), cellType: "STRING" as const }
+    comment: () => '父文件夹ID',
+    config: { canExport: false, canImport: true, importExcelColumnName: () => '父文件夹ID', cellType: "STRING" as const }
   },
   name: {
     field: varchar("name", { length: 255 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: () => '文件夹名称',
+    config: { canExport: true, canImport: true, exportExcelColumnName: () => '文件夹名称', importExcelColumnName: () => '文件夹名称', cellType: "STRING" as const }
   },
   path: {
     field: text("path").notNull(),
-    comment: f('path'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('path'), cellType: "STRING" as const }
+    comment: () => '路径',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '路径', cellType: "STRING" as const }
   },
   description: {
     field: text("description"),
-    comment: f('description'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('description'), importExcelColumnName: f('description'), cellType: "TEXT" as const }
+    comment: () => '描述',
+    config: { canExport: true, canImport: true, exportExcelColumnName: () => '描述', importExcelColumnName: () => '描述', cellType: "TEXT" as const }
   },
   icon: {
     field: varchar("icon", { length: 64 }),
-    comment: f('icon'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('icon'), importExcelColumnName: f('icon'), cellType: "STRING" as const }
+    comment: () => '图标',
+    config: { canExport: true, canImport: true, exportExcelColumnName: () => '图标', importExcelColumnName: () => '图标', cellType: "STRING" as const }
   },
   color: {
     field: varchar("color", { length: 32 }),
-    comment: f('color'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('color'), importExcelColumnName: f('color'), cellType: "STRING" as const }
+    comment: () => '颜色',
+    config: { canExport: true, canImport: true, exportExcelColumnName: () => '颜色', importExcelColumnName: () => '颜色', cellType: "STRING" as const }
   },
   orderNum: {
     field: integer("order_num").notNull().default(0),
-    comment: f('orderNum'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('orderNum'), importExcelColumnName: f('orderNum'), cellType: "NUMERIC" as const }
+    comment: () => '排序号',
+    config: { canExport: true, canImport: true, exportExcelColumnName: () => '排序号', importExcelColumnName: () => '排序号', cellType: "NUMERIC" as const }
   },
   isPublic: {
     field: boolean("is_public").notNull().default(false),
-    comment: f('isPublic'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('isPublic'), importExcelColumnName: f('isPublic'), cellType: "STRING" as const }
+    comment: () => '是否公开',
+    config: { canExport: true, canImport: true, exportExcelColumnName: () => '是否公开', importExcelColumnName: () => '是否公开', cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -60,9 +57,9 @@ export const folderFields = mergeFields(pkSchema, auditSchema, deletedSchema, fo
 // ============ Meta ============
 export const folderMeta: EntityMeta = {
   name: 'knowledge_folder',
-  displayName: tKnowledgeMeta('folder', 'displayName'),
-  verboseName: tKnowledgeMeta('folder', 'verboseName'),
-  verboseNamePlural: tKnowledgeMeta('folder', 'verboseNamePlural'),
+  displayName: () => '文件夹',
+  verboseName: () => '文件夹',
+  verboseNamePlural: () => '文件夹列表',
   permissions: createPermissions('knowledge_folder'),
 };
 

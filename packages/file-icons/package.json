@@ -1,7 +1,7 @@
 {
   "name": "@qiyu-allinai/file-icons",
   "version": "1.0.0",
-  "description": "File type icons library with SVG",
+  "description": "File type icons library using Iconify",
   "type": "module",
   "main": "index.ts",
   "types": "index.ts",
@@ -17,6 +17,9 @@
   },
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@iconify/svelte": "^4.2.0"
   },
   "peerDependencies": {
     "svelte": "^5.45.6"

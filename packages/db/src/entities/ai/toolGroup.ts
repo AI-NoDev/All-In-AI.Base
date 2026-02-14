@@ -4,48 +4,56 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tAi, tAiMeta } from '../../i18n';
+import {
+  "db_ai_toolGroup_meta_displayName" as meta_displayName,
+  "db_ai_toolGroup_meta_verboseName" as meta_verboseName,
+  "db_ai_toolGroup_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_ai_toolGroup_name" as f_name,
+  "db_ai_toolGroup_description" as f_description,
+  "db_ai_toolGroup_icon" as f_icon,
+  "db_ai_toolGroup_orderNum" as f_orderNum,
+  "db_ai_toolGroup_remark" as f_remark,
+  "db_ai_toolGroup_status" as f_status,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-
-const f = (field: string) => tAi('toolGroup', field);
 
 // ============ Fields ============
 const toolGroupOwnFields = {
   name: {
     field: varchar("name", { length: 64 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: f_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_name, importExcelColumnName: f_name, cellType: "STRING" as const }
   },
   description: {
     field: text("description"),
-    comment: f('description'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('description'), importExcelColumnName: f('description'), cellType: "TEXT" as const }
+    comment: f_description,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_description, importExcelColumnName: f_description, cellType: "TEXT" as const }
   },
   icon: {
     field: varchar("icon", { length: 64 }),
-    comment: f('icon'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('icon'), importExcelColumnName: f('icon'), cellType: "STRING" as const }
+    comment: f_icon,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_icon, importExcelColumnName: f_icon, cellType: "STRING" as const }
   },
   tools: {
     field: jsonb("tools").$type<string[]>().default([]),
-    comment: f('tools'),
+    comment: f_name,
     config: { canExport: false, canImport: false }
   },
   orderNum: {
     field: integer("order_num").notNull().default(1),
-    comment: f('orderNum'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('orderNum'), importExcelColumnName: f('orderNum'), cellType: "NUMERIC" as const }
+    comment: f_orderNum,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_orderNum, importExcelColumnName: f_orderNum, cellType: "NUMERIC" as const }
   },
   remark: {
     field: text("remark"),
-    comment: f('remark'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('remark'), importExcelColumnName: f('remark'), cellType: "TEXT" as const }
+    comment: f_remark,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_remark, importExcelColumnName: f_remark, cellType: "TEXT" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: f_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_status, importExcelColumnName: f_status, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -54,9 +62,9 @@ export const toolGroupFields = mergeFields(pkSchema, auditSchema, toolGroupOwnFi
 // ============ Meta ============
 export const toolGroupMeta: EntityMeta = {
   name: 'ai_tool_group',
-  displayName: tAiMeta('toolGroup', 'displayName'),
-  verboseName: tAiMeta('toolGroup', 'verboseName'),
-  verboseNamePlural: tAiMeta('toolGroup', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('ai_tool_group'),
 };
 

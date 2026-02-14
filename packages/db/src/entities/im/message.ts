@@ -5,12 +5,26 @@ import {
   createPermissions, createDescribeRefinements,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tIm, tImMeta } from '../../i18n';
+import {
+  "db_im_message_meta_displayName" as meta_displayName,
+  "db_im_message_meta_verboseName" as meta_verboseName,
+  "db_im_message_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_im_message_conversationId" as f_conversationId,
+  "db_im_message_msgSeq" as f_msgSeq,
+  "db_im_message_senderId" as f_senderId,
+  "db_im_message_msgType" as f_msgType,
+  "db_im_message_content" as f_content,
+  "db_im_message_replyToId" as f_replyToId,
+  "db_im_message_forwardFromId" as f_forwardFromId,
+  "db_im_message_atUserIds" as f_atUserIds,
+  "db_im_message_isRecalled" as f_isRecalled,
+  "db_im_message_recalledAt" as f_recalledAt,
+  "db_im_message_recalledById" as f_recalledById,
+  "db_im_message_extra" as f_extra,
+} from '@qiyu-allinai/i18n';
 import { randomUUID } from "crypto";
 import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
 import { z } from "zod/v4";
-
-const f = (field: string) => tIm('message', field);
 
 // Message content types
 export type TextContent = { text: string };
@@ -42,62 +56,62 @@ const messageFields = {
   },
   conversationId: {
     field: uuid("conversation_id").notNull(),
-    comment: f('conversationId'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('conversationId'), cellType: "STRING" as const }
+    comment: f_conversationId,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_conversationId, cellType: "STRING" as const }
   },
   msgSeq: {
     field: bigint("msg_seq", { mode: "number" }).notNull(),
-    comment: f('msgSeq'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('msgSeq'), cellType: "NUMERIC" as const }
+    comment: f_msgSeq,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_msgSeq, cellType: "NUMERIC" as const }
   },
   senderId: {
     field: uuid("sender_id").notNull(),
-    comment: f('senderId'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('senderId'), cellType: "STRING" as const }
+    comment: f_senderId,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_senderId, cellType: "STRING" as const }
   },
   msgType: {
     field: char("msg_type", { length: 2 }).notNull().default("01"),
-    comment: f('msgType'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('msgType'), cellType: "STRING" as const }
+    comment: f_msgType,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_msgType, cellType: "STRING" as const }
   },
   content: {
     field: jsonb("content").$type<MessageContent>().notNull(),
-    comment: f('content'),
+    comment: f_content,
     config: { canExport: false, canImport: false }
   },
   replyToId: {
     field: uuid("reply_to_id"),
-    comment: f('replyToId'),
+    comment: f_replyToId,
     config: { canExport: false, canImport: false }
   },
   forwardFromId: {
     field: uuid("forward_from_id"),
-    comment: f('forwardFromId'),
+    comment: f_forwardFromId,
     config: { canExport: false, canImport: false }
   },
   atUserIds: {
     field: jsonb("at_user_ids").$type<string[]>().default([]),
-    comment: f('atUserIds'),
+    comment: f_atUserIds,
     config: { canExport: false, canImport: false }
   },
   isRecalled: {
     field: boolean("is_recalled").notNull().default(false),
-    comment: f('isRecalled'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('isRecalled'), cellType: "STRING" as const }
+    comment: f_isRecalled,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_isRecalled, cellType: "STRING" as const }
   },
   recalledAt: {
     field: timestamp("recalled_at", { mode: 'string' }),
-    comment: f('recalledAt'),
+    comment: f_recalledAt,
     config: { canExport: false, canImport: false }
   },
   recalledById: {
     field: uuid("recalled_by_id"),
-    comment: f('recalledById'),
+    comment: f_recalledById,
     config: { canExport: false, canImport: false }
   },
   extra: {
     field: jsonb("extra").$type<Record<string, unknown>>().default({}),
-    comment: f('extra'),
+    comment: f_extra,
     config: { canExport: false, canImport: false }
   },
   createdAt: {
@@ -112,9 +126,9 @@ export { messageFields };
 // ============ Meta ============
 export const messageMeta: EntityMeta = {
   name: 'im_message',
-  displayName: tImMeta('message', 'displayName'),
-  verboseName: tImMeta('message', 'verboseName'),
-  verboseNamePlural: tImMeta('message', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('im_message'),
 };
 
@@ -139,15 +153,15 @@ const describeRefinements = createDescribeRefinements(messageFields) as any;
 export const messageZodSchemas = {
   insert: createInsertZodSchema(message, {
     ...describeRefinements,
-    atUserIds: z.array(z.uuid()).describe(messageFields.atUserIds.comment()),
+    atUserIds: z.array(z.string()).describe(messageFields.atUserIds.comment()),
   }),
   select: createSelectZodSchema(message, {
     ...describeRefinements,
-    atUserIds: z.array(z.uuid()).nullable().describe(messageFields.atUserIds.comment()),
+    atUserIds: z.array(z.string()).nullable().describe(messageFields.atUserIds.comment()),
   }),
   update: createUpdateZodSchema(message, {
     ...describeRefinements,
-    atUserIds: z.array(z.uuid()).optional().describe(messageFields.atUserIds.comment()),
+    atUserIds: z.array(z.string()).optional().describe(messageFields.atUserIds.comment()),
   }),
 };
 

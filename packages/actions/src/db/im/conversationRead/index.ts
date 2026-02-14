@@ -10,10 +10,10 @@ type ConversationReadInsert = typeof conversationRead.$inferInsert;
 
 // ============ Filter Schema ============
 const conversationReadFilterSchema = z.object({
-  conversationId: z.uuid().optional(),
-  conversationIds: z.array(z.uuid()).optional(),
-  userId: z.uuid().optional(),
-  userIds: z.array(z.uuid()).optional(),
+  conversationId: z.string().optional(),
+  conversationIds: z.array(z.string()).optional(),
+  userId: z.string().optional(),
+  userIds: z.array(z.string()).optional(),
 }).optional();
 
 const paginationBodySchema = z.object({
@@ -50,7 +50,7 @@ export const conversationReadGetByPagination = defineAction({
 export const conversationReadGetByPk = defineAction({
   meta: { name: 'im.conversationRead.getByPk', displayName: '查询已读状态', description: '根据会话ID和用户ID查询已读状态', tags: ['im', 'conversationRead'], method: 'GET', path: '/api/im/conversation-read/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.uuid(), userId: z.uuid() }),
+    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: conversationReadZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -64,8 +64,8 @@ export const conversationReadMarkRead = defineAction({
   meta: { name: 'im.conversationRead.markRead', displayName: '标记已读', description: '标记会话已读到指定消息序号', tags: ['im', 'conversationRead'], method: 'PUT', path: '/api/im/conversation-read/mark' },
   schemas: {
     bodySchema: z.object({ 
-      conversationId: z.uuid(), 
-      userId: z.uuid(),
+      conversationId: z.string(), 
+      userId: z.string(),
       lastReadSeq: z.number().int().min(0)
     }),
     outputSchema: conversationReadZodSchemas.select,
@@ -101,8 +101,8 @@ export const conversationReadIncrementUnread = defineAction({
   meta: { name: 'im.conversationRead.incrementUnread', displayName: '增加未读数', description: '增加用户在会话中的未读消息数', tags: ['im', 'conversationRead'], method: 'PUT', path: '/api/im/conversation-read/increment-unread' },
   schemas: {
     bodySchema: z.object({ 
-      conversationId: z.uuid(), 
-      userIds: z.array(z.uuid()),
+      conversationId: z.string(), 
+      userIds: z.array(z.string()),
       increment: z.number().int().min(1).default(1)
     }),
     outputSchema: z.number(),

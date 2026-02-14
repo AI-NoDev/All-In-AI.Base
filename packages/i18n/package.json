@@ -8,18 +8,26 @@
   "exports": {
     ".": {
       "types": "./paraglide/messages.d.ts",
-      "import": "./paraglide/messages.js"
+      "import": "./paraglide/messages.js",
+      "require": "./paraglide/messages.js",
+      "default": "./paraglide/messages.js"
     },
     "./runtime": {
       "types": "./paraglide/runtime.d.ts",
-      "import": "./paraglide/runtime.js"
+      "import": "./paraglide/runtime.js",
+      "require": "./paraglide/runtime.js",
+      "default": "./paraglide/runtime.js"
     },
     "./messages": {
       "types": "./paraglide/messages.d.ts",
-      "import": "./paraglide/messages.js"
+      "import": "./paraglide/messages.js",
+      "require": "./paraglide/messages.js",
+      "default": "./paraglide/messages.js"
     },
     "./server": {
-      "import": "./paraglide/server.js"
+      "import": "./paraglide/server.js",
+      "require": "./paraglide/server.js",
+      "default": "./paraglide/server.js"
     }
   },
   "files": [

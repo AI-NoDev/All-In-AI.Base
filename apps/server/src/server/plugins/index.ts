@@ -8,6 +8,7 @@ export { loggerPlugin } from "./logger";
 export { llmsPlugin } from "./llms";
 export { oauth2Plugin } from "./oauth2";
 export { initAdminPlugin } from "./initAdmin";
+export { initSeedDataPlugin } from "./initSeedData";
 export { actionsPlugin } from "./actions";
 export { aiPlugin } from "./ai";
 export { i18nPlugin } from "./i18n";

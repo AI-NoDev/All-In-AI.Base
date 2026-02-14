@@ -79,6 +79,7 @@
 		"d3-interpolate": "^3.0.1",
 		"d3-selection": "^3.0.0",
 		"d3-zoom": "^3.0.0",
+		"elkjs": "^0.11.0",
 		"html-to-image": "^1.11.13",
 		"lexical": "0.33.1",
 		"paneforge": "^1.0.2",

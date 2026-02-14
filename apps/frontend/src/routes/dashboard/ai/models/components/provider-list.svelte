@@ -1,9 +1,9 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '@/lib/components/ui/button';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
 
   interface Provider {
     id: string;

@@ -10,7 +10,7 @@ type ToolGroupInsert = typeof toolGroup.$inferInsert;
 
 // ============ Filter Schema ============
 const toolGroupFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   name: z.string().optional(),
   status: z.string().optional(),
@@ -58,7 +58,7 @@ export const toolGroupGetByPagination = defineAction({
 
 export const toolGroupGetByPk = defineAction({
   meta: { name: 'ai.toolGroup.getByPk', displayName: '根据ID查询工具组', description: '根据主键ID查询单个工具组', tags: ['ai', 'toolGroup'], method: 'GET', path: '/api/ai/tool-group/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: toolGroupZodSchemas.select.nullable() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: toolGroupZodSchemas.select.nullable() },
   execute: async (input, _context) => {
     const [result] = await db.select().from(toolGroup).where(eq(toolGroup.id, input.id)).limit(1);
     return (result as ToolGroupSelect) ?? null;
@@ -85,7 +85,7 @@ export const toolGroupCreateMany = defineAction({
 
 export const toolGroupUpdate = defineAction({
   meta: { name: 'ai.toolGroup.update', displayName: '更新工具组', description: '根据ID更新单个工具组', tags: ['ai', 'toolGroup'], method: 'PUT', path: '/api/ai/tool-group/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), bodySchema: z.object({ data: toolGroupZodSchemas.update }), outputSchema: toolGroupZodSchemas.select },
+  schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: toolGroupZodSchemas.update }), outputSchema: toolGroupZodSchemas.select },
   execute: async (input, _context) => {
     const [result] = await db.update(toolGroup).set(input.data as Partial<ToolGroupInsert>).where(eq(toolGroup.id, input.id)).returning();
     return result as ToolGroupSelect;
@@ -94,7 +94,7 @@ export const toolGroupUpdate = defineAction({
 
 export const toolGroupUpdateMany = defineAction({
   meta: { name: 'ai.toolGroup.updateMany', displayName: '批量更新工具组', description: '根据ID列表批量更新工具组', tags: ['ai', 'toolGroup'], method: 'PUT', path: '/api/ai/tool-group/batch' },
-  schemas: { bodySchema: z.object({ ids: z.array(z.uuid()), data: toolGroupZodSchemas.update }), outputSchema: z.array(toolGroupZodSchemas.select) },
+  schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: toolGroupZodSchemas.update }), outputSchema: z.array(toolGroupZodSchemas.select) },
   execute: async (input, _context) => {
     const results: ToolGroupSelect[] = [];
     for (const id of input.ids) {
@@ -107,7 +107,7 @@ export const toolGroupUpdateMany = defineAction({
 
 export const toolGroupDeleteByPk = defineAction({
   meta: { name: 'ai.toolGroup.deleteByPk', displayName: '删除工具组', description: '根据ID删除工具组', tags: ['ai', 'toolGroup'], method: 'DELETE', path: '/api/ai/tool-group/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: z.boolean() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
   execute: async (input, _context) => {
     const [result] = await db.delete(toolGroup).where(eq(toolGroup.id, input.id)).returning();
     return !!result;

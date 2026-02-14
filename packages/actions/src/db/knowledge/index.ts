@@ -2,17 +2,17 @@
 export * from './folder';
 export * from './file';
 export * from './fileVersion';
-export * from './resourcePermission';
+export * from './favorite';
 
 // Aggregate all knowledge actions
 import { folderActions } from './folder';
 import { fileActions } from './file';
 import { fileVersionActions } from './fileVersion';
-import { resourcePermissionActions } from './resourcePermission';
+import { favoriteActions } from './favorite';
 
 export const knowledgeActions = [
   ...folderActions,
   ...fileActions,
   ...fileVersionActions,
-  ...resourcePermissionActions,
+  ...favoriteActions,
 ];

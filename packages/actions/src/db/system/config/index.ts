@@ -11,7 +11,7 @@ type ConfigInsert = typeof config.$inferInsert;
 // ============ Filter Schema ============
 const configFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   keys: z.array(z.string()).optional(),
   // 精确匹配
@@ -83,7 +83,7 @@ export const configGetByPagination = defineAction({
 export const configGetByPk = defineAction({
   meta: { name: 'system.config.getByPk', displayName: '根据ID查询配置', description: '根据主键ID查询单个配置', tags: ['system', 'config'], method: 'GET', path: '/api/system/config/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: configZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -119,7 +119,7 @@ export const configCreateMany = defineAction({
 export const configUpdate = defineAction({
   meta: { name: 'system.config.update', displayName: '更新配置', description: '根据ID更新单个配置', tags: ['system', 'config'], method: 'PUT', path: '/api/system/config/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: configZodSchemas.update }),
     outputSchema: configZodSchemas.select,
   },
@@ -132,7 +132,7 @@ export const configUpdate = defineAction({
 export const configUpdateMany = defineAction({
   meta: { name: 'system.config.updateMany', displayName: '批量更新配置', description: '根据ID列表批量更新配置', tags: ['system', 'config'], method: 'PUT', path: '/api/system/config/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: configZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: configZodSchemas.update }),
     outputSchema: z.array(configZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -148,7 +148,7 @@ export const configUpdateMany = defineAction({
 export const configDeleteByPk = defineAction({
   meta: { name: 'system.config.deleteByPk', displayName: '删除配置', description: '根据ID删除配置', tags: ['system', 'config'], method: 'DELETE', path: '/api/system/config/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

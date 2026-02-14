@@ -5,9 +5,15 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tIm, tImMeta } from '../../i18n';
-
-const f = (field: string) => tIm('conversationHidden', field);
+import {
+  "db_im_conversationHidden_meta_displayName" as meta_displayName,
+  "db_im_conversationHidden_meta_verboseName" as meta_verboseName,
+  "db_im_conversationHidden_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_im_conversationHidden_conversationId" as f_conversationId,
+  "db_im_conversationHidden_userId" as f_userId,
+  "db_im_conversationHidden_isHidden" as f_isHidden,
+  "db_im_conversationHidden_hiddenAt" as f_hiddenAt,
+} from '@qiyu-allinai/i18n';
 
 // ============ Fields ============
 // This table tracks hidden conversations per user
@@ -15,22 +21,22 @@ const f = (field: string) => tIm('conversationHidden', field);
 const conversationHiddenFields = {
   conversationId: {
     field: uuid("conversation_id").notNull(),
-    comment: f('conversationId'),
+    comment: f_conversationId,
     config: { canExport: false, canImport: false }
   },
   userId: {
     field: uuid("user_id").notNull(),
-    comment: f('userId'),
+    comment: f_userId,
     config: { canExport: false, canImport: false }
   },
   isHidden: {
     field: boolean("is_hidden").notNull().default(true),
-    comment: f('isHidden'),
+    comment: f_isHidden,
     config: { canExport: false, canImport: false }
   },
   hiddenAt: {
     field: timestamp("hidden_at", { mode: 'string' }).notNull().default(sql`now()`),
-    comment: f('hiddenAt'),
+    comment: f_hiddenAt,
     config: { canExport: false, canImport: false }
   },
   createdAt: {
@@ -50,9 +56,9 @@ export { conversationHiddenFields };
 // ============ Meta ============
 export const conversationHiddenMeta: EntityMeta = {
   name: 'im_conversation_hidden',
-  displayName: tImMeta('conversationHidden', 'displayName'),
-  verboseName: tImMeta('conversationHidden', 'verboseName'),
-  verboseNamePlural: tImMeta('conversationHidden', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('im_conversation_hidden'),
 };
 

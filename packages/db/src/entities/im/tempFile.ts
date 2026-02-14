@@ -5,83 +5,99 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tIm, tImMeta } from '../../i18n';
+import {
+  "db_im_tempFile_meta_displayName" as meta_displayName,
+  "db_im_tempFile_meta_verboseName" as meta_verboseName,
+  "db_im_tempFile_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_im_tempFile_conversationId" as f_conversationId,
+  "db_im_tempFile_messageId" as f_messageId,
+  "db_im_tempFile_name" as f_name,
+  "db_im_tempFile_originalName" as f_originalName,
+  "db_im_tempFile_extension" as f_extension,
+  "db_im_tempFile_mimeType" as f_mimeType,
+  "db_im_tempFile_size" as f_size,
+  "db_im_tempFile_storageKey" as f_storageKey,
+  "db_im_tempFile_bucket" as f_bucket,
+  "db_im_tempFile_region" as f_region,
+  "db_im_tempFile_etag" as f_etag,
+  "db_im_tempFile_expiresAt" as f_expiresAt,
+  "db_im_tempFile_metadata" as f_metadata,
+  "db_im_tempFile_status" as f_status,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-
-const f = (field: string) => tIm('tempFile', field);
 
 // ============ Fields ============
 const tempFileOwnFields = {
   conversationId: {
     field: uuid("conversation_id"),
-    comment: f('conversationId'),
+    comment: f_conversationId,
     config: { canExport: false, canImport: false }
   },
   messageId: {
     field: uuid("message_id"),
-    comment: f('messageId'),
+    comment: f_messageId,
     config: { canExport: false, canImport: false }
   },
   name: {
     field: varchar("name", { length: 255 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: f_name,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_name, cellType: "STRING" as const }
   },
   originalName: {
     field: varchar("original_name", { length: 255 }).notNull(),
-    comment: f('originalName'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('originalName'), cellType: "STRING" as const }
+    comment: f_originalName,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_originalName, cellType: "STRING" as const }
   },
   extension: {
     field: varchar("extension", { length: 32 }),
-    comment: f('extension'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('extension'), cellType: "STRING" as const }
+    comment: f_extension,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_extension, cellType: "STRING" as const }
   },
   mimeType: {
     field: varchar("mime_type", { length: 128 }),
-    comment: f('mimeType'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('mimeType'), cellType: "STRING" as const }
+    comment: f_mimeType,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_mimeType, cellType: "STRING" as const }
   },
   size: {
     field: bigint("size", { mode: "number" }).notNull().default(0),
-    comment: f('size'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('size'), cellType: "NUMERIC" as const }
+    comment: f_size,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_size, cellType: "NUMERIC" as const }
   },
   storageKey: {
     field: varchar("storage_key", { length: 512 }).notNull(),
-    comment: f('storageKey'),
+    comment: f_storageKey,
     config: { canExport: false, canImport: false }
   },
   bucket: {
     field: varchar("bucket", { length: 128 }).notNull(),
-    comment: f('bucket'),
+    comment: f_bucket,
     config: { canExport: false, canImport: false }
   },
   region: {
     field: varchar("region", { length: 64 }),
-    comment: f('region'),
+    comment: f_region,
     config: { canExport: false, canImport: false }
   },
   etag: {
     field: varchar("etag", { length: 128 }),
-    comment: f('etag'),
+    comment: f_etag,
     config: { canExport: false, canImport: false }
   },
   expiresAt: {
     field: timestamp("expires_at", { mode: 'string' }),
-    comment: f('expiresAt'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('expiresAt'), cellType: "STRING" as const }
+    comment: f_expiresAt,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_expiresAt, cellType: "STRING" as const }
   },
   metadata: {
     field: jsonb("metadata").$type<Record<string, string>>().default({}),
-    comment: f('metadata'),
+    comment: f_metadata,
     config: { canExport: false, canImport: false }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: f_status,
+    config: { canExport: true, canImport: false, exportExcelColumnName: f_status, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -90,9 +106,9 @@ export const tempFileFields = mergeFields(pkSchema, auditSchema, tempFileOwnFiel
 // ============ Meta ============
 export const tempFileMeta: EntityMeta = {
   name: 'im_temp_file',
-  displayName: tImMeta('tempFile', 'displayName'),
-  verboseName: tImMeta('tempFile', 'verboseName'),
-  verboseNamePlural: tImMeta('tempFile', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('im_temp_file'),
 };
 

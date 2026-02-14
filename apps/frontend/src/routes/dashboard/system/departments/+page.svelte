@@ -30,15 +30,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '@/lib/components/ui/table';
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { Switch } from '@/lib/components/ui/switch';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Switch } from '$lib/components/ui/switch';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemDepartmentQueryFieldEnum, PostApiSystemDepartmentQueryOrderEnum } from '@/lib/api/Api';
 

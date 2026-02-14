@@ -10,10 +10,10 @@ type ConversationInsert = typeof conversation.$inferInsert;
 
 // ============ Filter Schema ============
 const conversationFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   type: z.string().optional(),
   types: z.array(z.string()).optional(),
-  ownerId: z.uuid().optional(),
+  ownerId: z.string().optional(),
   name: z.string().optional(),
   status: z.string().optional(),
   isTop: z.boolean().optional(),
@@ -75,7 +75,7 @@ export const conversationGetByPagination = defineAction({
 export const conversationGetByPk = defineAction({
   meta: { name: 'im.conversation.getByPk', displayName: '根据ID查询会话', description: '根据主键ID查询单个会话', tags: ['im', 'conversation'], method: 'GET', path: '/api/im/conversation/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: conversationZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -99,7 +99,7 @@ export const conversationCreate = defineAction({
 export const conversationUpdate = defineAction({
   meta: { name: 'im.conversation.update', displayName: '更新会话', description: '根据ID更新单个会话', tags: ['im', 'conversation'], method: 'PUT', path: '/api/im/conversation/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: conversationZodSchemas.update }),
     outputSchema: conversationZodSchemas.select,
   },
@@ -112,7 +112,7 @@ export const conversationUpdate = defineAction({
 export const conversationDeleteByPk = defineAction({
   meta: { name: 'im.conversation.deleteByPk', displayName: '删除会话', description: '根据ID软删除会话', tags: ['im', 'conversation'], method: 'DELETE', path: '/api/im/conversation/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
@@ -141,7 +141,7 @@ export const conversationFindOrCreatePrivate = defineAction({
   meta: { name: 'im.conversation.findOrCreatePrivate', displayName: '查找或创建私聊', description: '查找两个用户之间的私聊会话，如果不存在则创建', tags: ['im', 'conversation'], method: 'POST', path: '/api/im/conversation/private' },
   schemas: {
     bodySchema: z.object({ 
-      targetUserId: z.uuid(),
+      targetUserId: z.string(),
       targetUserName: z.string().optional(),
     }),
     outputSchema: z.object({
@@ -223,7 +223,7 @@ export const conversationCreateGroup = defineAction({
   schemas: {
     bodySchema: z.object({ 
       name: z.string().min(1).max(128),
-      memberIds: z.array(z.uuid()).min(1),
+      memberIds: z.array(z.string()).min(1),
       avatar: z.string().optional(),
     }),
     outputSchema: z.object({
@@ -297,7 +297,7 @@ export const conversationCreateGroup = defineAction({
 export const conversationDissolveGroup = defineAction({
   meta: { name: 'im.conversation.dissolveGroup', displayName: '解散群聊', description: '解散群聊（仅群主可操作）', tags: ['im', 'conversation'], method: 'POST', path: '/api/im/conversation/:id/dissolve' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

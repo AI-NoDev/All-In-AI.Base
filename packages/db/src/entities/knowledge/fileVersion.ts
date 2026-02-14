@@ -5,67 +5,64 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tKnowledge, tKnowledgeMeta } from '../../i18n';
 import { pkSchema } from '../base/pkSchema';
-
-const f = (field: string) => tKnowledge('fileVersion', field);
 
 // ============ Fields ============
 const fileVersionOwnFields = {
   fileId: {
     field: uuid("file_id").notNull(),
-    comment: f('fileId'),
+    comment: () => '文件ID',
     config: { canExport: false, canImport: false }
   },
   versionNumber: {
     field: varchar("version_number", { length: 32 }).notNull(),
-    comment: f('versionNumber'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('versionNumber'), cellType: "STRING" as const }
+    comment: () => '版本号',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '版本号', cellType: "STRING" as const }
   },
   storageKey: {
     field: varchar("storage_key", { length: 512 }).notNull(),
-    comment: f('storageKey'),
+    comment: () => '存储键',
     config: { canExport: false, canImport: false }
   },
   bucket: {
     field: varchar("bucket", { length: 128 }).notNull(),
-    comment: f('bucket'),
+    comment: () => '存储桶',
     config: { canExport: false, canImport: false }
   },
   s3VersionId: {
     field: varchar("s3_version_id", { length: 128 }),
-    comment: f('s3VersionId'),
+    comment: () => 'S3版本ID',
     config: { canExport: false, canImport: false }
   },
   etag: {
     field: varchar("etag", { length: 128 }),
-    comment: f('etag'),
+    comment: () => 'ETag',
     config: { canExport: false, canImport: false }
   },
   size: {
     field: bigint("size", { mode: "number" }).notNull().default(0),
-    comment: f('size'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('size'), cellType: "NUMERIC" as const }
+    comment: () => '文件大小',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '文件大小', cellType: "NUMERIC" as const }
   },
   changeLog: {
     field: text("change_log"),
-    comment: f('changeLog'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('changeLog'), cellType: "TEXT" as const }
+    comment: () => '变更日志',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '变更日志', cellType: "TEXT" as const }
   },
   createdById: {
     field: uuid('created_by_id'),
-    comment: f('createdById'),
+    comment: () => '创建人ID',
     config: { canExport: false, canImport: false }
   },
   createdBy: {
     field: varchar('created_by', { length: 64 }).notNull(),
-    comment: f('createdBy'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('createdBy'), cellType: "STRING" as const }
+    comment: () => '创建人',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '创建人', cellType: "STRING" as const }
   },
   createdAt: {
     field: timestamp('created_at', { mode: 'string' }).notNull().default(sql`now()`),
-    comment: f('createdAt'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('createdAt'), cellType: "STRING" as const }
+    comment: () => '创建时间',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '创建时间', cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -74,9 +71,9 @@ export const fileVersionFields = mergeFields(pkSchema, fileVersionOwnFields);
 // ============ Meta ============
 export const fileVersionMeta: EntityMeta = {
   name: 'knowledge_file_version',
-  displayName: tKnowledgeMeta('fileVersion', 'displayName'),
-  verboseName: tKnowledgeMeta('fileVersion', 'verboseName'),
-  verboseNamePlural: tKnowledgeMeta('fileVersion', 'verboseNamePlural'),
+  displayName: () => '文件版本',
+  verboseName: () => '文件版本',
+  verboseNamePlural: () => '文件版本列表',
   permissions: createPermissions('knowledge_file_version'),
 };
 

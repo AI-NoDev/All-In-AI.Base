@@ -11,11 +11,11 @@ type UserRoleInsert = typeof userRole.$inferInsert;
 // ============ Filter Schema ============
 const userRoleFilterSchema = z.object({
   // IN 查询
-  userIds: z.array(z.uuid()).optional(),
-  roleIds: z.array(z.uuid()).optional(),
+  userIds: z.array(z.string()).optional(),
+  roleIds: z.array(z.string()).optional(),
   // 精确匹配
-  userId: z.uuid().optional(),
-  roleId: z.uuid().optional(),
+  userId: z.string().optional(),
+  roleId: z.string().optional(),
 }).optional();
 
 const sortSchema = z.object({
@@ -69,7 +69,7 @@ export const userRoleGetByPagination = defineAction({
 export const userRoleGetByPk = defineAction({
   meta: { name: 'system.userRole.getByPk', displayName: '根据复合主键查询用户角色关联', description: '根据userId和roleId查询', tags: ['system', 'userRole'], method: 'GET', path: '/api/system/user-role/:userId/:roleId' },
   schemas: {
-    paramsSchema: z.object({ userId: z.uuid(), roleId: z.uuid() }),
+    paramsSchema: z.object({ userId: z.string(), roleId: z.string() }),
     outputSchema: userRoleZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -106,7 +106,7 @@ export const userRoleCreateMany = defineAction({
 export const userRoleDeleteByPk = defineAction({
   meta: { name: 'system.userRole.deleteByPk', displayName: '删除用户角色关联', description: '根据复合主键删除', tags: ['system', 'userRole'], method: 'DELETE', path: '/api/system/user-role/:userId/:roleId' },
   schemas: {
-    paramsSchema: z.object({ userId: z.uuid(), roleId: z.uuid() }),
+    paramsSchema: z.object({ userId: z.string(), roleId: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {
@@ -126,4 +126,42 @@ export const userRoleGetSchema = defineAction({
   },
 });
 
-export const userRoleActions = [userRoleGetByPagination, userRoleGetByPk, userRoleCreate, userRoleCreateMany, userRoleDeleteByPk, userRoleGetSchema];
+// ============ 获取用户的角色ID列表 ============
+export const userRoleGetByUserId = defineAction({
+  meta: { name: 'system.userRole.getByUserId', displayName: '获取用户角色', description: '获取指定用户的所有角色ID', tags: ['system', 'userRole'], method: 'GET', path: '/api/system/user-role/user/:userId' },
+  schemas: {
+    paramsSchema: z.object({ userId: z.string() }),
+    outputSchema: z.array(z.string()),
+  },
+  execute: async (input, _context) => {
+    const data = await db.select({ roleId: userRole.roleId }).from(userRole).where(eq(userRole.userId, input.userId));
+    return data.map(d => d.roleId);
+  },
+});
+
+// ============ 设置用户的角色列表（全量替换） ============
+export const userRoleSetByUserId = defineAction({
+  meta: { name: 'system.userRole.setByUserId', displayName: '设置用户角色', description: '设置指定用户的角色列表（全量替换）', tags: ['system', 'userRole'], method: 'PUT', path: '/api/system/user-role/user/:userId' },
+  schemas: {
+    paramsSchema: z.object({ userId: z.string() }),
+    bodySchema: z.object({ roleIds: z.array(z.string()) }),
+    outputSchema: z.boolean(),
+  },
+  execute: async (input, _context) => {
+    // 删除该用户的所有角色关联
+    await db.delete(userRole).where(eq(userRole.userId, input.userId));
+    
+    // 插入新的角色关联
+    if (input.roleIds.length > 0) {
+      const newRecords: UserRoleInsert[] = input.roleIds.map(roleId => ({
+        userId: input.userId,
+        roleId,
+      }));
+      await db.insert(userRole).values(newRecords);
+    }
+    
+    return true;
+  },
+});
+
+export const userRoleActions = [userRoleGetByPagination, userRoleGetByPk, userRoleCreate, userRoleCreateMany, userRoleDeleteByPk, userRoleGetSchema, userRoleGetByUserId, userRoleSetByUserId];

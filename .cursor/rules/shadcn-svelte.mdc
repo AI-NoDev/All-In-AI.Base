@@ -36,8 +36,8 @@
 - [Input OTP](https://shadcn-svelte.com/docs/components/input-otp.md): Accessible one-time password component with copy paste functionality.
 - [Label](https://shadcn-svelte.com/docs/components/label.md): Renders an accessible label associated with controls.
 - [Native Select](https://shadcn-svelte.com/docs/components/native-select.md): A styled native HTML select element with consistent design system integration.
-- [Radio Group](https://shadcn-svelte.com/docs/components/radio-group.md): A set of checkable buttons鈥攌nown as radio buttons鈥攚here no more than one of the buttons can be checked at a time.
-- [Select](https://shadcn-svelte.com/docs/components/select.md): Displays a list of options for the user to pick from鈥攖riggered by a button.
+- [Radio Group](https://shadcn-svelte.com/docs/components/radio-group.md): A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.
+- [Select](https://shadcn-svelte.com/docs/components/select.md): Displays a list of options for the user to pick from—triggered by a button.
 - [Slider](https://shadcn-svelte.com/docs/components/slider.md): An input where the user selects a value from within a given range.
 - [Switch](https://shadcn-svelte.com/docs/components/switch.md): A control that allows the user to toggle between checked and not checked.
 - [Textarea](https://shadcn-svelte.com/docs/components/textarea.md): Displays a form textarea or a component that looks like a textarea.
@@ -51,16 +51,16 @@
 - [Scroll Area](https://shadcn-svelte.com/docs/components/scroll-area.md): Augments native scroll functionality for custom, cross-browser styling.
 - [Separator](https://shadcn-svelte.com/docs/components/separator.md): Visually or semantically separates content.
 - [Sidebar](https://shadcn-svelte.com/docs/components/sidebar.md): A composable, themeable and customizable sidebar component.
-- [Tabs](https://shadcn-svelte.com/docs/components/tabs.md): A set of layered sections of content鈥攌nown as tab panels鈥攖hat are displayed one at a time.
+- [Tabs](https://shadcn-svelte.com/docs/components/tabs.md): A set of layered sections of content—known as tab panels—that are displayed one at a time.
 
 ### Overlays & Dialogs
 
 - [Alert Dialog](https://shadcn-svelte.com/docs/components/alert-dialog.md): A modal dialog that interrupts the user with important content and expects a response.
 - [Command](https://shadcn-svelte.com/docs/components/command.md): Fast, composable, unstyled command menu for Svelte.
-- [Context Menu](https://shadcn-svelte.com/docs/components/context-menu.md): Displays a menu to the user 鈥� such as a set of actions or functions 鈥� triggered by right click.
+- [Context Menu](https://shadcn-svelte.com/docs/components/context-menu.md): Displays a menu to the user—such as a set of actions or functions—triggered by right click.
 - [Dialog](https://shadcn-svelte.com/docs/components/dialog.md): A window overlaid on either the primary window or another dialog window, rendering the content underneath inert.
 - [Drawer](https://shadcn-svelte.com/docs/components/drawer.md): A drawer component for Svelte.
-- [Dropdown Menu](https://shadcn-svelte.com/docs/components/dropdown-menu.md): Displays a menu to the user 鈥� such as a set of actions or functions 鈥� triggered by a button.
+- [Dropdown Menu](https://shadcn-svelte.com/docs/components/dropdown-menu.md): Displays a menu to the user—such as a set of actions or functions—triggered by a button.
 - [Hover Card](https://shadcn-svelte.com/docs/components/hover-card.md): For sighted users to preview content available behind a link.
 - [Menubar](https://shadcn-svelte.com/docs/components/menubar.md): A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.
 - [Popover](https://shadcn-svelte.com/docs/components/popover.md): Displays rich content in a portal, triggered by a button.
@@ -115,10 +115,6 @@
 - [Getting Started](https://shadcn-svelte.com/docs/registry/getting-started.md): Learn how to get setup and run your own component registry.
 - [registry-item.json](https://shadcn-svelte.com/docs/registry/registry-item-json.md): Specification for registry items.
 - [registry.json](https://shadcn-svelte.com/docs/registry/registry-json.md): Schema for running your own component registry.
-1688找货源
-
-
-❯
 
 
 

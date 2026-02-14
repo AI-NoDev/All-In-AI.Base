@@ -11,7 +11,7 @@ type PostInsert = typeof post.$inferInsert;
 // ============ Filter Schema ============
 const postFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   codes: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   // 精确匹配
@@ -81,7 +81,7 @@ export const postGetByPagination = defineAction({
 export const postGetByPk = defineAction({
   meta: { name: 'system.post.getByPk', displayName: '根据ID查询岗位', description: '根据主键ID查询单个岗位', tags: ['system', 'post'], method: 'GET', path: '/api/system/post/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: postZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -118,7 +118,7 @@ export const postCreateMany = defineAction({
 export const postUpdate = defineAction({
   meta: { name: 'system.post.update', displayName: '更新岗位', description: '根据ID更新单个岗位', tags: ['system', 'post'], method: 'PUT', path: '/api/system/post/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: postZodSchemas.update }),
     outputSchema: postZodSchemas.select,
   },
@@ -131,7 +131,7 @@ export const postUpdate = defineAction({
 export const postUpdateMany = defineAction({
   meta: { name: 'system.post.updateMany', displayName: '批量更新岗位', description: '根据ID列表批量更新岗位', tags: ['system', 'post'], method: 'PUT', path: '/api/system/post/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: postZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: postZodSchemas.update }),
     outputSchema: z.array(postZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -147,7 +147,7 @@ export const postUpdateMany = defineAction({
 export const postDeleteByPk = defineAction({
   meta: { name: 'system.post.deleteByPk', displayName: '删除岗位', description: '根据ID软删除岗位', tags: ['system', 'post'], method: 'DELETE', path: '/api/system/post/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

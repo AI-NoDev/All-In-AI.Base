@@ -11,11 +11,11 @@ type FileVersionInsert = typeof fileVersion.$inferInsert;
 // ============ Filter Schema ============
 const fileVersionFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
-  fileIds: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
+  fileIds: z.array(z.string()).optional(),
   versionNumbers: z.array(z.string()).optional(),
   // 精确匹配
-  fileId: z.uuid().optional(),
+  fileId: z.string().optional(),
   // 模糊匹配
   versionNumber: z.string().optional(),
   // 时间范围
@@ -81,7 +81,7 @@ export const fileVersionGetByPagination = defineAction({
 export const fileVersionGetByPk = defineAction({
   meta: { name: 'knowledge.fileVersion.getByPk', displayName: '根据ID查询文件版本', description: '根据主键ID查询单个文件版本', tags: ['knowledge', 'fileVersion'], method: 'GET', path: '/api/knowledge/file-version/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: fileVersionZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -117,7 +117,7 @@ export const fileVersionCreateMany = defineAction({
 export const fileVersionUpdate = defineAction({
   meta: { name: 'knowledge.fileVersion.update', displayName: '更新文件版本', description: '根据ID更新单个文件版本', tags: ['knowledge', 'fileVersion'], method: 'PUT', path: '/api/knowledge/file-version/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: fileVersionZodSchemas.update }),
     outputSchema: fileVersionZodSchemas.select,
   },
@@ -130,7 +130,7 @@ export const fileVersionUpdate = defineAction({
 export const fileVersionUpdateMany = defineAction({
   meta: { name: 'knowledge.fileVersion.updateMany', displayName: '批量更新文件版本', description: '根据ID列表批量更新文件版本', tags: ['knowledge', 'fileVersion'], method: 'PUT', path: '/api/knowledge/file-version/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: fileVersionZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: fileVersionZodSchemas.update }),
     outputSchema: z.array(fileVersionZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -146,7 +146,7 @@ export const fileVersionUpdateMany = defineAction({
 export const fileVersionDeleteByPk = defineAction({
   meta: { name: 'knowledge.fileVersion.deleteByPk', displayName: '删除文件版本', description: '根据ID硬删除文件版本', tags: ['knowledge', 'fileVersion'], method: 'DELETE', path: '/api/knowledge/file-version/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

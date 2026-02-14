@@ -12,6 +12,8 @@ import {
 } from '@/lib/api/Api';
 
 // ============ Types ============
+export type FileViewMode = 'all' | 'my-shared' | 'shared-with-me' | 'favorites';
+
 export interface FolderItem {
   id: string;
   name: string;
@@ -45,6 +47,19 @@ export interface FileItem {
   createdById: string;
 }
 
+// Shared item types with additional metadata
+export interface SharedFolderItem extends Omit<FolderItem, 'path' | 'orderNum' | 'updatedAt' | 'createdById'> {
+  sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
+  sharedBy?: string | null;
+  permission?: string;
+}
+
+export interface SharedFileItem extends Omit<FileItem, 'originalName' | 'storageKey' | 'bucket' | 'versionCount' | 'updatedAt' | 'createdById'> {
+  sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
+  sharedBy?: string | null;
+  permission?: string;
+}
+
 export interface PathItem {
   id: string | null;
   name: string;
@@ -70,6 +85,11 @@ function createKnowledgeStore() {
   let selectedFolderIds = $state<Set<string>>(new Set());
   let selectedFileIds = $state<Set<string>>(new Set());
   let clipboard = $state<ClipboardItem[]>([]);
+  let viewMode = $state<FileViewMode>('all');
+  
+  // Shared/Favorites data
+  let sharedFolders = $state<SharedFolderItem[]>([]);
+  let sharedFiles = $state<SharedFileItem[]>([]);
 
   const api = authStore.createApi(true);
 
@@ -135,7 +155,92 @@ function createKnowledgeStore() {
   }
 
   async function refresh(): Promise<void> {
-    await loadContents(currentFolderId);
+    if (viewMode === 'all') {
+      await loadContents(currentFolderId);
+    } else {
+      await loadViewModeData();
+    }
+  }
+
+  // ============ View Mode ============
+  function setViewMode(mode: FileViewMode): void {
+    viewMode = mode;
+    clearSelection();
+    if (mode === 'all') {
+      loadContents(currentFolderId);
+    } else {
+      loadViewModeData();
+    }
+  }
+
+  async function loadViewModeData(): Promise<void> {
+    loading = true;
+    clearSelection();
+    sharedFolders = [];
+    sharedFiles = [];
+    
+    try {
+      if (viewMode === 'my-shared') {
+        // Load resources I shared with others
+        const res = await api.files.postApiFilesShareMyShared({ limit: 100, offset: 0 });
+        if (res.data) {
+          sharedFolders = res.data.folders || [];
+          sharedFiles = res.data.files || [];
+        }
+      } else if (viewMode === 'shared-with-me') {
+        // Load resources shared with me
+        const res = await api.files.postApiFilesShareSharedWithMe({ limit: 100, offset: 0 });
+        if (res.data) {
+          sharedFolders = res.data.folders || [];
+          sharedFiles = res.data.files || [];
+        }
+      } else if (viewMode === 'favorites') {
+        // Load favorited resources
+        const res = await api.knowledge.postApiKnowledgeFavoriteList({ resourceType: 'all', limit: 100, offset: 0 });
+        if (res.data) {
+          sharedFolders = res.data.folders || [];
+          sharedFiles = res.data.files || [];
+        }
+      }
+    } catch (err) {
+      console.error('加载数据失败:', err);
+      sharedFolders = [];
+      sharedFiles = [];
+    } finally {
+      loading = false;
+    }
+  }
+
+  // ============ Favorites ============
+  async function toggleFavorite(resourceType: 'folder' | 'file', resourceId: string): Promise<boolean> {
+    try {
+      const checkRes = await api.knowledge.getApiKnowledgeFavoriteCheckByResourceTypeByResourceId({
+        resourceType,
+        resourceId,
+      });
+      
+      if (checkRes.data?.isFavorited) {
+        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({
+          resourceType,
+          resourceId,
+        });
+      } else {
+        await api.knowledge.postApiKnowledgeFavorite({
+          resourceType,
+          resourceId,
+        });
+      }
+      
+      // Refresh if in favorites view
+      if (viewMode === 'favorites') {
+        await loadViewModeData();
+      }
+      
+      return !checkRes.data?.isFavorited;
+    } catch (err) {
+      console.error('切换收藏失败:', err);
+      return false;
+    }
   }
 
   // ============ Navigation ============
@@ -325,6 +430,9 @@ function createKnowledgeStore() {
     get selectedFolderIds() { return selectedFolderIds; },
     get selectedFileIds() { return selectedFileIds; },
     get clipboard() { return clipboard; },
+    get viewMode() { return viewMode; },
+    get sharedFolders() { return sharedFolders; },
+    get sharedFiles() { return sharedFiles; },
     
     // Derived
     get hasSelection() { return hasSelection(); },
@@ -358,6 +466,13 @@ function createKnowledgeStore() {
     deleteFolder,
     deleteFile,
     deleteSelected,
+
+    // View Mode
+    setViewMode,
+    loadViewModeData,
+    
+    // Favorites
+    toggleFavorite,
 
     // Data
     loadContents,

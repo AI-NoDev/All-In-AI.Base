@@ -1,64 +1,76 @@
-import { pgTable, varchar, char, boolean, jsonb, json } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, char, boolean, integer } from 'drizzle-orm/pg-core';
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tSystem, tSystemMeta } from '../../i18n';
+import {
+  db_system_role_meta_displayName,
+  db_system_role_meta_verboseName,
+  db_system_role_meta_verboseNamePlural,
+  db_system_role_name,
+  db_system_role_key,
+  db_system_role_sort,
+  db_system_role_dataScope,
+  db_system_role_status,
+  db_system_role_flag,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { deletedSchema } from '../base/deletedSchema';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
-import { z } from "zod/v4";
 
-const f = (field: string) => tSystem('role', field);
+/**
+ * 角色表
+ * 
+ * 与 Casbin 集成说明:
+ * - 角色权限通过 casbin_rule 表的 g 策略管理: g, user:xxx, role:xxx
+ * - 角色的具体权限通过 p 策略管理: p, role:xxx, resource, action
+ * - dataScope 用于数据权限控制，配合 ABAC 策略使用
+ * 
+ * 数据范围 (dataScope):
+ * - 1: 全部数据
+ * - 2: 自定义数据（通过 roleDepartment 关联）
+ * - 3: 本部门数据
+ * - 4: 本部门及以下数据
+ * - 5: 仅本人数据
+ */
 
 // ============ Fields ============
 const roleOwnFields = {
   name: {
     field: varchar('name', { length: 30 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: db_system_role_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_role_name, importExcelColumnName: db_system_role_name, cellType: "STRING" as const }
   },
   key: {
-    field: varchar('key', { length: 100 }).notNull(),
-    comment: f('key'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('key'), importExcelColumnName: f('key'), cellType: "STRING" as const }
+    field: varchar('key', { length: 100 }).notNull().unique(),
+    comment: db_system_role_key,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_role_key, importExcelColumnName: db_system_role_key, cellType: "STRING" as const }
   },
   sort: {
-    field: varchar('sort', { length: 10 }).notNull(),
-    comment: f('sort'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('sort'), importExcelColumnName: f('sort'), cellType: "STRING" as const }
+    field: integer('sort').notNull().default(0),
+    comment: db_system_role_sort,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_role_sort, importExcelColumnName: db_system_role_sort, cellType: "NUMERIC" as const }
   },
   dataScope: {
-    field: varchar('data_scope', { length: 1 }),
-    comment: f('dataScope'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('dataScope'), importExcelColumnName: f('dataScope'), cellType: "STRING" as const }
+    field: varchar('data_scope', { length: 1 }).default('5'),
+    comment: db_system_role_dataScope,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_role_dataScope, importExcelColumnName: db_system_role_dataScope, cellType: "STRING" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: db_system_role_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_role_status, importExcelColumnName: db_system_role_status, cellType: "STRING" as const }
   },
   flag: {
     field: boolean('flag').default(false),
-    comment: f('flag'),
+    comment: db_system_role_flag,
     config: { canExport: false, canImport: false }
   },
-  menuIds: {
-    field: jsonb('menu_ids').$type<string[]>().default([]),
-    comment: f('menuIds'),
-    config: { canExport: false, canImport: false }
-  },
-  deptIds: {
-    field: jsonb('dept_ids').$type<string[]>().default([]),
-    comment: f('deptIds'),
-    config: { canExport: false, canImport: false }
-  },
-  permissions: {
-    field: json('permissions').$type<string[]>().default([]),
-    comment: f('permissions'),
-    config: { canExport: false, canImport: false }
+  description: {
+    field: varchar('description', { length: 255 }),
+    comment: () => '角色描述',
+    config: { canExport: true, canImport: true, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -67,9 +79,9 @@ export const roleFields = mergeFields(pkSchema, auditSchema, deletedSchema, role
 // ============ Meta ============
 export const roleMeta: EntityMeta = {
   name: 'system_role',
-  displayName: tSystemMeta('role', 'displayName'),
-  verboseName: tSystemMeta('role', 'verboseName'),
-  verboseNamePlural: tSystemMeta('role', 'verboseNamePlural'),
+  displayName: db_system_role_meta_displayName,
+  verboseName: db_system_role_meta_verboseName,
+  verboseNamePlural: db_system_role_meta_verboseNamePlural,
   permissions: createPermissions('system_role'),
 };
 
@@ -80,26 +92,30 @@ export const role = pgTable(roleMeta.name, getTableFields(roleFields));
 export const roleConfig = getFieldConfigs(roleFields);
 
 // ============ Schemas ============
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const describeRefinements = createDescribeRefinements(roleFields) as any;
+export const roleZodSchemas = createZodSchemas(role, roleFields);
 
-export const roleZodSchemas = {
-  insert: createInsertZodSchema(role, {
-    ...describeRefinements,
-    menuIds: z.array(z.uuid()).describe(roleFields.menuIds.comment()),
-    deptIds: z.array(z.uuid()).describe(roleFields.deptIds.comment()),
-    permissions: z.array(z.string()).describe(roleFields.permissions.comment()),
-  }),
-  select: createSelectZodSchema(role, {
-    ...describeRefinements,
-    menuIds: z.array(z.uuid()).nullable().describe(roleFields.menuIds.comment()),
-    deptIds: z.array(z.uuid()).nullable().describe(roleFields.deptIds.comment()),
-    permissions: z.array(z.string()).nullable().describe(roleFields.permissions.comment()),
-  }),
-  update: createUpdateZodSchema(role, {
-    ...describeRefinements,
-    menuIds: z.array(z.uuid()).optional().describe(roleFields.menuIds.comment()),
-    deptIds: z.array(z.uuid()).optional().describe(roleFields.deptIds.comment()),
-    permissions: z.array(z.string()).optional().describe(roleFields.permissions.comment()),
-  }),
-};
+// ============ 数据范围常量 ============
+export const DATA_SCOPE = {
+  /** 全部数据 */
+  ALL: '1',
+  /** 自定义数据 */
+  CUSTOM: '2',
+  /** 本部门数据 */
+  DEPT: '3',
+  /** 本部门及以下数据 */
+  DEPT_AND_CHILD: '4',
+  /** 仅本人数据 */
+  SELF: '5',
+} as const;
+
+// ============ 内置角色 ============
+export const BUILTIN_ROLES = {
+  /** 超级管理员 */
+  SUPER_ADMIN: 'super_admin',
+  /** 管理员 */
+  ADMIN: 'admin',
+  /** 普通用户 */
+  USER: 'user',
+  /** 访客 */
+  GUEST: 'guest',
+} as const;

@@ -11,7 +11,7 @@ type DictInsert = typeof dict.$inferInsert;
 // ============ Filter Schema ============
 const dictFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   groups: z.array(z.string()).optional(),
   labels: z.array(z.string()).optional(),
   // 精确匹配
@@ -83,7 +83,7 @@ export const dictGetByPagination = defineAction({
 export const dictGetByPk = defineAction({
   meta: { name: 'system.dict.getByPk', displayName: '根据ID查询字典', description: '根据主键ID查询单个字典', tags: ['system', 'dict'], method: 'GET', path: '/api/system/dict/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: dictZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -120,7 +120,7 @@ export const dictCreateMany = defineAction({
 export const dictUpdate = defineAction({
   meta: { name: 'system.dict.update', displayName: '更新字典', description: '根据ID更新单个字典', tags: ['system', 'dict'], method: 'PUT', path: '/api/system/dict/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: dictZodSchemas.update }),
     outputSchema: dictZodSchemas.select,
   },
@@ -133,7 +133,7 @@ export const dictUpdate = defineAction({
 export const dictUpdateMany = defineAction({
   meta: { name: 'system.dict.updateMany', displayName: '批量更新字典', description: '根据ID列表批量更新字典', tags: ['system', 'dict'], method: 'PUT', path: '/api/system/dict/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: dictZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: dictZodSchemas.update }),
     outputSchema: z.array(dictZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -149,7 +149,7 @@ export const dictUpdateMany = defineAction({
 export const dictDeleteByPk = defineAction({
   meta: { name: 'system.dict.deleteByPk', displayName: '删除字典', description: '根据ID软删除字典', tags: ['system', 'dict'], method: 'DELETE', path: '/api/system/dict/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

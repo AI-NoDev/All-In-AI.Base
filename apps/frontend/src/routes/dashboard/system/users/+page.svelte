@@ -57,6 +57,7 @@
   import DeptTree from './components/dept-tree.svelte';
   import SearchFilter from './components/search-filter.svelte';
   import UserTable from './components/user-table.svelte';
+  import RoleDialog from './components/role-dialog.svelte';
 
   interface DeptNode {
     id: string;
@@ -101,6 +102,10 @@
   let showFilter = $state(pageState.showFilter);
   let selectedIds = $state<Set<string>>(new Set(pageState.selectedIds));
   let deleting = $state(false);
+
+  // 角色分配对话框状态
+  let roleDialogOpen = $state(false);
+  let selectedUser = $state<User | null>(null);
 
   let searchForm = $state({ ...pageState.searchForm });
 
@@ -343,6 +348,11 @@
     }
   }
 
+  function handleAssignRoles(user: User) {
+    selectedUser = user;
+    roleDialogOpen = true;
+  }
+
   onMount(async () => {
     await Promise.all([loadDepartments(), loadRoles()]);
     await loadUsers();
@@ -386,6 +396,17 @@
       onResetPassword={handleResetPassword}
       onToggleSelect={handleToggleSelect}
       onToggleSelectAll={handleToggleSelectAll}
+      onAssignRoles={handleAssignRoles}
     />
   </div>
 </div>
+
+{#if selectedUser}
+  <RoleDialog 
+    bind:open={roleDialogOpen}
+    userId={selectedUser.id}
+    userName={selectedUser.name || selectedUser.loginName}
+    onClose={() => selectedUser = null}
+    onSaved={() => {}}
+  />
+{/if}

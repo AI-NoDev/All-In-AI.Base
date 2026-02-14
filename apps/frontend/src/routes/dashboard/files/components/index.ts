@@ -1,6 +1,8 @@
 export { default as FileBreadcrumb } from './file-breadcrumb.svelte';
 export { default as FileToolbar } from './file-toolbar.svelte';
 export { default as FileList } from './file-list.svelte';
+export { default as FileNavTabs } from './file-nav-tabs.svelte';
+export { default as SharedFileList } from './shared-file-list.svelte';
 export { default as NewFolderDialog } from './new-folder-dialog.svelte';
 export { default as SearchDialog } from './search-dialog.svelte';
 export { default as FileContextMenu } from './file-context-menu.svelte';
@@ -12,3 +14,4 @@ export { default as PermissionSheet } from './permission-sheet.svelte';
 export { default as VersionSheet } from './version-sheet.svelte';
 export { default as PasteConflictDialog } from './paste-conflict-dialog.svelte';
 export * from './types';
+export type { FileViewMode } from './file-nav-tabs.svelte';

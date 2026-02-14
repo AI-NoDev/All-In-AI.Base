@@ -17,6 +17,8 @@ export * from './roleMenu';
 export * from './token';
 export * from './userPost';
 export * from './userRole';
+export * from './permission';
+export * from './casbinRule';
 
 // Aggregate all system actions
 import { userActions } from './user';
@@ -37,6 +39,8 @@ import { roleMenuActions } from './roleMenu';
 import { tokenActions } from './token';
 import { userPostActions } from './userPost';
 import { userRoleActions } from './userRole';
+import { permissionActions } from './permission';
+import { casbinRuleActions } from './casbinRule';
 
 export const systemActions = [
   ...userActions,
@@ -57,4 +61,6 @@ export const systemActions = [
   ...tokenActions,
   ...userPostActions,
   ...userRoleActions,
+  ...permissionActions,
+  ...casbinRuleActions,
 ];

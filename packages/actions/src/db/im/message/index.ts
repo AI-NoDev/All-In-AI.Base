@@ -10,11 +10,11 @@ type MessageInsert = typeof message.$inferInsert;
 
 // ============ Filter Schema ============
 const messageFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
-  conversationId: z.uuid().optional(),
-  conversationIds: z.array(z.uuid()).optional(),
-  senderId: z.uuid().optional(),
-  senderIds: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
+  conversationId: z.string().optional(),
+  conversationIds: z.array(z.string()).optional(),
+  senderId: z.string().optional(),
+  senderIds: z.array(z.string()).optional(),
   msgType: z.string().optional(),
   msgTypes: z.array(z.string()).optional(),
   isRecalled: z.boolean().optional(),
@@ -75,7 +75,7 @@ export const messageGetByPagination = defineAction({
 export const messageGetByPk = defineAction({
   meta: { name: 'im.message.getByPk', displayName: '根据ID查询消息', description: '根据主键ID查询单个消息', tags: ['im', 'message'], method: 'GET', path: '/api/im/message/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: messageZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -114,7 +114,7 @@ export const messageCreate = defineAction({
 export const messageRecall = defineAction({
   meta: { name: 'im.message.recall', displayName: '撤回消息', description: '撤回指定消息', tags: ['im', 'message'], method: 'PUT', path: '/api/im/message/:id/recall' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: messageZodSchemas.select,
   },
   execute: async (input, context) => {

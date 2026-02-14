@@ -2,27 +2,41 @@
 // 基础类型从 store 导出，组件特定类型在此定义
 
 // Re-export from store
-export type { FolderItem, FileItem, PathItem, ClipboardItem as KnowledgeClipboardItem } from '@/lib/stores/knowledge.svelte';
+export type { FolderItem, FileItem, PathItem, ClipboardItem as KnowledgeClipboardItem } from '@/lib/stores/knowledge';
 
 // Alias for clarity
-export type ClipboardItemType = import('@/lib/stores/knowledge.svelte').ClipboardItem;
+export type ClipboardItemType = import('@/lib/stores/knowledge').ClipboardItem;
 
-// Permission level: 'r' = read, 'w' = write, 'm' = manage
+// File permission types (Casbin-based)
+export type FilePermission = 'read' | 'write' | 'delete' | 'manage';
+export type PermissionEffect = 'allow' | 'deny';
+export type SubjectType = 'user' | 'role' | 'dept';
+export type ResourceType = 'folder' | 'file';
+
+// Legacy permission level (for backward compatibility)
 export type PermissionLevel = 'r' | 'w' | 'm';
 
-export interface ResourcePermission {
-  id: string;
-  resourceType: 'folder' | 'file';
+export interface FilePermissionEntry {
+  subjectType: SubjectType;
+  subjectId: string;
+  resourceType: ResourceType;
   resourceId: string;
-  granteeType: 'user' | 'role' | 'dept';
-  granteeId: string;
-  permissionLevel: PermissionLevel;
+  permission: FilePermission;
+  effect: PermissionEffect;
 }
 
 export interface PermissionGrantee {
-  granteeType: 'user' | 'role' | 'dept';
-  granteeId: string;
-  permissionLevel: PermissionLevel;
+  subjectType: SubjectType;
+  subjectId: string;
+  permission: FilePermission;
+  effect: PermissionEffect;
+}
+
+export interface EffectivePermission {
+  permission: FilePermission;
+  effect: PermissionEffect;
+  source: 'direct' | 'inherited' | 'role' | 'dept';
+  sourceId?: string;
 }
 
 // Conflict resolution mode for file uploads
@@ -41,8 +55,8 @@ export interface UploadItem {
 }
 
 export type ContextMenuTarget = 
-  | { type: 'folder'; item: import('@/lib/stores/knowledge.svelte').FolderItem }
-  | { type: 'file'; item: import('@/lib/stores/knowledge.svelte').FileItem }
+  | { type: 'folder'; item: import('@/lib/stores/knowledge').FolderItem }
+  | { type: 'file'; item: import('@/lib/stores/knowledge').FileItem }
   | null;
 
 // Paste conflict item for paste operations

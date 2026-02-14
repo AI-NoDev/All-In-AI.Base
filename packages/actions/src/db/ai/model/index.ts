@@ -10,10 +10,10 @@ type ModelInsert = typeof model.$inferInsert;
 
 // ============ Filter Schema ============
 const modelFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   modelIds: z.array(z.string()).optional(),
-  providerId: z.uuid().optional(),
-  providerIds: z.array(z.uuid()).optional(),
+  providerId: z.string().optional(),
+  providerIds: z.array(z.string()).optional(),
   name: z.string().optional(),
   modelId: z.string().optional(),
   status: z.string().optional(),
@@ -70,7 +70,7 @@ export const modelGetByPagination = defineAction({
 export const modelGetByPk = defineAction({
   meta: { name: 'ai.model.getByPk', displayName: '根据ID查询AI模型', description: '根据主键ID查询单个AI模型', tags: ['ai', 'model'], method: 'GET', path: '/api/ai/model/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: modelZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -106,7 +106,7 @@ export const modelCreateMany = defineAction({
 export const modelUpdate = defineAction({
   meta: { name: 'ai.model.update', displayName: '更新AI模型', description: '根据ID更新单个AI模型', tags: ['ai', 'model'], method: 'PUT', path: '/api/ai/model/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: modelZodSchemas.update }),
     outputSchema: modelZodSchemas.select,
   },
@@ -119,7 +119,7 @@ export const modelUpdate = defineAction({
 export const modelUpdateMany = defineAction({
   meta: { name: 'ai.model.updateMany', displayName: '批量更新AI模型', description: '根据ID列表批量更新AI模型', tags: ['ai', 'model'], method: 'PUT', path: '/api/ai/model/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: modelZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: modelZodSchemas.update }),
     outputSchema: z.array(modelZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -135,7 +135,7 @@ export const modelUpdateMany = defineAction({
 export const modelDeleteByPk = defineAction({
   meta: { name: 'ai.model.deleteByPk', displayName: '删除AI模型', description: '根据ID删除AI模型', tags: ['ai', 'model'], method: 'DELETE', path: '/api/ai/model/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

@@ -3,7 +3,6 @@
 	import { onMount } from 'svelte';
 	import BaseNode from '../BaseNode.svelte';
 	import type { LoopBreakNodeData } from './types.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
@@ -25,16 +24,10 @@
 	onMount(() => {
 		configPanelRegistry.register('loop-break', ConfigPanel);
 	});
-
-	const menuItems = [
-		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
-		{ label: '复制', icon: 'mdi:content-copy', action: () => console.log('copy', id) },
-		{ label: '删除', icon: 'mdi:delete', action: () => workflowState.removeNode(id), variant: 'destructive' as const },
-	];
 </script>
 
 <!-- LoopBreakNode: 只有输入引脚（使用 'input' ID），没有输出引脚 -->
-<BaseNode nodeId={id} nodeData={data} {menuItems} inputId="input" showOutput={false}>
+<BaseNode nodeId={id} nodeData={data} inputId="input" showOutput={false}>
 	{#snippet content(nodeData)}
 		<div class="flex items-center gap-3">
 			<Avatar.Root class="rounded-lg bg-red-500 text-white h-8 w-8">
@@ -51,11 +44,5 @@
 				{/if}
 			</div>
 		</div>
-	{/snippet}
-
-	{#snippet quickActions()}
-		<Button variant="outline" size="icon" class="h-7 w-7 bg-background">
-			<Icon icon="mdi:pencil" width="14" height="14" />
-		</Button>
 	{/snippet}
 </BaseNode>

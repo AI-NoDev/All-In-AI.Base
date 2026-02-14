@@ -1,93 +1,342 @@
-// 导出所有图标
-export * from './code';
-export * from './backend';
-export * from './config';
-export * from './document';
-export * from './image';
-export * from './media';
-export * from './archive';
-export * from './installer';
-export * from './database';
-export * from './security';
-export * from './design';
-export * from './folder';
-export * from './unknown';
+/**
+ * 文件图标映射 - 使用 Iconify 图标
+ * 图标来源: vscode-icons, mdi, tdesign 等
+ */
 
-import * as code from './code';
-import * as backend from './backend';
-import * as config from './config';
-import * as document from './document';
-import * as image from './image';
-import * as media from './media';
-import * as archive from './archive';
-import * as installer from './installer';
-import * as database from './database';
-import * as security from './security';
-import * as design from './design';
-import * as folder from './folder';
-import * as unknown from './unknown';
-
-// 图标映射表
-export const iconMap: Record<string, string> = {
-  // code
-  code: code.code, txt: code.txt, log: code.log, env: code.env, ini: code.ini, conf: code.conf,
-  html: code.html, css: code.css, scss: code.scss, less: code.less,
-  js: code.js, mjs: code.mjs, cjs: code.cjs, ts: code.ts, tsx: code.tsx, jsx: code.jsx,
-  json: code.json, map: code.map, wasm: code.wasm,
-  // backend
-  py: backend.py, pyc: backend.pyc, java: backend.java, class: backend.classFile, jar: backend.jar,
-  go: backend.go, rs: backend.rs, php: backend.php, rb: backend.rb,
-  sh: backend.sh, bash: backend.bash, zsh: backend.zsh, ps1: backend.ps1, bat: backend.bat, cmd: backend.cmd,
-  c: backend.c, cpp: backend.cpp, h: backend.h, hpp: backend.hpp, cs: backend.cs,
-  swift: backend.swift, kt: backend.kt, dart: backend.dart, lua: backend.lua, r: backend.r, scala: backend.scala,
-  // config
-  yaml: config.yaml, yml: config.yml, toml: config.toml, xml: config.xml, properties: config.properties,
-  lock: config.lock, gradle: config.gradle, pom: config.pom, makefile: config.makefile,
-  dockerfile: config.dockerfile, dockerignore: config.dockerignore, gitignore: config.gitignore,
-  npmrc: config.npmrc, editorconfig: config.editorconfig, eslintrc: config.eslintrc, prettierrc: config.prettierrc,
-  // document
-  md: document.md, markdown: document.markdown, pdf: document.pdf,
-  doc: document.doc, docx: document.docx, xls: document.xls, xlsx: document.xlsx,
-  ppt: document.ppt, pptx: document.pptx, csv: document.csv, rtf: document.rtf,
-  jsonc: document.jsonc, geojson: document.geojson, ndjson: document.ndjson, avro: document.avro, parquet: document.parquet,
-  // image
-  image: image.image, png: image.png, jpg: image.jpg, jpeg: image.jpeg, gif: image.gif,
-  webp: image.webp, svg: image.svg, bmp: image.bmp, ico: image.ico, tiff: image.tiff,
-  psd: image.psd, ai: image.ai, sketch: image.sketch, figma: image.figma, xd: image.xd,
-  // media
-  audio: media.audio, mp3: media.mp3, wav: media.wav, ogg: media.ogg, flac: media.flac, aac: media.aac, m4a: media.m4a,
-  video: media.video, mp4: media.mp4, mov: media.mov, avi: media.avi, mkv: media.mkv,
-  webm: media.webm, flv: media.flv, wmv: media.wmv, m3u8: media.m3u8,
-  // archive
-  zip: archive.zip, rar: archive.rar, '7z': archive.sevenZ, tar: archive.tar, gz: archive.gz, bz2: archive.bz2, xz: archive.xz,
-  // installer
-  exe: installer.exe, msi: installer.msi, apk: installer.apk, aab: installer.aab, ipa: installer.ipa,
-  dmg: installer.dmg, pkg: installer.pkg, deb: installer.deb, rpm: installer.rpm, appimage: installer.appimage,
-  // database
-  sql: database.sql, db: database.db, sqlite: database.sqlite, sqlite3: database.sqlite3,
-  mdb: database.mdb, accdb: database.accdb, dump: database.dump, bak: database.bak,
-  // security
-  key: security.key, pem: security.pem, crt: security.crt, cer: security.cer,
-  pfx: security.pfx, p12: security.p12, csr: security.csr, keystore: security.keystore,
-  // design
-  dwg: design.dwg, dxf: design.dxf, step: design.step, stp: design.stp, stl: design.stl,
-  obj: design.obj, fbx: design.fbx, blend: design.blend, max: design.max, c4d: design.c4d,
-  // folder
-  folder: folder.folder, 'folder-open': folder.folderOpen, 'folder-code': folder.folderCode,
-  'folder-image': folder.folderImage, 'folder-video': folder.folderVideo,
-  'folder-audio': folder.folderAudio, 'folder-config': folder.folderConfig,
-  // unknown
-  unknown: unknown.unknown,
+// 扩展名到图标的映射
+export const extensionIconMap: Record<string, string> = {
+  // === 代码文件 ===
+  // TypeScript
+  ts: 'vscode-icons:file-type-typescript',
+  tsx: 'vscode-icons:file-type-typescript',
+  mts: 'vscode-icons:file-type-typescript',
+  cts: 'vscode-icons:file-type-typescript',
+  // JavaScript
+  js: 'vscode-icons:file-type-js',
+  jsx: 'vscode-icons:file-type-js',
+  mjs: 'vscode-icons:file-type-js',
+  cjs: 'vscode-icons:file-type-js',
+  // Web
+  html: 'vscode-icons:file-type-html',
+  htm: 'vscode-icons:file-type-html',
+  css: 'vscode-icons:file-type-css',
+  scss: 'vscode-icons:file-type-scss',
+  sass: 'vscode-icons:file-type-sass',
+  less: 'vscode-icons:file-type-less',
+  // 框架
+  svelte: 'vscode-icons:file-type-svelte',
+  vue: 'vscode-icons:file-type-vue',
+  astro: 'vscode-icons:file-type-astro',
+  // JSON
+  json: 'vscode-icons:file-type-json',
+  jsonc: 'vscode-icons:file-type-json',
+  json5: 'vscode-icons:file-type-json',
+  
+  // === 后端语言 ===
+  py: 'vscode-icons:file-type-python',
+  pyc: 'vscode-icons:file-type-python',
+  pyw: 'vscode-icons:file-type-python',
+  java: 'vscode-icons:file-type-java',
+  class: 'vscode-icons:file-type-java',
+  jar: 'vscode-icons:file-type-jar',
+  go: 'vscode-icons:file-type-go',
+  rs: 'vscode-icons:file-type-rust',
+  php: 'vscode-icons:file-type-php',
+  rb: 'vscode-icons:file-type-ruby',
+  c: 'vscode-icons:file-type-c',
+  cpp: 'vscode-icons:file-type-cpp',
+  cc: 'vscode-icons:file-type-cpp',
+  cxx: 'vscode-icons:file-type-cpp',
+  h: 'vscode-icons:file-type-cheader',
+  hpp: 'vscode-icons:file-type-cppheader',
+  cs: 'vscode-icons:file-type-csharp',
+  swift: 'vscode-icons:file-type-swift',
+  kt: 'vscode-icons:file-type-kotlin',
+  kts: 'vscode-icons:file-type-kotlin',
+  dart: 'vscode-icons:file-type-dart',
+  lua: 'vscode-icons:file-type-lua',
+  r: 'vscode-icons:file-type-r',
+  scala: 'vscode-icons:file-type-scala',
+  groovy: 'vscode-icons:file-type-groovy',
+  
+  // === Shell 脚本 ===
+  sh: 'vscode-icons:file-type-shell',
+  bash: 'vscode-icons:file-type-shell',
+  zsh: 'vscode-icons:file-type-shell',
+  fish: 'vscode-icons:file-type-shell',
+  ps1: 'vscode-icons:file-type-powershell',
+  psm1: 'vscode-icons:file-type-powershell',
+  bat: 'vscode-icons:file-type-bat',
+  cmd: 'vscode-icons:file-type-bat',
+  
+  // === 配置文件 ===
+  yaml: 'vscode-icons:file-type-yaml',
+  yml: 'vscode-icons:file-type-yaml',
+  toml: 'vscode-icons:file-type-toml',
+  xml: 'vscode-icons:file-type-xml',
+  ini: 'vscode-icons:file-type-ini',
+  conf: 'vscode-icons:file-type-config',
+  config: 'vscode-icons:file-type-config',
+  env: 'vscode-icons:file-type-dotenv',
+  properties: 'vscode-icons:file-type-properties',
+  
+  // === 文档 ===
+  md: 'vscode-icons:file-type-markdown',
+  markdown: 'vscode-icons:file-type-markdown',
+  mdx: 'vscode-icons:file-type-mdx',
+  txt: 'vscode-icons:file-type-text',
+  text: 'vscode-icons:file-type-text',
+  log: 'vscode-icons:file-type-log',
+  pdf: 'vscode-icons:file-type-pdf',
+  doc: 'vscode-icons:file-type-word',
+  docx: 'vscode-icons:file-type-word',
+  xls: 'vscode-icons:file-type-excel',
+  xlsx: 'vscode-icons:file-type-excel',
+  ppt: 'vscode-icons:file-type-powerpoint',
+  pptx: 'vscode-icons:file-type-powerpoint',
+  csv: 'vscode-icons:file-type-csv',
+  rtf: 'vscode-icons:file-type-text',
+  
+  // === 图片 ===
+  png: 'vscode-icons:file-type-image',
+  jpg: 'vscode-icons:file-type-image',
+  jpeg: 'vscode-icons:file-type-image',
+  gif: 'vscode-icons:file-type-image',
+  webp: 'vscode-icons:file-type-image',
+  bmp: 'vscode-icons:file-type-image',
+  ico: 'vscode-icons:file-type-image',
+  tiff: 'vscode-icons:file-type-image',
+  tif: 'vscode-icons:file-type-image',
+  svg: 'vscode-icons:file-type-svg',
+  
+  // === 设计文件 ===
+  psd: 'vscode-icons:file-type-photoshop',
+  ai: 'vscode-icons:file-type-ai',
+  sketch: 'mdi:vector-square',
+  figma: 'mdi:vector-square',
+  xd: 'mdi:vector-square',
+  
+  // === 音频 ===
+  mp3: 'vscode-icons:file-type-audio',
+  wav: 'vscode-icons:file-type-audio',
+  ogg: 'vscode-icons:file-type-audio',
+  flac: 'vscode-icons:file-type-audio',
+  aac: 'vscode-icons:file-type-audio',
+  m4a: 'vscode-icons:file-type-audio',
+  wma: 'vscode-icons:file-type-audio',
+  
+  // === 视频 ===
+  mp4: 'vscode-icons:file-type-video',
+  mov: 'vscode-icons:file-type-video',
+  avi: 'vscode-icons:file-type-video',
+  mkv: 'vscode-icons:file-type-video',
+  webm: 'vscode-icons:file-type-video',
+  flv: 'vscode-icons:file-type-video',
+  wmv: 'vscode-icons:file-type-video',
+  m3u8: 'vscode-icons:file-type-video',
+  
+  // === 压缩包 ===
+  zip: 'vscode-icons:file-type-zip',
+  rar: 'vscode-icons:file-type-zip',
+  '7z': 'vscode-icons:file-type-zip',
+  tar: 'vscode-icons:file-type-zip',
+  gz: 'vscode-icons:file-type-zip',
+  bz2: 'vscode-icons:file-type-zip',
+  xz: 'vscode-icons:file-type-zip',
+  tgz: 'vscode-icons:file-type-zip',
+  
+  // === 安装包 ===
+  exe: 'mdi:application',
+  msi: 'mdi:application',
+  apk: 'mdi:android',
+  aab: 'mdi:android',
+  ipa: 'mdi:apple',
+  dmg: 'mdi:apple',
+  pkg: 'mdi:package-variant',
+  deb: 'mdi:debian',
+  rpm: 'mdi:redhat',
+  appimage: 'mdi:application',
+  
+  // === 数据库 ===
+  sql: 'vscode-icons:file-type-sql',
+  db: 'mdi:database',
+  sqlite: 'vscode-icons:file-type-sqlite',
+  sqlite3: 'vscode-icons:file-type-sqlite',
+  mdb: 'mdi:database',
+  accdb: 'mdi:database',
+  dump: 'mdi:database-export',
+  bak: 'mdi:database-export',
+  
+  // === 安全/证书 ===
+  key: 'mdi:key',
+  pem: 'mdi:certificate',
+  crt: 'mdi:certificate',
+  cer: 'mdi:certificate',
+  pfx: 'mdi:certificate',
+  p12: 'mdi:certificate',
+  csr: 'mdi:certificate',
+  keystore: 'mdi:key-chain',
+  
+  // === 3D/CAD ===
+  dwg: 'mdi:cube-outline',
+  dxf: 'mdi:cube-outline',
+  step: 'mdi:cube-outline',
+  stp: 'mdi:cube-outline',
+  stl: 'mdi:cube-outline',
+  obj: 'mdi:cube-outline',
+  fbx: 'mdi:cube-outline',
+  blend: 'mdi:blender-software',
+  max: 'mdi:cube-outline',
+  c4d: 'mdi:cube-outline',
+  
+  // === 字体 ===
+  ttf: 'vscode-icons:file-type-font',
+  otf: 'vscode-icons:file-type-font',
+  woff: 'vscode-icons:file-type-font',
+  woff2: 'vscode-icons:file-type-font',
+  eot: 'vscode-icons:file-type-font',
+  
+  // === 其他 ===
+  wasm: 'vscode-icons:file-type-wasm',
+  map: 'mdi:map',
+  lock: 'mdi:lock',
+  license: 'mdi:license',
 };
 
-// 根据文件扩展名获取图标
+// 特殊文件名到图标的映射
+export const filenameIconMap: Record<string, string> = {
+  // Git
+  '.gitignore': 'vscode-icons:file-type-git',
+  '.gitattributes': 'vscode-icons:file-type-git',
+  '.gitmodules': 'vscode-icons:file-type-git',
+  // Docker
+  'dockerfile': 'vscode-icons:file-type-docker',
+  'docker-compose.yml': 'vscode-icons:file-type-docker',
+  'docker-compose.yaml': 'vscode-icons:file-type-docker',
+  '.dockerignore': 'vscode-icons:file-type-docker',
+  // Package managers
+  'package.json': 'vscode-icons:file-type-npm',
+  'package-lock.json': 'vscode-icons:file-type-npm',
+  'yarn.lock': 'vscode-icons:file-type-yarn',
+  'pnpm-lock.yaml': 'vscode-icons:file-type-pnpm',
+  'bun.lockb': 'vscode-icons:file-type-bun',
+  'bun.lock': 'vscode-icons:file-type-bun',
+  // Config files
+  'tsconfig.json': 'vscode-icons:file-type-tsconfig',
+  'jsconfig.json': 'vscode-icons:file-type-jsconfig',
+  '.eslintrc': 'vscode-icons:file-type-eslint',
+  '.eslintrc.js': 'vscode-icons:file-type-eslint',
+  '.eslintrc.json': 'vscode-icons:file-type-eslint',
+  'eslint.config.js': 'vscode-icons:file-type-eslint',
+  'eslint.config.mjs': 'vscode-icons:file-type-eslint',
+  '.prettierrc': 'vscode-icons:file-type-prettier',
+  '.prettierrc.js': 'vscode-icons:file-type-prettier',
+  '.prettierrc.json': 'vscode-icons:file-type-prettier',
+  'prettier.config.js': 'vscode-icons:file-type-prettier',
+  '.editorconfig': 'vscode-icons:file-type-editorconfig',
+  '.npmrc': 'vscode-icons:file-type-npm',
+  '.nvmrc': 'vscode-icons:file-type-node',
+  '.env': 'vscode-icons:file-type-dotenv',
+  '.env.local': 'vscode-icons:file-type-dotenv',
+  '.env.development': 'vscode-icons:file-type-dotenv',
+  '.env.production': 'vscode-icons:file-type-dotenv',
+  '.env.example': 'vscode-icons:file-type-dotenv',
+  // Build tools
+  'vite.config.ts': 'vscode-icons:file-type-vite',
+  'vite.config.js': 'vscode-icons:file-type-vite',
+  'webpack.config.js': 'vscode-icons:file-type-webpack',
+  'rollup.config.js': 'vscode-icons:file-type-rollup',
+  'turbo.json': 'vscode-icons:file-type-turbo',
+  // Framework configs
+  'svelte.config.js': 'vscode-icons:file-type-svelte',
+  'next.config.js': 'vscode-icons:file-type-next',
+  'nuxt.config.ts': 'vscode-icons:file-type-nuxt',
+  'astro.config.mjs': 'vscode-icons:file-type-astro',
+  // Others
+  'makefile': 'vscode-icons:file-type-makefile',
+  'readme.md': 'vscode-icons:file-type-markdown',
+  'readme': 'vscode-icons:file-type-markdown',
+  'changelog.md': 'vscode-icons:file-type-markdown',
+  'license': 'mdi:license',
+  'license.md': 'mdi:license',
+  'license.txt': 'mdi:license',
+};
+
+// 文件夹图标
+export const folderIcons = {
+  folder: 'tdesign:folder',
+  folderOpen: 'tdesign:folder-open',
+  folderCode: 'vscode-icons:folder-type-src',
+  folderImage: 'vscode-icons:folder-type-images',
+  folderVideo: 'vscode-icons:folder-type-video',
+  folderAudio: 'vscode-icons:folder-type-audio',
+  folderConfig: 'vscode-icons:folder-type-config',
+  folderDocs: 'vscode-icons:folder-type-docs',
+  folderTest: 'vscode-icons:folder-type-test',
+  folderComponent: 'vscode-icons:folder-type-component',
+};
+
+// 默认图标
+export const defaultIcon = 'tdesign:file';
+export const defaultFolderIcon = 'tdesign:folder';
+export const defaultFolderOpenIcon = 'tdesign:folder-open';
+
+/**
+ * 根据文件扩展名获取图标
+ */
 export function getIconByExtension(ext: string): string {
   const normalizedExt = ext.toLowerCase().replace(/^\./, '');
-  return iconMap[normalizedExt] || iconMap.unknown;
+  return extensionIconMap[normalizedExt] || defaultIcon;
 }
 
-// 根据文件名获取图标
+/**
+ * 根据文件名获取图标
+ */
 export function getIconByFilename(filename: string): string {
+  const lowerFilename = filename.toLowerCase();
+  
+  // 先检查完整文件名
+  if (filenameIconMap[lowerFilename]) {
+    return filenameIconMap[lowerFilename];
+  }
+  
+  // 再检查扩展名
   const ext = filename.split('.').pop() || '';
   return getIconByExtension(ext);
+}
+
+/**
+ * 获取文件夹图标
+ */
+export function getFolderIcon(folderName?: string, isOpen = false): string {
+  if (!folderName) {
+    return isOpen ? defaultFolderOpenIcon : defaultFolderIcon;
+  }
+  
+  const lowerName = folderName.toLowerCase();
+  
+  // 特殊文件夹名称映射
+  const specialFolders: Record<string, string> = {
+    src: folderIcons.folderCode,
+    source: folderIcons.folderCode,
+    lib: folderIcons.folderCode,
+    images: folderIcons.folderImage,
+    img: folderIcons.folderImage,
+    assets: folderIcons.folderImage,
+    videos: folderIcons.folderVideo,
+    video: folderIcons.folderVideo,
+    audio: folderIcons.folderAudio,
+    music: folderIcons.folderAudio,
+    config: folderIcons.folderConfig,
+    configs: folderIcons.folderConfig,
+    docs: folderIcons.folderDocs,
+    documentation: folderIcons.folderDocs,
+    test: folderIcons.folderTest,
+    tests: folderIcons.folderTest,
+    '__tests__': folderIcons.folderTest,
+    components: folderIcons.folderComponent,
+    component: folderIcons.folderComponent,
+  };
+  
+  return specialFolders[lowerName] || (isOpen ? defaultFolderOpenIcon : defaultFolderIcon);
 }

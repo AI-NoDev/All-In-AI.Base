@@ -4,51 +4,62 @@ import {
   createPermissions, createDescribeRefinements,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tAi, tAiMeta } from '../../i18n';
+import {
+  "db_ai_model_meta_displayName" as meta_displayName,
+  "db_ai_model_meta_verboseName" as meta_verboseName,
+  "db_ai_model_meta_verboseNamePlural" as meta_verboseNamePlural,
+  "db_ai_model_providerId" as f_providerId,
+  "db_ai_model_name" as f_name,
+  "db_ai_model_modelId" as f_modelId,
+  "db_ai_model_remark" as f_remark,
+  "db_ai_model_status" as f_status,
+  "db_ai_model_supportTools" as f_supportTools,
+  "db_ai_model_maxTokens" as f_maxTokens,
+  "db_ai_model_inputCapabilities" as f_inputCapabilities,
+  "db_ai_model_outputCapabilities" as f_outputCapabilities,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { permissionSchema } from '../base/permissionSchema';
 import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
 import { z } from "zod/v4";
 
-const f = (field: string) => tAi('model', field);
-
 // ============ Fields ============
 const modelOwnFields = {
   providerId: {
     field: uuid("provider_id").notNull(),
-    comment: f('providerId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('providerId'), cellType: "STRING" as const }
+    comment: f_providerId,
+    config: { canExport: false, canImport: true, importExcelColumnName: f_providerId, cellType: "STRING" as const }
   },
   name: {
     field: varchar("name", { length: 128 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: f_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_name, importExcelColumnName: f_name, cellType: "STRING" as const }
   },
   modelId: {
     field: varchar("model_id", { length: 128 }).notNull(),
-    comment: f('modelId'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('modelId'), importExcelColumnName: f('modelId'), cellType: "STRING" as const }
+    comment: f_modelId,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_modelId, importExcelColumnName: f_modelId, cellType: "STRING" as const }
   },
   remark: {
     field: text("remark"),
-    comment: f('remark'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('remark'), importExcelColumnName: f('remark'), cellType: "TEXT" as const }
+    comment: f_remark,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_remark, importExcelColumnName: f_remark, cellType: "TEXT" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: f_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_status, importExcelColumnName: f_status, cellType: "STRING" as const }
   },
   supportTools: {
     field: boolean("support_tools").notNull().default(false),
-    comment: f('supportTools'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('supportTools'), importExcelColumnName: f('supportTools'), cellType: "STRING" as const }
+    comment: f_supportTools,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_supportTools, importExcelColumnName: f_supportTools, cellType: "STRING" as const }
   },
   maxTokens: {
     field: integer("max_tokens"),
-    comment: f('maxTokens'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('maxTokens'), importExcelColumnName: f('maxTokens'), cellType: "NUMERIC" as const }
+    comment: f_maxTokens,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_maxTokens, importExcelColumnName: f_maxTokens, cellType: "NUMERIC" as const }
   },
   inputCapabilities: {
     field: jsonb("input_capabilities").$type<{
@@ -58,7 +69,7 @@ const modelOwnFields = {
       audio: boolean;
       video: boolean;
     }>().default({ text: true, image: false, file: false, audio: false, video: false }),
-    comment: f('inputCapabilities'),
+    comment: f_inputCapabilities,
     config: { canExport: false, canImport: false }
   },
   outputCapabilities: {
@@ -69,7 +80,7 @@ const modelOwnFields = {
       audio: boolean;
       video: boolean;
     }>().default({ text: true, image: false, file: false, audio: false, video: false }),
-    comment: f('outputCapabilities'),
+    comment: f_outputCapabilities,
     config: { canExport: false, canImport: false }
   },
 } satisfies FieldMap;
@@ -79,9 +90,9 @@ export const modelFields = mergeFields(pkSchema, auditSchema, permissionSchema, 
 // ============ Meta ============
 export const modelMeta: EntityMeta = {
   name: 'ai_model',
-  displayName: tAiMeta('model', 'displayName'),
-  verboseName: tAiMeta('model', 'verboseName'),
-  verboseNamePlural: tAiMeta('model', 'verboseNamePlural'),
+  displayName: meta_displayName,
+  verboseName: meta_verboseName,
+  verboseNamePlural: meta_verboseNamePlural,
   permissions: createPermissions('ai_model'),
 };
 
@@ -98,20 +109,20 @@ const describeRefinements = createDescribeRefinements(modelFields) as any;
 export const modelZodSchemas = {
   insert: createInsertZodSchema(model, {
     ...describeRefinements,
-    allowedUserIds: z.array(z.uuid()).describe(modelFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.uuid()).describe(modelFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.uuid()).describe(modelFields.allowedDeptIds.comment()),
+    allowedUserIds: z.array(z.string()).describe(modelFields.allowedUserIds.comment()),
+    allowedRoleIds: z.array(z.string()).describe(modelFields.allowedRoleIds.comment()),
+    allowedDeptIds: z.array(z.string()).describe(modelFields.allowedDeptIds.comment()),
   }),
   select: createSelectZodSchema(model, {
     ...describeRefinements,
-    allowedUserIds: z.array(z.uuid()).nullable().describe(modelFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.uuid()).nullable().describe(modelFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.uuid()).nullable().describe(modelFields.allowedDeptIds.comment()),
+    allowedUserIds: z.array(z.string()).nullable().describe(modelFields.allowedUserIds.comment()),
+    allowedRoleIds: z.array(z.string()).nullable().describe(modelFields.allowedRoleIds.comment()),
+    allowedDeptIds: z.array(z.string()).nullable().describe(modelFields.allowedDeptIds.comment()),
   }),
   update: createUpdateZodSchema(model, {
     ...describeRefinements,
-    allowedUserIds: z.array(z.uuid()).optional().describe(modelFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.uuid()).optional().describe(modelFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.uuid()).optional().describe(modelFields.allowedDeptIds.comment()),
+    allowedUserIds: z.array(z.string()).optional().describe(modelFields.allowedUserIds.comment()),
+    allowedRoleIds: z.array(z.string()).optional().describe(modelFields.allowedRoleIds.comment()),
+    allowedDeptIds: z.array(z.string()).optional().describe(modelFields.allowedDeptIds.comment()),
   }),
 };

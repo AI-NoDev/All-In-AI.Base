@@ -33,12 +33,36 @@ export const pages: PageMeta[] = [
     "order": 1
   },
   {
-    "path": "/dashboard/files",
-    "title": "知识库",
+    "path": "/dashboard/knowledge/my-files",
+    "title": "我的知识库",
     "permission": "knowledge:view",
-    "icon": "tdesign:folder-open",
-    "group": "平台",
+    "icon": "tdesign:folder",
+    "group": "知识库",
+    "order": 1
+  },
+  {
+    "path": "/dashboard/knowledge/shared-with-me",
+    "title": "收到的共享",
+    "permission": "knowledge:view",
+    "icon": "tdesign:user-transmit",
+    "group": "知识库",
+    "order": 2
+  },
+  {
+    "path": "/dashboard/knowledge/my-shared",
+    "title": "我的共享",
+    "permission": "knowledge:view",
+    "icon": "tdesign:share",
+    "group": "知识库",
     "order": 3
+  },
+  {
+    "path": "/dashboard/knowledge/favorites",
+    "title": "收藏",
+    "permission": "knowledge:view",
+    "icon": "tdesign:star",
+    "group": "知识库",
+    "order": 4
   },
   {
     "path": "/dashboard/contacts",
@@ -51,7 +75,6 @@ export const pages: PageMeta[] = [
     "path": "/dashboard/ai/models",
     "title": "模型管理",
     "icon": "mdi:brain",
-    "group": "智能体",
     "order": 10
   },
   {
@@ -75,6 +98,14 @@ export const pages: PageMeta[] = [
     "title": "菜单管理",
     "permission": "system:menu:view",
     "icon": "tdesign:menu-application",
+    "group": "系统管理",
+    "order": 12
+  },
+  {
+    "path": "/dashboard/system/permissions",
+    "title": "权限管理",
+    "permission": "system:permission:view",
+    "icon": "tdesign:secured",
     "group": "系统管理",
     "order": 12
   },
@@ -122,8 +153,16 @@ export const pages: PageMeta[] = [
     "path": "/dashboard/ai/agents",
     "title": "智能体管理",
     "icon": "mdi:robot",
-    "group": "智能体",
+    "group": "智能化",
     "order": 30
+  },
+  {
+    "path": "/dashboard/app-server-monitor",
+    "title": "服务器监控",
+    "permission": "app-server-monitor:view",
+    "icon": "tdesign:server",
+    "group": "系统监控",
+    "order": 50
   },
   {
     "path": "/dashboard/preferences",
@@ -140,6 +179,24 @@ export const pages: PageMeta[] = [
     "icon": "tdesign:setting",
     "group": "系统设置",
     "order": 101
+  },
+  {
+    "path": "/dashboard/dev/project-code",
+    "title": "项目代码",
+    "permission": "dev:project-code:view",
+    "icon": "tdesign:code",
+    "order": 200
+  },
+  {
+    "path": "/dashboard/app-example"
+  },
+  {
+    "path": "/dashboard/files",
+    "title": "文件管理",
+    "permission": "knowledge:view",
+    "icon": "tdesign:folder-open",
+    "order": 999,
+    "hidden": true
   },
   {
     "path": "/dashboard/files/[folderId]/create-text-file",
@@ -178,20 +235,27 @@ export const pages: PageMeta[] = [
 
 export const routeTitles: Record<string, string> = {
   '/dashboard': "首页",
-  '/dashboard/files': "知识库",
+  '/dashboard/knowledge/my-files': "我的知识库",
+  '/dashboard/knowledge/shared-with-me': "收到的共享",
+  '/dashboard/knowledge/my-shared': "我的共享",
+  '/dashboard/knowledge/favorites': "收藏",
   '/dashboard/contacts': "联系人",
   '/dashboard/ai/models': "模型管理",
   '/dashboard/system/users': "用户管理",
   '/dashboard/system/roles': "角色管理",
   '/dashboard/system/menus': "菜单管理",
+  '/dashboard/system/permissions': "权限管理",
   '/dashboard/system/departments': "部门管理",
   '/dashboard/system/posts': "岗位管理",
   '/dashboard/system/dicts': "字典管理",
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
   '/dashboard/ai/agents': "智能体管理",
+  '/dashboard/app-server-monitor': "服务器监控",
   '/dashboard/preferences': "个性化",
   '/dashboard/system-config': "系统参数",
+  '/dashboard/dev/project-code': "项目代码",
+  '/dashboard/files': "文件管理",
   '/dashboard/files/[folderId]/create-text-file': "新建文本文件",
   '/dashboard/files/[folderId]/edit/[fileId]': "编辑文件",
   '/dashboard/system/users/[id]': "编辑用户",
@@ -208,14 +272,40 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "tdesign:home",
       "group": "平台",
       "order": 1
+    }
+  ],
+  "知识库": [
+    {
+      "path": "/dashboard/knowledge/my-files",
+      "title": "我的知识库",
+      "permission": "knowledge:view",
+      "icon": "tdesign:folder",
+      "group": "知识库",
+      "order": 1
     },
     {
-      "path": "/dashboard/files",
-      "title": "知识库",
+      "path": "/dashboard/knowledge/shared-with-me",
+      "title": "收到的共享",
       "permission": "knowledge:view",
-      "icon": "tdesign:folder-open",
-      "group": "平台",
+      "icon": "tdesign:user-transmit",
+      "group": "知识库",
+      "order": 2
+    },
+    {
+      "path": "/dashboard/knowledge/my-shared",
+      "title": "我的共享",
+      "permission": "knowledge:view",
+      "icon": "tdesign:share",
+      "group": "知识库",
       "order": 3
+    },
+    {
+      "path": "/dashboard/knowledge/favorites",
+      "title": "收藏",
+      "permission": "knowledge:view",
+      "icon": "tdesign:star",
+      "group": "知识库",
+      "order": 4
     }
   ],
   "沟通": [
@@ -227,20 +317,47 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "order": 5
     }
   ],
-  "智能体": [
+  "default": [
     {
       "path": "/dashboard/ai/models",
       "title": "模型管理",
       "icon": "mdi:brain",
-      "group": "智能体",
       "order": 10
     },
     {
-      "path": "/dashboard/ai/agents",
-      "title": "智能体管理",
-      "icon": "mdi:robot",
-      "group": "智能体",
-      "order": 30
+      "path": "/dashboard/dev/project-code",
+      "title": "项目代码",
+      "permission": "dev:project-code:view",
+      "icon": "tdesign:code",
+      "order": 200
+    },
+    {
+      "path": "/dashboard/app-example"
+    },
+    {
+      "path": "/dashboard/files",
+      "title": "文件管理",
+      "permission": "knowledge:view",
+      "icon": "tdesign:folder-open",
+      "order": 999,
+      "hidden": true
+    },
+    {
+      "path": "/dashboard/files/[folderId]/create-text-file",
+      "title": "新建文本文件",
+      "permission": "knowledge:file:create",
+      "icon": "tdesign:file-add",
+      "hidden": true
+    },
+    {
+      "path": "/dashboard/files/[folderId]/edit/[fileId]",
+      "title": "编辑文件",
+      "hidden": true
+    },
+    {
+      "path": "/login",
+      "title": "登录",
+      "hidden": true
     }
   ],
   "系统管理": [
@@ -265,6 +382,14 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "title": "菜单管理",
       "permission": "system:menu:view",
       "icon": "tdesign:menu-application",
+      "group": "系统管理",
+      "order": 12
+    },
+    {
+      "path": "/dashboard/system/permissions",
+      "title": "权限管理",
+      "permission": "system:permission:view",
+      "icon": "tdesign:secured",
       "group": "系统管理",
       "order": 12
     },
@@ -325,6 +450,25 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "hidden": true
     }
   ],
+  "智能化": [
+    {
+      "path": "/dashboard/ai/agents",
+      "title": "智能体管理",
+      "icon": "mdi:robot",
+      "group": "智能化",
+      "order": 30
+    }
+  ],
+  "系统监控": [
+    {
+      "path": "/dashboard/app-server-monitor",
+      "title": "服务器监控",
+      "permission": "app-server-monitor:view",
+      "icon": "tdesign:server",
+      "group": "系统监控",
+      "order": 50
+    }
+  ],
   "系统设置": [
     {
       "path": "/dashboard/preferences",
@@ -342,25 +486,6 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "group": "系统设置",
       "order": 101
     }
-  ],
-  "default": [
-    {
-      "path": "/dashboard/files/[folderId]/create-text-file",
-      "title": "新建文本文件",
-      "permission": "knowledge:file:create",
-      "icon": "tdesign:file-add",
-      "hidden": true
-    },
-    {
-      "path": "/dashboard/files/[folderId]/edit/[fileId]",
-      "title": "编辑文件",
-      "hidden": true
-    },
-    {
-      "path": "/login",
-      "title": "登录",
-      "hidden": true
-    }
   ]
 };
 
@@ -371,13 +496,16 @@ export const permissions = [
   "system:user:view",
   "system:role:view",
   "system:menu:view",
+  "system:permission:view",
   "system:dept:view",
   "system:post:view",
   "system:dict:view",
   "system:operlog:view",
   "system:loginlog:view",
+  "app-server-monitor:view",
   "settings:preferences:view",
   "system:config:view",
+  "dev:project-code:view",
   "knowledge:file:create",
   "system:user:edit",
   "system:user:add"
@@ -389,17 +517,24 @@ export type Permission = typeof permissions[number];
 /** 权限与路由映射 */
 export const permissionRouteMap: Record<string, { path: string; title?: string }> = {
   "dashboard:view": { path: "/dashboard", title: "首页" },
-  "knowledge:view": { path: "/dashboard/files", title: "知识库" },
+  "knowledge:view": { path: "/dashboard/knowledge/my-files", title: "我的知识库" },
+  "knowledge:view": { path: "/dashboard/knowledge/shared-with-me", title: "收到的共享" },
+  "knowledge:view": { path: "/dashboard/knowledge/my-shared", title: "我的共享" },
+  "knowledge:view": { path: "/dashboard/knowledge/favorites", title: "收藏" },
   "system:user:view": { path: "/dashboard/system/users", title: "用户管理" },
   "system:role:view": { path: "/dashboard/system/roles", title: "角色管理" },
   "system:menu:view": { path: "/dashboard/system/menus", title: "菜单管理" },
+  "system:permission:view": { path: "/dashboard/system/permissions", title: "权限管理" },
   "system:dept:view": { path: "/dashboard/system/departments", title: "部门管理" },
   "system:post:view": { path: "/dashboard/system/posts", title: "岗位管理" },
   "system:dict:view": { path: "/dashboard/system/dicts", title: "字典管理" },
   "system:operlog:view": { path: "/dashboard/system/operation-logs", title: "操作日志" },
   "system:loginlog:view": { path: "/dashboard/system/login-logs", title: "登录日志" },
+  "app-server-monitor:view": { path: "/dashboard/app-server-monitor", title: "服务器监控" },
   "settings:preferences:view": { path: "/dashboard/preferences", title: "个性化" },
   "system:config:view": { path: "/dashboard/system-config", title: "系统参数" },
+  "dev:project-code:view": { path: "/dashboard/dev/project-code", title: "项目代码" },
+  "knowledge:view": { path: "/dashboard/files", title: "文件管理" },
   "knowledge:file:create": { path: "/dashboard/files/[folderId]/create-text-file", title: "新建文本文件" },
   "system:user:edit": { path: "/dashboard/system/users/[id]", title: "编辑用户" },
   "system:user:add": { path: "/dashboard/system/users/new", title: "新增用户" }
@@ -408,17 +543,24 @@ export const permissionRouteMap: Record<string, { path: string; title?: string }
 /** 路由与权限映射 */
 export const routePermissionMap: Record<string, string> = {
   "/dashboard": "dashboard:view",
-  "/dashboard/files": "knowledge:view",
+  "/dashboard/knowledge/my-files": "knowledge:view",
+  "/dashboard/knowledge/shared-with-me": "knowledge:view",
+  "/dashboard/knowledge/my-shared": "knowledge:view",
+  "/dashboard/knowledge/favorites": "knowledge:view",
   "/dashboard/system/users": "system:user:view",
   "/dashboard/system/roles": "system:role:view",
   "/dashboard/system/menus": "system:menu:view",
+  "/dashboard/system/permissions": "system:permission:view",
   "/dashboard/system/departments": "system:dept:view",
   "/dashboard/system/posts": "system:post:view",
   "/dashboard/system/dicts": "system:dict:view",
   "/dashboard/system/operation-logs": "system:operlog:view",
   "/dashboard/system/login-logs": "system:loginlog:view",
+  "/dashboard/app-server-monitor": "app-server-monitor:view",
   "/dashboard/preferences": "settings:preferences:view",
   "/dashboard/system-config": "system:config:view",
+  "/dashboard/dev/project-code": "dev:project-code:view",
+  "/dashboard/files": "knowledge:view",
   "/dashboard/files/[folderId]/create-text-file": "knowledge:file:create",
   "/dashboard/system/users/[id]": "system:user:edit",
   "/dashboard/system/users/new": "system:user:add"

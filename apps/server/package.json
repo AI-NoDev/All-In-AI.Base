@@ -19,6 +19,7 @@
     "@qiyu-allinai/actions": "workspace:*",
     "@qiyu-allinai/actions-flow-editor": "workspace:*",
     "@qiyu-allinai/ai": "workspace:*",
+    "@qiyu-allinai/app-server-monitor": "workspace:*",
     "@qiyu-allinai/db": "workspace:*",
     "@qiyu-allinai/i18n": "workspace:*",
     "@sinclair/typebox-adapter": "^0.9.1",

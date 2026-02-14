@@ -25,16 +25,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '@/lib/components/ui/table';
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemDictQueryFieldEnum, PostApiSystemDictQueryOrderEnum, PostApiSystemDictGroupQueryFieldEnum, PostApiSystemDictGroupQueryOrderEnum } from '@/lib/api/Api';
 
@@ -305,11 +305,11 @@
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
         <Label>分组标识 *</Label>
-        <Input bind:value={groupForm.key} placeholder="如 sys_user_sex" disabled={!!editingGroup} />
+        <Input bind:value={groupForm.key} placeholder="如：sys_user_sex" disabled={!!editingGroup} />
       </div>
       <div class="grid gap-2">
         <Label>分组名称 *</Label>
-        <Input bind:value={groupForm.name} placeholder="如 用户性别" />
+        <Input bind:value={groupForm.name} placeholder="如：用户性别" />
       </div>
       <div class="grid gap-2">
         <Label>状态</Label>
@@ -338,11 +338,11 @@
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
           <Label>字典标签 *</Label>
-          <Input bind:value={dictForm.label} placeholder="如 男" />
+          <Input bind:value={dictForm.label} placeholder="如：男" />
         </div>
         <div class="grid gap-2">
           <Label>字典键值 *</Label>
-          <Input bind:value={dictForm.value} placeholder="如 0" />
+          <Input bind:value={dictForm.value} placeholder="如：0" />
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4">

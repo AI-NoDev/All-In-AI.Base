@@ -10,11 +10,11 @@ type AgentSessionInsert = typeof agentSession.$inferInsert;
 
 // ============ Filter Schema ============
 const agentSessionFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
-  agentId: z.uuid().optional(),
-  agentIds: z.array(z.uuid()).optional(),
-  userId: z.uuid().optional(),
-  userIds: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
+  agentId: z.string().optional(),
+  agentIds: z.array(z.string()).optional(),
+  userId: z.string().optional(),
+  userIds: z.array(z.string()).optional(),
   title: z.string().optional(),
   status: z.string().optional(),
   isArchived: z.boolean().optional(),
@@ -77,7 +77,7 @@ export const agentSessionGetByPagination = defineAction({
 export const agentSessionGetByPk = defineAction({
   meta: { name: 'ai.agentSession.getByPk', displayName: '根据ID查询Agent会话', description: '根据主键ID查询单个Agent会话', tags: ['ai', 'agentSession'], method: 'GET', path: '/api/ai/agent-session/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: agentSessionZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -101,7 +101,7 @@ export const agentSessionCreate = defineAction({
 export const agentSessionUpdate = defineAction({
   meta: { name: 'ai.agentSession.update', displayName: '更新Agent会话', description: '根据ID更新单个Agent会话', tags: ['ai', 'agentSession'], method: 'PUT', path: '/api/ai/agent-session/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: agentSessionZodSchemas.update }),
     outputSchema: agentSessionZodSchemas.select,
   },
@@ -114,7 +114,7 @@ export const agentSessionUpdate = defineAction({
 export const agentSessionArchive = defineAction({
   meta: { name: 'ai.agentSession.archive', displayName: '归档Agent会话', description: '归档指定Agent会话', tags: ['ai', 'agentSession'], method: 'PUT', path: '/api/ai/agent-session/:id/archive' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ isArchived: z.boolean() }),
     outputSchema: agentSessionZodSchemas.select,
   },
@@ -130,7 +130,7 @@ export const agentSessionArchive = defineAction({
 export const agentSessionPin = defineAction({
   meta: { name: 'ai.agentSession.pin', displayName: '置顶Agent会话', description: '置顶/取消置顶Agent会话', tags: ['ai', 'agentSession'], method: 'PUT', path: '/api/ai/agent-session/:id/pin' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ isPinned: z.boolean() }),
     outputSchema: agentSessionZodSchemas.select,
   },
@@ -146,7 +146,7 @@ export const agentSessionPin = defineAction({
 export const agentSessionDeleteByPk = defineAction({
   meta: { name: 'ai.agentSession.deleteByPk', displayName: '删除Agent会话', description: '根据ID软删除Agent会话', tags: ['ai', 'agentSession'], method: 'DELETE', path: '/api/ai/agent-session/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

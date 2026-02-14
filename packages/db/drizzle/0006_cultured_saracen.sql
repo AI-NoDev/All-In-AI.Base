@@ -1,1 +1,0 @@
-ALTER TABLE "ai_agent" ADD COLUMN "native_tools" jsonb DEFAULT '[]'::jsonb;

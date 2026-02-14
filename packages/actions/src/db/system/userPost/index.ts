@@ -11,11 +11,11 @@ type UserPostInsert = typeof userPost.$inferInsert;
 // ============ Filter Schema ============
 const userPostFilterSchema = z.object({
   // IN 查询
-  userIds: z.array(z.uuid()).optional(),
-  postIds: z.array(z.uuid()).optional(),
+  userIds: z.array(z.string()).optional(),
+  postIds: z.array(z.string()).optional(),
   // 精确匹配
-  userId: z.uuid().optional(),
-  postId: z.uuid().optional(),
+  userId: z.string().optional(),
+  postId: z.string().optional(),
 }).optional();
 
 const sortSchema = z.object({
@@ -69,7 +69,7 @@ export const userPostGetByPagination = defineAction({
 export const userPostGetByPk = defineAction({
   meta: { name: 'system.userPost.getByPk', displayName: '根据复合主键查询用户岗位关联', description: '根据userId和postId查询', tags: ['system', 'userPost'], method: 'GET', path: '/api/system/user-post/:userId/:postId' },
   schemas: {
-    paramsSchema: z.object({ userId: z.uuid(), postId: z.uuid() }),
+    paramsSchema: z.object({ userId: z.string(), postId: z.string() }),
     outputSchema: userPostZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -106,7 +106,7 @@ export const userPostCreateMany = defineAction({
 export const userPostDeleteByPk = defineAction({
   meta: { name: 'system.userPost.deleteByPk', displayName: '删除用户岗位关联', description: '根据复合主键删除', tags: ['system', 'userPost'], method: 'DELETE', path: '/api/system/user-post/:userId/:postId' },
   schemas: {
-    paramsSchema: z.object({ userId: z.uuid(), postId: z.uuid() }),
+    paramsSchema: z.object({ userId: z.string(), postId: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

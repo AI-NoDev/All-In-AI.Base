@@ -4,34 +4,40 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tSystem, tSystemMeta } from '../../i18n';
+import {
+  db_system_post_meta_displayName,
+  db_system_post_meta_verboseName,
+  db_system_post_meta_verboseNamePlural,
+  db_system_post_code,
+  db_system_post_name,
+  db_system_post_sort,
+  db_system_post_status,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { deletedSchema } from '../base/deletedSchema';
-
-const f = (field: string) => tSystem('post', field);
 
 // ============ Fields ============
 const postOwnFields = {
   code: {
     field: varchar('code', { length: 64 }).notNull(),
-    comment: f('code'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('code'), importExcelColumnName: f('code'), cellType: "STRING" as const }
+    comment: db_system_post_code,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_post_code, importExcelColumnName: db_system_post_code, cellType: "STRING" as const }
   },
   name: {
     field: varchar('name', { length: 50 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: db_system_post_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_post_name, importExcelColumnName: db_system_post_name, cellType: "STRING" as const }
   },
   sort: {
     field: varchar('sort', { length: 10 }).notNull(),
-    comment: f('sort'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('sort'), importExcelColumnName: f('sort'), cellType: "STRING" as const }
+    comment: db_system_post_sort,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_post_sort, importExcelColumnName: db_system_post_sort, cellType: "STRING" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: db_system_post_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_post_status, importExcelColumnName: db_system_post_status, cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -40,9 +46,9 @@ export const postFields = mergeFields(pkSchema, auditSchema, deletedSchema, post
 // ============ Meta ============
 export const postMeta: EntityMeta = {
   name: 'system_post',
-  displayName: tSystemMeta('post', 'displayName'),
-  verboseName: tSystemMeta('post', 'verboseName'),
-  verboseNamePlural: tSystemMeta('post', 'verboseNamePlural'),
+  displayName: db_system_post_meta_displayName,
+  verboseName: db_system_post_meta_verboseName,
+  verboseNamePlural: db_system_post_meta_verboseNamePlural,
   permissions: createPermissions('system_post'),
 };
 

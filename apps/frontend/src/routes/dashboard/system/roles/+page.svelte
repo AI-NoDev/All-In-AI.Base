@@ -41,20 +41,23 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '@/lib/components/ui/table';
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import * as Pagination from '@/lib/components/ui/pagination';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import * as Tooltip from '@/lib/components/ui/tooltip';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import * as Pagination from '$lib/components/ui/pagination';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import * as Tooltip from '$lib/components/ui/tooltip';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemRoleQueryFieldEnum, PostApiSystemRoleQueryOrderEnum } from '@/lib/api/Api';
+  import PermissionDialog from './components/permission-dialog.svelte';
+  import MenuDialog from './components/menu-dialog.svelte';
 
   interface Role {
     id: string;
@@ -77,6 +80,11 @@
   let currentPage = $state(pageState.currentPage);
   let pageSize = $state(10);
   let total = $state(0);
+
+  // 权限和菜单分配对话框状态
+  let permissionDialogOpen = $state(false);
+  let menuDialogOpen = $state(false);
+  let selectedRole = $state<Role | null>(null);
 
   let searchForm = $state({ ...pageState.searchForm });
 
@@ -246,6 +254,16 @@
     }
   }
 
+  function openPermissionDialog(role: Role) {
+    selectedRole = role;
+    permissionDialogOpen = true;
+  }
+
+  function openMenuDialog(role: Role) {
+    selectedRole = role;
+    menuDialogOpen = true;
+  }
+
   onMount(() => loadRoles());
 </script>
 
@@ -328,7 +346,7 @@
                 <Table.Head class="w-32">数据权限</Table.Head>
                 <Table.Head class="w-20">状态</Table.Head>
                 <Table.Head class="w-40">创建时间</Table.Head>
-                <Table.Head class="w-28 text-right">操作</Table.Head>
+                <Table.Head class="w-36 text-right">操作</Table.Head>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -345,10 +363,14 @@
                   <div class="flex justify-end gap-1">
                     {#if isAdminRole(role)}
                       <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:edit" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员角色不允许编辑</Tooltip.Content></Tooltip.Root>
+                      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:lock-on" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员拥有所有权限</Tooltip.Content></Tooltip.Root>
+                      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:menu-application" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员拥有所有菜单</Tooltip.Content></Tooltip.Root>
                       <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" disabled><Icon icon="tdesign:delete" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员角色不允许删除</Tooltip.Content></Tooltip.Root>
                     {:else}
-                      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(role)}><Icon icon="tdesign:edit" class="size-4" /></Button>
-                      <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(role.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
+                      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(role)}><Icon icon="tdesign:edit" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>编辑</Tooltip.Content></Tooltip.Root>
+                      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openPermissionDialog(role)}><Icon icon="tdesign:lock-on" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>分配权限</Tooltip.Content></Tooltip.Root>
+                      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openMenuDialog(role)}><Icon icon="tdesign:menu-application" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>分配菜单</Tooltip.Content></Tooltip.Root>
+                      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(role.id)}><Icon icon="tdesign:delete" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>删除</Tooltip.Content></Tooltip.Root>
                     {/if}
                   </div>
                 </Table.Cell>
@@ -429,3 +451,20 @@
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
+
+{#if selectedRole}
+  <PermissionDialog 
+    bind:open={permissionDialogOpen}
+    roleKey={selectedRole.key}
+    roleName={selectedRole.name}
+    onClose={() => selectedRole = null}
+    onSaved={() => {}}
+  />
+  <MenuDialog 
+    bind:open={menuDialogOpen}
+    roleId={selectedRole.id}
+    roleName={selectedRole.name}
+    onClose={() => selectedRole = null}
+    onSaved={() => {}}
+  />
+{/if}

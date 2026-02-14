@@ -11,11 +11,11 @@ type TempFileInsert = typeof tempFile.$inferInsert;
 
 // ============ Filter Schema ============
 const tempFileFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
-  conversationId: z.uuid().optional(),
-  conversationIds: z.array(z.uuid()).optional(),
-  messageId: z.uuid().optional(),
-  messageIds: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
+  conversationId: z.string().optional(),
+  conversationIds: z.array(z.string()).optional(),
+  messageId: z.string().optional(),
+  messageIds: z.array(z.string()).optional(),
   mimeType: z.string().optional(),
   status: z.string().optional(),
   expiresAtBefore: z.iso.datetime().optional(),
@@ -72,7 +72,7 @@ export const tempFileGetByPagination = defineAction({
 export const tempFileGetByPk = defineAction({
   meta: { name: 'im.tempFile.getByPk', displayName: '根据ID查询临时文件', description: '根据主键ID查询单个临时文件', tags: ['im', 'tempFile'], method: 'GET', path: '/api/im/temp-file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: tempFileZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -96,7 +96,7 @@ export const tempFileCreate = defineAction({
 export const tempFileUpdate = defineAction({
   meta: { name: 'im.tempFile.update', displayName: '更新临时文件', description: '根据ID更新临时文件', tags: ['im', 'tempFile'], method: 'PUT', path: '/api/im/temp-file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: tempFileZodSchemas.update }),
     outputSchema: tempFileZodSchemas.select,
   },
@@ -109,7 +109,7 @@ export const tempFileUpdate = defineAction({
 export const tempFileDeleteByPk = defineAction({
   meta: { name: 'im.tempFile.deleteByPk', displayName: '删除临时文件', description: '根据ID删除临时文件', tags: ['im', 'tempFile'], method: 'DELETE', path: '/api/im/temp-file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {
@@ -146,13 +146,13 @@ export const tempFileUpload = defineAction({
   meta: { name: 'im.tempFile.upload', displayName: '上传临时文件', description: '上传文件到S3并创建临时文件记录', tags: ['im', 'tempFile'], method: 'POST', path: '/api/im/temp-file/upload' },
   schemas: {
     bodySchema: z.object({
-      conversationId: z.uuid().optional(),
+      conversationId: z.string().optional(),
       fileName: z.string(),
       mimeType: z.string(),
       base64Data: z.string(),
     }),
     outputSchema: z.object({
-      id: z.uuid(),
+      id: z.string(),
       name: z.string(),
       originalName: z.string(),
       extension: z.string().nullable(),
@@ -226,7 +226,7 @@ export const tempFileUpload = defineAction({
 export const tempFileGetDownloadUrl = defineAction({
   meta: { name: 'im.tempFile.getDownloadUrl', displayName: '获取临时文件下载链接', description: '获取临时文件的预签名下载链接', tags: ['im', 'tempFile'], method: 'GET', path: '/api/im/temp-file/:id/download-url' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.object({
       url: z.string(),
       expiresAt: z.string(),

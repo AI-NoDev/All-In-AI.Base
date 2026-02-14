@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import { imStore } from '@/lib/stores/im.svelte';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { imStore } from '@/lib/stores/im';
   import MessageItem from './message-item.svelte';
 
   interface Props {

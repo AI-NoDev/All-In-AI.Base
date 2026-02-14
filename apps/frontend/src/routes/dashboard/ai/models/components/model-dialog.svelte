@@ -1,11 +1,11 @@
 <script lang="ts">
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Textarea } from '@/lib/components/ui/textarea';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Textarea } from '$lib/components/ui/textarea';
+  import { Checkbox } from '$lib/components/ui/checkbox';
 
   interface Model {
     id: string;
@@ -71,17 +71,17 @@
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
           <Label>模型名称 *</Label>
-          <Input bind:value={form.name} placeholder="如 GPT-4o" />
+          <Input bind:value={form.name} placeholder="如：GPT-4o" />
         </div>
         <div class="grid gap-2">
           <Label>模型ID *</Label>
-          <Input bind:value={form.modelId} placeholder="如 gpt-4o" />
+          <Input bind:value={form.modelId} placeholder="如：gpt-4o" />
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
           <Label>最大 Token</Label>
-          <Input bind:value={form.maxTokens} type="number" placeholder="如 128000" />
+          <Input bind:value={form.maxTokens} type="number" placeholder="如：128000" />
         </div>
         <div class="grid gap-2">
           <Label>状态</Label>

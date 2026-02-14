@@ -11,11 +11,11 @@ type RoleDepartmentInsert = typeof roleDepartment.$inferInsert;
 // ============ Filter Schema ============
 const roleDepartmentFilterSchema = z.object({
   // IN 查询
-  roleIds: z.array(z.uuid()).optional(),
-  departmentIds: z.array(z.uuid()).optional(),
+  roleIds: z.array(z.string()).optional(),
+  departmentIds: z.array(z.string()).optional(),
   // 精确匹配
-  roleId: z.uuid().optional(),
-  departmentId: z.uuid().optional(),
+  roleId: z.string().optional(),
+  departmentId: z.string().optional(),
 }).optional();
 
 const sortSchema = z.object({
@@ -69,7 +69,7 @@ export const roleDepartmentGetByPagination = defineAction({
 export const roleDepartmentGetByPk = defineAction({
   meta: { name: 'system.roleDepartment.getByPk', displayName: '根据复合主键查询角色部门关联', description: '根据roleId和departmentId查询', tags: ['system', 'roleDepartment'], method: 'GET', path: '/api/system/role-department/:roleId/:departmentId' },
   schemas: {
-    paramsSchema: z.object({ roleId: z.uuid(), departmentId: z.uuid() }),
+    paramsSchema: z.object({ roleId: z.string(), departmentId: z.string() }),
     outputSchema: roleDepartmentZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -106,7 +106,7 @@ export const roleDepartmentCreateMany = defineAction({
 export const roleDepartmentDeleteByPk = defineAction({
   meta: { name: 'system.roleDepartment.deleteByPk', displayName: '删除角色部门关联', description: '根据复合主键删除', tags: ['system', 'roleDepartment'], method: 'DELETE', path: '/api/system/role-department/:roleId/:departmentId' },
   schemas: {
-    paramsSchema: z.object({ roleId: z.uuid(), departmentId: z.uuid() }),
+    paramsSchema: z.object({ roleId: z.string(), departmentId: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

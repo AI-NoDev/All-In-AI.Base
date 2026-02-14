@@ -4,20 +4,17 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tSystem, tSystemMeta } from '../../i18n';
-
-const f = (field: string) => tSystem('userPost', field);
 
 // ============ Fields ============
 export const userPostFields = {
   userId: {
     field: uuid('user_id').notNull(),
-    comment: f('userId'),
+    comment: () => '用户ID',
     config: { canExport: false, canImport: false }
   },
   postId: {
     field: uuid('post_id').notNull(),
-    comment: f('postId'),
+    comment: () => '岗位ID',
     config: { canExport: false, canImport: false }
   },
 } satisfies FieldMap;
@@ -25,9 +22,9 @@ export const userPostFields = {
 // ============ Meta ============
 export const userPostMeta: EntityMeta = {
   name: 'system_user_post',
-  displayName: tSystemMeta('userPost', 'displayName'),
-  verboseName: tSystemMeta('userPost', 'verboseName'),
-  verboseNamePlural: tSystemMeta('userPost', 'verboseNamePlural'),
+  displayName: () => '用户岗位关联',
+  verboseName: () => '用户岗位',
+  verboseNamePlural: () => '用户岗位',
   permissions: createPermissions('system_user_post'),
 };
 

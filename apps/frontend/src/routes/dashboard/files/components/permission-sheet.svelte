@@ -1,20 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Sheet from '@/lib/components/ui/sheet';
-  import * as Table from '@/lib/components/ui/table';
-  import * as Select from '@/lib/components/ui/select';
-  import { Button } from '@/lib/components/ui/button';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { Badge } from '@/lib/components/ui/badge';
+  import * as Sheet from '$lib/components/ui/sheet';
+  import * as Table from '$lib/components/ui/table';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
   import {
     PostApiSystemDepartmentQueryFieldEnum,
     PostApiSystemDepartmentQueryOrderEnum,
   } from '@/lib/api/Api';
-  import type { PermissionLevel, PermissionGrantee } from './types';
+  import type { FilePermission, PermissionEffect, SubjectType, ResourceType, PermissionGrantee } from './types';
 
   interface DeptNode {
     id: string;
@@ -39,7 +39,7 @@
   interface Props {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    resourceType: 'folder' | 'file';
+    resourceType: ResourceType;
     resourceId: string;
     resourceName: string;
     isPublic: boolean;
@@ -58,34 +58,46 @@
   let loading = $state(false);
   let userLoading = $state(false);
 
-  // Permission map: granteeType:granteeId -> permissionLevel
-  let permissionMap = $state<Map<string, PermissionLevel>>(new Map());
+  // Permission map: subjectType:subjectId -> { permission -> effect }
+  let permissionMap = $state<Map<string, Map<FilePermission, PermissionEffect>>>(new Map());
 
   const api = authStore.createApi(true);
 
-  const permissionLevelOptions = [
-    { value: '', label: '无权限' },
-    { value: 'r', label: '只读' },
-    { value: 'w', label: '读写' },
-    { value: 'm', label: '管理' },
+  const permissionOptions: { value: FilePermission; label: string }[] = [
+    { value: 'read', label: '读取' },
+    { value: 'write', label: '写入' },
+    { value: 'delete', label: '删除' },
+    { value: 'manage', label: '管理' },
   ];
 
-  function getPermissionKey(granteeType: string, granteeId: string): string {
-    return `${granteeType}:${granteeId}`;
+  function getPermissionKey(subjectType: SubjectType, subjectId: string): string {
+    return `${subjectType}:${subjectId}`;
   }
 
-  function getPermissionLevel(granteeType: string, granteeId: string): PermissionLevel | '' {
-    return permissionMap.get(getPermissionKey(granteeType, granteeId)) || '';
+  function hasPermission(subjectType: SubjectType, subjectId: string, permission: FilePermission): boolean {
+    const key = getPermissionKey(subjectType, subjectId);
+    const perms = permissionMap.get(key);
+    return perms?.has(permission) ?? false;
   }
 
-  function setPermissionLevel(granteeType: string, granteeId: string, level: PermissionLevel | '') {
-    const key = getPermissionKey(granteeType, granteeId);
+  function togglePermission(subjectType: SubjectType, subjectId: string, permission: FilePermission) {
+    const key = getPermissionKey(subjectType, subjectId);
     const newMap = new Map(permissionMap);
-    if (level === '') {
-      newMap.delete(key);
-    } else {
-      newMap.set(key, level);
+    
+    if (!newMap.has(key)) {
+      newMap.set(key, new Map());
     }
+    
+    const perms = newMap.get(key)!;
+    if (perms.has(permission)) {
+      perms.delete(permission);
+      if (perms.size === 0) {
+        newMap.delete(key);
+      }
+    } else {
+      perms.set(permission, 'allow');
+    }
+    
     permissionMap = newMap;
   }
 
@@ -148,16 +160,21 @@
 
   async function loadExistingPermissions() {
     try {
-      const res = await api.knowledge.getApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId({
+      const res = await api.files.getApiFilesPermissionByResourceTypeByResourceId({
         resourceType,
         resourceId,
       });
       const permissions = res.data || [];
-      const newMap = new Map<string, PermissionLevel>();
+      const newMap = new Map<string, Map<FilePermission, PermissionEffect>>();
+      
       for (const p of permissions) {
-        const key = getPermissionKey(p.granteeType, p.granteeId);
-        newMap.set(key, p.permissionLevel as PermissionLevel);
+        const key = getPermissionKey(p.subjectType as SubjectType, p.subjectId);
+        if (!newMap.has(key)) {
+          newMap.set(key, new Map());
+        }
+        newMap.get(key)!.set(p.permission as FilePermission, p.effect as PermissionEffect);
       }
+      
       permissionMap = newMap;
     } catch (err) {
       console.error('Failed to load existing permissions:', err);
@@ -177,24 +194,20 @@
 
   function handleSave() {
     const permissions: PermissionGrantee[] = [];
-    permissionMap.forEach((level, key) => {
-      const [granteeType, granteeId] = key.split(':');
-      permissions.push({
-        granteeType: granteeType as 'user' | 'role' | 'dept',
-        granteeId,
-        permissionLevel: level,
+    
+    permissionMap.forEach((perms, key) => {
+      const [subjectType, subjectId] = key.split(':');
+      perms.forEach((effect, permission) => {
+        permissions.push({
+          subjectType: subjectType as SubjectType,
+          subjectId,
+          permission,
+          effect,
+        });
       });
     });
+    
     onSave(isPublic, permissions);
-  }
-
-  function getPermissionBadge(level: PermissionLevel | ''): { variant: 'default' | 'secondary' | 'outline'; text: string } {
-    switch (level) {
-      case 'r': return { variant: 'secondary', text: '只读' };
-      case 'w': return { variant: 'default', text: '读写' };
-      case 'm': return { variant: 'default', text: '管理' };
-      default: return { variant: 'outline', text: '无' };
-    }
   }
 
   // Count permissions by type
@@ -207,6 +220,13 @@
   let deptPermCount = $derived(
     Array.from(permissionMap.keys()).filter(k => k.startsWith('dept:')).length
   );
+
+  // Get permission badges for a subject
+  function getSubjectPermissions(subjectType: SubjectType, subjectId: string): FilePermission[] {
+    const key = getPermissionKey(subjectType, subjectId);
+    const perms = permissionMap.get(key);
+    return perms ? Array.from(perms.keys()) : [];
+  }
 
   $effect(() => {
     if (open) {
@@ -348,27 +368,26 @@
                       <Table.Row>
                         <Table.Head class="w-32">用户名</Table.Head>
                         <Table.Head class="w-24">姓名</Table.Head>
-                        <Table.Head class="w-32">权限</Table.Head>
+                        <Table.Head>权限</Table.Head>
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
                       {#each users as user}
-                        {@const level = getPermissionLevel('user', user.id)}
                         <Table.Row>
                           <Table.Cell class="font-medium">{user.loginName}</Table.Cell>
                           <Table.Cell>{user.name || '-'}</Table.Cell>
                           <Table.Cell>
-                            <Select.Root type="single" value={level} onValueChange={(v) => setPermissionLevel('user', user.id, v as PermissionLevel | '')}>
-                              <Select.Trigger class="w-24 h-8">
-                                {@const badge = getPermissionBadge(level)}
-                                <Badge variant={badge.variant}>{badge.text}</Badge>
-                              </Select.Trigger>
-                              <Select.Content>
-                                {#each permissionLevelOptions as opt}
-                                  <Select.Item value={opt.value}>{opt.label}</Select.Item>
-                                {/each}
-                              </Select.Content>
-                            </Select.Root>
+                            <div class="flex gap-2 flex-wrap">
+                              {#each permissionOptions as opt}
+                                <button
+                                  type="button"
+                                  class="px-2 py-1 text-xs rounded border transition-colors {hasPermission('user', user.id, opt.value) ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted border-transparent'}"
+                                  onclick={() => togglePermission('user', user.id, opt.value)}
+                                >
+                                  {opt.label}
+                                </button>
+                              {/each}
+                            </div>
                           </Table.Cell>
                         </Table.Row>
                       {/each}
@@ -392,26 +411,25 @@
                   <Table.Header>
                     <Table.Row>
                       <Table.Head>角色名称</Table.Head>
-                      <Table.Head class="w-32">权限</Table.Head>
+                      <Table.Head>权限</Table.Head>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
                     {#each roles as role}
-                      {@const level = getPermissionLevel('role', role.id)}
                       <Table.Row>
                         <Table.Cell class="font-medium">{role.name}</Table.Cell>
                         <Table.Cell>
-                          <Select.Root type="single" value={level} onValueChange={(v) => setPermissionLevel('role', role.id, v as PermissionLevel | '')}>
-                            <Select.Trigger class="w-24 h-8">
-                              {@const badge = getPermissionBadge(level)}
-                              <Badge variant={badge.variant}>{badge.text}</Badge>
-                            </Select.Trigger>
-                            <Select.Content>
-                              {#each permissionLevelOptions as opt}
-                                <Select.Item value={opt.value}>{opt.label}</Select.Item>
-                              {/each}
-                            </Select.Content>
-                          </Select.Root>
+                          <div class="flex gap-2 flex-wrap">
+                            {#each permissionOptions as opt}
+                              <button
+                                type="button"
+                                class="px-2 py-1 text-xs rounded border transition-colors {hasPermission('role', role.id, opt.value) ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted border-transparent'}"
+                                onclick={() => togglePermission('role', role.id, opt.value)}
+                              >
+                                {opt.label}
+                              </button>
+                            {/each}
+                          </div>
                         </Table.Cell>
                       </Table.Row>
                     {/each}
@@ -433,21 +451,20 @@
                 <div class="p-2">
                   {#snippet renderDeptPermTree(nodes: DeptNode[], level: number = 0)}
                     {#each nodes as node}
-                      {@const level_perm = getPermissionLevel('dept', node.id)}
-                      <div style="padding-left: {level * 16}px" class="flex items-center gap-2 py-1.5 px-2 hover:bg-muted/50 rounded">
+                      <div style="padding-left: {level * 16}px" class="flex items-center gap-2 py-2 px-2 hover:bg-muted/50 rounded">
                         <Icon icon="tdesign:folder" class="size-4 text-muted-foreground shrink-0" />
-                        <span class="flex-1 text-sm">{node.name}</span>
-                        <Select.Root type="single" value={level_perm} onValueChange={(v) => setPermissionLevel('dept', node.id, v as PermissionLevel | '')}>
-                          <Select.Trigger class="w-24 h-8">
-                            {@const badge = getPermissionBadge(level_perm)}
-                            <Badge variant={badge.variant}>{badge.text}</Badge>
-                          </Select.Trigger>
-                          <Select.Content>
-                            {#each permissionLevelOptions as opt}
-                              <Select.Item value={opt.value}>{opt.label}</Select.Item>
-                            {/each}
-                          </Select.Content>
-                        </Select.Root>
+                        <span class="flex-1 text-sm min-w-24">{node.name}</span>
+                        <div class="flex gap-2 flex-wrap">
+                          {#each permissionOptions as opt}
+                            <button
+                              type="button"
+                              class="px-2 py-1 text-xs rounded border transition-colors {hasPermission('dept', node.id, opt.value) ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted border-transparent'}"
+                              onclick={() => togglePermission('dept', node.id, opt.value)}
+                            >
+                              {opt.label}
+                            </button>
+                          {/each}
+                        </div>
                       </div>
                       {#if node.children && node.children.length > 0}
                         {@render renderDeptPermTree(node.children, level + 1)}

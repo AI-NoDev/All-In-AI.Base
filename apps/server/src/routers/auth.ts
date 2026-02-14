@@ -32,7 +32,6 @@ const UserInfoSchema = t.Object({
   name: t.Nullable(t.String()),
   avatar: t.Nullable(t.String()),
   email: t.Nullable(t.String()),
-  permissions: t.Nullable(t.Array(t.String())),
 });
 
 const UserDetailSchema = t.Object({
@@ -44,9 +43,7 @@ const UserDetailSchema = t.Object({
   phonenumber: t.Nullable(t.String()),
   sex: t.Nullable(t.String()),
   deptId: t.Nullable(t.String()),
-  roleIds: t.Nullable(t.Array(t.String())),
-  postIds: t.Nullable(t.Array(t.String())),
-  permissions: t.Nullable(t.Array(t.String())),
+  userType: t.Nullable(t.String()),
   loginDate: t.Nullable(t.Date()),
   loginIp: t.Nullable(t.String()),
 });
@@ -204,7 +201,8 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
         sub: foundUser.id,
         jti: accessJti,
         type: "access",
-        scopes: foundUser.permissions || [],
+        // Note: permissions are now managed via Casbin, not stored in user table
+        scopes: [],
       });
       
       const refreshJti = generateJti();
@@ -250,7 +248,6 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
             name: foundUser.name,
             avatar: foundUser.avatar,
             email: foundUser.email,
-            permissions: foundUser.permissions,
           },
         },
       };
@@ -316,7 +313,8 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
         sub: foundUser.id,
         jti: accessJti,
         type: "access",
-        scopes: foundUser.permissions || [],
+        // Note: permissions are now managed via Casbin, not stored in user table
+        scopes: [],
       });
       
       const now = new Date();
@@ -382,7 +380,6 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
             name: foundUser.name,
             avatar: foundUser.avatar,
             email: foundUser.email,
-            permissions: foundUser.permissions,
           },
           tokenType: payload.type as string,
           scopes: (payload.scopes as string[]) || [],
@@ -474,9 +471,7 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
           phonenumber: foundUser.phonenumber,
           sex: foundUser.sex,
           deptId: foundUser.deptId,
-          roleIds: foundUser.roleIds,
-          postIds: foundUser.postIds,
-          permissions: foundUser.permissions,
+          userType: foundUser.userType,
           loginDate: foundUser.loginDate,
           loginIp: foundUser.loginIp,
         },

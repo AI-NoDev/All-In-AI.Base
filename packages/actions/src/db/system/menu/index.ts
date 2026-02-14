@@ -11,11 +11,11 @@ type MenuInsert = typeof menu.$inferInsert;
 // ============ Filter Schema ============
 const menuFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   types: z.array(z.string()).optional(),
   // 精确匹配
-  parentId: z.uuid().nullable().optional(),
+  parentId: z.string().nullable().optional(),
   type: z.string().optional(),
   visible: z.boolean().optional(),
   // 模糊匹配
@@ -82,7 +82,7 @@ export const menuGetByPagination = defineAction({
 
 export const menuGetByPk = defineAction({
   meta: { name: 'system.menu.getByPk', displayName: '根据ID查询菜单', description: '根据主键ID查询单个菜单', tags: ['system', 'menu'], method: 'GET', path: '/api/system/menu/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: menuZodSchemas.select.nullable() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: menuZodSchemas.select.nullable() },
   execute: async (input, _context) => { const [result] = await db.select().from(menu).where(eq(menu.id, input.id)).limit(1); return (result as MenuSelect) ?? null; },
 });
 
@@ -101,19 +101,19 @@ export const menuCreateMany = defineAction({
 
 export const menuUpdate = defineAction({
   meta: { name: 'system.menu.update', displayName: '更新菜单', description: '根据ID更新单个菜单', tags: ['system', 'menu'], method: 'PUT', path: '/api/system/menu/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), bodySchema: z.object({ data: menuZodSchemas.update }), outputSchema: menuZodSchemas.select },
+  schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: menuZodSchemas.update }), outputSchema: menuZodSchemas.select },
   execute: async (input, _context) => { const [result] = await db.update(menu).set(input.data as Partial<MenuInsert>).where(eq(menu.id, input.id)).returning(); return result as MenuSelect; },
 });
 
 export const menuUpdateMany = defineAction({
   meta: { name: 'system.menu.updateMany', displayName: '批量更新菜单', description: '根据ID列表批量更新菜单', tags: ['system', 'menu'], method: 'PUT', path: '/api/system/menu/batch' },
-  schemas: { bodySchema: z.object({ ids: z.array(z.uuid()), data: menuZodSchemas.update }), outputSchema: z.array(menuZodSchemas.select) },
+  schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: menuZodSchemas.update }), outputSchema: z.array(menuZodSchemas.select) },
   execute: async (input, _context) => { const results: MenuSelect[] = []; for (const id of input.ids) { const [result] = await db.update(menu).set(input.data as Partial<MenuInsert>).where(eq(menu.id, id)).returning(); if (result) results.push(result as MenuSelect); } return results; },
 });
 
 export const menuDeleteByPk = defineAction({
   meta: { name: 'system.menu.deleteByPk', displayName: '删除菜单', description: '根据ID删除菜单', tags: ['system', 'menu'], method: 'DELETE', path: '/api/system/menu/:id' },
-  schemas: { paramsSchema: z.object({ id: z.uuid() }), outputSchema: z.boolean() },
+  schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
   execute: async (input, _context) => { const [result] = await db.delete(menu).where(eq(menu.id, input.id)).returning(); return !!result; },
 });
 

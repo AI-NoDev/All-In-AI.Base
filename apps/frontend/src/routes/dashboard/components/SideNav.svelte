@@ -7,12 +7,17 @@
   import { imStore } from '@/lib/stores/im.svelte';
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
+  import { dev } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
 
-  // 过滤隐藏页面
+  // 开发模式分组名?
+  const DEV_GROUP_NAME = '开发模式';
+
+  // 过滤隐藏页面，生产模式下隐藏开发模式分组
   const visibleGroups = Object.entries(groupedPages)
     .filter(([key]) => key !== 'default')
+    .filter(([key]) => dev || key !== DEV_GROUP_NAME) // 生产模式隐藏开发模式
     .map(([label, items]) => ({
       label,
       items: items.filter((p) => !p.hidden)
@@ -70,7 +75,7 @@
   function isMenuActive(itemPath: string, currentPath: string): boolean {
     // 精确匹配
     if (currentPath === itemPath) return true;
-    // 首页特殊处理：/dashboard 只精确匹配，不做前缀匹配
+    // 首页特殊处理dashboard 只精确匹配，不做前缀匹配
     if (itemPath === '/dashboard') return false;
     // 前缀匹配：当前路径以菜单路径开头（处理子路由如 /dashboard/users/123）
     if (currentPath.startsWith(itemPath + '/')) return true;
@@ -88,7 +93,7 @@
             <Sidebar.MenuItem>
               <Sidebar.MenuButton 
                 onclick={() => handleNavClick(item)}
-                isActive={isMenuActive(item.path, $page.url.pathname)}
+                isActive={isMenuActive(item.path, page.url.pathname)}
               >
                 {#if item.icon}
                   <Icon icon={item.icon} class="size-4" />

@@ -10,7 +10,7 @@ type ProviderInsert = typeof provider.$inferInsert;
 
 // ============ Filter Schema ============
 const providerFilterSchema = z.object({
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   name: z.string().optional(),
   status: z.string().optional(),
@@ -62,7 +62,7 @@ export const providerGetByPagination = defineAction({
 export const providerGetByPk = defineAction({
   meta: { name: 'ai.provider.getByPk', displayName: '根据ID查询AI提供商', description: '根据主键ID查询单个AI提供商', tags: ['ai', 'provider'], method: 'GET', path: '/api/ai/provider/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: providerZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -98,7 +98,7 @@ export const providerCreateMany = defineAction({
 export const providerUpdate = defineAction({
   meta: { name: 'ai.provider.update', displayName: '更新AI提供商', description: '根据ID更新单个AI提供商', tags: ['ai', 'provider'], method: 'PUT', path: '/api/ai/provider/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: providerZodSchemas.update }),
     outputSchema: providerZodSchemas.select,
   },
@@ -111,7 +111,7 @@ export const providerUpdate = defineAction({
 export const providerUpdateMany = defineAction({
   meta: { name: 'ai.provider.updateMany', displayName: '批量更新AI提供商', description: '根据ID列表批量更新AI提供商', tags: ['ai', 'provider'], method: 'PUT', path: '/api/ai/provider/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: providerZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: providerZodSchemas.update }),
     outputSchema: z.array(providerZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -127,7 +127,7 @@ export const providerUpdateMany = defineAction({
 export const providerDeleteByPk = defineAction({
   meta: { name: 'ai.provider.deleteByPk', displayName: '删除AI提供商', description: '根据ID删除AI提供商', tags: ['ai', 'provider'], method: 'DELETE', path: '/api/ai/provider/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

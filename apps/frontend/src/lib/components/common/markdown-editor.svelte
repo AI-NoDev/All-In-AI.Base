@@ -12,7 +12,7 @@
 
   let {
     value = '',
-    placeholder = '请输入内容...',
+    placeholder = '请输入内�?..',
     height = 500,
     mode = 'wysiwyg',
     onInput,

@@ -3,7 +3,6 @@
 	import { onMount, tick } from 'svelte';
 	import BaseNode, { type OutputHandle } from '../BaseNode.svelte';
 	import type { ClassifierNodeData, ClassifierOption } from './types.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
@@ -24,12 +23,6 @@
 	onMount(() => {
 		configPanelRegistry.register('classifier', ConfigPanel);
 	});
-
-	const menuItems = [
-		{ label: '编辑', icon: 'mdi:pencil', action: () => configPanelRegistry.selectNode(id) },
-		{ label: '复制', icon: 'mdi:content-copy', action: () => console.log('copy', id) },
-		{ label: '删除', icon: 'mdi:delete', action: () => workflowState.removeNode(id), variant: 'destructive' as const },
-	];
 
 	let options = $derived<ClassifierOption[]>(currentData.options ?? []);
 
@@ -60,7 +53,7 @@
 
 <div bind:this={nodeRef}>
 	<!-- 分类器节点：有输入引脚，无默认输出引脚（使用 outputs 配置分支引脚） -->
-	<BaseNode nodeId={id} nodeData={data} {menuItems} showOutput={false} {outputs}>
+	<BaseNode nodeId={id} nodeData={data} showOutput={false} {outputs}>
 		{#snippet content(nodeData)}
 			<!-- Header -->
 			<div class="flex items-center gap-3">
@@ -93,12 +86,6 @@
 					{/each}
 				</div>
 			{/if}
-		{/snippet}
-
-		{#snippet quickActions()}
-			<Button variant="outline" size="icon" class="h-7 w-7 bg-background">
-				<Icon icon="mdi:pencil" width="14" height="14" />
-			</Button>
 		{/snippet}
 	</BaseNode>
 </div>

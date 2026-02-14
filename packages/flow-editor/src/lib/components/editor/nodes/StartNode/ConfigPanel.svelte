@@ -10,7 +10,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import Icon from '@iconify/svelte';
-	import RunStatusBadge from '../../components/RunStatusBadge.svelte';
+	import NodeRunResult from '../../components/NodeRunResult.svelte';
 	import SortableFieldItem from './SortableFieldItem.svelte';
 	import { DndContext, type DragEndEvent } from '@dnd-kit-svelte/core';
 	import { SortableContext, arrayMove } from '@dnd-kit-svelte/sortable';
@@ -45,7 +45,7 @@
 
 	// 用户自定义字段
 	let inputs = $derived(currentData?.inputs ?? []);
-	let lastRun = $derived(currentData?.lastRun);
+	let runData = $derived(currentData?._run);
 
 	// Modal 状态
 	let isModalOpen = $state(false);
@@ -176,25 +176,6 @@
 	function updateOption(index: number, key: 'value' | 'label', value: string) {
 		formOptions = formOptions.map((opt, i) => i === index ? { ...opt, [key]: value } : opt);
 	}
-
-	// 格式化时间
-	function formatDuration(ms: number): string {
-		if (ms < 1000) return `${ms}ms`;
-		if (ms < 60000) return `${(ms / 1000).toFixed(2)}s`;
-		return `${(ms / 60000).toFixed(2)}min`;
-	}
-
-	// 格式化日期时间
-	function formatDateTime(dateStr: string): string {
-		const date = new Date(dateStr);
-		return date.toLocaleString('zh-CN', {
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-		});
-	}
 </script>
 
 <Tabs.Root bind:value={activeTab} class="w-full">
@@ -202,10 +183,8 @@
 		<Tabs.Trigger value="settings">设置</Tabs.Trigger>
 		<Tabs.Trigger value="lastRun">
 			上次运行
-			{#if lastRun && lastRun.status !== 'idle'}
-				<span class="ml-1.5">
-					<RunStatusBadge status={lastRun.status} size="sm" />
-				</span>
+			{#if runData && runData.status !== 'idle'}
+				<span class="ml-1.5 w-2 h-2 rounded-full {runData.status === 'success' ? 'bg-green-500' : runData.status === 'error' ? 'bg-destructive' : 'bg-blue-500'}"></span>
 			{/if}
 		</Tabs.Trigger>
 	</Tabs.List>
@@ -267,97 +246,7 @@
 
 	<!-- 上次运行 Tab -->
 	<Tabs.Content value="lastRun" class="mt-0">
-		{#if !lastRun || lastRun.status === 'idle'}
-			<div class="py-12 text-center">
-				<Icon icon="mdi:play-circle-outline" class="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
-				<p class="text-sm text-muted-foreground">暂无运行记录</p>
-				<p class="text-xs text-muted-foreground mt-1">点击运行按钮开始执行工作流</p>
-			</div>
-		{:else}
-			<div class="space-y-4">
-				<!-- 运行状态概览 -->
-				<div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-					<div class="flex items-center gap-3">
-						<RunStatusBadge status={lastRun.status} size="md" />
-						{#if lastRun.startedAt}
-							<span class="text-xs text-muted-foreground">
-								{formatDateTime(lastRun.startedAt)}
-							</span>
-						{/if}
-					</div>
-				</div>
-
-				<!-- 运行统计 -->
-				{#if lastRun.duration !== undefined || lastRun.tokenUsage !== undefined}
-					<div class="grid grid-cols-2 gap-3">
-						{#if lastRun.duration !== undefined}
-							<div class="p-3 border border-border rounded-lg">
-								<div class="flex items-center gap-2 text-muted-foreground mb-1">
-									<Icon icon="mdi:timer-outline" class="w-4 h-4" />
-									<span class="text-xs">运行时间</span>
-								</div>
-								<span class="text-sm font-semibold">{formatDuration(lastRun.duration)}</span>
-							</div>
-						{/if}
-						{#if lastRun.tokenUsage !== undefined}
-							<div class="p-3 border border-border rounded-lg">
-								<div class="flex items-center gap-2 text-muted-foreground mb-1">
-									<Icon icon="mdi:chip" class="w-4 h-4" />
-									<span class="text-xs">Token 消耗</span>
-								</div>
-								<span class="text-sm font-semibold">{lastRun.tokenUsage.toLocaleString()}</span>
-							</div>
-						{/if}
-					</div>
-				{/if}
-
-				<!-- 输入参数 -->
-				{#if lastRun.inputs && lastRun.inputs.length > 0}
-					<div class="space-y-2">
-						<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-							<Icon icon="mdi:import" class="w-4 h-4" />
-							输入参数
-						</div>
-						<div class="space-y-1.5">
-							{#each lastRun.inputs as input}
-								<div class="p-2 bg-muted/30 rounded text-xs">
-									<span class="font-mono text-muted-foreground">{input.variable}</span>
-									<div class="mt-1 text-foreground break-all">
-										{typeof input.value === 'object' ? JSON.stringify(input.value) : String(input.value)}
-									</div>
-								</div>
-							{/each}
-						</div>
-					</div>
-				{/if}
-
-				<!-- 输出结果 -->
-				{#if lastRun.outputs && Object.keys(lastRun.outputs).length > 0}
-					<div class="space-y-2">
-						<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-							<Icon icon="mdi:export" class="w-4 h-4" />
-							输出结果
-						</div>
-						<div class="p-2 bg-muted/30 rounded">
-							<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{JSON.stringify(lastRun.outputs, null, 2)}</pre>
-						</div>
-					</div>
-				{/if}
-
-				<!-- 错误信息 -->
-				{#if lastRun.error}
-					<div class="space-y-2">
-						<div class="flex items-center gap-2 text-xs font-medium text-destructive">
-							<Icon icon="mdi:alert-circle" class="w-4 h-4" />
-							错误信息
-						</div>
-						<div class="p-2 bg-destructive/10 border border-destructive/20 rounded">
-							<pre class="text-xs text-destructive whitespace-pre-wrap break-all">{lastRun.error}</pre>
-						</div>
-					</div>
-				{/if}
-			</div>
-		{/if}
+		<NodeRunResult runData={runData} />
 	</Tabs.Content>
 </Tabs.Root>
 

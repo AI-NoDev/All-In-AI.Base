@@ -11,11 +11,11 @@ type RoleMenuInsert = typeof roleMenu.$inferInsert;
 // ============ Filter Schema ============
 const roleMenuFilterSchema = z.object({
   // IN 查询
-  roleIds: z.array(z.uuid()).optional(),
-  menuIds: z.array(z.uuid()).optional(),
+  roleIds: z.array(z.string()).optional(),
+  menuIds: z.array(z.string()).optional(),
   // 精确匹配
-  roleId: z.uuid().optional(),
-  menuId: z.uuid().optional(),
+  roleId: z.string().optional(),
+  menuId: z.string().optional(),
 }).optional();
 
 const sortSchema = z.object({
@@ -69,7 +69,7 @@ export const roleMenuGetByPagination = defineAction({
 export const roleMenuGetByPk = defineAction({
   meta: { name: 'system.roleMenu.getByPk', displayName: '根据复合主键查询角色菜单关联', description: '根据roleId和menuId查询', tags: ['system', 'roleMenu'], method: 'GET', path: '/api/system/role-menu/:roleId/:menuId' },
   schemas: {
-    paramsSchema: z.object({ roleId: z.uuid(), menuId: z.uuid() }),
+    paramsSchema: z.object({ roleId: z.string(), menuId: z.string() }),
     outputSchema: roleMenuZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -106,7 +106,7 @@ export const roleMenuCreateMany = defineAction({
 export const roleMenuDeleteByPk = defineAction({
   meta: { name: 'system.roleMenu.deleteByPk', displayName: '删除角色菜单关联', description: '根据复合主键删除', tags: ['system', 'roleMenu'], method: 'DELETE', path: '/api/system/role-menu/:roleId/:menuId' },
   schemas: {
-    paramsSchema: z.object({ roleId: z.uuid(), menuId: z.uuid() }),
+    paramsSchema: z.object({ roleId: z.string(), menuId: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {
@@ -126,4 +126,42 @@ export const roleMenuGetSchema = defineAction({
   },
 });
 
-export const roleMenuActions = [roleMenuGetByPagination, roleMenuGetByPk, roleMenuCreate, roleMenuCreateMany, roleMenuDeleteByPk, roleMenuGetSchema];
+// ============ 获取角色的菜单ID列表 ============
+export const roleMenuGetByRoleId = defineAction({
+  meta: { name: 'system.roleMenu.getByRoleId', displayName: '获取角色菜单', description: '获取指定角色的所有菜单ID', tags: ['system', 'roleMenu'], method: 'GET', path: '/api/system/role-menu/role/:roleId' },
+  schemas: {
+    paramsSchema: z.object({ roleId: z.string() }),
+    outputSchema: z.array(z.string()),
+  },
+  execute: async (input, _context) => {
+    const data = await db.select({ menuId: roleMenu.menuId }).from(roleMenu).where(eq(roleMenu.roleId, input.roleId));
+    return data.map(d => d.menuId);
+  },
+});
+
+// ============ 设置角色的菜单列表（全量替换） ============
+export const roleMenuSetByRoleId = defineAction({
+  meta: { name: 'system.roleMenu.setByRoleId', displayName: '设置角色菜单', description: '设置指定角色的菜单列表（全量替换）', tags: ['system', 'roleMenu'], method: 'PUT', path: '/api/system/role-menu/role/:roleId' },
+  schemas: {
+    paramsSchema: z.object({ roleId: z.string() }),
+    bodySchema: z.object({ menuIds: z.array(z.string()) }),
+    outputSchema: z.boolean(),
+  },
+  execute: async (input, _context) => {
+    // 删除该角色的所有菜单关联
+    await db.delete(roleMenu).where(eq(roleMenu.roleId, input.roleId));
+    
+    // 插入新的菜单关联
+    if (input.menuIds.length > 0) {
+      const newRecords: RoleMenuInsert[] = input.menuIds.map(menuId => ({
+        roleId: input.roleId,
+        menuId,
+      }));
+      await db.insert(roleMenu).values(newRecords);
+    }
+    
+    return true;
+  },
+});
+
+export const roleMenuActions = [roleMenuGetByPagination, roleMenuGetByPk, roleMenuCreate, roleMenuCreateMany, roleMenuDeleteByPk, roleMenuGetSchema, roleMenuGetByRoleId, roleMenuSetByRoleId];

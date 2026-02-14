@@ -1,113 +1,115 @@
-import { pgTable, uuid, varchar, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tSystem, tSystemMeta } from '../../i18n';
+import {
+  db_system_user_meta_displayName,
+  db_system_user_meta_verboseName,
+  db_system_user_meta_verboseNamePlural,
+  db_system_user_deptId,
+  db_system_user_loginName,
+  db_system_user_name,
+  db_system_user_userType,
+  db_system_user_email,
+  db_system_user_phonenumber,
+  db_system_user_sex,
+  db_system_user_avatar,
+  db_system_user_password,
+  db_system_user_salt,
+  db_system_user_status,
+  db_system_user_loginIp,
+  db_system_user_loginDate,
+  db_system_user_pwdUpdateDate,
+} from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { deletedSchema } from '../base/deletedSchema';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from '../../types';
-import z4, { z } from 'zod/v4';
 
-const f = (field: string) => tSystem('user', field);
+/**
+ * 用户表
+ * 
+ * 与 Casbin 集成说明:
+ * - 用户角色通过 casbin_rule 表的 g 策略管理: g, user:{userId}, role:{roleKey}
+ * - 用户直接权限通过 p 策略管理: p, user:{userId}, resource, action
+ * - 多租户场景使用域: g, user:{userId}, role:{roleKey}, tenant:{tenantId}
+ * 
+ * 移除的字段:
+ * - roleIds, postIds, permissions: 改用 Casbin 策略管理
+ * - parentId, roleId: 简化用户层级，通过部门和角色管理
+ */
 
 // ============ Fields ============
 const userOwnFields = {
   deptId: {
     field: uuid('dept_id'),
-    comment: f('deptId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('deptId'), cellType: "STRING" as const }
-  },
-  parentId: {
-    field: uuid('parent_id'),
-    comment: f('parentId'),
-    config: { canExport: false, canImport: false }
-  },
-  roleId: {
-    field: uuid('role_id'),
-    comment: f('roleId'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('roleId'), cellType: "STRING" as const }
+    comment: db_system_user_deptId,
+    config: { canExport: false, canImport: true, importExcelColumnName: db_system_user_deptId, cellType: "STRING" as const }
   },
   loginName: {
-    field: varchar('login_name', { length: 30 }).notNull(),
-    comment: f('loginName'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('loginName'), importExcelColumnName: f('loginName'), cellType: "STRING" as const }
+    field: varchar('login_name', { length: 30 }).notNull().unique(),
+    comment: db_system_user_loginName,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_loginName, importExcelColumnName: db_system_user_loginName, cellType: "STRING" as const }
   },
   name: {
     field: varchar('name', { length: 30 }).notNull(),
-    comment: f('name'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('name'), importExcelColumnName: f('name'), cellType: "STRING" as const }
+    comment: db_system_user_name,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_name, importExcelColumnName: db_system_user_name, cellType: "STRING" as const }
   },
   userType: {
-    field: varchar('user_type', { length: 10 }),
-    comment: f('userType'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('userType'), importExcelColumnName: f('userType'), cellType: "STRING" as const }
+    field: varchar('user_type', { length: 10 }).default('user'),
+    comment: db_system_user_userType,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_userType, importExcelColumnName: db_system_user_userType, cellType: "STRING" as const }
   },
   email: {
     field: varchar('email', { length: 50 }),
-    comment: f('email'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('email'), importExcelColumnName: f('email'), cellType: "STRING" as const }
+    comment: db_system_user_email,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_email, importExcelColumnName: db_system_user_email, cellType: "STRING" as const }
   },
   phonenumber: {
     field: varchar('phonenumber', { length: 11 }),
-    comment: f('phonenumber'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('phonenumber'), importExcelColumnName: f('phonenumber'), cellType: "STRING" as const }
+    comment: db_system_user_phonenumber,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_phonenumber, importExcelColumnName: db_system_user_phonenumber, cellType: "STRING" as const }
   },
   sex: {
     field: varchar('sex', { length: 1 }),
-    comment: f('sex'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('sex'), importExcelColumnName: f('sex'), cellType: "STRING" as const }
+    comment: db_system_user_sex,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_sex, importExcelColumnName: db_system_user_sex, cellType: "STRING" as const }
   },
   avatar: {
     field: varchar('avatar', { length: 255 }),
-    comment: f('avatar'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('avatar'), cellType: "IMAGE" as const }
+    comment: db_system_user_avatar,
+    config: { canExport: true, canImport: false, exportExcelColumnName: db_system_user_avatar, cellType: "IMAGE" as const }
   },
   password: {
     field: varchar('password', { length: 255 }),
-    comment: f('password'),
-    config: { canExport: false, canImport: true, importExcelColumnName: f('password'), cellType: "STRING" as const }
+    comment: db_system_user_password,
+    config: { canExport: false, canImport: true, importExcelColumnName: db_system_user_password, cellType: "STRING" as const }
   },
   salt: {
     field: varchar('salt', { length: 255 }),
-    comment: f('salt'),
+    comment: db_system_user_salt,
     config: { canExport: false, canImport: false }
   },
   status: {
-    field: varchar('status', { length: 1 }),
-    comment: f('status'),
-    config: { canExport: true, canImport: true, exportExcelColumnName: f('status'), importExcelColumnName: f('status'), cellType: "STRING" as const }
+    field: varchar('status', { length: 1 }).default('0'),
+    comment: db_system_user_status,
+    config: { canExport: true, canImport: true, exportExcelColumnName: db_system_user_status, importExcelColumnName: db_system_user_status, cellType: "STRING" as const }
   },
   loginIp: {
     field: varchar('login_ip', { length: 50 }),
-    comment: f('loginIp'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('loginIp'), cellType: "STRING" as const }
+    comment: db_system_user_loginIp,
+    config: { canExport: true, canImport: false, exportExcelColumnName: db_system_user_loginIp, cellType: "STRING" as const }
   },
   loginDate: {
     field: timestamp('login_date'),
-    comment: f('loginDate'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('loginDate'), cellType: "STRING" as const }
+    comment: db_system_user_loginDate,
+    config: { canExport: true, canImport: false, exportExcelColumnName: db_system_user_loginDate, cellType: "STRING" as const }
   },
   pwdUpdateDate: {
     field: timestamp('pwd_update_date'),
-    comment: f('pwdUpdateDate'),
-    config: { canExport: false, canImport: false }
-  },
-  roleIds: {
-    field: jsonb('role_ids').$type<string[]>(),
-    comment: f('roleIds'),
-    config: { canExport: false, canImport: false }
-  },
-  postIds: {
-    field: jsonb('post_ids').$type<string[]>(),
-    comment: f('postIds'),
-    config: { canExport: false, canImport: false }
-  },
-  permissions: {
-    field: jsonb('permissions').$type<string[]>(),
-    comment: f('permissions'),
+    comment: db_system_user_pwdUpdateDate,
     config: { canExport: false, canImport: false }
   },
 } satisfies FieldMap;
@@ -117,9 +119,9 @@ export const userFields = mergeFields(pkSchema, auditSchema, deletedSchema, user
 // ============ Meta ============
 export const userMeta: EntityMeta = {
   name: 'system_user',
-  displayName: tSystemMeta('user', 'displayName'),
-  verboseName: tSystemMeta('user', 'verboseName'),
-  verboseNamePlural: tSystemMeta('user', 'verboseNamePlural'),
+  displayName: db_system_user_meta_displayName,
+  verboseName: db_system_user_meta_verboseName,
+  verboseNamePlural: db_system_user_meta_verboseNamePlural,
   permissions: createPermissions('system_user'),
 };
 
@@ -130,29 +132,20 @@ export const user = pgTable(userMeta.name, getTableFields(userFields));
 export const userConfig = getFieldConfigs(userFields);
 
 // ============ Schemas ============
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const describeRefinements = createDescribeRefinements(userFields) as any;
+export const userZodSchemas = createZodSchemas(user, userFields);
 
-export const userZodSchemas = {
-  insert: createInsertZodSchema(user, {
-    ...describeRefinements,
-    roleIds: z.array(z.uuid()).describe(userFields.roleIds.comment()),
-    postIds: z.array(z.uuid()).describe(userFields.postIds.comment()),
-    permissions: z.array(z.string()).describe(userFields.permissions.comment()),
-  }),
-  select: createSelectZodSchema(user, {
-    ...describeRefinements,
-    salt: z.undefined(),
-    password: z.undefined(),
-    roleIds: z.array(z.uuid()).nullable().describe(userFields.roleIds.comment()),
-    postIds: z.array(z.uuid()).nullable().describe(userFields.postIds.comment()),
-    permissions: z.array(z.string()).nullable().describe(userFields.permissions.comment()),
-  }),
-  update: createUpdateZodSchema(user, {
-    ...describeRefinements,
-    roleIds: z.array(z.uuid()).optional().describe(userFields.roleIds.comment()),
-    postIds: z.array(z.uuid()).optional().describe(userFields.postIds.comment()),
-    permissions: z.array(z.string()).optional().describe(userFields.permissions.comment()),
-  }),
-};
+// ============ 用户类型常量 ============
+export const USER_TYPES = {
+  /** 系统管理员 */
+  SYSTEM: 'system',
+  /** 普通用户 */
+  USER: 'user',
+} as const;
 
+// ============ 用户状态常量 ============
+export const USER_STATUS = {
+  /** 正常 */
+  NORMAL: '0',
+  /** 停用 */
+  DISABLED: '1',
+} as const;

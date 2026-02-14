@@ -11,10 +11,10 @@ type DepartmentInsert = typeof department.$inferInsert;
 // ============ Filter Schema ============
 const departmentFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   // 精确匹配
-  parentId: z.uuid().nullable().optional(),
+  parentId: z.string().nullable().optional(),
   status: z.boolean().optional(),
   // 模糊匹配
   name: z.string().optional(),
@@ -83,7 +83,7 @@ export const departmentGetByPagination = defineAction({
 export const departmentGetByPk = defineAction({
   meta: { name: 'system.department.getByPk', displayName: '根据ID查询部门', description: '根据主键ID查询单个部门', tags: ['system', 'department'], method: 'GET', path: '/api/system/department/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: departmentZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -119,7 +119,7 @@ export const departmentCreateMany = defineAction({
 export const departmentUpdate = defineAction({
   meta: { name: 'system.department.update', displayName: '更新部门', description: '根据ID更新单个部门', tags: ['system', 'department'], method: 'PUT', path: '/api/system/department/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: departmentZodSchemas.update }),
     outputSchema: departmentZodSchemas.select,
   },
@@ -132,7 +132,7 @@ export const departmentUpdate = defineAction({
 export const departmentUpdateMany = defineAction({
   meta: { name: 'system.department.updateMany', displayName: '批量更新部门', description: '根据ID列表批量更新部门', tags: ['system', 'department'], method: 'PUT', path: '/api/system/department/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: departmentZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: departmentZodSchemas.update }),
     outputSchema: z.array(departmentZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -148,7 +148,7 @@ export const departmentUpdateMany = defineAction({
 export const departmentDeleteByPk = defineAction({
   meta: { name: 'system.department.deleteByPk', displayName: '删除部门', description: '根据ID软删除部门', tags: ['system', 'department'], method: 'DELETE', path: '/api/system/department/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

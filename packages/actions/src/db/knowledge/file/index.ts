@@ -11,11 +11,11 @@ type FileInsert = typeof file.$inferInsert;
 // ============ Filter Schema ============
 const fileFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   extensions: z.array(z.string()).optional(),
   // 精确匹配
-  folderId: z.uuid().nullable().optional(),
+  folderId: z.string().nullable().optional(),
   mimeType: z.string().optional(),
   processStatus: z.enum(['0', '1', '2']).optional(),
   status: z.enum(['0', '1']).optional(),
@@ -91,7 +91,7 @@ export const fileGetByPagination = defineAction({
 export const fileGetByPk = defineAction({
   meta: { name: 'knowledge.file.getByPk', displayName: '根据ID查询文件', description: '根据主键ID查询单个文件', tags: ['knowledge', 'file'], method: 'GET', path: '/api/knowledge/file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: fileZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -127,7 +127,7 @@ export const fileCreateMany = defineAction({
 export const fileUpdate = defineAction({
   meta: { name: 'knowledge.file.update', displayName: '更新文件', description: '根据ID更新单个文件', tags: ['knowledge', 'file'], method: 'PUT', path: '/api/knowledge/file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: fileZodSchemas.update }),
     outputSchema: fileZodSchemas.select,
   },
@@ -140,7 +140,7 @@ export const fileUpdate = defineAction({
 export const fileUpdateMany = defineAction({
   meta: { name: 'knowledge.file.updateMany', displayName: '批量更新文件', description: '根据ID列表批量更新文件', tags: ['knowledge', 'file'], method: 'PUT', path: '/api/knowledge/file/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: fileZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: fileZodSchemas.update }),
     outputSchema: z.array(fileZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -156,7 +156,7 @@ export const fileUpdateMany = defineAction({
 export const fileDeleteByPk = defineAction({
   meta: { name: 'knowledge.file.deleteByPk', displayName: '删除文件', description: '根据ID软删除文件', tags: ['knowledge', 'file'], method: 'DELETE', path: '/api/knowledge/file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {

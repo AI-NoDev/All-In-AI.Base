@@ -2,8 +2,8 @@
 	import { SvelteFlow, SvelteFlowProvider, Controls, BackgroundVariant, Background, SelectionMode } from '@xyflow/svelte';
 	import type { Node, Edge, Connection } from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
-	import { workflowState, configPanelRegistry } from '$lib/components/editor/contexts/index.js';
-	import { START_NODE_ID } from '$lib/components/editor/contexts/editor-state.svelte.js';
+	import { workflowState, configPanelRegistry, runningState } from '$lib/components/editor/contexts/index.js';
+	import { START_NODE_ID, LOOP_HEADER_HEIGHT } from '$lib/components/editor/contexts/editor-state.svelte.js';
 	import { StartNode, LLMNode, KnowledgeNode, OutputNode, AgentNode, ClassifierNode, NoteNode, IfNode, LoopNode, LoopBreakNode } from './nodes/index.js';
 	import ConnectionLine from './connections/ConnectionLine.svelte';
 	import ThemeEditorControls from './components/ThemeEditorControls.svelte';
@@ -13,6 +13,19 @@
 	import ControlBar from './components/ControlBar.svelte';
 	import NodePicker from './components/NodePicker.svelte';
 	import type { NodeTemplate } from './components/NodePicker.svelte';
+	import type { OnNodeRunning } from '$lib/types/index.js';
+
+	interface Props {
+		/** 节点运行时的回调函数，用于执行节点逻辑并返回输出 */
+		onNodeRunning?: OnNodeRunning;
+	}
+
+	let { onNodeRunning }: Props = $props();
+
+	// 同步 onNodeRunning 到 runningState
+	$effect(() => {
+		runningState.onNodeRunning = onNodeRunning;
+	});
 
 	const nodeTypes = {
 		start: StartNode,
@@ -238,8 +251,36 @@
 	}
 
 	// 全局操作回调
-	function handleTestRun() {
-		console.log('Test run');
+	async function handleTestRun() {
+		if (!runningState.onNodeRunning) {
+			console.warn('onNodeRunning callback not provided');
+			return;
+		}
+		
+		// 获取选中的节点或从开始节点开始
+		const selectedNodeId = configPanelRegistry.selectedNodeId;
+		const startNode = selectedNodeId 
+			? workflowState.getNode(selectedNodeId)
+			: workflowState.getNode(START_NODE_ID);
+		
+		if (!startNode) {
+			console.warn('No node to run');
+			return;
+		}
+		
+		try {
+			runningState.startRun(true);
+			const output = await runningState.runNode(
+				startNode.id,
+				startNode.type ?? 'unknown',
+				startNode.data
+			);
+			console.log('Test run output:', output);
+		} catch (error) {
+			console.error('Test run failed:', error);
+		} finally {
+			runningState.endRun();
+		}
 	}
 
 	function handleViewHistory() {
@@ -285,6 +326,24 @@
 			}
 		}
 	}
+
+	// 处理节点拖拽 - 限制循环内子节点不能移入 header 区域
+	function handleNodeDrag({ node }: { node: Node }) {
+		// 只处理循环内的子节点
+		if (!node.parentId) return;
+		
+		// 限制 Y 坐标不能小于 header 高度
+		if (node.position.y < LOOP_HEADER_HEIGHT) {
+			// 直接修改节点位置
+			const nodeIndex = workflowState.nodes.findIndex(n => n.id === node.id);
+			if (nodeIndex !== -1) {
+				workflowState.nodes[nodeIndex] = {
+					...workflowState.nodes[nodeIndex],
+					position: { x: node.position.x, y: LOOP_HEADER_HEIGHT }
+				};
+			}
+		}
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} onmousemove={handleGlobalMouseMove} onclick={handleNodePickerClickOutside} />
@@ -302,6 +361,7 @@
 			onnodeclick={handleNodeClick}
 			onpaneclick={handlePaneClick}
 			onmousemove={handleMouseMove}
+			onnodedrag={handleNodeDrag}
 			minZoom={0.5}
 			maxZoom={2}
 			panOnDrag={panOnDrag}

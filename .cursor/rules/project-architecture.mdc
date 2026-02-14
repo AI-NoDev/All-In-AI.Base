@@ -13,6 +13,31 @@ ai-drive-system/
 │   └── i18n/        # 国际化翻译
 ```
 
+## 菜单结构
+
+知识库是一个菜单分组（目录），包含 4 个子菜单页面：
+
+```
+知识库 (KNOWLEDGE) - 目录
+├── 我的知识库 (MY_FILES) - /dashboard/knowledge/my-files
+│   - 完整文件管理：创建、上传、删除、编辑、共享、复制/粘贴
+├── 收到的共享 (SHARED_WITH_ME) - /dashboard/knowledge/shared-with-me
+│   - 他人共享给当前用户的文件（根据权限只读或可编辑）
+├── 我的共享 (MY_SHARED) - /dashboard/knowledge/my-shared
+│   - 当前用户共享给他人的文件（可修改共享设置）
+└── 收藏 (FAVORITES) - /dashboard/knowledge/favorites
+    - 收藏的文件和文件夹（可查看和取消收藏）
+```
+
+菜单种子数据位于 `packages/db/src/seedData/menu.ts`，使用固定 UUID：
+- KNOWLEDGE: `10000000-0000-0000-0000-000000000007`
+- MY_FILES: `20000000-0000-0000-0000-000000000040`
+- SHARED_WITH_ME: `20000000-0000-0000-0000-000000000041`
+- MY_SHARED: `20000000-0000-0000-0000-000000000042`
+- FAVORITES: `20000000-0000-0000-0000-000000000043`
+
+角色菜单关联在 `packages/db/src/seedData/roleMenu.ts` 中配置。
+
 ## packages/db
 
 定义数据库实体、关系和 Zod Schema。

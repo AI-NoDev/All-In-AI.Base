@@ -17,7 +17,7 @@ export interface NoteNodeData extends Record<string, unknown> {
 }
 
 /** 注释颜色选项 */
-export type NoteColor = 'blue' | 'cyan' | 'green' | 'orange' | 'pink' | 'purple';
+export type NoteColor = 'primary' | 'blue' | 'cyan' | 'green' | 'orange' | 'pink' | 'purple';
 
 /** 颜色配置 */
 export interface NoteColorConfig {
@@ -35,6 +35,14 @@ export interface NoteColorConfig {
 
 /** 预设颜色列表 - 参考 Dify */
 export const NOTE_COLORS: NoteColorConfig[] = [
+	{ 
+		value: 'primary', 
+		label: '主题色', 
+		dot: 'hsl(var(--primary))',
+		bg: 'bg-primary/20 dark:bg-primary/30', 
+		border: 'border-primary/50', 
+		text: 'text-primary-foreground dark:text-primary-foreground' 
+	},
 	{ 
 		value: 'blue', 
 		label: '蓝色', 
@@ -86,8 +94,8 @@ export const NOTE_COLORS: NoteColorConfig[] = [
 ];
 
 /** 获取颜色配置 */
-export function getNoteColorConfig(color: NoteColor = 'green'): NoteColorConfig {
-	return NOTE_COLORS.find(c => c.value === color) ?? NOTE_COLORS[2]; // 默认绿色
+export function getNoteColorConfig(color: NoteColor = 'primary'): NoteColorConfig {
+	return NOTE_COLORS.find(c => c.value === color) ?? NOTE_COLORS[0]; // 默认主题色
 }
 
 /** 注释节点类型 */

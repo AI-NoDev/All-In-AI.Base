@@ -12,6 +12,8 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Icon from '@iconify/svelte';
 	import RunStatusBadge from '../../components/RunStatusBadge.svelte';
+	import NodeRunResult from '../../components/NodeRunResult.svelte';
+	import type { NodeRunData, NodeRunStatus } from '$lib/types/index.js';
 
 	interface Props {
 		nodeId: string;
@@ -32,7 +34,34 @@
 	let variables = $derived(currentData?.variables ?? []);
 	let breakConditions = $derived(currentData?.breakConditions ?? []);
 	let maxIterations = $derived(currentData?.maxIterations ?? 10);
-	let lastRun = $derived(currentData?.lastRun);
+
+	// 将 LoopRunResult 转换为 NodeRunData 格式
+	let runData = $derived.by((): NodeRunData | undefined => {
+		const lastRun = currentData?.lastRun;
+		if (!lastRun) return undefined;
+
+		// 状态映射
+		const statusMap: Record<string, NodeRunStatus> = {
+			idle: 'idle',
+			running: 'running',
+			success: 'success',
+			failed: 'error'
+		};
+
+		return {
+			status: statusMap[lastRun.status] ?? 'idle',
+			startTime: lastRun.startedAt ? new Date(lastRun.startedAt).getTime() : undefined,
+			endTime: lastRun.endedAt ? new Date(lastRun.endedAt).getTime() : undefined,
+			elapsed: lastRun.duration,
+			inputs: lastRun.inputs,
+			outputs: {
+				...lastRun.outputs,
+				iterations: lastRun.iterations,
+				breakReason: lastRun.breakReason
+			},
+			error: lastRun.error
+		};
+	});
 
 	function updateField<K extends keyof LoopNodeData>(field: K, value: LoopNodeData[K]) {
 		workflowState.updateNode(nodeId, { [field]: value });
@@ -97,9 +126,9 @@
 			<Tabs.Trigger value="settings">设置</Tabs.Trigger>
 			<Tabs.Trigger value="lastRun">
 				上次运行
-				{#if lastRun && lastRun.status !== 'idle'}
+				{#if runData && runData.status !== 'idle'}
 					<span class="ml-1.5">
-						<RunStatusBadge status={lastRun.status} size="sm" />
+						<RunStatusBadge status={runData.status} size="sm" />
 					</span>
 				{/if}
 			</Tabs.Trigger>
@@ -132,14 +161,12 @@
 							{#each variables as variable (variable.id)}
 								<div class="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
 									<div class="flex items-center gap-2">
-										<!-- 变量名 -->
 										<Input 
 											value={variable.name}
 											oninput={(e) => updateVariable(variable.id, 'name', (e.target as HTMLInputElement).value)}
 											placeholder="变量名"
 											class="h-8 text-sm flex-1"
 										/>
-										<!-- 类型 -->
 										<Select.Root 
 											type="single"
 											value={variable.type}
@@ -154,7 +181,6 @@
 												{/each}
 											</Select.Content>
 										</Select.Root>
-										<!-- 删除 -->
 										<Button 
 											variant="ghost" 
 											size="icon" 
@@ -164,7 +190,6 @@
 											<Icon icon="mdi:delete-outline" class="w-4 h-4" />
 										</Button>
 									</div>
-									<!-- 初始值 -->
 									<Input 
 										value={variable.initialValue}
 										oninput={(e) => updateVariable(variable.id, 'initialValue', (e.target as HTMLInputElement).value)}
@@ -205,7 +230,6 @@
 						<div class="space-y-2">
 							{#each breakConditions as condition (condition.id)}
 								<div class="rounded-lg border border-border bg-muted/30 overflow-hidden">
-									<!-- 第一行：变量选择 + 操作符 + 删除 -->
 									<div class="flex items-center gap-2 p-2">
 										<div class="flex-1 min-w-0">
 											<VariableSelect
@@ -237,7 +261,6 @@
 											<Icon icon="mdi:delete-outline" class="w-4 h-4" />
 										</Button>
 									</div>
-									<!-- 第二行：值输入 -->
 									{#if needsValue(condition.operator)}
 										<div class="px-2 pb-2">
 											<Input 
@@ -281,76 +304,7 @@
 
 		<!-- 上次运行 Tab -->
 		<Tabs.Content value="lastRun" class="mt-0">
-			{#if lastRun && lastRun.status !== 'idle'}
-				<div class="space-y-4">
-					<div class="flex items-center justify-between">
-						<span class="text-xs font-medium">状态</span>
-						<RunStatusBadge status={lastRun.status} />
-					</div>
-
-					{#if lastRun.duration !== undefined}
-						<div class="flex items-center justify-between">
-							<span class="text-xs font-medium">耗时</span>
-							<span class="text-xs text-muted-foreground">{lastRun.duration}ms</span>
-						</div>
-					{/if}
-
-					{#if lastRun.iterations !== undefined}
-						<div class="flex items-center justify-between">
-							<span class="text-xs font-medium">循环次数</span>
-							<span class="text-xs text-muted-foreground">{lastRun.iterations} 次</span>
-						</div>
-					{/if}
-
-					{#if lastRun.breakReason}
-						<div class="flex items-center justify-between">
-							<span class="text-xs font-medium">终止原因</span>
-							<span class="text-xs text-muted-foreground">
-								{#if lastRun.breakReason === 'condition'}
-									满足终止条件
-								{:else if lastRun.breakReason === 'maxIterations'}
-									达到最大次数
-								{:else}
-									执行错误
-								{/if}
-							</span>
-						</div>
-					{/if}
-
-					{#if lastRun.inputs}
-						<div class="space-y-2">
-							<span class="text-xs font-medium">输入</span>
-							<div class="p-2 bg-muted/50 rounded text-xs font-mono overflow-auto max-h-32">
-								<pre>{JSON.stringify(lastRun.inputs, null, 2)}</pre>
-							</div>
-						</div>
-					{/if}
-
-					{#if lastRun.outputs}
-						<div class="space-y-2">
-							<span class="text-xs font-medium">输出</span>
-							<div class="p-2 bg-muted/50 rounded text-xs font-mono overflow-auto max-h-32">
-								<pre>{JSON.stringify(lastRun.outputs, null, 2)}</pre>
-							</div>
-						</div>
-					{/if}
-
-					{#if lastRun.error}
-						<div class="space-y-2">
-							<span class="text-xs font-medium text-destructive">错误</span>
-							<div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-xs text-destructive">
-								{lastRun.error}
-							</div>
-						</div>
-					{/if}
-				</div>
-			{:else}
-				<div class="flex flex-col items-center justify-center py-8 text-center">
-					<Icon icon="mdi:play-circle-outline" class="w-12 h-12 text-muted-foreground/50 mb-2" />
-					<p class="text-sm text-muted-foreground">暂无运行记录</p>
-					<p class="text-xs text-muted-foreground mt-1">运行工作流后将在此显示结果</p>
-				</div>
-			{/if}
+			<NodeRunResult {runData} />
 		</Tabs.Content>
 	</Tabs.Root>
 </Tooltip.Provider>

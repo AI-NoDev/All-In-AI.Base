@@ -20,5 +20,9 @@ export { token } from './token';
 export { userPost } from './userPost';
 export { userRole } from './userRole';
 
+// Casbin permission tables
+export { casbinRule } from './casbinRule';
+export { permission } from './permission';
+
 // Relations
 export * from './relations';

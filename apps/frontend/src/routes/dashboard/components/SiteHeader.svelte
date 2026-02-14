@@ -31,7 +31,7 @@
     <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-4" />
 
     <!-- 标签页区域 -->
-    <div class="flex flex-1 items-center gap-1 overflow-x-auto">
+    <div class="tabs-scrollbar flex flex-1 items-center gap-1 overflow-x-auto">
       {#each tabsStore.tabs as tab (tab.path)}
         <button
           onclick={() => handleTabClick(tab.path)}
@@ -60,3 +60,31 @@
     </div>
   </div>
 </header>
+
+<style>
+  .tabs-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+  }
+  
+  .tabs-scrollbar:hover {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar {
+    height: 2px;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.2);
+    border-radius: 2px;
+  }
+  
+  .tabs-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
+</style>

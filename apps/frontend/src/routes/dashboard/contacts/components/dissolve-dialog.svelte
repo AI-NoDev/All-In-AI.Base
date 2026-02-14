@@ -1,7 +1,7 @@
 <script lang="ts">
-  import * as AlertDialog from '@/lib/components/ui/dialog';
-  import { Button } from '@/lib/components/ui/button';
-  import { imStore } from '@/lib/stores/im.svelte';
+  import * as AlertDialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { imStore } from '@/lib/stores/im';
 
   interface Props {
     open: boolean;

@@ -15,6 +15,7 @@ import {
   generateStorageKey,
   DEFAULT_BUCKET,
 } from './s3Client';
+import { filePermissionActions } from './filePermission';
 
 type FileSelect = typeof file.$inferSelect;
 type FileInsert = typeof file.$inferInsert;
@@ -34,7 +35,7 @@ export const fileCheckExists = defineAction({
   },
   schemas: {
     bodySchema: z.object({
-      folderId: z.uuid().nullable().optional(),
+      folderId: z.string().nullable().optional(),
       names: z.array(z.string().min(1).max(255)),
     }),
     outputSchema: z.object({
@@ -93,7 +94,7 @@ export const fileUpload = defineAction({
   },
   schemas: {
     bodySchema: z.object({
-      folderId: z.uuid().nullable().optional(),
+      folderId: z.string().nullable().optional(),
       name: z.string().min(1).max(255),
       content: z.string(), // base64 encoded
       mimeType: z.string().optional(),
@@ -184,13 +185,13 @@ export const fileUploadForce = defineAction({
   },
   schemas: {
     bodySchema: z.object({
-      folderId: z.uuid().nullable().optional(),
+      folderId: z.string().nullable().optional(),
       name: z.string().min(1).max(255),
       content: z.string(), // base64 encoded
       mimeType: z.string().optional(),
       description: z.string().optional(),
       conflictMode: z.enum(['overwrite', 'newVersion', 'copy']),
-      existingFileId: z.uuid().optional(), // 已存在文件的ID（用于覆盖和新版本）
+      existingFileId: z.string().optional(), // 已存在文件的ID（用于覆盖和新版本）
     }),
     outputSchema: fileZodSchemas.select,
   },
@@ -374,7 +375,7 @@ export const fileGetUploadUrl = defineAction({
   },
   schemas: {
     bodySchema: z.object({
-      folderId: z.uuid().nullable().optional(),
+      folderId: z.string().nullable().optional(),
       filename: z.string().min(1).max(255),
       mimeType: z.string(),
     }),
@@ -408,7 +409,7 @@ export const fileConfirmUpload = defineAction({
   },
   schemas: {
     bodySchema: z.object({
-      folderId: z.uuid().nullable().optional(),
+      folderId: z.string().nullable().optional(),
       name: z.string().min(1).max(255),
       storageKey: z.string(),
       mimeType: z.string(),
@@ -450,7 +451,7 @@ export const fileGetDownloadUrl = defineAction({
     path: '/api/files/:id/download-url',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.object({
       url: z.string(),
       expiresAt: z.string(),
@@ -527,7 +528,7 @@ export const fileGetTextContent = defineAction({
     path: '/api/files/:id/text-content',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.object({
       id: z.string(),
       name: z.string(),
@@ -575,7 +576,7 @@ export const fileGetContent = defineAction({
     path: '/api/files/:id/content',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.object({
       content: z.string(),
       mimeType: z.string().nullable(),
@@ -611,7 +612,7 @@ export const fileSaveContent = defineAction({
     path: '/api/files/:id/content',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ content: z.string() }),
     outputSchema: fileZodSchemas.select,
   },
@@ -653,8 +654,8 @@ export const fileCopy = defineAction({
     path: '/api/files/:id/copy',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
-    bodySchema: z.object({ targetFolderId: z.uuid().nullable() }),
+    paramsSchema: z.object({ id: z.string() }),
+    bodySchema: z.object({ targetFolderId: z.string().nullable() }),
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -706,8 +707,8 @@ export const fileCopyAsDuplicate = defineAction({
     path: '/api/files/:id/copy-as-duplicate',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
-    bodySchema: z.object({ targetFolderId: z.uuid().nullable() }),
+    paramsSchema: z.object({ id: z.string() }),
+    bodySchema: z.object({ targetFolderId: z.string().nullable() }),
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -792,8 +793,8 @@ export const fileMove = defineAction({
     path: '/api/files/:id/move',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
-    bodySchema: z.object({ targetFolderId: z.uuid().nullable() }),
+    paramsSchema: z.object({ id: z.string() }),
+    bodySchema: z.object({ targetFolderId: z.string().nullable() }),
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -838,7 +839,7 @@ export const fileRename = defineAction({
     path: '/api/files/:id/rename',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ name: z.string().min(1).max(255) }),
     outputSchema: fileZodSchemas.select,
   },
@@ -874,7 +875,7 @@ export const fileDelete = defineAction({
     path: '/api/files/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
@@ -903,7 +904,7 @@ export const fileDeleteMany = defineAction({
     path: '/api/files/delete-batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()) }),
+    bodySchema: z.object({ ids: z.array(z.string()) }),
     outputSchema: z.number(),
   },
   execute: async (input, context) => {
@@ -931,7 +932,7 @@ export const fileUpdateDescription = defineAction({
     path: '/api/files/:id/description',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ description: z.string().nullable() }),
     outputSchema: fileZodSchemas.select,
   },
@@ -964,7 +965,7 @@ export const filesFolderCreate = defineAction({
   },
   schemas: {
     bodySchema: z.object({
-      parentId: z.uuid().nullable().optional(),
+      parentId: z.string().nullable().optional(),
       name: z.string().min(1).max(255),
       description: z.string().optional(),
       icon: z.string().optional(),
@@ -1011,7 +1012,7 @@ export const filesFolderRename = defineAction({
     path: '/api/files/folders/:id/rename',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ name: z.string().min(1).max(255) }),
     outputSchema: folderZodSchemas.select,
   },
@@ -1043,7 +1044,7 @@ export const filesFolderUpdateStyle = defineAction({
     path: '/api/files/folders/:id/style',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({
       icon: z.string().nullable().optional(),
       color: z.string().nullable().optional(),
@@ -1079,7 +1080,7 @@ export const filesFolderUpdateDescription = defineAction({
     path: '/api/files/folders/:id/description',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ description: z.string().nullable() }),
     outputSchema: folderZodSchemas.select,
   },
@@ -1111,7 +1112,7 @@ export const filesFolderUpdateOrder = defineAction({
     path: '/api/files/folders/:id/order',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ orderNum: z.number().int() }),
     outputSchema: folderZodSchemas.select,
   },
@@ -1144,7 +1145,7 @@ export const filesFolderDelete = defineAction({
     path: '/api/files/folders/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
@@ -1210,8 +1211,8 @@ export const filesFolderMove = defineAction({
     path: '/api/files/folders/:id/move',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
-    bodySchema: z.object({ targetParentId: z.uuid().nullable() }),
+    paramsSchema: z.object({ id: z.string() }),
+    bodySchema: z.object({ targetParentId: z.string().nullable() }),
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -1259,7 +1260,7 @@ export const fileVersionDownload = defineAction({
     path: '/api/files/versions/:id/download-url',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.object({
       url: z.string(),
       expiresAt: z.string(),
@@ -1314,7 +1315,7 @@ export const fileVersionRestore = defineAction({
     path: '/api/files/versions/:id/restore',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -1380,6 +1381,8 @@ export const fileVersionRestore = defineAction({
   },
 });
 
+import { fileShareActions } from './fileShare';
+
 // ============ 导出所有 actions ============
 export const filesActions = [
   fileCheckExists,
@@ -1407,4 +1410,14 @@ export const filesActions = [
   filesFolderUpdateOrder,
   filesFolderDelete,
   filesFolderMove,
+  // 文件权限
+  ...filePermissionActions,
+  // 文件共享
+  ...fileShareActions,
 ];
+
+// 导出文件权限 Actions
+export { filePermissionActions } from './filePermission';
+
+// 导出文件共享 Actions
+export { fileShareActions } from './fileShare';

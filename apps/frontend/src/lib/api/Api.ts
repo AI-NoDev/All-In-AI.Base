@@ -74,22 +74,6 @@ export interface DeleteApiAiProviderByIdParams {
   id: string;
 }
 
-export interface DeleteApiAiToolByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiAiToolByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
 export interface DeleteApiAiToolGroupByIdData {
   data: any;
   /** @default "ok" */
@@ -136,6 +120,93 @@ export interface DeleteApiFilesFoldersByIdParams {
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
    */
   id: string;
+}
+
+export interface DeleteApiFilesPermissionAllByResourceTypeByResourceIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum6;
+}
+
+export enum DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams1Enum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams1ResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export interface DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams {
+  permission: PermissionEnum;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum4;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  subjectId: string;
+  subjectType: SubjectTypeEnum;
+}
+
+export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1Enum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1Enum1 {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
+}
+
+export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1Enum2 {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1PermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1ResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1SubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
 }
 
 export interface DeleteApiImConversationByIdData {
@@ -199,6 +270,33 @@ export interface DeleteApiImTempFileCleanExpiredData {
   status: number;
 }
 
+export interface DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum;
+}
+
+export enum DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams1Enum {
+  Folder = "folder",
+  File = "file",
+}
+
+export enum DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams1ResourceTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
 export interface DeleteApiKnowledgeFileByIdData {
   data: any;
   /** @default "ok" */
@@ -245,49 +343,6 @@ export interface DeleteApiKnowledgeFolderByIdParams {
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
    */
   id: string;
-}
-
-export interface DeleteApiKnowledgeResourcePermissionByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiKnowledgeResourcePermissionByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
-export interface DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  resourceId: string;
-  resourceType: ResourceTypeEnum1;
-}
-
-export enum DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams1Enum {
-  Folder = "folder",
-  File = "file",
-}
-
-export enum DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
 }
 
 export interface DeleteApiSystemConfigByIdData {
@@ -443,6 +498,22 @@ export interface DeleteApiSystemOperationLogByIdData {
 }
 
 export interface DeleteApiSystemOperationLogByIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  id: string;
+}
+
+export interface DeleteApiSystemPermissionByIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiSystemPermissionByIdParams {
   /**
    * @format uuid
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
@@ -749,22 +820,6 @@ export interface GetApiAiProviderSchemaData {
   status: number;
 }
 
-export interface GetApiAiToolByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiAiToolByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
 export interface GetApiAiToolGroupByIdData {
   data: any;
   /** @default "ok" */
@@ -782,14 +837,6 @@ export interface GetApiAiToolGroupByIdParams {
 }
 
 export interface GetApiAiToolGroupSchemaData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiAiToolSchemaData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -816,11 +863,9 @@ export interface GetApiAuthMeData {
     loginIp: string | null;
     loginName: string;
     name: string | null;
-    permissions: string[] | null;
     phonenumber: string | null;
-    postIds: string[] | null;
-    roleIds: string[] | null;
     sex: string | null;
+    userType: string | null;
   };
   message: string;
   success: true;
@@ -842,7 +887,6 @@ export interface GetApiAuthVerifyData {
       id: string;
       loginName: string;
       name: string | null;
-      permissions: string[] | null;
     };
   };
   message: string;
@@ -854,6 +898,14 @@ export type GetApiAuthVerifyError = {
   message: string;
   success: false;
 };
+
+export interface GetApiDevProjectCodeRootData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
 
 export interface GetApiFilesByIdContentData {
   data: any;
@@ -901,6 +953,60 @@ export interface GetApiFilesByIdTextContentParams {
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
    */
   id: string;
+}
+
+export interface GetApiFilesPermissionByResourceTypeByResourceIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiFilesPermissionByResourceTypeByResourceIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum2;
+}
+
+export enum GetApiFilesPermissionByResourceTypeByResourceIdParams1Enum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum GetApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export interface GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum5;
+}
+
+export enum GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams1Enum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams1ResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
 }
 
 export interface GetApiFilesVersionsByIdDownloadUrlData {
@@ -1073,6 +1179,33 @@ export interface GetApiImTempFileSchemaData {
   status: number;
 }
 
+export interface GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum1;
+}
+
+export enum GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams1Enum {
+  Folder = "folder",
+  File = "file",
+}
+
+export enum GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams1ResourceTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
 export interface GetApiKnowledgeFileByIdData {
   data: any;
   /** @default "ok" */
@@ -1145,7 +1278,7 @@ export interface GetApiKnowledgeFolderSchemaData {
   status: number;
 }
 
-export interface GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData {
+export interface GetApiSystemCasbinRuleRoleByRoleKeyPermissionsData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1153,31 +1286,24 @@ export interface GetApiKnowledgeResourcePermissionResourceByResourceTypeByResour
   status: number;
 }
 
-export interface GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams {
+export interface GetApiSystemCasbinRuleRoleByRoleKeyPermissionsParams {
+  roleKey: string;
+}
+
+export interface GetApiSystemCasbinRuleUserByUserIdRolesData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiSystemCasbinRuleUserByUserIdRolesParams {
   /**
    * @format uuid
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
    */
-  resourceId: string;
-  resourceType: ResourceTypeEnum;
-}
-
-export enum GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams1Enum {
-  Folder = "folder",
-  File = "file",
-}
-
-export enum GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-}
-
-export interface GetApiKnowledgeResourcePermissionSchemaData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
+  userId: string;
 }
 
 export interface GetApiSystemConfigByIdData {
@@ -1420,6 +1546,38 @@ export interface GetApiSystemOperationLogSchemaData {
   status: number;
 }
 
+export interface GetApiSystemPermissionByIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiSystemPermissionByIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  id: string;
+}
+
+export interface GetApiSystemPermissionSchemaData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiSystemPermissionTreeData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
 export interface GetApiSystemPostByIdData {
   data: any;
   /** @default "ok" */
@@ -1503,6 +1661,22 @@ export interface GetApiSystemRoleMenuByRoleIdByMenuIdParams {
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
    */
   menuId: string;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  roleId: string;
+}
+
+export interface GetApiSystemRoleMenuRoleByRoleIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiSystemRoleMenuRoleByRoleIdParams {
   /**
    * @format uuid
    * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
@@ -1624,12 +1798,35 @@ export interface GetApiSystemUserRoleSchemaData {
   status: number;
 }
 
+export interface GetApiSystemUserRoleUserByUserIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiSystemUserRoleUserByUserIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  userId: string;
+}
+
 export interface GetApiSystemUserSchemaData {
   data: any;
   /** @default "ok" */
   message: string;
   /** @default 200 */
   status: number;
+}
+
+export enum PermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
 }
 
 export interface PostApiActionsExecuteByNameData {
@@ -1656,80 +1853,86 @@ export interface PostApiAiAgentBatchData {
 
 export interface PostApiAiAgentBatchPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds: string[];
-    /** Avatar */
+    /** 头像 */
     avatar?: string | null;
-    /** Theme Color */
+    /** 主题颜色 */
     color?: string | null;
-    /** Context Strategy */
+    /** 上下文压缩策�?*/
     contextStrategy?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Public */
+    /** 描述 */
+    inputSchema?: Record<string, any>;
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Loops */
+    /** 最大循环次�?*/
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Model ID
+     * 模型ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId: string;
     /**
-     * Agent Name
+     * Agent名称
      * @maxLength 64
      */
     name: string;
+    /** 工具 */
+    nativeTools: string[];
+    /** 描述 */
+    outputSchema?: Record<string, any>;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Loop */
+    /** 描述 */
+    structuredOutput?: boolean;
+    /** 支持循环 */
     supportLoop?: boolean;
-    /** System Prompt */
+    /** 系统提示�?*/
     systemPrompt?: string | null;
-    /** Temperature */
+    /** 温度参数 */
     temperature?: number | null;
-    /** Tools */
+    /** 工具 */
     toolIds: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -1752,23 +1955,23 @@ export interface PostApiAiAgentMessageBatchData {
 
 export interface PostApiAiAgentMessageBatchPayload {
   messages: {
-    /** Content */
+    /** 内容 */
     content?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Content Type
+     * 内容类型
      * @minLength 2
      * @maxLength 2
      */
     contentType?: string;
     /** Created At */
     createdAt?: string;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Finish Reason */
+    /** 结束原因 */
     finishReason?: string | null;
     /**
      * ID
@@ -1776,22 +1979,22 @@ export interface PostApiAiAgentMessageBatchPayload {
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Latency (ms) */
+    /** 延迟(毫秒) */
     latencyMs?: number | null;
-    /** Model ID */
+    /** 模型ID */
     modelId?: string | null;
     /**
-     * Role
+     * 角色
      * @maxLength 16
      */
     role: string;
-    /** Token Count */
+    /** Token数量 */
     tokenCount?: number | null;
-    /** Tool Calls */
+    /** 工具调用 */
     toolCalls?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Tool Results */
+    /** 工具结果 */
     toolResults?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
@@ -1813,23 +2016,23 @@ export interface PostApiAiAgentMessageData {
 
 export interface PostApiAiAgentMessagePayload {
   data: {
-    /** Content */
+    /** 内容 */
     content?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Content Type
+     * 内容类型
      * @minLength 2
      * @maxLength 2
      */
     contentType?: string;
     /** Created At */
     createdAt?: string;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Finish Reason */
+    /** 结束原因 */
     finishReason?: string | null;
     /**
      * ID
@@ -1837,34 +2040,34 @@ export interface PostApiAiAgentMessagePayload {
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Latency (ms) */
+    /** 延迟(毫秒) */
     latencyMs?: number | null;
-    /** Model ID */
+    /** 模型ID */
     modelId?: string | null;
     /**
-     * Message Sequence
+     * 消息序号
      * @min -9007199254740991
      * @max 9007199254740991
      */
     msgSeq: number;
     /**
-     * Role
+     * 角色
      * @maxLength 16
      */
     role: string;
     /**
-     * Session ID
+     * 会话ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     sessionId: string;
-    /** Token Count */
+    /** Token数量 */
     tokenCount?: number | null;
-    /** Tool Calls */
+    /** 工具调用 */
     toolCalls?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Tool Results */
+    /** 工具结果 */
     toolResults?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
@@ -1941,80 +2144,86 @@ export interface PostApiAiAgentMessageQueryPayload {
 
 export interface PostApiAiAgentPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds: string[];
-    /** Avatar */
+    /** 头像 */
     avatar?: string | null;
-    /** Theme Color */
+    /** 主题颜色 */
     color?: string | null;
-    /** Context Strategy */
+    /** 上下文压缩策�?*/
     contextStrategy?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Public */
+    /** 描述 */
+    inputSchema?: Record<string, any>;
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Loops */
+    /** 最大循环次�?*/
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Model ID
+     * 模型ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId: string;
     /**
-     * Agent Name
+     * Agent名称
      * @maxLength 64
      */
     name: string;
+    /** 工具 */
+    nativeTools: string[];
+    /** 描述 */
+    outputSchema?: Record<string, any>;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Loop */
+    /** 描述 */
+    structuredOutput?: boolean;
+    /** 支持循环 */
     supportLoop?: boolean;
-    /** System Prompt */
+    /** 系统提示�?*/
     systemPrompt?: string | null;
-    /** Temperature */
+    /** 温度参数 */
     temperature?: number | null;
-    /** Tools */
+    /** 工具 */
     toolIds: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -2103,64 +2312,62 @@ export interface PostApiAiAgentSessionPayload {
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     agentId: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Archived */
+    /** 是否归档 */
     isArchived?: boolean;
-    /** Is Pinned */
+    /** 是否置顶 */
     isPinned?: boolean;
-    /** Last Message Time */
+    /** 最后消息时�?*/
     lastMessageAt?: string | null;
     /**
-     * Message Count
+     * 消息数量
      * @min -2147483648
      * @max 2147483647
      */
     messageCount?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Summary */
+    /** 摘要 */
     summary?: string | null;
-    /** Session Title */
+    /** 会话标题 */
     title?: string | null;
-    /** Token Usage */
+    /** Token用量 */
     tokenUsage?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -2247,6 +2454,131 @@ export interface PostApiAiAgentSessionQueryPayload {
   };
 }
 
+export interface PostApiAiChatFromAgentPayload {
+  /** @format uuid */
+  agentId: string;
+  maxSteps?: number;
+  messages: {
+    content: string;
+    id: string;
+    parts: (
+      | {
+          text: string;
+          type: "text";
+        }
+      | {
+          toolInvocation: {
+            args: any;
+            result?: any;
+            state: string;
+            toolCallId: string;
+            toolName: string;
+          };
+          type: "tool-invocation";
+        }
+    )[];
+    role: PostApiAiChatFromAgentRoleEnum;
+  }[];
+  toolChoice?: PostApiAiChatFromAgentToolChoiceEnum;
+  tools?: object;
+}
+
+export enum PostApiAiChatFromAgentRoleEnum {
+  User = "user",
+  Assistant = "assistant",
+  System = "system",
+}
+
+export enum PostApiAiChatFromAgentToolChoiceEnum {
+  Auto = "auto",
+  None = "none",
+  Required = "required",
+}
+
+export interface PostApiAiChatPayload {
+  maxSteps?: number;
+  messages: {
+    content: string;
+    id: string;
+    parts: (
+      | {
+          text: string;
+          type: "text";
+        }
+      | {
+          toolInvocation: {
+            args: any;
+            result?: any;
+            state: string;
+            toolCallId: string;
+            toolName: string;
+          };
+          type: "tool-invocation";
+        }
+    )[];
+    role: PostApiAiChatRoleEnum;
+  }[];
+  /** @format uuid */
+  modelId: string;
+  system?: string;
+  toolChoice?: PostApiAiChatToolChoiceEnum;
+  tools?: object;
+}
+
+export enum PostApiAiChatRoleEnum {
+  User = "user",
+  Assistant = "assistant",
+  System = "system",
+}
+
+export interface PostApiAiChatStreamPayload {
+  maxSteps?: number;
+  messages: {
+    content: string;
+    id: string;
+    parts: (
+      | {
+          text: string;
+          type: "text";
+        }
+      | {
+          toolInvocation: {
+            args: any;
+            result?: any;
+            state: string;
+            toolCallId: string;
+            toolName: string;
+          };
+          type: "tool-invocation";
+        }
+    )[];
+    role: PostApiAiChatStreamRoleEnum;
+  }[];
+  /** @format uuid */
+  modelId: string;
+  system?: string;
+  toolChoice?: PostApiAiChatStreamToolChoiceEnum;
+  tools?: object;
+}
+
+export enum PostApiAiChatStreamRoleEnum {
+  User = "user",
+  Assistant = "assistant",
+  System = "system",
+}
+
+export enum PostApiAiChatStreamToolChoiceEnum {
+  Auto = "auto",
+  None = "none",
+  Required = "required",
+}
+
+export enum PostApiAiChatToolChoiceEnum {
+  Auto = "auto",
+  None = "none",
+  Required = "required",
+}
+
 export interface PostApiAiModelBatchData {
   data: any;
   /** @default "ok" */
@@ -2257,71 +2589,69 @@ export interface PostApiAiModelBatchData {
 
 export interface PostApiAiModelBatchPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds: string[];
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Input Capabilities */
+    /** 输入能力 */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Is Public */
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Tokens */
+    /** 最大Token */
     maxTokens?: number | null;
     /**
-     * Model ID
+     * 模型标识
      * @maxLength 128
      */
     modelId: string;
     /**
-     * Model Name
+     * 模型名称
      * @maxLength 128
      */
     name: string;
-    /** Output Capabilities */
+    /** 输出能力 */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Tools */
+    /** 支持工具 */
     supportTools?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -2336,71 +2666,69 @@ export interface PostApiAiModelData {
 
 export interface PostApiAiModelPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds: string[];
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Input Capabilities */
+    /** 输入能力 */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Is Public */
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Tokens */
+    /** 最大Token */
     maxTokens?: number | null;
     /**
-     * Model ID
+     * 模型标识
      * @maxLength 128
      */
     modelId: string;
     /**
-     * Model Name
+     * 模型名称
      * @maxLength 128
      */
     name: string;
-    /** Output Capabilities */
+    /** 输出能力 */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Tools */
+    /** 支持工具 */
     supportTools?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -2479,44 +2807,41 @@ export interface PostApiAiProviderBatchData {
 export interface PostApiAiProviderBatchPayload {
   data: {
     /**
-     * API URL
+     * API地址
      * @maxLength 512
      */
     baseUrl: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Provider Name
-     * @maxLength 64
+     * 提供商名�?     * @maxLength 64
      */
     name: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** API Key */
+    /** API密钥 */
     token: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -2532,44 +2857,41 @@ export interface PostApiAiProviderData {
 export interface PostApiAiProviderPayload {
   data: {
     /**
-     * API URL
+     * API地址
      * @maxLength 512
      */
     baseUrl: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Provider Name
-     * @maxLength 64
+     * 提供商名�?     * @maxLength 64
      */
     name: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** API Key */
+    /** API密钥 */
     token: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -2628,86 +2950,6 @@ export interface PostApiAiProviderQueryPayload {
   };
 }
 
-export interface PostApiAiToolBatchData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiAiToolBatchPayload {
-  data: {
-    /** Allow Sub Departments */
-    allowSubDepts?: boolean;
-    /** Allowed Departments */
-    allowedDeptIds: string[];
-    /** Allowed Roles */
-    allowedRoleIds: string[];
-    /** Allowed Users */
-    allowedUserIds: string[];
-    /** Created At */
-    createdAt?: string;
-    /**
-     * Created By
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** Created By ID */
-    createdById?: string | null;
-    /** Description */
-    description?: string | null;
-    /** Group ID */
-    groupId?: string | null;
-    /**
-     * Primary Key ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** Implementation */
-    implementation?: string | null;
-    /** Input Schema */
-    inputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Async Execution */
-    isAsync?: boolean;
-    /** Is Public */
-    isPublic?: boolean;
-    /**
-     * Tool Name
-     * @maxLength 64
-     */
-    name: string;
-    /** Output Schema */
-    outputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Remark */
-    remark?: string | null;
-    /** Status */
-    status?: string | null;
-    /** Updated At */
-    updatedAt?: string;
-    /**
-     * Updated By
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** Updated By ID */
-    updatedById?: string | null;
-  }[];
-}
-
-export interface PostApiAiToolData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
 export interface PostApiAiToolGroupBatchData {
   data: any;
   /** @default "ok" */
@@ -2718,48 +2960,50 @@ export interface PostApiAiToolGroupBatchData {
 
 export interface PostApiAiToolGroupBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 64
      */
     name: string;
     /**
-     * Sort Order
+     * 排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 分组名称 */
+    tools?:
+      | ((string | number | boolean | null) | Record<string, any> | any[])
+      | null;
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -2774,48 +3018,50 @@ export interface PostApiAiToolGroupData {
 
 export interface PostApiAiToolGroupPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 64
      */
     name: string;
     /**
-     * Sort Order
+     * 排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 分组名称 */
+    tools?:
+      | ((string | number | boolean | null) | Record<string, any> | any[])
+      | null;
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -2875,131 +3121,6 @@ export interface PostApiAiToolGroupQueryPayload {
   };
 }
 
-export interface PostApiAiToolPayload {
-  data: {
-    /** Allow Sub Departments */
-    allowSubDepts?: boolean;
-    /** Allowed Departments */
-    allowedDeptIds: string[];
-    /** Allowed Roles */
-    allowedRoleIds: string[];
-    /** Allowed Users */
-    allowedUserIds: string[];
-    /** Created At */
-    createdAt?: string;
-    /**
-     * Created By
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** Created By ID */
-    createdById?: string | null;
-    /** Description */
-    description?: string | null;
-    /** Group ID */
-    groupId?: string | null;
-    /**
-     * Primary Key ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** Implementation */
-    implementation?: string | null;
-    /** Input Schema */
-    inputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Async Execution */
-    isAsync?: boolean;
-    /** Is Public */
-    isPublic?: boolean;
-    /**
-     * Tool Name
-     * @maxLength 64
-     */
-    name: string;
-    /** Output Schema */
-    outputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Remark */
-    remark?: string | null;
-    /** Status */
-    status?: string | null;
-    /** Updated At */
-    updatedAt?: string;
-    /**
-     * Updated By
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** Updated By ID */
-    updatedById?: string | null;
-  };
-}
-
-export interface PostApiAiToolQueryData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiAiToolQueryFieldEnum {
-  Name = "name",
-  CreatedAt = "createdAt",
-  UpdatedAt = "updatedAt",
-}
-
-export enum PostApiAiToolQueryOrderEnum {
-  Asc = "asc",
-  Desc = "desc",
-}
-
-export interface PostApiAiToolQueryPayload {
-  filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtStart?: string;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    groupId?: string;
-    groupIds?: string[];
-    ids?: string[];
-    isAsync?: boolean;
-    name?: string;
-    names?: string[];
-    status?: string;
-  };
-  /**
-   * @min 1
-   * @max 100
-   * @default 20
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-  sort?: {
-    field: PostApiAiToolQueryFieldEnum;
-    order: PostApiAiToolQueryOrderEnum;
-  };
-}
-
 export interface PostApiAuthLoginData {
   data: {
     accessToken: string;
@@ -3013,7 +3134,6 @@ export interface PostApiAuthLoginData {
       id: string;
       loginName: string;
       name: string | null;
-      permissions: string[] | null;
     };
   };
   message: string;
@@ -3064,6 +3184,31 @@ export type PostApiAuthRefreshError = {
 export interface PostApiAuthRefreshPayload {
   /** @minLength 1 */
   refreshToken: string;
+}
+
+export interface PostApiDevProjectCodeDirectoryData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiDevProjectCodeDirectoryPayload {
+  /** @default "" */
+  relativePath?: string;
+}
+
+export interface PostApiDevProjectCodeFileData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiDevProjectCodeFilePayload {
+  relativePath: string;
 }
 
 export interface PostApiFilesByIdCopyAsDuplicateData {
@@ -3210,6 +3355,253 @@ export interface PostApiFilesFoldersPayload {
    */
   name: string;
   parentId?: string | null;
+}
+
+export interface PostApiFilesPermissionByResourceTypeByResourceIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+/** @default "allow" */
+export enum PostApiFilesPermissionByResourceTypeByResourceIdEffectEnum {
+  Allow = "allow",
+  Deny = "deny",
+}
+
+export interface PostApiFilesPermissionByResourceTypeByResourceIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: ResourceTypeEnum3;
+}
+
+export enum PostApiFilesPermissionByResourceTypeByResourceIdParams1Enum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum PostApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export interface PostApiFilesPermissionByResourceTypeByResourceIdPayload {
+  permissions: {
+    /** @default "allow" */
+    effect?: PostApiFilesPermissionByResourceTypeByResourceIdEffectEnum;
+    permission: PostApiFilesPermissionByResourceTypeByResourceIdPermissionEnum;
+    /**
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    subjectId: string;
+    subjectType: PostApiFilesPermissionByResourceTypeByResourceIdSubjectTypeEnum;
+  }[];
+}
+
+export enum PostApiFilesPermissionByResourceTypeByResourceIdPermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum PostApiFilesPermissionByResourceTypeByResourceIdSubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
+}
+
+export interface PostApiFilesPermissionCheckData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiFilesPermissionCheckPayload {
+  permission: PostApiFilesPermissionCheckPermissionEnum;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: PostApiFilesPermissionCheckResourceTypeEnum;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  userId: string;
+}
+
+export enum PostApiFilesPermissionCheckPermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum PostApiFilesPermissionCheckResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export interface PostApiFilesPermissionCopyData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiFilesPermissionCopyPayload {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  sourceId: string;
+  sourceType: PostApiFilesPermissionCopySourceTypeEnum;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  targetId: string;
+  targetType: PostApiFilesPermissionCopyTargetTypeEnum;
+}
+
+export enum PostApiFilesPermissionCopySourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum PostApiFilesPermissionCopyTargetTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export interface PostApiFilesPermissionData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+/** @default "allow" */
+export enum PostApiFilesPermissionEffectEnum {
+  Allow = "allow",
+  Deny = "deny",
+}
+
+export interface PostApiFilesPermissionParentData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiFilesPermissionParentPayload {
+  parentFolderId: string | null;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: PostApiFilesPermissionParentResourceTypeEnum;
+}
+
+export enum PostApiFilesPermissionParentResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export interface PostApiFilesPermissionPayload {
+  /** @default "allow" */
+  effect?: PostApiFilesPermissionEffectEnum;
+  permission: PostApiFilesPermissionPermissionEnum;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: PostApiFilesPermissionResourceTypeEnum;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  subjectId: string;
+  subjectType: PostApiFilesPermissionSubjectTypeEnum;
+}
+
+export enum PostApiFilesPermissionPermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum PostApiFilesPermissionResourceTypeEnum {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum PostApiFilesPermissionSubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
+}
+
+export interface PostApiFilesShareMySharedData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiFilesShareMySharedPayload {
+  /**
+   * @min 1
+   * @max 100
+   * @default 50
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+}
+
+export interface PostApiFilesShareSharedWithMeData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiFilesShareSharedWithMePayload {
+  /**
+   * @min 1
+   * @max 100
+   * @default 50
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
 }
 
 export interface PostApiFilesUploadData {
@@ -3380,71 +3772,69 @@ export interface PostApiImConversationHiddenUnhidePayload {
 
 export interface PostApiImConversationPayload {
   data: {
-    /** Announcement */
+    /** 群公�?*/
     announcement?: string | null;
-    /** Avatar */
+    /** 头像 */
     avatar?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Muted */
+    /** 是否免打�?*/
     isMuted?: boolean;
-    /** Pinned */
+    /** 是否置顶 */
     isTop?: boolean;
-    /** Last Message Time */
+    /** 最后消息时�?*/
     lastMessageAt?: string | null;
-    /** Last Message ID */
+    /** 最后消息ID */
     lastMessageId?: string | null;
-    /** Max Members */
+    /** 最大成员数 */
     maxMembers?: number | null;
     /**
-     * Member Count
+     * 成员数量
      * @min -2147483648
      * @max 2147483647
      */
     memberCount?: number;
-    /** Conversation Name */
+    /** 会话名称 */
     name?: string | null;
-    /** Owner ID */
+    /** 所有者ID */
     ownerId?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Conversation Type
+     * 会话类型
      * @minLength 1
      * @maxLength 1
      */
     type?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -3588,33 +3978,33 @@ export interface PostApiImGroupMemberBatchData {
 export interface PostApiImGroupMemberBatchPayload {
   data: {
     /**
-     * Conversation ID
+     * 会话ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId: string;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Invited By */
+    /** 邀请人ID */
     invitedById?: string | null;
-    /** Is Muted */
+    /** 是否禁言 */
     isMuted?: boolean;
-    /** Joined At */
+    /** 加入时间 */
     joinedAt?: string;
-    /** Muted Until */
+    /** 禁言截止时间 */
     mutedUntil?: string | null;
-    /** Nickname in Group */
+    /** 群内昵称 */
     nickname?: string | null;
     /**
-     * Role
+     * 角色
      * @minLength 1
      * @maxLength 1
      */
     role?: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -3633,33 +4023,33 @@ export interface PostApiImGroupMemberData {
 export interface PostApiImGroupMemberPayload {
   data: {
     /**
-     * Conversation ID
+     * 会话ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId: string;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Invited By */
+    /** 邀请人ID */
     invitedById?: string | null;
-    /** Is Muted */
+    /** 是否禁言 */
     isMuted?: boolean;
-    /** Joined At */
+    /** 加入时间 */
     joinedAt?: string;
-    /** Muted Until */
+    /** 禁言截止时间 */
     mutedUntil?: string | null;
-    /** Nickname in Group */
+    /** 群内昵称 */
     nickname?: string | null;
     /**
-     * Role
+     * 角色
      * @minLength 1
      * @maxLength 1
      */
     role?: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -3741,23 +4131,23 @@ export interface PostApiImMessageData {
 
 export interface PostApiImMessagePayload {
   data: {
-    /** Mentioned User IDs */
+    /** @用户ID列表 */
     atUserIds: string[];
-    /** Content */
+    /** 消息内容 */
     content: (string | number | boolean | null) | Record<string, any> | any[];
     /**
-     * Conversation ID
+     * 会话ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId: string;
     /** Created At */
     createdAt?: string;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Forward From Message ID */
+    /** 转发来源ID */
     forwardFromId?: string | null;
     /**
      * ID
@@ -3765,28 +4155,28 @@ export interface PostApiImMessagePayload {
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Recalled */
+    /** 是否撤回 */
     isRecalled?: boolean;
     /**
-     * Message Sequence
+     * 消息序号
      * @min -9007199254740991
      * @max 9007199254740991
      */
     msgSeq: number;
     /**
-     * Message Type
+     * 消息类型
      * @minLength 2
      * @maxLength 2
      */
     msgType?: string;
-    /** Recalled At */
+    /** 撤回时间 */
     recalledAt?: string | null;
-    /** Recalled By */
+    /** 撤回者ID */
     recalledById?: string | null;
-    /** Reply To Message ID */
+    /** 回复消息ID */
     replyToId?: string | null;
     /**
-     * Sender ID
+     * 发送者ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -3872,74 +4262,69 @@ export interface PostApiImTempFileData {
 export interface PostApiImTempFilePayload {
   data: {
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket: string;
-    /** Conversation ID */
+    /** 会话ID */
     conversationId?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /** ETag */
     etag?: string | null;
-    /** Expires At */
+    /** 过期时间 */
     expiresAt?: string | null;
-    /** Extension */
+    /** 扩展�?*/
     extension?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Message ID */
+    /** 消息ID */
     messageId?: string | null;
-    /** Metadata */
+    /** 元数�?*/
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** MIME Type */
+    /** MIME类型 */
     mimeType?: string | null;
     /**
-     * File Name
+     * 文件名称
      * @maxLength 255
      */
     name: string;
     /**
-     * Original Name
-     * @maxLength 255
+     * 原始文件�?     * @maxLength 255
      */
     originalName: string;
-    /** Region */
+    /** 区域 */
     region?: string | null;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -4033,6 +4418,60 @@ export interface PostApiImTempFileUploadPayload {
   mimeType: string;
 }
 
+export interface PostApiKnowledgeFavoriteData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeFavoriteListData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeFavoriteListPayload {
+  /**
+   * @min 1
+   * @max 100
+   * @default 50
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+  /** @default "all" */
+  resourceType?: PostApiKnowledgeFavoriteListResourceTypeEnum;
+}
+
+/** @default "all" */
+export enum PostApiKnowledgeFavoriteListResourceTypeEnum {
+  Folder = "folder",
+  File = "file",
+  All = "all",
+}
+
+export interface PostApiKnowledgeFavoritePayload {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  resourceId: string;
+  resourceType: PostApiKnowledgeFavoriteResourceTypeEnum;
+}
+
+export enum PostApiKnowledgeFavoriteResourceTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
 export interface PostApiKnowledgeFileBatchData {
   data: any;
   /** @default "ok" */
@@ -4044,104 +4483,99 @@ export interface PostApiKnowledgeFileBatchData {
 export interface PostApiKnowledgeFileBatchPayload {
   data: {
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Download Count
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
     /** ETag */
     etag?: string | null;
-    /** Extension */
+    /** 扩展�?*/
     extension?: string | null;
-    /** Folder ID */
+    /** 文件夹ID */
     folderId?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 公开 */
     isPublic?: boolean;
-    /** Metadata */
+    /** 元数�?*/
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** MIME Type */
+    /** MIME类型 */
     mimeType?: string | null;
     /**
-     * File Name
+     * 文件名称
      * @maxLength 255
      */
     name: string;
     /**
-     * Original Name
-     * @maxLength 255
+     * 原始文件�?     * @maxLength 255
      */
     originalName: string;
-    /** Process Result */
+    /** 处理结果 */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Process Status */
+    /** 处理状�?*/
     processStatus?: string | null;
-    /** Region */
+    /** 区域 */
     region?: string | null;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Storage Class */
+    /** 存储类型 */
     storageClass?: string | null;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey: string;
-    /** Tags */
+    /** 标签 */
     tags: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * knowledge.file.fields.versionCount
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
-    /** Version ID */
+    /** 版本ID */
     versionId?: string | null;
   }[];
 }
@@ -4157,104 +4591,99 @@ export interface PostApiKnowledgeFileData {
 export interface PostApiKnowledgeFilePayload {
   data: {
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Download Count
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
     /** ETag */
     etag?: string | null;
-    /** Extension */
+    /** 扩展�?*/
     extension?: string | null;
-    /** Folder ID */
+    /** 文件夹ID */
     folderId?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 公开 */
     isPublic?: boolean;
-    /** Metadata */
+    /** 元数�?*/
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** MIME Type */
+    /** MIME类型 */
     mimeType?: string | null;
     /**
-     * File Name
+     * 文件名称
      * @maxLength 255
      */
     name: string;
     /**
-     * Original Name
-     * @maxLength 255
+     * 原始文件�?     * @maxLength 255
      */
     originalName: string;
-    /** Process Result */
+    /** 处理结果 */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Process Status */
+    /** 处理状�?*/
     processStatus?: string | null;
-    /** Region */
+    /** 区域 */
     region?: string | null;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Storage Class */
+    /** 存储类型 */
     storageClass?: string | null;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey: string;
-    /** Tags */
+    /** 标签 */
     tags: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * knowledge.file.fields.versionCount
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
-    /** Version ID */
+    /** 版本ID */
     versionId?: string | null;
   };
 }
@@ -4340,52 +4769,48 @@ export interface PostApiKnowledgeFileVersionBatchData {
 
 export interface PostApiKnowledgeFileVersionBatchPayload {
   data: {
-    /** S3 Version ID */
+    /** S3版本ID */
     s3VersionId?: string | null;
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket: string;
-    /** Change Log */
+    /** 变更日志 */
     changeLog?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建人ID */
     createdById?: string | null;
     /** ETag */
     etag?: string | null;
     /**
-     * File ID
+     * 文件ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey: string;
     /**
-     * Version Number
-     * @maxLength 32
+     * 版本�?     * @maxLength 32
      */
     versionNumber: string;
   }[];
@@ -4401,52 +4826,48 @@ export interface PostApiKnowledgeFileVersionData {
 
 export interface PostApiKnowledgeFileVersionPayload {
   data: {
-    /** S3 Version ID */
+    /** S3版本ID */
     s3VersionId?: string | null;
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket: string;
-    /** Change Log */
+    /** 变更日志 */
     changeLog?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建人ID */
     createdById?: string | null;
     /** ETag */
     etag?: string | null;
     /**
-     * File ID
+     * 文件ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey: string;
     /**
-     * Version Number
-     * @maxLength 32
+     * 版本�?     * @maxLength 32
      */
     versionNumber: string;
   };
@@ -4521,58 +4942,54 @@ export interface PostApiKnowledgeFolderBatchData {
 
 export interface PostApiKnowledgeFolderBatchPayload {
   data: {
-    /** Color */
+    /** 颜色 */
     color?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 是否公开 */
     isPublic?: boolean;
     /**
-     * Folder Name
-     * @maxLength 255
+     * 文件夹名�?     * @maxLength 255
      */
     name: string;
     /**
-     * Sort Order
-     * @min -2147483648
+     * 排序�?     * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Folder ID */
+    /** 父文件夹ID */
     parentId?: string | null;
-    /** Path */
+    /** 路径 */
     path: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -4587,58 +5004,54 @@ export interface PostApiKnowledgeFolderData {
 
 export interface PostApiKnowledgeFolderPayload {
   data: {
-    /** Color */
+    /** 颜色 */
     color?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 是否公开 */
     isPublic?: boolean;
     /**
-     * Folder Name
-     * @maxLength 255
+     * 文件夹名�?     * @maxLength 255
      */
     name: string;
     /**
-     * Sort Order
-     * @min -2147483648
+     * 排序�?     * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Folder ID */
+    /** 父文件夹ID */
     parentId?: string | null;
-    /** Path */
+    /** 路径 */
     path: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -4698,171 +5111,6 @@ export interface PostApiKnowledgeFolderQueryPayload {
   };
 }
 
-export interface PostApiKnowledgeResourcePermissionData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiKnowledgeResourcePermissionPayload {
-  data: {
-    /** Created At */
-    createdAt?: string;
-    /**
-     * Created By
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** Created By ID */
-    createdById?: string | null;
-    /**
-     * Grantee ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    granteeId: string;
-    /**
-     * Grantee Type
-     * @maxLength 16
-     */
-    granteeType: string;
-    /**
-     * Primary Key ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /**
-     * Permission Level
-     * @minLength 1
-     * @maxLength 1
-     */
-    permissionLevel?: string;
-    /**
-     * Resource ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    resourceId: string;
-    /**
-     * Resource Type
-     * @maxLength 16
-     */
-    resourceType: string;
-    /** Updated At */
-    updatedAt?: string;
-    /**
-     * Updated By
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** Updated By ID */
-    updatedById?: string | null;
-  };
-}
-
-export interface PostApiKnowledgeResourcePermissionQueryData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiKnowledgeResourcePermissionQueryGranteeTypeEnum {
-  User = "user",
-  Role = "role",
-  Dept = "dept",
-}
-
-export interface PostApiKnowledgeResourcePermissionQueryPayload {
-  filter?: {
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    granteeId?: string;
-    granteeIds?: string[];
-    granteeType?: PostApiKnowledgeResourcePermissionQueryGranteeTypeEnum;
-    permissionLevel?: PostApiKnowledgeResourcePermissionQueryPermissionLevelEnum;
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    resourceId?: string;
-    resourceIds?: string[];
-    resourceType?: PostApiKnowledgeResourcePermissionQueryResourceTypeEnum;
-  };
-  /**
-   * @min 1
-   * @max 100
-   * @default 20
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-}
-
-export enum PostApiKnowledgeResourcePermissionQueryPermissionLevelEnum {
-  R = "r",
-  W = "w",
-  M = "m",
-}
-
-export enum PostApiKnowledgeResourcePermissionQueryResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-}
-
-export interface PostApiKnowledgeResourcePermissionSetData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiKnowledgeResourcePermissionSetGranteeTypeEnum {
-  User = "user",
-  Role = "role",
-  Dept = "dept",
-}
-
-export interface PostApiKnowledgeResourcePermissionSetPayload {
-  permissions: {
-    /**
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    granteeId: string;
-    granteeType: PostApiKnowledgeResourcePermissionSetGranteeTypeEnum;
-    permissionLevel: PostApiKnowledgeResourcePermissionSetPermissionLevelEnum;
-  }[];
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  resourceId: string;
-  resourceType: PostApiKnowledgeResourcePermissionSetResourceTypeEnum;
-}
-
-export enum PostApiKnowledgeResourcePermissionSetPermissionLevelEnum {
-  R = "r",
-  W = "w",
-  M = "m",
-}
-
-export enum PostApiKnowledgeResourcePermissionSetResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-}
-
 export interface PostApiSystemConfigBatchData {
   data: any;
   /** @default "ok" */
@@ -4873,45 +5121,41 @@ export interface PostApiSystemConfigBatchData {
 
 export interface PostApiSystemConfigBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** System Built-in */
+    /** 系统内置 */
     isSystem?: boolean;
     /**
-     * Config Key
-     * @maxLength 128
+     * 配置�?     * @maxLength 128
      */
     key: string;
     /**
-     * Config Name
+     * 配置名称
      * @maxLength 128
      */
     name: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Config Value
-     * @maxLength 512
+     * 配置�?     * @maxLength 512
      */
     value: string;
   }[];
@@ -4927,45 +5171,41 @@ export interface PostApiSystemConfigData {
 
 export interface PostApiSystemConfigPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** System Built-in */
+    /** 系统内置 */
     isSystem?: boolean;
     /**
-     * Config Key
-     * @maxLength 128
+     * 配置�?     * @maxLength 128
      */
     key: string;
     /**
-     * Config Name
+     * 配置名称
      * @maxLength 128
      */
     name: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Config Value
-     * @maxLength 512
+     * 配置�?     * @maxLength 512
      */
     value: string;
   };
@@ -5038,58 +5278,56 @@ export interface PostApiSystemDepartmentBatchData {
 
 export interface PostApiSystemDepartmentBatchPayload {
   data: {
-    /** Ancestors */
+    /** 祖级列表 */
     ancestors?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Email */
+    /** 邮箱 */
     email?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Leader */
+    /** 负责�?*/
     leader?: string | null;
     /**
-     * Department Name
+     * 部门名称
      * @maxLength 50
      */
     name: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Department ID */
+    /** 父部门ID */
     parentId?: string | null;
-    /** Phone */
+    /** 联系电话 */
     phone?: string | null;
-    /** Status */
+    /** 部门状�?*/
     status?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -5104,58 +5342,56 @@ export interface PostApiSystemDepartmentData {
 
 export interface PostApiSystemDepartmentPayload {
   data: {
-    /** Ancestors */
+    /** 祖级列表 */
     ancestors?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Email */
+    /** 邮箱 */
     email?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Leader */
+    /** 负责�?*/
     leader?: string | null;
     /**
-     * Department Name
+     * 部门名称
      * @maxLength 50
      */
     name: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Department ID */
+    /** 父部门ID */
     parentId?: string | null;
-    /** Phone */
+    /** 联系电话 */
     phone?: string | null;
-    /** Status */
+    /** 部门状�?*/
     status?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -5226,65 +5462,62 @@ export interface PostApiSystemDictBatchData {
 
 export interface PostApiSystemDictBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** CSS Class */
+    /** 样式属�?*/
     cssClass?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Dictionary Group
+     * 字典分组
      * @maxLength 100
      */
     group: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Default */
+    /** 是否默认 */
     isDefault?: boolean;
     /**
-     * Label
+     * 字典标签
      * @maxLength 100
      */
     label: string;
-    /** List Class */
+    /** 表格样式 */
     listClass?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Sort Order
+     * 字典排序
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Value
-     * @maxLength 100
+     * 字典键�?     * @maxLength 100
      */
     value: string;
   }[];
@@ -5308,37 +5541,34 @@ export interface PostApiSystemDictGroupBatchData {
 
 export interface PostApiSystemDictGroupBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Group Key
-     * @maxLength 100
+     * 分组�?     * @maxLength 100
      */
     key: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 100
      */
     name: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -5353,37 +5583,34 @@ export interface PostApiSystemDictGroupData {
 
 export interface PostApiSystemDictGroupPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Group Key
-     * @maxLength 100
+     * 分组�?     * @maxLength 100
      */
     key: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 100
      */
     name: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -5451,65 +5678,62 @@ export enum PostApiSystemDictGroupQueryStatusEnum {
 
 export interface PostApiSystemDictPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** CSS Class */
+    /** 样式属�?*/
     cssClass?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Dictionary Group
+     * 字典分组
      * @maxLength 100
      */
     group: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Default */
+    /** 是否默认 */
     isDefault?: boolean;
     /**
-     * Label
+     * 字典标签
      * @maxLength 100
      */
     label: string;
-    /** List Class */
+    /** 表格样式 */
     listClass?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Sort Order
+     * 字典排序
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Value
-     * @maxLength 100
+     * 字典键�?     * @maxLength 100
      */
     value: string;
   };
@@ -5836,63 +6060,61 @@ export interface PostApiSystemMenuBatchData {
 
 export interface PostApiSystemMenuBatchPayload {
   data: {
-    /** Component Path */
+    /** 组件路径 */
     component?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Icon */
+    /** 菜单图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Cache */
+    /** 是否缓存 */
     isCache?: boolean;
-    /** External Link */
+    /** 是否外链 */
     isFrame?: boolean;
     /**
-     * Menu Name
+     * 菜单名称
      * @maxLength 50
      */
     name: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Menu ID */
+    /** 父菜单ID */
     parentId?: string | null;
-    /** Route Path */
+    /** 路由地址 */
     path?: string | null;
-    /** Permission */
+    /** 权限标识 */
     perms?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Menu Type
+     * 菜单类型
      * @maxLength 1
      */
     type: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
-    /** Visible */
+    /** 是否显示 */
     visible?: boolean;
   }[];
 }
@@ -5907,63 +6129,61 @@ export interface PostApiSystemMenuData {
 
 export interface PostApiSystemMenuPayload {
   data: {
-    /** Component Path */
+    /** 组件路径 */
     component?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Icon */
+    /** 菜单图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Cache */
+    /** 是否缓存 */
     isCache?: boolean;
-    /** External Link */
+    /** 是否外链 */
     isFrame?: boolean;
     /**
-     * Menu Name
+     * 菜单名称
      * @maxLength 50
      */
     name: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Menu ID */
+    /** 父菜单ID */
     parentId?: string | null;
-    /** Route Path */
+    /** 路由地址 */
     path?: string | null;
-    /** Permission */
+    /** 权限标识 */
     perms?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Menu Type
+     * 菜单类型
      * @maxLength 1
      */
     type: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
-    /** Visible */
+    /** 是否显示 */
     visible?: boolean;
   };
 }
@@ -6036,43 +6256,41 @@ export interface PostApiSystemNoticeBatchData {
 
 export interface PostApiSystemNoticeBatchPayload {
   data: {
-    /** Content */
+    /** 公告内容 */
     content: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Notice Title
+     * 公告标题
      * @maxLength 50
      */
     title: string;
     /**
-     * Notice Type
+     * 公告类型
      * @maxLength 1
      */
     type: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -6087,43 +6305,41 @@ export interface PostApiSystemNoticeData {
 
 export interface PostApiSystemNoticePayload {
   data: {
-    /** Content */
+    /** 公告内容 */
     content: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Notice Title
+     * 公告标题
      * @maxLength 50
      */
     title: string;
     /**
-     * Notice Type
+     * 公告类型
      * @maxLength 1
      */
     type: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -6259,6 +6475,124 @@ export enum PostApiSystemOperationLogQueryStatusEnum {
   Value1 = "1",
 }
 
+export interface PostApiSystemPermissionData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiSystemPermissionPayload {
+  data: {
+    /** 操作类型 */
+    action?: string | null;
+    /**
+     * 权限标识
+     * @maxLength 100
+     */
+    code: string;
+    /** 创建时间 */
+    createdAt?: string;
+    /**
+     * 创建�?     * @maxLength 64
+     */
+    createdBy: string;
+    /** 创建者ID */
+    createdById?: string | null;
+    /** 权限描述 */
+    description?: string | null;
+    /**
+     * 主键ID
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    id?: string;
+    /** 所属模�?*/
+    module?: string | null;
+    /**
+     * 权限名称
+     * @maxLength 100
+     */
+    name: string;
+    /**
+     * 排序
+     * @min -2147483648
+     * @max 2147483647
+     */
+    orderNum?: number;
+    /** 父权限ID */
+    parentId?: string | null;
+    /** 资源名称 */
+    resource?: string | null;
+    /** 状�?*/
+    status?: boolean;
+    /**
+     * 权限类型
+     * @maxLength 20
+     */
+    type?: string;
+    /** 更新时间 */
+    updatedAt?: string;
+    /**
+     * 更新�?     * @maxLength 64
+     */
+    updatedBy: string;
+    /** 更新者ID */
+    updatedById?: string | null;
+  };
+}
+
+export interface PostApiSystemPermissionQueryData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export enum PostApiSystemPermissionQueryFieldEnum {
+  Code = "code",
+  Name = "name",
+  OrderNum = "orderNum",
+  CreatedAt = "createdAt",
+  UpdatedAt = "updatedAt",
+}
+
+export enum PostApiSystemPermissionQueryOrderEnum {
+  Asc = "asc",
+  Desc = "desc",
+}
+
+export interface PostApiSystemPermissionQueryPayload {
+  filter?: {
+    code?: string;
+    codes?: string[];
+    ids?: string[];
+    modules?: string[];
+    name?: string;
+    parentId?: string | null;
+    status?: boolean;
+    types?: string[];
+  };
+  /**
+   * @min 1
+   * @max 1000
+   * @default 100
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+  sort?: {
+    field: PostApiSystemPermissionQueryFieldEnum;
+    order: PostApiSystemPermissionQueryOrderEnum;
+  };
+}
+
 export interface PostApiSystemPostBatchData {
   data: any;
   /** @default "ok" */
@@ -6270,51 +6604,49 @@ export interface PostApiSystemPostBatchData {
 export interface PostApiSystemPostBatchPayload {
   data: {
     /**
-     * Post Code
+     * 岗位编码
      * @maxLength 64
      */
     code: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Post Name
+     * 岗位名称
      * @maxLength 50
      */
     name: string;
     /**
-     * Sort Order
+     * 显示排序
      * @maxLength 10
      */
     sort: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -6330,51 +6662,49 @@ export interface PostApiSystemPostData {
 export interface PostApiSystemPostPayload {
   data: {
     /**
-     * Post Code
+     * 岗位编码
      * @maxLength 64
      */
     code: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Post Name
+     * 岗位名称
      * @maxLength 50
      */
     name: string;
     /**
-     * Sort Order
+     * 显示排序
      * @maxLength 10
      */
     sort: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -6452,62 +6782,56 @@ export interface PostApiSystemRoleBatchData {
 
 export interface PostApiSystemRoleBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Data Scope */
+    /** 数据范围 */
     dataScope?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Department IDs */
-    deptIds: string[];
-    /** Role Flag */
+    /** 角色描述 */
+    description?: string | null;
+    /** 角色标识 */
     flag?: boolean | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Permission Key
-     * @maxLength 100
+     * 权限字符�?     * @maxLength 100
      */
     key: string;
-    /** Menu IDs */
-    menuIds: string[];
     /**
-     * Role Name
+     * 角色名称
      * @maxLength 30
      */
     name: string;
-    /** Permissions */
-    permissions: string[];
     /**
-     * Sort Order
-     * @maxLength 10
+     * 显示排序
+     * @min -2147483648
+     * @max 2147483647
      */
-    sort: string;
-    /** Status */
+    sort?: number;
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   }[];
 }
@@ -6531,13 +6855,13 @@ export interface PostApiSystemRoleDepartmentBatchData {
 export interface PostApiSystemRoleDepartmentBatchPayload {
   data: {
     /**
-     * Department ID
+     * 部门ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     departmentId: string;
     /**
-     * Role ID
+     * 角色ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6556,13 +6880,13 @@ export interface PostApiSystemRoleDepartmentData {
 export interface PostApiSystemRoleDepartmentPayload {
   data: {
     /**
-     * Department ID
+     * 部门ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     departmentId: string;
     /**
-     * Role ID
+     * 角色ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6632,13 +6956,13 @@ export interface PostApiSystemRoleMenuBatchData {
 export interface PostApiSystemRoleMenuBatchPayload {
   data: {
     /**
-     * Menu ID
+     * 菜单ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     menuId: string;
     /**
-     * Role ID
+     * 角色ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6657,13 +6981,13 @@ export interface PostApiSystemRoleMenuData {
 export interface PostApiSystemRoleMenuPayload {
   data: {
     /**
-     * Menu ID
+     * 菜单ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     menuId: string;
     /**
-     * Role ID
+     * 角色ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -6724,62 +7048,56 @@ export interface PostApiSystemRoleMenuQueryPayload {
 
 export interface PostApiSystemRolePayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Data Scope */
+    /** 数据范围 */
     dataScope?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Department IDs */
-    deptIds: string[];
-    /** Role Flag */
+    /** 角色描述 */
+    description?: string | null;
+    /** 角色标识 */
     flag?: boolean | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Permission Key
-     * @maxLength 100
+     * 权限字符�?     * @maxLength 100
      */
     key: string;
-    /** Menu IDs */
-    menuIds: string[];
     /**
-     * Role Name
+     * 角色名称
      * @maxLength 30
      */
     name: string;
-    /** Permissions */
-    permissions: string[];
     /**
-     * Sort Order
-     * @maxLength 10
+     * 显示排序
+     * @min -2147483648
+     * @max 2147483647
      */
-    sort: string;
-    /** Status */
+    sort?: number;
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -6857,52 +7175,49 @@ export interface PostApiSystemTokenData {
 
 export interface PostApiSystemTokenPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** system.token.fields.exp */
+    /** 过期时间 */
     exp: string;
-    /** system.token.fields.iat */
+    /** 签发时间 */
     iat?: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Revoked */
+    /** 是否已撤销 */
     isRevoked?: boolean;
     /**
-     * system.token.fields.jti
+     * 令牌类型
      * @maxLength 64
      */
     jti: string;
-    /** Revoked At */
+    /** 撤销时间 */
     revokedAt?: string | null;
-    /** Scopes */
+    /** 权限范围 */
     scopes: string[];
     /**
-     * system.token.fields.sub
-     * @maxLength 128
+     * 令牌�?     * @maxLength 128
      */
     sub: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * User ID
+     * 授权用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7021,13 +7336,13 @@ export interface PostApiSystemUserPostBatchData {
 export interface PostApiSystemUserPostBatchPayload {
   data: {
     /**
-     * Post ID
+     * 岗位ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     postId: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7046,13 +7361,13 @@ export interface PostApiSystemUserPostData {
 export interface PostApiSystemUserPostPayload {
   data: {
     /**
-     * Post ID
+     * 岗位ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     postId: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7208,13 +7523,13 @@ export interface PostApiSystemUserRoleBatchData {
 export interface PostApiSystemUserRoleBatchPayload {
   data: {
     /**
-     * Role ID
+     * 角色ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     roleId: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7233,13 +7548,13 @@ export interface PostApiSystemUserRoleData {
 export interface PostApiSystemUserRolePayload {
   data: {
     /**
-     * Role ID
+     * 角色ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     roleId: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7308,80 +7623,86 @@ export interface PutApiAiAgentBatchData {
 
 export interface PutApiAiAgentBatchPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds?: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds?: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds?: string[];
-    /** Avatar */
+    /** 头像 */
     avatar?: string | null;
-    /** Theme Color */
+    /** 主题颜色 */
     color?: string | null;
-    /** Context Strategy */
+    /** 上下文压缩策�?*/
     contextStrategy?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Public */
+    /** 描述 */
+    inputSchema?: Record<string, any>;
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Loops */
+    /** 最大循环次�?*/
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Model ID
+     * 模型ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId?: string;
     /**
-     * Agent Name
+     * Agent名称
      * @maxLength 64
      */
     name?: string;
+    /** 工具 */
+    nativeTools?: string[];
+    /** 描述 */
+    outputSchema?: Record<string, any>;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Loop */
+    /** 描述 */
+    structuredOutput?: boolean;
+    /** 支持循环 */
     supportLoop?: boolean;
-    /** System Prompt */
+    /** 系统提示�?*/
     systemPrompt?: string | null;
-    /** Temperature */
+    /** 温度参数 */
     temperature?: number | null;
-    /** Tools */
+    /** 工具 */
     toolIds?: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -7405,80 +7726,86 @@ export interface PutApiAiAgentByIdParams {
 
 export interface PutApiAiAgentByIdPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds?: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds?: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds?: string[];
-    /** Avatar */
+    /** 头像 */
     avatar?: string | null;
-    /** Theme Color */
+    /** 主题颜色 */
     color?: string | null;
-    /** Context Strategy */
+    /** 上下文压缩策�?*/
     contextStrategy?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Public */
+    /** 描述 */
+    inputSchema?: Record<string, any>;
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Loops */
+    /** 最大循环次�?*/
     maxLoops?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Model ID
+     * 模型ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     modelId?: string;
     /**
-     * Agent Name
+     * Agent名称
      * @maxLength 64
      */
     name?: string;
+    /** 工具 */
+    nativeTools?: string[];
+    /** 描述 */
+    outputSchema?: Record<string, any>;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Loop */
+    /** 描述 */
+    structuredOutput?: boolean;
+    /** 支持循环 */
     supportLoop?: boolean;
-    /** System Prompt */
+    /** 系统提示�?*/
     systemPrompt?: string | null;
-    /** Temperature */
+    /** 温度参数 */
     temperature?: number | null;
-    /** Tools */
+    /** 工具 */
     toolIds?: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -7527,64 +7854,62 @@ export interface PutApiAiAgentSessionByIdPayload {
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     agentId?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Archived */
+    /** 是否归档 */
     isArchived?: boolean;
-    /** Is Pinned */
+    /** 是否置顶 */
     isPinned?: boolean;
-    /** Last Message Time */
+    /** 最后消息时�?*/
     lastMessageAt?: string | null;
     /**
-     * Message Count
+     * 消息数量
      * @min -2147483648
      * @max 2147483647
      */
     messageCount?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Summary */
+    /** 摘要 */
     summary?: string | null;
-    /** Session Title */
+    /** 会话标题 */
     title?: string | null;
-    /** Token Usage */
+    /** Token用量 */
     tokenUsage?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -7622,71 +7947,69 @@ export interface PutApiAiModelBatchData {
 
 export interface PutApiAiModelBatchPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds?: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds?: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds?: string[];
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Input Capabilities */
+    /** 输入能力 */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Is Public */
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Tokens */
+    /** 最大Token */
     maxTokens?: number | null;
     /**
-     * Model ID
+     * 模型标识
      * @maxLength 128
      */
     modelId?: string;
     /**
-     * Model Name
+     * 模型名称
      * @maxLength 128
      */
     name?: string;
-    /** Output Capabilities */
+    /** 输出能力 */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Tools */
+    /** 支持工具 */
     supportTools?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -7710,71 +8033,69 @@ export interface PutApiAiModelByIdParams {
 
 export interface PutApiAiModelByIdPayload {
   data: {
-    /** Allow Sub Departments */
+    /** 子部门可访问 */
     allowSubDepts?: boolean;
-    /** Allowed Departments */
+    /** 允许访问的部�?*/
     allowedDeptIds?: string[];
-    /** Allowed Roles */
+    /** 允许访问的角�?*/
     allowedRoleIds?: string[];
-    /** Allowed Users */
+    /** 允许访问的用�?*/
     allowedUserIds?: string[];
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Input Capabilities */
+    /** 输入能力 */
     inputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Is Public */
+    /** 是否公开 */
     isPublic?: boolean;
-    /** Max Tokens */
+    /** 最大Token */
     maxTokens?: number | null;
     /**
-     * Model ID
+     * 模型标识
      * @maxLength 128
      */
     modelId?: string;
     /**
-     * Model Name
+     * 模型名称
      * @maxLength 128
      */
     name?: string;
-    /** Output Capabilities */
+    /** 输出能力 */
     outputCapabilities?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Provider ID
+     * 提供商ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     providerId?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Support Tools */
+    /** 支持工具 */
     supportTools?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -7790,44 +8111,41 @@ export interface PutApiAiProviderBatchData {
 export interface PutApiAiProviderBatchPayload {
   data: {
     /**
-     * API URL
+     * API地址
      * @maxLength 512
      */
     baseUrl?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Provider Name
-     * @maxLength 64
+     * 提供商名�?     * @maxLength 64
      */
     name?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** API Key */
+    /** API密钥 */
     token?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -7852,197 +8170,41 @@ export interface PutApiAiProviderByIdParams {
 export interface PutApiAiProviderByIdPayload {
   data: {
     /**
-     * API URL
+     * API地址
      * @maxLength 512
      */
     baseUrl?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Provider Name
-     * @maxLength 64
+     * 提供商名�?     * @maxLength 64
      */
     name?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** API Key */
+    /** API密钥 */
     token?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
-    updatedById?: string | null;
-  };
-}
-
-export interface PutApiAiToolBatchData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiAiToolBatchPayload {
-  data: {
-    /** Allow Sub Departments */
-    allowSubDepts?: boolean;
-    /** Allowed Departments */
-    allowedDeptIds?: string[];
-    /** Allowed Roles */
-    allowedRoleIds?: string[];
-    /** Allowed Users */
-    allowedUserIds?: string[];
-    /** Created At */
-    createdAt?: string;
-    /**
-     * Created By
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** Created By ID */
-    createdById?: string | null;
-    /** Description */
-    description?: string | null;
-    /** Group ID */
-    groupId?: string | null;
-    /**
-     * Primary Key ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** Implementation */
-    implementation?: string | null;
-    /** Input Schema */
-    inputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Async Execution */
-    isAsync?: boolean;
-    /** Is Public */
-    isPublic?: boolean;
-    /**
-     * Tool Name
-     * @maxLength 64
-     */
-    name?: string;
-    /** Output Schema */
-    outputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Remark */
-    remark?: string | null;
-    /** Status */
-    status?: string | null;
-    /** Updated At */
-    updatedAt?: string;
-    /**
-     * Updated By
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** Updated By ID */
-    updatedById?: string | null;
-  };
-  ids: string[];
-}
-
-export interface PutApiAiToolByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiAiToolByIdParams {
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
-  id: string;
-}
-
-export interface PutApiAiToolByIdPayload {
-  data: {
-    /** Allow Sub Departments */
-    allowSubDepts?: boolean;
-    /** Allowed Departments */
-    allowedDeptIds?: string[];
-    /** Allowed Roles */
-    allowedRoleIds?: string[];
-    /** Allowed Users */
-    allowedUserIds?: string[];
-    /** Created At */
-    createdAt?: string;
-    /**
-     * Created By
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** Created By ID */
-    createdById?: string | null;
-    /** Description */
-    description?: string | null;
-    /** Group ID */
-    groupId?: string | null;
-    /**
-     * Primary Key ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** Implementation */
-    implementation?: string | null;
-    /** Input Schema */
-    inputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Async Execution */
-    isAsync?: boolean;
-    /** Is Public */
-    isPublic?: boolean;
-    /**
-     * Tool Name
-     * @maxLength 64
-     */
-    name?: string;
-    /** Output Schema */
-    outputSchema?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** Remark */
-    remark?: string | null;
-    /** Status */
-    status?: string | null;
-    /** Updated At */
-    updatedAt?: string;
-    /**
-     * Updated By
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -8057,48 +8219,50 @@ export interface PutApiAiToolGroupBatchData {
 
 export interface PutApiAiToolGroupBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 64
      */
     name?: string;
     /**
-     * Sort Order
+     * 排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 分组名称 */
+    tools?:
+      | ((string | number | boolean | null) | Record<string, any> | any[])
+      | null;
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -8122,48 +8286,50 @@ export interface PutApiAiToolGroupByIdParams {
 
 export interface PutApiAiToolGroupByIdPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 64
      */
     name?: string;
     /**
-     * Sort Order
+     * 排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 分组名称 */
+    tools?:
+      | ((string | number | boolean | null) | Record<string, any> | any[])
+      | null;
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -8358,71 +8524,69 @@ export interface PutApiImConversationByIdParams {
 
 export interface PutApiImConversationByIdPayload {
   data: {
-    /** Announcement */
+    /** 群公�?*/
     announcement?: string | null;
-    /** Avatar */
+    /** 头像 */
     avatar?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Muted */
+    /** 是否免打�?*/
     isMuted?: boolean;
-    /** Pinned */
+    /** 是否置顶 */
     isTop?: boolean;
-    /** Last Message Time */
+    /** 最后消息时�?*/
     lastMessageAt?: string | null;
-    /** Last Message ID */
+    /** 最后消息ID */
     lastMessageId?: string | null;
-    /** Max Members */
+    /** 最大成员数 */
     maxMembers?: number | null;
     /**
-     * Member Count
+     * 成员数量
      * @min -2147483648
      * @max 2147483647
      */
     memberCount?: number;
-    /** Conversation Name */
+    /** 会话名称 */
     name?: string | null;
-    /** Owner ID */
+    /** 所有者ID */
     ownerId?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Conversation Type
+     * 会话类型
      * @minLength 1
      * @maxLength 1
      */
     type?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -8500,33 +8664,33 @@ export interface PutApiImGroupMemberByConversationIdByUserIdParams {
 export interface PutApiImGroupMemberByConversationIdByUserIdPayload {
   data: {
     /**
-     * Conversation ID
+     * 会话ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     conversationId?: string;
-    /** Extra Data */
+    /** 扩展数据 */
     extra?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Invited By */
+    /** 邀请人ID */
     invitedById?: string | null;
-    /** Is Muted */
+    /** 是否禁言 */
     isMuted?: boolean;
-    /** Joined At */
+    /** 加入时间 */
     joinedAt?: string;
-    /** Muted Until */
+    /** 禁言截止时间 */
     mutedUntil?: string | null;
-    /** Nickname in Group */
+    /** 群内昵称 */
     nickname?: string | null;
     /**
-     * Role
+     * 角色
      * @minLength 1
      * @maxLength 1
      */
     role?: string;
     /**
-     * User ID
+     * 用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -8569,74 +8733,69 @@ export interface PutApiImTempFileByIdParams {
 export interface PutApiImTempFileByIdPayload {
   data: {
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket?: string;
-    /** Conversation ID */
+    /** 会话ID */
     conversationId?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /** ETag */
     etag?: string | null;
-    /** Expires At */
+    /** 过期时间 */
     expiresAt?: string | null;
-    /** Extension */
+    /** 扩展�?*/
     extension?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Message ID */
+    /** 消息ID */
     messageId?: string | null;
-    /** Metadata */
+    /** 元数�?*/
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** MIME Type */
+    /** MIME类型 */
     mimeType?: string | null;
     /**
-     * File Name
+     * 文件名称
      * @maxLength 255
      */
     name?: string;
     /**
-     * Original Name
-     * @maxLength 255
+     * 原始文件�?     * @maxLength 255
      */
     originalName?: string;
-    /** Region */
+    /** 区域 */
     region?: string | null;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -8652,104 +8811,99 @@ export interface PutApiKnowledgeFileBatchData {
 export interface PutApiKnowledgeFileBatchPayload {
   data: {
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Download Count
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
     /** ETag */
     etag?: string | null;
-    /** Extension */
+    /** 扩展�?*/
     extension?: string | null;
-    /** Folder ID */
+    /** 文件夹ID */
     folderId?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 公开 */
     isPublic?: boolean;
-    /** Metadata */
+    /** 元数�?*/
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** MIME Type */
+    /** MIME类型 */
     mimeType?: string | null;
     /**
-     * File Name
+     * 文件名称
      * @maxLength 255
      */
     name?: string;
     /**
-     * Original Name
-     * @maxLength 255
+     * 原始文件�?     * @maxLength 255
      */
     originalName?: string;
-    /** Process Result */
+    /** 处理结果 */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Process Status */
+    /** 处理状�?*/
     processStatus?: string | null;
-    /** Region */
+    /** 区域 */
     region?: string | null;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Storage Class */
+    /** 存储类型 */
     storageClass?: string | null;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey?: string;
-    /** Tags */
+    /** 标签 */
     tags?: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * knowledge.file.fields.versionCount
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
-    /** Version ID */
+    /** 版本ID */
     versionId?: string | null;
   };
   ids: string[];
@@ -8774,104 +8928,99 @@ export interface PutApiKnowledgeFileByIdParams {
 export interface PutApiKnowledgeFileByIdPayload {
   data: {
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
     /**
-     * Download Count
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     downloadCount?: number;
     /** ETag */
     etag?: string | null;
-    /** Extension */
+    /** 扩展�?*/
     extension?: string | null;
-    /** Folder ID */
+    /** 文件夹ID */
     folderId?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 公开 */
     isPublic?: boolean;
-    /** Metadata */
+    /** 元数�?*/
     metadata?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** MIME Type */
+    /** MIME类型 */
     mimeType?: string | null;
     /**
-     * File Name
+     * 文件名称
      * @maxLength 255
      */
     name?: string;
     /**
-     * Original Name
-     * @maxLength 255
+     * 原始文件�?     * @maxLength 255
      */
     originalName?: string;
-    /** Process Result */
+    /** 处理结果 */
     processResult?:
       | ((string | number | boolean | null) | Record<string, any> | any[])
       | null;
-    /** Process Status */
+    /** 处理状�?*/
     processStatus?: string | null;
-    /** Region */
+    /** 区域 */
     region?: string | null;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Storage Class */
+    /** 存储类型 */
     storageClass?: string | null;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey?: string;
-    /** Tags */
+    /** 标签 */
     tags?: string[];
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * knowledge.file.fields.versionCount
+     * 下载次数
      * @min -2147483648
      * @max 2147483647
      */
     versionCount?: number;
-    /** Version ID */
+    /** 版本ID */
     versionId?: string | null;
   };
 }
@@ -8886,52 +9035,48 @@ export interface PutApiKnowledgeFileVersionBatchData {
 
 export interface PutApiKnowledgeFileVersionBatchPayload {
   data: {
-    /** S3 Version ID */
+    /** S3版本ID */
     s3VersionId?: string | null;
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket?: string;
-    /** Change Log */
+    /** 变更日志 */
     changeLog?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建人ID */
     createdById?: string | null;
     /** ETag */
     etag?: string | null;
     /**
-     * File ID
+     * 文件ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId?: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey?: string;
     /**
-     * Version Number
-     * @maxLength 32
+     * 版本�?     * @maxLength 32
      */
     versionNumber?: string;
   };
@@ -8956,52 +9101,48 @@ export interface PutApiKnowledgeFileVersionByIdParams {
 
 export interface PutApiKnowledgeFileVersionByIdPayload {
   data: {
-    /** S3 Version ID */
+    /** S3版本ID */
     s3VersionId?: string | null;
     /**
-     * Bucket
-     * @maxLength 128
+     * 存储�?     * @maxLength 128
      */
     bucket?: string;
-    /** Change Log */
+    /** 变更日志 */
     changeLog?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建人ID */
     createdById?: string | null;
     /** ETag */
     etag?: string | null;
     /**
-     * File ID
+     * 文件ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     fileId?: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * File Size
+     * 文件大小
      * @min -9007199254740991
      * @max 9007199254740991
      */
     size?: number;
     /**
-     * Storage Key
-     * @maxLength 512
+     * 存储�?     * @maxLength 512
      */
     storageKey?: string;
     /**
-     * Version Number
-     * @maxLength 32
+     * 版本�?     * @maxLength 32
      */
     versionNumber?: string;
   };
@@ -9017,58 +9158,54 @@ export interface PutApiKnowledgeFolderBatchData {
 
 export interface PutApiKnowledgeFolderBatchPayload {
   data: {
-    /** Color */
+    /** 颜色 */
     color?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 是否公开 */
     isPublic?: boolean;
     /**
-     * Folder Name
-     * @maxLength 255
+     * 文件夹名�?     * @maxLength 255
      */
     name?: string;
     /**
-     * Sort Order
-     * @min -2147483648
+     * 排序�?     * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Folder ID */
+    /** 父文件夹ID */
     parentId?: string | null;
-    /** Path */
+    /** 路径 */
     path?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -9092,60 +9229,92 @@ export interface PutApiKnowledgeFolderByIdParams {
 
 export interface PutApiKnowledgeFolderByIdPayload {
   data: {
-    /** Color */
+    /** 颜色 */
     color?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Description */
+    /** 描述 */
     description?: string | null;
-    /** Icon */
+    /** 图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Public */
+    /** 是否公开 */
     isPublic?: boolean;
     /**
-     * Folder Name
-     * @maxLength 255
+     * 文件夹名�?     * @maxLength 255
      */
     name?: string;
     /**
-     * Sort Order
-     * @min -2147483648
+     * 排序�?     * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Folder ID */
+    /** 父文件夹ID */
     parentId?: string | null;
-    /** Path */
+    /** 路径 */
     path?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
+}
+
+export interface PutApiSystemCasbinRuleRoleByRoleKeyPermissionsData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiSystemCasbinRuleRoleByRoleKeyPermissionsParams {
+  roleKey: string;
+}
+
+export interface PutApiSystemCasbinRuleRoleByRoleKeyPermissionsPayload {
+  permissionCodes: string[];
+}
+
+export interface PutApiSystemCasbinRuleUserByUserIdRolesData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiSystemCasbinRuleUserByUserIdRolesParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  userId: string;
+}
+
+export interface PutApiSystemCasbinRuleUserByUserIdRolesPayload {
+  roleKeys: string[];
 }
 
 export interface PutApiSystemConfigBatchData {
@@ -9158,45 +9327,41 @@ export interface PutApiSystemConfigBatchData {
 
 export interface PutApiSystemConfigBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** System Built-in */
+    /** 系统内置 */
     isSystem?: boolean;
     /**
-     * Config Key
-     * @maxLength 128
+     * 配置�?     * @maxLength 128
      */
     key?: string;
     /**
-     * Config Name
+     * 配置名称
      * @maxLength 128
      */
     name?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Config Value
-     * @maxLength 512
+     * 配置�?     * @maxLength 512
      */
     value?: string;
   };
@@ -9221,45 +9386,41 @@ export interface PutApiSystemConfigByIdParams {
 
 export interface PutApiSystemConfigByIdPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** System Built-in */
+    /** 系统内置 */
     isSystem?: boolean;
     /**
-     * Config Key
-     * @maxLength 128
+     * 配置�?     * @maxLength 128
      */
     key?: string;
     /**
-     * Config Name
+     * 配置名称
      * @maxLength 128
      */
     name?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Config Value
-     * @maxLength 512
+     * 配置�?     * @maxLength 512
      */
     value?: string;
   };
@@ -9275,58 +9436,56 @@ export interface PutApiSystemDepartmentBatchData {
 
 export interface PutApiSystemDepartmentBatchPayload {
   data: {
-    /** Ancestors */
+    /** 祖级列表 */
     ancestors?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Email */
+    /** 邮箱 */
     email?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Leader */
+    /** 负责�?*/
     leader?: string | null;
     /**
-     * Department Name
+     * 部门名称
      * @maxLength 50
      */
     name?: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Department ID */
+    /** 父部门ID */
     parentId?: string | null;
-    /** Phone */
+    /** 联系电话 */
     phone?: string | null;
-    /** Status */
+    /** 部门状�?*/
     status?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -9350,58 +9509,56 @@ export interface PutApiSystemDepartmentByIdParams {
 
 export interface PutApiSystemDepartmentByIdPayload {
   data: {
-    /** Ancestors */
+    /** 祖级列表 */
     ancestors?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Email */
+    /** 邮箱 */
     email?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Leader */
+    /** 负责�?*/
     leader?: string | null;
     /**
-     * Department Name
+     * 部门名称
      * @maxLength 50
      */
     name?: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Department ID */
+    /** 父部门ID */
     parentId?: string | null;
-    /** Phone */
+    /** 联系电话 */
     phone?: string | null;
-    /** Status */
+    /** 部门状�?*/
     status?: boolean;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -9416,65 +9573,62 @@ export interface PutApiSystemDictBatchData {
 
 export interface PutApiSystemDictBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** CSS Class */
+    /** 样式属�?*/
     cssClass?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Dictionary Group
+     * 字典分组
      * @maxLength 100
      */
     group?: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Default */
+    /** 是否默认 */
     isDefault?: boolean;
     /**
-     * Label
+     * 字典标签
      * @maxLength 100
      */
     label?: string;
-    /** List Class */
+    /** 表格样式 */
     listClass?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Sort Order
+     * 字典排序
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Value
-     * @maxLength 100
+     * 字典键�?     * @maxLength 100
      */
     value?: string;
   };
@@ -9499,65 +9653,62 @@ export interface PutApiSystemDictByIdParams {
 
 export interface PutApiSystemDictByIdPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** CSS Class */
+    /** 样式属�?*/
     cssClass?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Dictionary Group
+     * 字典分组
      * @maxLength 100
      */
     group?: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Default */
+    /** 是否默认 */
     isDefault?: boolean;
     /**
-     * Label
+     * 字典标签
      * @maxLength 100
      */
     label?: string;
-    /** List Class */
+    /** 表格样式 */
     listClass?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Sort Order
+     * 字典排序
      * @min -2147483648
      * @max 2147483647
      */
     sort?: number;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * Value
-     * @maxLength 100
+     * 字典键�?     * @maxLength 100
      */
     value?: string;
   };
@@ -9573,37 +9724,34 @@ export interface PutApiSystemDictGroupBatchData {
 
 export interface PutApiSystemDictGroupBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Group Key
-     * @maxLength 100
+     * 分组�?     * @maxLength 100
      */
     key?: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 100
      */
     name?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   keys: string[];
@@ -9627,37 +9775,34 @@ export interface PutApiSystemDictGroupByKeyParams {
 
 export interface PutApiSystemDictGroupByKeyPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Group Key
-     * @maxLength 100
+     * 分组�?     * @maxLength 100
      */
     key?: string;
     /**
-     * Group Name
+     * 分组名称
      * @maxLength 100
      */
     name?: string;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -9720,63 +9865,61 @@ export interface PutApiSystemMenuBatchData {
 
 export interface PutApiSystemMenuBatchPayload {
   data: {
-    /** Component Path */
+    /** 组件路径 */
     component?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Icon */
+    /** 菜单图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Cache */
+    /** 是否缓存 */
     isCache?: boolean;
-    /** External Link */
+    /** 是否外链 */
     isFrame?: boolean;
     /**
-     * Menu Name
+     * 菜单名称
      * @maxLength 50
      */
     name?: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Menu ID */
+    /** 父菜单ID */
     parentId?: string | null;
-    /** Route Path */
+    /** 路由地址 */
     path?: string | null;
-    /** Permission */
+    /** 权限标识 */
     perms?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Menu Type
+     * 菜单类型
      * @maxLength 1
      */
     type?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
-    /** Visible */
+    /** 是否显示 */
     visible?: boolean;
   };
   ids: string[];
@@ -9800,63 +9943,61 @@ export interface PutApiSystemMenuByIdParams {
 
 export interface PutApiSystemMenuByIdPayload {
   data: {
-    /** Component Path */
+    /** 组件路径 */
     component?: string | null;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Icon */
+    /** 菜单图标 */
     icon?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Cache */
+    /** 是否缓存 */
     isCache?: boolean;
-    /** External Link */
+    /** 是否外链 */
     isFrame?: boolean;
     /**
-     * Menu Name
+     * 菜单名称
      * @maxLength 50
      */
     name?: string;
     /**
-     * Sort Order
+     * 显示排序
      * @min -2147483648
      * @max 2147483647
      */
     orderNum?: number;
-    /** Parent Menu ID */
+    /** 父菜单ID */
     parentId?: string | null;
-    /** Route Path */
+    /** 路由地址 */
     path?: string | null;
-    /** Permission */
+    /** 权限标识 */
     perms?: string | null;
-    /** Remark */
+    /** 备注 */
     remark?: string | null;
     /**
-     * Menu Type
+     * 菜单类型
      * @maxLength 1
      */
     type?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
-    /** Visible */
+    /** 是否显示 */
     visible?: boolean;
   };
 }
@@ -9871,43 +10012,41 @@ export interface PutApiSystemNoticeBatchData {
 
 export interface PutApiSystemNoticeBatchPayload {
   data: {
-    /** Content */
+    /** 公告内容 */
     content?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Notice Title
+     * 公告标题
      * @maxLength 50
      */
     title?: string;
     /**
-     * Notice Type
+     * 公告类型
      * @maxLength 1
      */
     type?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -9931,43 +10070,117 @@ export interface PutApiSystemNoticeByIdParams {
 
 export interface PutApiSystemNoticeByIdPayload {
   data: {
-    /** Content */
+    /** 公告内容 */
     content?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
     /**
-     * Notice Title
+     * 公告标题
      * @maxLength 50
      */
     title?: string;
     /**
-     * Notice Type
+     * 公告类型
      * @maxLength 1
      */
     type?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
+    updatedById?: string | null;
+  };
+}
+
+export interface PutApiSystemPermissionByIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiSystemPermissionByIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  id: string;
+}
+
+export interface PutApiSystemPermissionByIdPayload {
+  data: {
+    /** 操作类型 */
+    action?: string | null;
+    /**
+     * 权限标识
+     * @maxLength 100
+     */
+    code?: string;
+    /** 创建时间 */
+    createdAt?: string;
+    /**
+     * 创建�?     * @maxLength 64
+     */
+    createdBy?: string;
+    /** 创建者ID */
+    createdById?: string | null;
+    /** 权限描述 */
+    description?: string | null;
+    /**
+     * 主键ID
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    id?: string;
+    /** 所属模�?*/
+    module?: string | null;
+    /**
+     * 权限名称
+     * @maxLength 100
+     */
+    name?: string;
+    /**
+     * 排序
+     * @min -2147483648
+     * @max 2147483647
+     */
+    orderNum?: number;
+    /** 父权限ID */
+    parentId?: string | null;
+    /** 资源名称 */
+    resource?: string | null;
+    /** 状�?*/
+    status?: boolean;
+    /**
+     * 权限类型
+     * @maxLength 20
+     */
+    type?: string;
+    /** 更新时间 */
+    updatedAt?: string;
+    /**
+     * 更新�?     * @maxLength 64
+     */
+    updatedBy?: string;
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -9983,51 +10196,49 @@ export interface PutApiSystemPostBatchData {
 export interface PutApiSystemPostBatchPayload {
   data: {
     /**
-     * Post Code
+     * 岗位编码
      * @maxLength 64
      */
     code?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Post Name
+     * 岗位名称
      * @maxLength 50
      */
     name?: string;
     /**
-     * Sort Order
+     * 显示排序
      * @maxLength 10
      */
     sort?: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -10052,51 +10263,49 @@ export interface PutApiSystemPostByIdParams {
 export interface PutApiSystemPostByIdPayload {
   data: {
     /**
-     * Post Code
+     * 岗位编码
      * @maxLength 64
      */
     code?: string;
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Post Name
+     * 岗位名称
      * @maxLength 50
      */
     name?: string;
     /**
-     * Sort Order
+     * 显示排序
      * @maxLength 10
      */
     sort?: string;
-    /** Status */
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
 }
@@ -10111,62 +10320,56 @@ export interface PutApiSystemRoleBatchData {
 
 export interface PutApiSystemRoleBatchPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Data Scope */
+    /** 数据范围 */
     dataScope?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Department IDs */
-    deptIds?: string[];
-    /** Role Flag */
+    /** 角色描述 */
+    description?: string | null;
+    /** 角色标识 */
     flag?: boolean | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Permission Key
-     * @maxLength 100
+     * 权限字符�?     * @maxLength 100
      */
     key?: string;
-    /** Menu IDs */
-    menuIds?: string[];
     /**
-     * Role Name
+     * 角色名称
      * @maxLength 30
      */
     name?: string;
-    /** Permissions */
-    permissions?: string[];
     /**
-     * Sort Order
-     * @maxLength 10
+     * 显示排序
+     * @min -2147483648
+     * @max 2147483647
      */
-    sort?: string;
-    /** Status */
+    sort?: number;
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
   ids: string[];
@@ -10190,64 +10393,78 @@ export interface PutApiSystemRoleByIdParams {
 
 export interface PutApiSystemRoleByIdPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** Data Scope */
+    /** 数据范围 */
     dataScope?: string | null;
-    /** Deleted At */
+    /** 删除时间 */
     deletedAt?: string | null;
-    /** Deleted By */
+    /** 删除�?*/
     deletedBy?: string | null;
-    /** Deleted By ID */
+    /** 删除者ID */
     deletedById?: string | null;
-    /** Department IDs */
-    deptIds?: string[];
-    /** Role Flag */
+    /** 角色描述 */
+    description?: string | null;
+    /** 角色标识 */
     flag?: boolean | null;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
     /**
-     * Permission Key
-     * @maxLength 100
+     * 权限字符�?     * @maxLength 100
      */
     key?: string;
-    /** Menu IDs */
-    menuIds?: string[];
     /**
-     * Role Name
+     * 角色名称
      * @maxLength 30
      */
     name?: string;
-    /** Permissions */
-    permissions?: string[];
     /**
-     * Sort Order
-     * @maxLength 10
+     * 显示排序
+     * @min -2147483648
+     * @max 2147483647
      */
-    sort?: string;
-    /** Status */
+    sort?: number;
+    /** 状�?*/
     status?: string | null;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
   };
+}
+
+export interface PutApiSystemRoleMenuRoleByRoleIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiSystemRoleMenuRoleByRoleIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  roleId: string;
+}
+
+export interface PutApiSystemRoleMenuRoleByRoleIdPayload {
+  menuIds: string[];
 }
 
 export interface PutApiSystemTokenByIdData {
@@ -10268,52 +10485,49 @@ export interface PutApiSystemTokenByIdParams {
 
 export interface PutApiSystemTokenByIdPayload {
   data: {
-    /** Created At */
+    /** 创建时间 */
     createdAt?: string;
     /**
-     * Created By
-     * @maxLength 64
+     * 创建�?     * @maxLength 64
      */
     createdBy?: string;
-    /** Created By ID */
+    /** 创建者ID */
     createdById?: string | null;
-    /** system.token.fields.exp */
+    /** 过期时间 */
     exp?: string;
-    /** system.token.fields.iat */
+    /** 签发时间 */
     iat?: string;
     /**
-     * Primary Key ID
+     * 主键ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
     id?: string;
-    /** Is Revoked */
+    /** 是否已撤销 */
     isRevoked?: boolean;
     /**
-     * system.token.fields.jti
+     * 令牌类型
      * @maxLength 64
      */
     jti?: string;
-    /** Revoked At */
+    /** 撤销时间 */
     revokedAt?: string | null;
-    /** Scopes */
+    /** 权限范围 */
     scopes?: string[];
     /**
-     * system.token.fields.sub
-     * @maxLength 128
+     * 令牌�?     * @maxLength 128
      */
     sub?: string;
-    /** Updated At */
+    /** 更新时间 */
     updatedAt?: string;
     /**
-     * Updated By
-     * @maxLength 64
+     * 更新�?     * @maxLength 64
      */
     updatedBy?: string;
-    /** Updated By ID */
+    /** 更新者ID */
     updatedById?: string | null;
     /**
-     * User ID
+     * 授权用户ID
      * @format uuid
      * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
      */
@@ -10345,6 +10559,26 @@ export interface PutApiSystemUserByIdParams {
   id: string;
 }
 
+export interface PutApiSystemUserRoleUserByUserIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiSystemUserRoleUserByUserIdParams {
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  userId: string;
+}
+
+export interface PutApiSystemUserRoleUserByUserIdPayload {
+  roleIds: string[];
+}
+
 export enum ResourceTypeEnum {
   Folder = "folder",
   File = "file",
@@ -10353,6 +10587,901 @@ export enum ResourceTypeEnum {
 export enum ResourceTypeEnum1 {
   Folder = "folder",
   File = "file",
+}
+
+export enum ResourceTypeEnum2 {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum ResourceTypeEnum3 {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum ResourceTypeEnum4 {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum ResourceTypeEnum5 {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum ResourceTypeEnum6 {
+  File = "file",
+  Folder = "folder",
+}
+
+export enum SubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
+}
+
+export namespace Ai {
+  /**
+   * @description 根据ID删除AI智能�?   * @tags ai, agent
+   * @name DeleteApiAiAgentById
+   * @summary 删除AI智能�?   * @request DELETE:/api/ai/agent/{id}
+   * @response `200` `DeleteApiAiAgentByIdData` Response for status 200
+   */
+  export namespace DeleteApiAiAgentById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiAiAgentByIdData;
+  }
+
+  /**
+   * @description 根据ID软删除Agent会话
+   * @tags ai, agentSession
+   * @name DeleteApiAiAgentSessionById
+   * @summary 删除Agent会话
+   * @request DELETE:/api/ai/agent-session/{id}
+   * @response `200` `DeleteApiAiAgentSessionByIdData` Response for status 200
+   */
+  export namespace DeleteApiAiAgentSessionById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiAiAgentSessionByIdData;
+  }
+
+  /**
+   * @description 根据ID删除AI模型
+   * @tags ai, model
+   * @name DeleteApiAiModelById
+   * @summary 删除AI模型
+   * @request DELETE:/api/ai/model/{id}
+   * @response `200` `DeleteApiAiModelByIdData` Response for status 200
+   */
+  export namespace DeleteApiAiModelById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiAiModelByIdData;
+  }
+
+  /**
+   * @description 根据ID删除AI提供�?   * @tags ai, provider
+   * @name DeleteApiAiProviderById
+   * @summary 删除AI提供�?   * @request DELETE:/api/ai/provider/{id}
+   * @response `200` `DeleteApiAiProviderByIdData` Response for status 200
+   */
+  export namespace DeleteApiAiProviderById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiAiProviderByIdData;
+  }
+
+  /**
+   * @description 根据ID删除工具�?   * @tags ai, toolGroup
+   * @name DeleteApiAiToolGroupById
+   * @summary 删除工具�?   * @request DELETE:/api/ai/tool-group/{id}
+   * @response `200` `DeleteApiAiToolGroupByIdData` Response for status 200
+   */
+  export namespace DeleteApiAiToolGroupById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiAiToolGroupByIdData;
+  }
+
+  /**
+   * @description 根据主键ID查询单个AI智能�?   * @tags ai, agent
+   * @name GetApiAiAgentById
+   * @summary 根据ID查询AI智能�?   * @request GET:/api/ai/agent/{id}
+   * @response `200` `GetApiAiAgentByIdData` Response for status 200
+   */
+  export namespace GetApiAiAgentById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentByIdData;
+  }
+
+  /**
+   * @description 根据主键ID查询单个Agent消息
+   * @tags ai, agentMessage
+   * @name GetApiAiAgentMessageById
+   * @summary 根据ID查询Agent消息
+   * @request GET:/api/ai/agent-message/{id}
+   * @response `200` `GetApiAiAgentMessageByIdData` Response for status 200
+   */
+  export namespace GetApiAiAgentMessageById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentMessageByIdData;
+  }
+
+  /**
+   * @description 获取指定会话的消息历�?   * @tags ai, agentMessage
+   * @name GetApiAiAgentMessageHistoryBySessionId
+   * @summary 获取会话历史
+   * @request GET:/api/ai/agent-message/history/{sessionId}
+   * @response `200` `GetApiAiAgentMessageHistoryBySessionIdData` Response for status 200
+   */
+  export namespace GetApiAiAgentMessageHistoryBySessionId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      sessionId: string;
+    };
+    export type RequestQuery = {
+      /**
+       * @min -9007199254740991
+       * @max 9007199254740991
+       */
+      beforeSeq?: number;
+      /**
+       * @min 1
+       * @max 200
+       * @default 50
+       */
+      limit?: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentMessageHistoryBySessionIdData;
+  }
+
+  /**
+   * @description 获取Agent消息表的JSON Schema
+   * @tags ai, agentMessage
+   * @name GetApiAiAgentMessageSchema
+   * @summary 获取Agent消息Schema
+   * @request GET:/api/ai/agent-message/schema
+   * @response `200` `GetApiAiAgentMessageSchemaData` Response for status 200
+   */
+  export namespace GetApiAiAgentMessageSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentMessageSchemaData;
+  }
+
+  /**
+   * @description 获取AI智能体表的JSON Schema
+   * @tags ai, agent
+   * @name GetApiAiAgentSchema
+   * @summary 获取AI智能体Schema
+   * @request GET:/api/ai/agent/schema
+   * @response `200` `GetApiAiAgentSchemaData` Response for status 200
+   */
+  export namespace GetApiAiAgentSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentSchemaData;
+  }
+
+  /**
+   * @description 根据主键ID查询单个Agent会话
+   * @tags ai, agentSession
+   * @name GetApiAiAgentSessionById
+   * @summary 根据ID查询Agent会话
+   * @request GET:/api/ai/agent-session/{id}
+   * @response `200` `GetApiAiAgentSessionByIdData` Response for status 200
+   */
+  export namespace GetApiAiAgentSessionById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentSessionByIdData;
+  }
+
+  /**
+   * @description 获取Agent会话表的JSON Schema
+   * @tags ai, agentSession
+   * @name GetApiAiAgentSessionSchema
+   * @summary 获取Agent会话Schema
+   * @request GET:/api/ai/agent-session/schema
+   * @response `200` `GetApiAiAgentSessionSchemaData` Response for status 200
+   */
+  export namespace GetApiAiAgentSessionSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiAgentSessionSchemaData;
+  }
+
+  /**
+   * @description 根据主键ID查询单个AI模型
+   * @tags ai, model
+   * @name GetApiAiModelById
+   * @summary 根据ID查询AI模型
+   * @request GET:/api/ai/model/{id}
+   * @response `200` `GetApiAiModelByIdData` Response for status 200
+   */
+  export namespace GetApiAiModelById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiModelByIdData;
+  }
+
+  /**
+   * @description 获取AI模型表的JSON Schema
+   * @tags ai, model
+   * @name GetApiAiModelSchema
+   * @summary 获取AI模型Schema
+   * @request GET:/api/ai/model/schema
+   * @response `200` `GetApiAiModelSchemaData` Response for status 200
+   */
+  export namespace GetApiAiModelSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiModelSchemaData;
+  }
+
+  /**
+   * @description 根据主键ID查询单个AI提供�?   * @tags ai, provider
+   * @name GetApiAiProviderById
+   * @summary 根据ID查询AI提供�?   * @request GET:/api/ai/provider/{id}
+   * @response `200` `GetApiAiProviderByIdData` Response for status 200
+   */
+  export namespace GetApiAiProviderById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiProviderByIdData;
+  }
+
+  /**
+   * @description 获取AI提供商表的JSON Schema
+   * @tags ai, provider
+   * @name GetApiAiProviderSchema
+   * @summary 获取AI提供商Schema
+   * @request GET:/api/ai/provider/schema
+   * @response `200` `GetApiAiProviderSchemaData` Response for status 200
+   */
+  export namespace GetApiAiProviderSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiProviderSchemaData;
+  }
+
+  /**
+   * @description 根据主键ID查询单个工具�?   * @tags ai, toolGroup
+   * @name GetApiAiToolGroupById
+   * @summary 根据ID查询工具�?   * @request GET:/api/ai/tool-group/{id}
+   * @response `200` `GetApiAiToolGroupByIdData` Response for status 200
+   */
+  export namespace GetApiAiToolGroupById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiToolGroupByIdData;
+  }
+
+  /**
+   * @description 获取工具组表的JSON Schema
+   * @tags ai, toolGroup
+   * @name GetApiAiToolGroupSchema
+   * @summary 获取工具组Schema
+   * @request GET:/api/ai/tool-group/schema
+   * @response `200` `GetApiAiToolGroupSchemaData` Response for status 200
+   */
+  export namespace GetApiAiToolGroupSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiToolGroupSchemaData;
+  }
+
+  /**
+   * @description 创建单个AI智能�?   * @tags ai, agent
+   * @name PostApiAiAgent
+   * @summary 创建AI智能�?   * @request POST:/api/ai/agent
+   * @response `200` `PostApiAiAgentData` Response for status 200
+   */
+  export namespace PostApiAiAgent {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentData;
+  }
+
+  /**
+   * @description 批量创建多个AI智能�?   * @tags ai, agent
+   * @name PostApiAiAgentBatch
+   * @summary 批量创建AI智能�?   * @request POST:/api/ai/agent/batch
+   * @response `200` `PostApiAiAgentBatchData` Response for status 200
+   */
+  export namespace PostApiAiAgentBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentBatchData;
+  }
+
+  /**
+   * @description 创建单条Agent消息
+   * @tags ai, agentMessage
+   * @name PostApiAiAgentMessage
+   * @summary 创建Agent消息
+   * @request POST:/api/ai/agent-message
+   * @response `200` `PostApiAiAgentMessageData` Response for status 200
+   */
+  export namespace PostApiAiAgentMessage {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentMessagePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentMessageData;
+  }
+
+  /**
+   * @description 批量创建Agent消息
+   * @tags ai, agentMessage
+   * @name PostApiAiAgentMessageBatch
+   * @summary 批量创建Agent消息
+   * @request POST:/api/ai/agent-message/batch
+   * @response `200` `PostApiAiAgentMessageBatchData` Response for status 200
+   */
+  export namespace PostApiAiAgentMessageBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentMessageBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentMessageBatchData;
+  }
+
+  /**
+   * @description 分页查询Agent消息列表
+   * @tags ai, agentMessage
+   * @name PostApiAiAgentMessageQuery
+   * @summary 分页查询Agent消息
+   * @request POST:/api/ai/agent-message/query
+   * @response `200` `PostApiAiAgentMessageQueryData` Response for status 200
+   */
+  export namespace PostApiAiAgentMessageQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentMessageQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentMessageQueryData;
+  }
+
+  /**
+   * @description 分页查询AI智能体列�?   * @tags ai, agent
+   * @name PostApiAiAgentQuery
+   * @summary 分页查询AI智能�?   * @request POST:/api/ai/agent/query
+   * @response `200` `PostApiAiAgentQueryData` Response for status 200
+   */
+  export namespace PostApiAiAgentQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentQueryData;
+  }
+
+  /**
+   * @description 创建单个Agent会话
+   * @tags ai, agentSession
+   * @name PostApiAiAgentSession
+   * @summary 创建Agent会话
+   * @request POST:/api/ai/agent-session
+   * @response `200` `PostApiAiAgentSessionData` Response for status 200
+   */
+  export namespace PostApiAiAgentSession {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentSessionPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentSessionData;
+  }
+
+  /**
+   * @description 分页查询Agent会话列表
+   * @tags ai, agentSession
+   * @name PostApiAiAgentSessionQuery
+   * @summary 分页查询Agent会话
+   * @request POST:/api/ai/agent-session/query
+   * @response `200` `PostApiAiAgentSessionQueryData` Response for status 200
+   */
+  export namespace PostApiAiAgentSessionQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiAgentSessionQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiAgentSessionQueryData;
+  }
+
+  /**
+   * @description 发送消息到 AI 模型，返回完整响�?   * @tags AI
+   * @name PostApiAiChat
+   * @summary AI 对话（普通请求）
+   * @request POST:/api/ai/chat
+   */
+  export namespace PostApiAiChat {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiChatPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * @description 使用 Agent 配置进行对话，自动加�?Agent �?model、system prompt �?tools（包�?nativeTools 和自定义 tools�?   * @tags AI
+   * @name PostApiAiChatFromAgent
+   * @summary Agent 对话（流式响应）
+   * @request POST:/api/ai/chat/fromAgent
+   */
+  export namespace PostApiAiChatFromAgent {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiChatFromAgentPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * @description 发送消息到 AI 模型，返�?UIMessage 流式响应
+   * @tags AI
+   * @name PostApiAiChatStream
+   * @summary AI 对话（流式响应）
+   * @request POST:/api/ai/chat/stream
+   */
+  export namespace PostApiAiChatStream {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiChatStreamPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * @description 创建单个AI模型
+   * @tags ai, model
+   * @name PostApiAiModel
+   * @summary 创建AI模型
+   * @request POST:/api/ai/model
+   * @response `200` `PostApiAiModelData` Response for status 200
+   */
+  export namespace PostApiAiModel {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiModelPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiModelData;
+  }
+
+  /**
+   * @description 批量创建多个AI模型
+   * @tags ai, model
+   * @name PostApiAiModelBatch
+   * @summary 批量创建AI模型
+   * @request POST:/api/ai/model/batch
+   * @response `200` `PostApiAiModelBatchData` Response for status 200
+   */
+  export namespace PostApiAiModelBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiModelBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiModelBatchData;
+  }
+
+  /**
+   * @description 分页查询AI模型列表
+   * @tags ai, model
+   * @name PostApiAiModelQuery
+   * @summary 分页查询AI模型
+   * @request POST:/api/ai/model/query
+   * @response `200` `PostApiAiModelQueryData` Response for status 200
+   */
+  export namespace PostApiAiModelQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiModelQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiModelQueryData;
+  }
+
+  /**
+   * @description 创建单个AI提供�?   * @tags ai, provider
+   * @name PostApiAiProvider
+   * @summary 创建AI提供�?   * @request POST:/api/ai/provider
+   * @response `200` `PostApiAiProviderData` Response for status 200
+   */
+  export namespace PostApiAiProvider {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiProviderPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiProviderData;
+  }
+
+  /**
+   * @description 批量创建多个AI提供�?   * @tags ai, provider
+   * @name PostApiAiProviderBatch
+   * @summary 批量创建AI提供�?   * @request POST:/api/ai/provider/batch
+   * @response `200` `PostApiAiProviderBatchData` Response for status 200
+   */
+  export namespace PostApiAiProviderBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiProviderBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiProviderBatchData;
+  }
+
+  /**
+   * @description 分页查询AI提供商列�?   * @tags ai, provider
+   * @name PostApiAiProviderQuery
+   * @summary 分页查询AI提供�?   * @request POST:/api/ai/provider/query
+   * @response `200` `PostApiAiProviderQueryData` Response for status 200
+   */
+  export namespace PostApiAiProviderQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiProviderQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiProviderQueryData;
+  }
+
+  /**
+   * @description 创建单个工具�?   * @tags ai, toolGroup
+   * @name PostApiAiToolGroup
+   * @summary 创建工具�?   * @request POST:/api/ai/tool-group
+   * @response `200` `PostApiAiToolGroupData` Response for status 200
+   */
+  export namespace PostApiAiToolGroup {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiToolGroupPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiToolGroupData;
+  }
+
+  /**
+   * @description 批量创建多个工具�?   * @tags ai, toolGroup
+   * @name PostApiAiToolGroupBatch
+   * @summary 批量创建工具�?   * @request POST:/api/ai/tool-group/batch
+   * @response `200` `PostApiAiToolGroupBatchData` Response for status 200
+   */
+  export namespace PostApiAiToolGroupBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiToolGroupBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiToolGroupBatchData;
+  }
+
+  /**
+   * @description 分页查询工具组列�?   * @tags ai, toolGroup
+   * @name PostApiAiToolGroupQuery
+   * @summary 分页查询工具�?   * @request POST:/api/ai/tool-group/query
+   * @response `200` `PostApiAiToolGroupQueryData` Response for status 200
+   */
+  export namespace PostApiAiToolGroupQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiToolGroupQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiToolGroupQueryData;
+  }
+
+  /**
+   * @description 根据ID列表批量更新AI智能�?   * @tags ai, agent
+   * @name PutApiAiAgentBatch
+   * @summary 批量更新AI智能�?   * @request PUT:/api/ai/agent/batch
+   * @response `200` `PutApiAiAgentBatchData` Response for status 200
+   */
+  export namespace PutApiAiAgentBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiAgentBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiAgentBatchData;
+  }
+
+  /**
+   * @description 根据ID更新单个AI智能�?   * @tags ai, agent
+   * @name PutApiAiAgentById
+   * @summary 更新AI智能�?   * @request PUT:/api/ai/agent/{id}
+   * @response `200` `PutApiAiAgentByIdData` Response for status 200
+   */
+  export namespace PutApiAiAgentById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiAgentByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiAgentByIdData;
+  }
+
+  /**
+   * @description 根据ID更新单个Agent会话
+   * @tags ai, agentSession
+   * @name PutApiAiAgentSessionById
+   * @summary 更新Agent会话
+   * @request PUT:/api/ai/agent-session/{id}
+   * @response `200` `PutApiAiAgentSessionByIdData` Response for status 200
+   */
+  export namespace PutApiAiAgentSessionById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiAgentSessionByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiAgentSessionByIdData;
+  }
+
+  /**
+   * @description 归档指定Agent会话
+   * @tags ai, agentSession
+   * @name PutApiAiAgentSessionByIdArchive
+   * @summary 归档Agent会话
+   * @request PUT:/api/ai/agent-session/{id}/archive
+   * @response `200` `PutApiAiAgentSessionByIdArchiveData` Response for status 200
+   */
+  export namespace PutApiAiAgentSessionByIdArchive {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiAgentSessionByIdArchivePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiAgentSessionByIdArchiveData;
+  }
+
+  /**
+   * @description 置顶/取消置顶Agent会话
+   * @tags ai, agentSession
+   * @name PutApiAiAgentSessionByIdPin
+   * @summary 置顶Agent会话
+   * @request PUT:/api/ai/agent-session/{id}/pin
+   * @response `200` `PutApiAiAgentSessionByIdPinData` Response for status 200
+   */
+  export namespace PutApiAiAgentSessionByIdPin {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiAgentSessionByIdPinPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiAgentSessionByIdPinData;
+  }
+
+  /**
+   * @description 根据ID列表批量更新AI模型
+   * @tags ai, model
+   * @name PutApiAiModelBatch
+   * @summary 批量更新AI模型
+   * @request PUT:/api/ai/model/batch
+   * @response `200` `PutApiAiModelBatchData` Response for status 200
+   */
+  export namespace PutApiAiModelBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiModelBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiModelBatchData;
+  }
+
+  /**
+   * @description 根据ID更新单个AI模型
+   * @tags ai, model
+   * @name PutApiAiModelById
+   * @summary 更新AI模型
+   * @request PUT:/api/ai/model/{id}
+   * @response `200` `PutApiAiModelByIdData` Response for status 200
+   */
+  export namespace PutApiAiModelById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiModelByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiModelByIdData;
+  }
+
+  /**
+   * @description 根据ID列表批量更新AI提供�?   * @tags ai, provider
+   * @name PutApiAiProviderBatch
+   * @summary 批量更新AI提供�?   * @request PUT:/api/ai/provider/batch
+   * @response `200` `PutApiAiProviderBatchData` Response for status 200
+   */
+  export namespace PutApiAiProviderBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiProviderBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiProviderBatchData;
+  }
+
+  /**
+   * @description 根据ID更新单个AI提供�?   * @tags ai, provider
+   * @name PutApiAiProviderById
+   * @summary 更新AI提供�?   * @request PUT:/api/ai/provider/{id}
+   * @response `200` `PutApiAiProviderByIdData` Response for status 200
+   */
+  export namespace PutApiAiProviderById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiProviderByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiProviderByIdData;
+  }
+
+  /**
+   * @description 根据ID列表批量更新工具�?   * @tags ai, toolGroup
+   * @name PutApiAiToolGroupBatch
+   * @summary 批量更新工具�?   * @request PUT:/api/ai/tool-group/batch
+   * @response `200` `PutApiAiToolGroupBatchData` Response for status 200
+   */
+  export namespace PutApiAiToolGroupBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiToolGroupBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiToolGroupBatchData;
+  }
+
+  /**
+   * @description 根据ID更新单个工具�?   * @tags ai, toolGroup
+   * @name PutApiAiToolGroupById
+   * @summary 更新工具�?   * @request PUT:/api/ai/tool-group/{id}
+   * @response `200` `PutApiAiToolGroupByIdData` Response for status 200
+   */
+  export namespace PutApiAiToolGroupById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiToolGroupByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiToolGroupByIdData;
+  }
 }
 
 export namespace Auth {
@@ -10373,8 +11502,7 @@ export namespace Auth {
   }
 
   /**
- * @description 获取当前登录用户的详细信息
- * @tags auth
+ * @description 获取当前登录用户的详细信�? * @tags auth
  * @name GetApiAuthMe
  * @summary 获取当前用户
  * @request GET:/api/auth/me
@@ -10429,7 +11557,7 @@ export namespace Auth {
   }
 
   /**
- * @description 使用用户名密码登录，返回双 Token
+ * @description 使用用户名密码登录，返回�?Token
  * @tags auth
  * @name PostApiAuthLogin
  * @summary 用户登录
@@ -10457,8 +11585,7 @@ export namespace Auth {
   }
 
   /**
- * @description 撤销用户的所有刷新令牌
- * @tags auth
+ * @description 撤销用户的所有刷新令�? * @tags auth
  * @name PostApiAuthLogout
  * @summary 用户登出
  * @request POST:/api/auth/logout
@@ -10611,8 +11738,7 @@ export namespace Actions {
   }
 
   /**
-   * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据。
-   * @tags actions
+   * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据�?   * @tags actions
    * @name PostApiActionsExecuteByName
    * @summary 通过名称执行Action
    * @request POST:/api/actions/execute/{name}
@@ -10653,8 +11779,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除部门
-   * @tags system, department
+   * @description 根据ID软删除部�?   * @tags system, department
    * @name DeleteApiSystemDepartmentById
    * @summary 删除部门
    * @request DELETE:/api/system/department/{id}
@@ -10675,8 +11800,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除字典
-   * @tags system, dict
+   * @description 根据ID软删除字�?   * @tags system, dict
    * @name DeleteApiSystemDictById
    * @summary 删除字典
    * @request DELETE:/api/system/dict/{id}
@@ -10697,11 +11821,9 @@ export namespace System {
   }
 
   /**
-   * @description 根据Key删除字典组
-   * @tags system, dictGroup
+   * @description 根据Key删除字典�?   * @tags system, dictGroup
    * @name DeleteApiSystemDictGroupByKey
-   * @summary 删除字典组
-   * @request DELETE:/api/system/dict-group/{key}
+   * @summary 删除字典�?   * @request DELETE:/api/system/dict-group/{key}
    * @response `200` `DeleteApiSystemDictGroupByKeyData` Response for status 200
    */
   export namespace DeleteApiSystemDictGroupByKey {
@@ -10851,8 +11973,28 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除岗位
-   * @tags system, post
+   * @description 根据ID删除权限（同时删除子权限�?   * @tags system, permission
+   * @name DeleteApiSystemPermissionById
+   * @summary 删除权限
+   * @request DELETE:/api/system/permission/{id}
+   * @response `200` `DeleteApiSystemPermissionByIdData` Response for status 200
+   */
+  export namespace DeleteApiSystemPermissionById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiSystemPermissionByIdData;
+  }
+
+  /**
+   * @description 根据ID软删除岗�?   * @tags system, post
    * @name DeleteApiSystemPostById
    * @summary 删除岗位
    * @request DELETE:/api/system/post/{id}
@@ -10873,8 +12015,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除角色
-   * @tags system, role
+   * @description 根据ID软删除角�?   * @tags system, role
    * @name DeleteApiSystemRoleById
    * @summary 删除角色
    * @request DELETE:/api/system/role/{id}
@@ -10972,8 +12113,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除用户
-   * @tags system, user
+   * @description 根据ID软删除用�?   * @tags system, user
    * @name DeleteApiSystemUserById
    * @summary 删除用户
    * @request DELETE:/api/system/user/{id}
@@ -11045,6 +12185,45 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = DeleteApiSystemUserRoleByUserIdByRoleIdData;
+  }
+
+  /**
+   * @description 获取指定角色的所有权限标�?   * @tags system, casbinRule
+   * @name GetApiSystemCasbinRuleRoleByRoleKeyPermissions
+   * @summary 获取角色权限
+   * @request GET:/api/system/casbin-rule/role/{roleKey}/permissions
+   * @response `200` `GetApiSystemCasbinRuleRoleByRoleKeyPermissionsData` Response for status 200
+   */
+  export namespace GetApiSystemCasbinRuleRoleByRoleKeyPermissions {
+    export type RequestParams = {
+      roleKey: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      GetApiSystemCasbinRuleRoleByRoleKeyPermissionsData;
+  }
+
+  /**
+   * @description 获取指定用户的所有角�?   * @tags system, casbinRule
+   * @name GetApiSystemCasbinRuleUserByUserIdRoles
+   * @summary 获取用户角色
+   * @request GET:/api/system/casbin-rule/user/{userId}/roles
+   * @response `200` `GetApiSystemCasbinRuleUserByUserIdRolesData` Response for status 200
+   */
+  export namespace GetApiSystemCasbinRuleUserByUserIdRoles {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      userId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemCasbinRuleUserByUserIdRolesData;
   }
 
   /**
@@ -11146,11 +12325,9 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键Key查询单个字典组
-   * @tags system, dictGroup
+   * @description 根据主键Key查询单个字典�?   * @tags system, dictGroup
    * @name GetApiSystemDictGroupByKey
-   * @summary 根据Key查询字典组
-   * @request GET:/api/system/dict-group/{key}
+   * @summary 根据Key查询字典�?   * @request GET:/api/system/dict-group/{key}
    * @response `200` `GetApiSystemDictGroupByKeyData` Response for status 200
    */
   export namespace GetApiSystemDictGroupByKey {
@@ -11428,6 +12605,59 @@ export namespace System {
   }
 
   /**
+   * @description 根据主键ID查询单个权限
+   * @tags system, permission
+   * @name GetApiSystemPermissionById
+   * @summary 根据ID查询权限
+   * @request GET:/api/system/permission/{id}
+   * @response `200` `GetApiSystemPermissionByIdData` Response for status 200
+   */
+  export namespace GetApiSystemPermissionById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemPermissionByIdData;
+  }
+
+  /**
+   * @description 获取权限表的JSON Schema
+   * @tags system, permission
+   * @name GetApiSystemPermissionSchema
+   * @summary 获取权限Schema
+   * @request GET:/api/system/permission/schema
+   * @response `200` `GetApiSystemPermissionSchemaData` Response for status 200
+   */
+  export namespace GetApiSystemPermissionSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemPermissionSchemaData;
+  }
+
+  /**
+   * @description 获取完整的权限树结构
+   * @tags system, permission
+   * @name GetApiSystemPermissionTree
+   * @summary 获取权限�?   * @request GET:/api/system/permission/tree
+   * @response `200` `GetApiSystemPermissionTreeData` Response for status 200
+   */
+  export namespace GetApiSystemPermissionTree {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemPermissionTreeData;
+  }
+
+  /**
    * @description 根据主键ID查询单个岗位
    * @tags system, post
    * @name GetApiSystemPostById
@@ -11556,6 +12786,28 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiSystemRoleMenuByRoleIdByMenuIdData;
+  }
+
+  /**
+   * @description 获取指定角色的所有菜单ID
+   * @tags system, roleMenu
+   * @name GetApiSystemRoleMenuRoleByRoleId
+   * @summary 获取角色菜单
+   * @request GET:/api/system/role-menu/role/{roleId}
+   * @response `200` `GetApiSystemRoleMenuRoleByRoleIdData` Response for status 200
+   */
+  export namespace GetApiSystemRoleMenuRoleByRoleId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      roleId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemRoleMenuRoleByRoleIdData;
   }
 
   /**
@@ -11737,6 +12989,28 @@ export namespace System {
   }
 
   /**
+   * @description 获取指定用户的所有角色ID
+   * @tags system, userRole
+   * @name GetApiSystemUserRoleUserByUserId
+   * @summary 获取用户角色
+   * @request GET:/api/system/user-role/user/{userId}
+   * @response `200` `GetApiSystemUserRoleUserByUserIdData` Response for status 200
+   */
+  export namespace GetApiSystemUserRoleUserByUserId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      userId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemUserRoleUserByUserIdData;
+  }
+
+  /**
    * @description 获取用户表的JSON Schema
    * @tags system, user
    * @name GetApiSystemUserSchema
@@ -11881,11 +13155,9 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个字典组
-   * @tags system, dictGroup
+   * @description 创建单个字典�?   * @tags system, dictGroup
    * @name PostApiSystemDictGroup
-   * @summary 创建字典组
-   * @request POST:/api/system/dict-group
+   * @summary 创建字典�?   * @request POST:/api/system/dict-group
    * @response `200` `PostApiSystemDictGroupData` Response for status 200
    */
   export namespace PostApiSystemDictGroup {
@@ -11897,11 +13169,9 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个字典组
-   * @tags system, dictGroup
+   * @description 批量创建多个字典�?   * @tags system, dictGroup
    * @name PostApiSystemDictGroupBatch
-   * @summary 批量创建字典组
-   * @request POST:/api/system/dict-group/batch
+   * @summary 批量创建字典�?   * @request POST:/api/system/dict-group/batch
    * @response `200` `PostApiSystemDictGroupBatchData` Response for status 200
    */
   export namespace PostApiSystemDictGroupBatch {
@@ -11913,11 +13183,9 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询字典组列表
-   * @tags system, dictGroup
+   * @description 分页查询字典组列�?   * @tags system, dictGroup
    * @name PostApiSystemDictGroupQuery
-   * @summary 分页查询字典组
-   * @request POST:/api/system/dict-group/query
+   * @summary 分页查询字典�?   * @request POST:/api/system/dict-group/query
    * @response `200` `PostApiSystemDictGroupQueryData` Response for status 200
    */
   export namespace PostApiSystemDictGroupQuery {
@@ -12201,6 +13469,38 @@ export namespace System {
   }
 
   /**
+   * @description 创建单个权限
+   * @tags system, permission
+   * @name PostApiSystemPermission
+   * @summary 创建权限
+   * @request POST:/api/system/permission
+   * @response `200` `PostApiSystemPermissionData` Response for status 200
+   */
+  export namespace PostApiSystemPermission {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiSystemPermissionPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemPermissionData;
+  }
+
+  /**
+   * @description 分页查询权限列表
+   * @tags system, permission
+   * @name PostApiSystemPermissionQuery
+   * @summary 分页查询权限
+   * @request POST:/api/system/permission/query
+   * @response `200` `PostApiSystemPermissionQueryData` Response for status 200
+   */
+  export namespace PostApiSystemPermissionQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiSystemPermissionQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemPermissionQueryData;
+  }
+
+  /**
    * @description 创建单个岗位
    * @tags system, post
    * @name PostApiSystemPost
@@ -12457,8 +13757,7 @@ export namespace System {
   }
 
   /**
-   * @description 重置用户密码为初始密码
-   * @tags system, user
+   * @description 重置用户密码为初始密�?   * @tags system, user
    * @name PostApiSystemUserByIdResetPassword
    * @summary 重置密码
    * @request POST:/api/system/user/{id}/reset-password
@@ -12591,6 +13890,46 @@ export namespace System {
   }
 
   /**
+   * @description 设置指定角色的权限列表（全量替换�?   * @tags system, casbinRule
+   * @name PutApiSystemCasbinRuleRoleByRoleKeyPermissions
+   * @summary 设置角色权限
+   * @request PUT:/api/system/casbin-rule/role/{roleKey}/permissions
+   * @response `200` `PutApiSystemCasbinRuleRoleByRoleKeyPermissionsData` Response for status 200
+   */
+  export namespace PutApiSystemCasbinRuleRoleByRoleKeyPermissions {
+    export type RequestParams = {
+      roleKey: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody =
+      PutApiSystemCasbinRuleRoleByRoleKeyPermissionsPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      PutApiSystemCasbinRuleRoleByRoleKeyPermissionsData;
+  }
+
+  /**
+   * @description 设置指定用户的角色列表（全量替换�?   * @tags system, casbinRule
+   * @name PutApiSystemCasbinRuleUserByUserIdRoles
+   * @summary 设置用户角色
+   * @request PUT:/api/system/casbin-rule/user/{userId}/roles
+   * @response `200` `PutApiSystemCasbinRuleUserByUserIdRolesData` Response for status 200
+   */
+  export namespace PutApiSystemCasbinRuleUserByUserIdRoles {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      userId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiSystemCasbinRuleUserByUserIdRolesPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiSystemCasbinRuleUserByUserIdRolesData;
+  }
+
+  /**
    * @description 根据ID列表批量更新配置
    * @tags system, config
    * @name PutApiSystemConfigBatch
@@ -12705,11 +14044,9 @@ export namespace System {
   }
 
   /**
-   * @description 根据Key列表批量更新字典组
-   * @tags system, dictGroup
+   * @description 根据Key列表批量更新字典�?   * @tags system, dictGroup
    * @name PutApiSystemDictGroupBatch
-   * @summary 批量更新字典组
-   * @request PUT:/api/system/dict-group/batch
+   * @summary 批量更新字典�?   * @request PUT:/api/system/dict-group/batch
    * @response `200` `PutApiSystemDictGroupBatchData` Response for status 200
    */
   export namespace PutApiSystemDictGroupBatch {
@@ -12721,11 +14058,9 @@ export namespace System {
   }
 
   /**
-   * @description 根据Key更新单个字典组
-   * @tags system, dictGroup
+   * @description 根据Key更新单个字典�?   * @tags system, dictGroup
    * @name PutApiSystemDictGroupByKey
-   * @summary 更新字典组
-   * @request PUT:/api/system/dict-group/{key}
+   * @summary 更新字典�?   * @request PUT:/api/system/dict-group/{key}
    * @response `200` `PutApiSystemDictGroupByKeyData` Response for status 200
    */
   export namespace PutApiSystemDictGroupByKey {
@@ -12895,6 +14230,28 @@ export namespace System {
   }
 
   /**
+   * @description 根据ID更新单个权限
+   * @tags system, permission
+   * @name PutApiSystemPermissionById
+   * @summary 更新权限
+   * @request PUT:/api/system/permission/{id}
+   * @response `200` `PutApiSystemPermissionByIdData` Response for status 200
+   */
+  export namespace PutApiSystemPermissionById {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiSystemPermissionByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiSystemPermissionByIdData;
+  }
+
+  /**
    * @description 根据ID列表批量更新岗位
    * @tags system, post
    * @name PutApiSystemPostBatch
@@ -12971,6 +14328,27 @@ export namespace System {
   }
 
   /**
+   * @description 设置指定角色的菜单列表（全量替换�?   * @tags system, roleMenu
+   * @name PutApiSystemRoleMenuRoleByRoleId
+   * @summary 设置角色菜单
+   * @request PUT:/api/system/role-menu/role/{roleId}
+   * @response `200` `PutApiSystemRoleMenuRoleByRoleIdData` Response for status 200
+   */
+  export namespace PutApiSystemRoleMenuRoleByRoleId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      roleId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiSystemRoleMenuRoleByRoleIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiSystemRoleMenuRoleByRoleIdData;
+  }
+
+  /**
    * @description 根据ID更新单个令牌
    * @tags system, token
    * @name PutApiSystemTokenById
@@ -13029,1022 +14407,56 @@ export namespace System {
     export type RequestHeaders = {};
     export type ResponseBody = PutApiSystemUserByIdData;
   }
-}
 
-export namespace Ai {
   /**
-   * @description 根据ID删除AI智能体
-   * @tags ai, agent
-   * @name DeleteApiAiAgentById
-   * @summary 删除AI智能体
-   * @request DELETE:/api/ai/agent/{id}
-   * @response `200` `DeleteApiAiAgentByIdData` Response for status 200
+   * @description 设置指定用户的角色列表（全量替换�?   * @tags system, userRole
+   * @name PutApiSystemUserRoleUserByUserId
+   * @summary 设置用户角色
+   * @request PUT:/api/system/user-role/user/{userId}
+   * @response `200` `PutApiSystemUserRoleUserByUserIdData` Response for status 200
    */
-  export namespace DeleteApiAiAgentById {
+  export namespace PutApiSystemUserRoleUserByUserId {
     export type RequestParams = {
       /**
        * @format uuid
        * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
        */
-      id: string;
+      userId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = PutApiSystemUserRoleUserByUserIdPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiAgentByIdData;
-  }
-
-  /**
-   * @description 根据ID软删除Agent会话
-   * @tags ai, agentSession
-   * @name DeleteApiAiAgentSessionById
-   * @summary 删除Agent会话
-   * @request DELETE:/api/ai/agent-session/{id}
-   * @response `200` `DeleteApiAiAgentSessionByIdData` Response for status 200
-   */
-  export namespace DeleteApiAiAgentSessionById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiAgentSessionByIdData;
-  }
-
-  /**
-   * @description 根据ID删除AI模型
-   * @tags ai, model
-   * @name DeleteApiAiModelById
-   * @summary 删除AI模型
-   * @request DELETE:/api/ai/model/{id}
-   * @response `200` `DeleteApiAiModelByIdData` Response for status 200
-   */
-  export namespace DeleteApiAiModelById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiModelByIdData;
-  }
-
-  /**
-   * @description 根据ID删除AI提供商
-   * @tags ai, provider
-   * @name DeleteApiAiProviderById
-   * @summary 删除AI提供商
-   * @request DELETE:/api/ai/provider/{id}
-   * @response `200` `DeleteApiAiProviderByIdData` Response for status 200
-   */
-  export namespace DeleteApiAiProviderById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiProviderByIdData;
-  }
-
-  /**
-   * @description 根据ID删除工具
-   * @tags ai, tool
-   * @name DeleteApiAiToolById
-   * @summary 删除工具
-   * @request DELETE:/api/ai/tool/{id}
-   * @response `200` `DeleteApiAiToolByIdData` Response for status 200
-   */
-  export namespace DeleteApiAiToolById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiToolByIdData;
-  }
-
-  /**
-   * @description 根据ID删除工具组
-   * @tags ai, toolGroup
-   * @name DeleteApiAiToolGroupById
-   * @summary 删除工具组
-   * @request DELETE:/api/ai/tool-group/{id}
-   * @response `200` `DeleteApiAiToolGroupByIdData` Response for status 200
-   */
-  export namespace DeleteApiAiToolGroupById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiAiToolGroupByIdData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个AI智能体
-   * @tags ai, agent
-   * @name GetApiAiAgentById
-   * @summary 根据ID查询AI智能体
-   * @request GET:/api/ai/agent/{id}
-   * @response `200` `GetApiAiAgentByIdData` Response for status 200
-   */
-  export namespace GetApiAiAgentById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentByIdData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个Agent消息
-   * @tags ai, agentMessage
-   * @name GetApiAiAgentMessageById
-   * @summary 根据ID查询Agent消息
-   * @request GET:/api/ai/agent-message/{id}
-   * @response `200` `GetApiAiAgentMessageByIdData` Response for status 200
-   */
-  export namespace GetApiAiAgentMessageById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentMessageByIdData;
-  }
-
-  /**
-   * @description 获取指定会话的消息历史
-   * @tags ai, agentMessage
-   * @name GetApiAiAgentMessageHistoryBySessionId
-   * @summary 获取会话历史
-   * @request GET:/api/ai/agent-message/history/{sessionId}
-   * @response `200` `GetApiAiAgentMessageHistoryBySessionIdData` Response for status 200
-   */
-  export namespace GetApiAiAgentMessageHistoryBySessionId {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      sessionId: string;
-    };
-    export type RequestQuery = {
-      /**
-       * @min -9007199254740991
-       * @max 9007199254740991
-       */
-      beforeSeq?: number;
-      /**
-       * @min 1
-       * @max 200
-       * @default 50
-       */
-      limit?: number;
-    };
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentMessageHistoryBySessionIdData;
-  }
-
-  /**
-   * @description 获取Agent消息表的JSON Schema
-   * @tags ai, agentMessage
-   * @name GetApiAiAgentMessageSchema
-   * @summary 获取Agent消息Schema
-   * @request GET:/api/ai/agent-message/schema
-   * @response `200` `GetApiAiAgentMessageSchemaData` Response for status 200
-   */
-  export namespace GetApiAiAgentMessageSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentMessageSchemaData;
-  }
-
-  /**
-   * @description 获取AI智能体表的JSON Schema
-   * @tags ai, agent
-   * @name GetApiAiAgentSchema
-   * @summary 获取AI智能体Schema
-   * @request GET:/api/ai/agent/schema
-   * @response `200` `GetApiAiAgentSchemaData` Response for status 200
-   */
-  export namespace GetApiAiAgentSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个Agent会话
-   * @tags ai, agentSession
-   * @name GetApiAiAgentSessionById
-   * @summary 根据ID查询Agent会话
-   * @request GET:/api/ai/agent-session/{id}
-   * @response `200` `GetApiAiAgentSessionByIdData` Response for status 200
-   */
-  export namespace GetApiAiAgentSessionById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentSessionByIdData;
-  }
-
-  /**
-   * @description 获取Agent会话表的JSON Schema
-   * @tags ai, agentSession
-   * @name GetApiAiAgentSessionSchema
-   * @summary 获取Agent会话Schema
-   * @request GET:/api/ai/agent-session/schema
-   * @response `200` `GetApiAiAgentSessionSchemaData` Response for status 200
-   */
-  export namespace GetApiAiAgentSessionSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiAgentSessionSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个AI模型
-   * @tags ai, model
-   * @name GetApiAiModelById
-   * @summary 根据ID查询AI模型
-   * @request GET:/api/ai/model/{id}
-   * @response `200` `GetApiAiModelByIdData` Response for status 200
-   */
-  export namespace GetApiAiModelById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiModelByIdData;
-  }
-
-  /**
-   * @description 获取AI模型表的JSON Schema
-   * @tags ai, model
-   * @name GetApiAiModelSchema
-   * @summary 获取AI模型Schema
-   * @request GET:/api/ai/model/schema
-   * @response `200` `GetApiAiModelSchemaData` Response for status 200
-   */
-  export namespace GetApiAiModelSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiModelSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个AI提供商
-   * @tags ai, provider
-   * @name GetApiAiProviderById
-   * @summary 根据ID查询AI提供商
-   * @request GET:/api/ai/provider/{id}
-   * @response `200` `GetApiAiProviderByIdData` Response for status 200
-   */
-  export namespace GetApiAiProviderById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiProviderByIdData;
-  }
-
-  /**
-   * @description 获取AI提供商表的JSON Schema
-   * @tags ai, provider
-   * @name GetApiAiProviderSchema
-   * @summary 获取AI提供商Schema
-   * @request GET:/api/ai/provider/schema
-   * @response `200` `GetApiAiProviderSchemaData` Response for status 200
-   */
-  export namespace GetApiAiProviderSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiProviderSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个工具
-   * @tags ai, tool
-   * @name GetApiAiToolById
-   * @summary 根据ID查询工具
-   * @request GET:/api/ai/tool/{id}
-   * @response `200` `GetApiAiToolByIdData` Response for status 200
-   */
-  export namespace GetApiAiToolById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiToolByIdData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个工具组
-   * @tags ai, toolGroup
-   * @name GetApiAiToolGroupById
-   * @summary 根据ID查询工具组
-   * @request GET:/api/ai/tool-group/{id}
-   * @response `200` `GetApiAiToolGroupByIdData` Response for status 200
-   */
-  export namespace GetApiAiToolGroupById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiToolGroupByIdData;
-  }
-
-  /**
-   * @description 获取工具组表的JSON Schema
-   * @tags ai, toolGroup
-   * @name GetApiAiToolGroupSchema
-   * @summary 获取工具组Schema
-   * @request GET:/api/ai/tool-group/schema
-   * @response `200` `GetApiAiToolGroupSchemaData` Response for status 200
-   */
-  export namespace GetApiAiToolGroupSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiToolGroupSchemaData;
-  }
-
-  /**
-   * @description 获取AI工具表的JSON Schema
-   * @tags ai, tool
-   * @name GetApiAiToolSchema
-   * @summary 获取AI工具Schema
-   * @request GET:/api/ai/tool/schema
-   * @response `200` `GetApiAiToolSchemaData` Response for status 200
-   */
-  export namespace GetApiAiToolSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAiToolSchemaData;
-  }
-
-  /**
-   * @description 创建单个AI智能体
-   * @tags ai, agent
-   * @name PostApiAiAgent
-   * @summary 创建AI智能体
-   * @request POST:/api/ai/agent
-   * @response `200` `PostApiAiAgentData` Response for status 200
-   */
-  export namespace PostApiAiAgent {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentData;
-  }
-
-  /**
-   * @description 批量创建多个AI智能体
-   * @tags ai, agent
-   * @name PostApiAiAgentBatch
-   * @summary 批量创建AI智能体
-   * @request POST:/api/ai/agent/batch
-   * @response `200` `PostApiAiAgentBatchData` Response for status 200
-   */
-  export namespace PostApiAiAgentBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentBatchData;
-  }
-
-  /**
-   * @description 创建单条Agent消息
-   * @tags ai, agentMessage
-   * @name PostApiAiAgentMessage
-   * @summary 创建Agent消息
-   * @request POST:/api/ai/agent-message
-   * @response `200` `PostApiAiAgentMessageData` Response for status 200
-   */
-  export namespace PostApiAiAgentMessage {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentMessagePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentMessageData;
-  }
-
-  /**
-   * @description 批量创建Agent消息
-   * @tags ai, agentMessage
-   * @name PostApiAiAgentMessageBatch
-   * @summary 批量创建Agent消息
-   * @request POST:/api/ai/agent-message/batch
-   * @response `200` `PostApiAiAgentMessageBatchData` Response for status 200
-   */
-  export namespace PostApiAiAgentMessageBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentMessageBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentMessageBatchData;
-  }
-
-  /**
-   * @description 分页查询Agent消息列表
-   * @tags ai, agentMessage
-   * @name PostApiAiAgentMessageQuery
-   * @summary 分页查询Agent消息
-   * @request POST:/api/ai/agent-message/query
-   * @response `200` `PostApiAiAgentMessageQueryData` Response for status 200
-   */
-  export namespace PostApiAiAgentMessageQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentMessageQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentMessageQueryData;
-  }
-
-  /**
-   * @description 分页查询AI智能体列表
-   * @tags ai, agent
-   * @name PostApiAiAgentQuery
-   * @summary 分页查询AI智能体
-   * @request POST:/api/ai/agent/query
-   * @response `200` `PostApiAiAgentQueryData` Response for status 200
-   */
-  export namespace PostApiAiAgentQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentQueryData;
-  }
-
-  /**
-   * @description 创建单个Agent会话
-   * @tags ai, agentSession
-   * @name PostApiAiAgentSession
-   * @summary 创建Agent会话
-   * @request POST:/api/ai/agent-session
-   * @response `200` `PostApiAiAgentSessionData` Response for status 200
-   */
-  export namespace PostApiAiAgentSession {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentSessionPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentSessionData;
-  }
-
-  /**
-   * @description 分页查询Agent会话列表
-   * @tags ai, agentSession
-   * @name PostApiAiAgentSessionQuery
-   * @summary 分页查询Agent会话
-   * @request POST:/api/ai/agent-session/query
-   * @response `200` `PostApiAiAgentSessionQueryData` Response for status 200
-   */
-  export namespace PostApiAiAgentSessionQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiAgentSessionQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiAgentSessionQueryData;
-  }
-
-  /**
-   * @description 创建单个AI模型
-   * @tags ai, model
-   * @name PostApiAiModel
-   * @summary 创建AI模型
-   * @request POST:/api/ai/model
-   * @response `200` `PostApiAiModelData` Response for status 200
-   */
-  export namespace PostApiAiModel {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiModelPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiModelData;
-  }
-
-  /**
-   * @description 批量创建多个AI模型
-   * @tags ai, model
-   * @name PostApiAiModelBatch
-   * @summary 批量创建AI模型
-   * @request POST:/api/ai/model/batch
-   * @response `200` `PostApiAiModelBatchData` Response for status 200
-   */
-  export namespace PostApiAiModelBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiModelBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiModelBatchData;
-  }
-
-  /**
-   * @description 分页查询AI模型列表
-   * @tags ai, model
-   * @name PostApiAiModelQuery
-   * @summary 分页查询AI模型
-   * @request POST:/api/ai/model/query
-   * @response `200` `PostApiAiModelQueryData` Response for status 200
-   */
-  export namespace PostApiAiModelQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiModelQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiModelQueryData;
-  }
-
-  /**
-   * @description 创建单个AI提供商
-   * @tags ai, provider
-   * @name PostApiAiProvider
-   * @summary 创建AI提供商
-   * @request POST:/api/ai/provider
-   * @response `200` `PostApiAiProviderData` Response for status 200
-   */
-  export namespace PostApiAiProvider {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiProviderPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiProviderData;
-  }
-
-  /**
-   * @description 批量创建多个AI提供商
-   * @tags ai, provider
-   * @name PostApiAiProviderBatch
-   * @summary 批量创建AI提供商
-   * @request POST:/api/ai/provider/batch
-   * @response `200` `PostApiAiProviderBatchData` Response for status 200
-   */
-  export namespace PostApiAiProviderBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiProviderBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiProviderBatchData;
-  }
-
-  /**
-   * @description 分页查询AI提供商列表
-   * @tags ai, provider
-   * @name PostApiAiProviderQuery
-   * @summary 分页查询AI提供商
-   * @request POST:/api/ai/provider/query
-   * @response `200` `PostApiAiProviderQueryData` Response for status 200
-   */
-  export namespace PostApiAiProviderQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiProviderQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiProviderQueryData;
-  }
-
-  /**
-   * @description 创建单个工具
-   * @tags ai, tool
-   * @name PostApiAiTool
-   * @summary 创建工具
-   * @request POST:/api/ai/tool
-   * @response `200` `PostApiAiToolData` Response for status 200
-   */
-  export namespace PostApiAiTool {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiToolPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiToolData;
-  }
-
-  /**
-   * @description 批量创建多个工具
-   * @tags ai, tool
-   * @name PostApiAiToolBatch
-   * @summary 批量创建工具
-   * @request POST:/api/ai/tool/batch
-   * @response `200` `PostApiAiToolBatchData` Response for status 200
-   */
-  export namespace PostApiAiToolBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiToolBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiToolBatchData;
-  }
-
-  /**
-   * @description 创建单个工具组
-   * @tags ai, toolGroup
-   * @name PostApiAiToolGroup
-   * @summary 创建工具组
-   * @request POST:/api/ai/tool-group
-   * @response `200` `PostApiAiToolGroupData` Response for status 200
-   */
-  export namespace PostApiAiToolGroup {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiToolGroupPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiToolGroupData;
-  }
-
-  /**
-   * @description 批量创建多个工具组
-   * @tags ai, toolGroup
-   * @name PostApiAiToolGroupBatch
-   * @summary 批量创建工具组
-   * @request POST:/api/ai/tool-group/batch
-   * @response `200` `PostApiAiToolGroupBatchData` Response for status 200
-   */
-  export namespace PostApiAiToolGroupBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiToolGroupBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiToolGroupBatchData;
-  }
-
-  /**
-   * @description 分页查询工具组列表
-   * @tags ai, toolGroup
-   * @name PostApiAiToolGroupQuery
-   * @summary 分页查询工具组
-   * @request POST:/api/ai/tool-group/query
-   * @response `200` `PostApiAiToolGroupQueryData` Response for status 200
-   */
-  export namespace PostApiAiToolGroupQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiToolGroupQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiToolGroupQueryData;
-  }
-
-  /**
-   * @description 分页查询工具列表
-   * @tags ai, tool
-   * @name PostApiAiToolQuery
-   * @summary 分页查询工具
-   * @request POST:/api/ai/tool/query
-   * @response `200` `PostApiAiToolQueryData` Response for status 200
-   */
-  export namespace PostApiAiToolQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiAiToolQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiAiToolQueryData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新AI智能体
-   * @tags ai, agent
-   * @name PutApiAiAgentBatch
-   * @summary 批量更新AI智能体
-   * @request PUT:/api/ai/agent/batch
-   * @response `200` `PutApiAiAgentBatchData` Response for status 200
-   */
-  export namespace PutApiAiAgentBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiAgentBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiAgentBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个AI智能体
-   * @tags ai, agent
-   * @name PutApiAiAgentById
-   * @summary 更新AI智能体
-   * @request PUT:/api/ai/agent/{id}
-   * @response `200` `PutApiAiAgentByIdData` Response for status 200
-   */
-  export namespace PutApiAiAgentById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiAgentByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiAgentByIdData;
-  }
-
-  /**
-   * @description 根据ID更新单个Agent会话
-   * @tags ai, agentSession
-   * @name PutApiAiAgentSessionById
-   * @summary 更新Agent会话
-   * @request PUT:/api/ai/agent-session/{id}
-   * @response `200` `PutApiAiAgentSessionByIdData` Response for status 200
-   */
-  export namespace PutApiAiAgentSessionById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiAgentSessionByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiAgentSessionByIdData;
-  }
-
-  /**
-   * @description 归档指定Agent会话
-   * @tags ai, agentSession
-   * @name PutApiAiAgentSessionByIdArchive
-   * @summary 归档Agent会话
-   * @request PUT:/api/ai/agent-session/{id}/archive
-   * @response `200` `PutApiAiAgentSessionByIdArchiveData` Response for status 200
-   */
-  export namespace PutApiAiAgentSessionByIdArchive {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiAgentSessionByIdArchivePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiAgentSessionByIdArchiveData;
-  }
-
-  /**
-   * @description 置顶/取消置顶Agent会话
-   * @tags ai, agentSession
-   * @name PutApiAiAgentSessionByIdPin
-   * @summary 置顶Agent会话
-   * @request PUT:/api/ai/agent-session/{id}/pin
-   * @response `200` `PutApiAiAgentSessionByIdPinData` Response for status 200
-   */
-  export namespace PutApiAiAgentSessionByIdPin {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiAgentSessionByIdPinPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiAgentSessionByIdPinData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新AI模型
-   * @tags ai, model
-   * @name PutApiAiModelBatch
-   * @summary 批量更新AI模型
-   * @request PUT:/api/ai/model/batch
-   * @response `200` `PutApiAiModelBatchData` Response for status 200
-   */
-  export namespace PutApiAiModelBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiModelBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiModelBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个AI模型
-   * @tags ai, model
-   * @name PutApiAiModelById
-   * @summary 更新AI模型
-   * @request PUT:/api/ai/model/{id}
-   * @response `200` `PutApiAiModelByIdData` Response for status 200
-   */
-  export namespace PutApiAiModelById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiModelByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiModelByIdData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新AI提供商
-   * @tags ai, provider
-   * @name PutApiAiProviderBatch
-   * @summary 批量更新AI提供商
-   * @request PUT:/api/ai/provider/batch
-   * @response `200` `PutApiAiProviderBatchData` Response for status 200
-   */
-  export namespace PutApiAiProviderBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiProviderBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiProviderBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个AI提供商
-   * @tags ai, provider
-   * @name PutApiAiProviderById
-   * @summary 更新AI提供商
-   * @request PUT:/api/ai/provider/{id}
-   * @response `200` `PutApiAiProviderByIdData` Response for status 200
-   */
-  export namespace PutApiAiProviderById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiProviderByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiProviderByIdData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新工具
-   * @tags ai, tool
-   * @name PutApiAiToolBatch
-   * @summary 批量更新工具
-   * @request PUT:/api/ai/tool/batch
-   * @response `200` `PutApiAiToolBatchData` Response for status 200
-   */
-  export namespace PutApiAiToolBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiToolBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiToolBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个工具
-   * @tags ai, tool
-   * @name PutApiAiToolById
-   * @summary 更新工具
-   * @request PUT:/api/ai/tool/{id}
-   * @response `200` `PutApiAiToolByIdData` Response for status 200
-   */
-  export namespace PutApiAiToolById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiToolByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiToolByIdData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新工具组
-   * @tags ai, toolGroup
-   * @name PutApiAiToolGroupBatch
-   * @summary 批量更新工具组
-   * @request PUT:/api/ai/tool-group/batch
-   * @response `200` `PutApiAiToolGroupBatchData` Response for status 200
-   */
-  export namespace PutApiAiToolGroupBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiToolGroupBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiToolGroupBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个工具组
-   * @tags ai, toolGroup
-   * @name PutApiAiToolGroupById
-   * @summary 更新工具组
-   * @request PUT:/api/ai/tool-group/{id}
-   * @response `200` `PutApiAiToolGroupByIdData` Response for status 200
-   */
-  export namespace PutApiAiToolGroupById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiAiToolGroupByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiAiToolGroupByIdData;
+    export type ResponseBody = PutApiSystemUserRoleUserByUserIdData;
   }
 }
 
 export namespace Knowledge {
   /**
-   * @description 根据ID软删除文件
-   * @tags knowledge, file
+   * @description 取消收藏文件或文件夹
+   * @tags knowledge, favorite
+   * @name DeleteApiKnowledgeFavoriteByResourceTypeByResourceId
+   * @summary 取消收藏
+   * @request DELETE:/api/knowledge/favorite/{resourceType}/{resourceId}
+   * @response `200` `DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData` Response for status 200
+   */
+  export namespace DeleteApiKnowledgeFavoriteByResourceTypeByResourceId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      resourceId: string;
+      resourceType: DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams1ResourceTypeEnum;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData;
+  }
+
+  /**
+   * @description 根据ID软删除文�?   * @tags knowledge, file
    * @name DeleteApiKnowledgeFileById
    * @summary 删除文件
    * @request DELETE:/api/knowledge/file/{id}
@@ -14065,8 +14477,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 根据ID硬删除文件版本
-   * @tags knowledge, fileVersion
+   * @description 根据ID硬删除文件版�?   * @tags knowledge, fileVersion
    * @name DeleteApiKnowledgeFileVersionById
    * @summary 删除文件版本
    * @request DELETE:/api/knowledge/file-version/{id}
@@ -14090,8 +14501,7 @@ export namespace Knowledge {
    * @description 根据ID软删除文件夹
    * @tags knowledge, folder
    * @name DeleteApiKnowledgeFolderById
-   * @summary 删除文件夹
-   * @request DELETE:/api/knowledge/folder/{id}
+   * @summary 删除文件�?   * @request DELETE:/api/knowledge/folder/{id}
    * @response `200` `DeleteApiKnowledgeFolderByIdData` Response for status 200
    */
   export namespace DeleteApiKnowledgeFolderById {
@@ -14109,49 +14519,25 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 根据ID删除权限
-   * @tags knowledge, resourcePermission
-   * @name DeleteApiKnowledgeResourcePermissionById
-   * @summary 删除权限
-   * @request DELETE:/api/knowledge/resource-permission/{id}
-   * @response `200` `DeleteApiKnowledgeResourcePermissionByIdData` Response for status 200
+   * @description 检查资源是否已被收�?   * @tags knowledge, favorite
+   * @name GetApiKnowledgeFavoriteCheckByResourceTypeByResourceId
+   * @summary 检查收藏状�?   * @request GET:/api/knowledge/favorite/check/{resourceType}/{resourceId}
+   * @response `200` `GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData` Response for status 200
    */
-  export namespace DeleteApiKnowledgeResourcePermissionById {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiKnowledgeResourcePermissionByIdData;
-  }
-
-  /**
-   * @description 删除指定资源的所有权限
-   * @tags knowledge, resourcePermission
-   * @name DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId
-   * @summary 删除资源所有权限
-   * @request DELETE:/api/knowledge/resource-permission/resource/{resourceType}/{resourceId}
-   * @response `200` `DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData` Response for status 200
-   */
-  export namespace DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId {
+  export namespace GetApiKnowledgeFavoriteCheckByResourceTypeByResourceId {
     export type RequestParams = {
       /**
        * @format uuid
        * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
        */
       resourceId: string;
-      resourceType: DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams1ResourceTypeEnum;
+      resourceType: GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams1ResourceTypeEnum;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody =
-      DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData;
+      GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData;
   }
 
   /**
@@ -14231,11 +14617,9 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 根据主键ID查询单个文件夹
-   * @tags knowledge, folder
+   * @description 根据主键ID查询单个文件�?   * @tags knowledge, folder
    * @name GetApiKnowledgeFolderById
-   * @summary 根据ID查询文件夹
-   * @request GET:/api/knowledge/folder/{id}
+   * @summary 根据ID查询文件�?   * @request GET:/api/knowledge/folder/{id}
    * @response `200` `GetApiKnowledgeFolderByIdData` Response for status 200
    */
   export namespace GetApiKnowledgeFolderById {
@@ -14269,43 +14653,34 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取指定资源的所有权限
-   * @tags knowledge, resourcePermission
-   * @name GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId
-   * @summary 获取资源权限
-   * @request GET:/api/knowledge/resource-permission/resource/{resourceType}/{resourceId}
-   * @response `200` `GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData` Response for status 200
+   * @description 收藏文件或文件夹
+   * @tags knowledge, favorite
+   * @name PostApiKnowledgeFavorite
+   * @summary 添加收藏
+   * @request POST:/api/knowledge/favorite
+   * @response `200` `PostApiKnowledgeFavoriteData` Response for status 200
    */
-  export namespace GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId {
-    export type RequestParams = {
-      /**
-       * @format uuid
-       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-       */
-      resourceId: string;
-      resourceType: GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams1ResourceTypeEnum;
-    };
+  export namespace PostApiKnowledgeFavorite {
+    export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = PostApiKnowledgeFavoritePayload;
     export type RequestHeaders = {};
-    export type ResponseBody =
-      GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData;
+    export type ResponseBody = PostApiKnowledgeFavoriteData;
   }
 
   /**
-   * @description 获取资源权限表的JSON Schema
-   * @tags knowledge, resourcePermission
-   * @name GetApiKnowledgeResourcePermissionSchema
-   * @summary 获取资源权限Schema
-   * @request GET:/api/knowledge/resource-permission/schema
-   * @response `200` `GetApiKnowledgeResourcePermissionSchemaData` Response for status 200
+   * @description 获取当前用户的收藏列�?   * @tags knowledge, favorite
+   * @name PostApiKnowledgeFavoriteList
+   * @summary 获取收藏列表
+   * @request POST:/api/knowledge/favorite/list
+   * @response `200` `PostApiKnowledgeFavoriteListData` Response for status 200
    */
-  export namespace GetApiKnowledgeResourcePermissionSchema {
+  export namespace PostApiKnowledgeFavoriteList {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = PostApiKnowledgeFavoriteListPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeResourcePermissionSchemaData;
+    export type ResponseBody = PostApiKnowledgeFavoriteListData;
   }
 
   /**
@@ -14405,11 +14780,9 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 创建单个文件夹
-   * @tags knowledge, folder
+   * @description 创建单个文件�?   * @tags knowledge, folder
    * @name PostApiKnowledgeFolder
-   * @summary 创建文件夹
-   * @request POST:/api/knowledge/folder
+   * @summary 创建文件�?   * @request POST:/api/knowledge/folder
    * @response `200` `PostApiKnowledgeFolderData` Response for status 200
    */
   export namespace PostApiKnowledgeFolder {
@@ -14421,11 +14794,9 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 批量创建多个文件夹
-   * @tags knowledge, folder
+   * @description 批量创建多个文件�?   * @tags knowledge, folder
    * @name PostApiKnowledgeFolderBatch
-   * @summary 批量创建文件夹
-   * @request POST:/api/knowledge/folder/batch
+   * @summary 批量创建文件�?   * @request POST:/api/knowledge/folder/batch
    * @response `200` `PostApiKnowledgeFolderBatchData` Response for status 200
    */
   export namespace PostApiKnowledgeFolderBatch {
@@ -14437,11 +14808,9 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 分页查询文件夹列表，自动排除已删除数据
-   * @tags knowledge, folder
+   * @description 分页查询文件夹列表，自动排除已删除数�?   * @tags knowledge, folder
    * @name PostApiKnowledgeFolderQuery
-   * @summary 分页查询文件夹
-   * @request POST:/api/knowledge/folder/query
+   * @summary 分页查询文件�?   * @request POST:/api/knowledge/folder/query
    * @response `200` `PostApiKnowledgeFolderQueryData` Response for status 200
    */
   export namespace PostApiKnowledgeFolderQuery {
@@ -14450,54 +14819,6 @@ export namespace Knowledge {
     export type RequestBody = PostApiKnowledgeFolderQueryPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiKnowledgeFolderQueryData;
-  }
-
-  /**
-   * @description 添加单个资源权限
-   * @tags knowledge, resourcePermission
-   * @name PostApiKnowledgeResourcePermission
-   * @summary 添加权限
-   * @request POST:/api/knowledge/resource-permission
-   * @response `200` `PostApiKnowledgeResourcePermissionData` Response for status 200
-   */
-  export namespace PostApiKnowledgeResourcePermission {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeResourcePermissionPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeResourcePermissionData;
-  }
-
-  /**
-   * @description 分页查询资源权限列表
-   * @tags knowledge, resourcePermission
-   * @name PostApiKnowledgeResourcePermissionQuery
-   * @summary 分页查询资源权限
-   * @request POST:/api/knowledge/resource-permission/query
-   * @response `200` `PostApiKnowledgeResourcePermissionQueryData` Response for status 200
-   */
-  export namespace PostApiKnowledgeResourcePermissionQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeResourcePermissionQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeResourcePermissionQueryData;
-  }
-
-  /**
-   * @description 批量设置资源权限（替换现有权限）
-   * @tags knowledge, resourcePermission
-   * @name PostApiKnowledgeResourcePermissionSet
-   * @summary 设置资源权限
-   * @request POST:/api/knowledge/resource-permission/set
-   * @response `200` `PostApiKnowledgeResourcePermissionSetData` Response for status 200
-   */
-  export namespace PostApiKnowledgeResourcePermissionSet {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeResourcePermissionSetPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeResourcePermissionSetData;
   }
 
   /**
@@ -14577,11 +14898,9 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 根据ID列表批量更新文件夹
-   * @tags knowledge, folder
+   * @description 根据ID列表批量更新文件�?   * @tags knowledge, folder
    * @name PutApiKnowledgeFolderBatch
-   * @summary 批量更新文件夹
-   * @request PUT:/api/knowledge/folder/batch
+   * @summary 批量更新文件�?   * @request PUT:/api/knowledge/folder/batch
    * @response `200` `PutApiKnowledgeFolderBatchData` Response for status 200
    */
   export namespace PutApiKnowledgeFolderBatch {
@@ -14593,11 +14912,9 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 根据ID更新单个文件夹
-   * @tags knowledge, folder
+   * @description 根据ID更新单个文件�?   * @tags knowledge, folder
    * @name PutApiKnowledgeFolderById
-   * @summary 更新文件夹
-   * @request PUT:/api/knowledge/folder/{id}
+   * @summary 更新文件�?   * @request PUT:/api/knowledge/folder/{id}
    * @response `200` `PutApiKnowledgeFolderByIdData` Response for status 200
    */
   export namespace PutApiKnowledgeFolderById {
@@ -14617,8 +14934,7 @@ export namespace Knowledge {
 
 export namespace Im {
   /**
-   * @description 根据ID软删除会话
-   * @tags im, conversation
+   * @description 根据ID软删除会�?   * @tags im, conversation
    * @name DeleteApiImConversationById
    * @summary 删除会话
    * @request DELETE:/api/im/conversation/{id}
@@ -14639,11 +14955,9 @@ export namespace Im {
   }
 
   /**
-   * @description 移除群成员
-   * @tags im, groupMember
+   * @description 移除群成�?   * @tags im, groupMember
    * @name DeleteApiImGroupMemberByConversationIdByUserId
-   * @summary 移除群成员
-   * @request DELETE:/api/im/group-member/{conversationId}/{userId}
+   * @summary 移除群成�?   * @request DELETE:/api/im/group-member/{conversationId}/{userId}
    * @response `200` `DeleteApiImGroupMemberByConversationIdByUserIdData` Response for status 200
    */
   export namespace DeleteApiImGroupMemberByConversationIdByUserId {
@@ -14743,11 +15057,9 @@ export namespace Im {
   }
 
   /**
-   * @description 根据会话ID和用户ID查询已读状态
-   * @tags im, conversationRead
+   * @description 根据会话ID和用户ID查询已读状�?   * @tags im, conversationRead
    * @name GetApiImConversationReadByConversationIdByUserId
-   * @summary 查询已读状态
-   * @request GET:/api/im/conversation-read/{conversationId}/{userId}
+   * @summary 查询已读状�?   * @request GET:/api/im/conversation-read/{conversationId}/{userId}
    * @response `200` `GetApiImConversationReadByConversationIdByUserIdData` Response for status 200
    */
   export namespace GetApiImConversationReadByConversationIdByUserId {
@@ -14803,11 +15115,9 @@ export namespace Im {
   }
 
   /**
-   * @description 根据会话ID和用户ID查询群成员
-   * @tags im, groupMember
+   * @description 根据会话ID和用户ID查询群成�?   * @tags im, groupMember
    * @name GetApiImGroupMemberByConversationIdByUserId
-   * @summary 查询群成员
-   * @request GET:/api/im/group-member/{conversationId}/{userId}
+   * @summary 查询群成�?   * @request GET:/api/im/group-member/{conversationId}/{userId}
    * @response `200` `GetApiImGroupMemberByConversationIdByUserIdData` Response for status 200
    */
   export namespace GetApiImGroupMemberByConversationIdByUserId {
@@ -14982,8 +15292,7 @@ export namespace Im {
   }
 
   /**
-   * @description 创建群聊会话并添加成员
-   * @tags im, conversation
+   * @description 创建群聊会话并添加成�?   * @tags im, conversation
    * @name PostApiImConversationGroup
    * @summary 创建群聊
    * @request POST:/api/im/conversation/group
@@ -14998,8 +15307,7 @@ export namespace Im {
   }
 
   /**
-   * @description 隐藏会话（不再显示在消息列表）
-   * @tags im, conversationHidden
+   * @description 隐藏会话（不再显示在消息列表�?   * @tags im, conversationHidden
    * @name PostApiImConversationHiddenHide
    * @summary 隐藏会话
    * @request POST:/api/im/conversation-hidden/hide
@@ -15033,8 +15341,7 @@ export namespace Im {
    * @description 查找两个用户之间的私聊会话，如果不存在则创建
    * @tags im, conversation
    * @name PostApiImConversationPrivate
-   * @summary 查找或创建私聊
-   * @request POST:/api/im/conversation/private
+   * @summary 查找或创建私�?   * @request POST:/api/im/conversation/private
    * @response `200` `PostApiImConversationPrivateData` Response for status 200
    */
   export namespace PostApiImConversationPrivate {
@@ -15062,11 +15369,9 @@ export namespace Im {
   }
 
   /**
-   * @description 分页查询已读状态列表
-   * @tags im, conversationRead
+   * @description 分页查询已读状态列�?   * @tags im, conversationRead
    * @name PostApiImConversationReadQuery
-   * @summary 分页查询已读状态
-   * @request POST:/api/im/conversation-read/query
+   * @summary 分页查询已读状�?   * @request POST:/api/im/conversation-read/query
    * @response `200` `PostApiImConversationReadQueryData` Response for status 200
    */
   export namespace PostApiImConversationReadQuery {
@@ -15078,11 +15383,9 @@ export namespace Im {
   }
 
   /**
-   * @description 添加群成员
-   * @tags im, groupMember
+   * @description 添加群成�?   * @tags im, groupMember
    * @name PostApiImGroupMember
-   * @summary 添加群成员
-   * @request POST:/api/im/group-member
+   * @summary 添加群成�?   * @request POST:/api/im/group-member
    * @response `200` `PostApiImGroupMemberData` Response for status 200
    */
   export namespace PostApiImGroupMember {
@@ -15094,11 +15397,9 @@ export namespace Im {
   }
 
   /**
-   * @description 批量添加群成员
-   * @tags im, groupMember
+   * @description 批量添加群成�?   * @tags im, groupMember
    * @name PostApiImGroupMemberBatch
-   * @summary 批量添加群成员
-   * @request POST:/api/im/group-member/batch
+   * @summary 批量添加群成�?   * @request POST:/api/im/group-member/batch
    * @response `200` `PostApiImGroupMemberBatchData` Response for status 200
    */
   export namespace PostApiImGroupMemberBatch {
@@ -15110,11 +15411,9 @@ export namespace Im {
   }
 
   /**
-   * @description 分页查询群成员列表
-   * @tags im, groupMember
+   * @description 分页查询群成员列�?   * @tags im, groupMember
    * @name PostApiImGroupMemberQuery
-   * @summary 分页查询群成员
-   * @request POST:/api/im/group-member/query
+   * @summary 分页查询群成�?   * @request POST:/api/im/group-member/query
    * @response `200` `PostApiImGroupMemberQueryData` Response for status 200
    */
   export namespace PostApiImGroupMemberQuery {
@@ -15126,11 +15425,9 @@ export namespace Im {
   }
 
   /**
-   * @description 发送单条消息
-   * @tags im, message
+   * @description 发送单条消�?   * @tags im, message
    * @name PostApiImMessage
-   * @summary 发送消息
-   * @request POST:/api/im/message
+   * @summary 发送消�?   * @request POST:/api/im/message
    * @response `200` `PostApiImMessageData` Response for status 200
    */
   export namespace PostApiImMessage {
@@ -15190,8 +15487,7 @@ export namespace Im {
   }
 
   /**
-   * @description 上传文件到S3并创建临时文件记录
-   * @tags im, tempFile
+   * @description 上传文件到S3并创建临时文件记�?   * @tags im, tempFile
    * @name PostApiImTempFileUpload
    * @summary 上传临时文件
    * @request POST:/api/im/temp-file/upload
@@ -15231,8 +15527,7 @@ export namespace Im {
    * @description 增加用户在会话中的未读消息数
    * @tags im, conversationRead
    * @name PutApiImConversationReadIncrementUnread
-   * @summary 增加未读数
-   * @request PUT:/api/im/conversation-read/increment-unread
+   * @summary 增加未读�?   * @request PUT:/api/im/conversation-read/increment-unread
    * @response `200` `PutApiImConversationReadIncrementUnreadData` Response for status 200
    */
   export namespace PutApiImConversationReadIncrementUnread {
@@ -15244,8 +15539,7 @@ export namespace Im {
   }
 
   /**
-   * @description 标记会话已读到指定消息序号
-   * @tags im, conversationRead
+   * @description 标记会话已读到指定消息序�?   * @tags im, conversationRead
    * @name PutApiImConversationReadMark
    * @summary 标记已读
    * @request PUT:/api/im/conversation-read/mark
@@ -15260,11 +15554,9 @@ export namespace Im {
   }
 
   /**
-   * @description 更新群成员信息
-   * @tags im, groupMember
+   * @description 更新群成员信�?   * @tags im, groupMember
    * @name PutApiImGroupMemberByConversationIdByUserId
-   * @summary 更新群成员
-   * @request PUT:/api/im/group-member/{conversationId}/{userId}
+   * @summary 更新群成�?   * @request PUT:/api/im/group-member/{conversationId}/{userId}
    * @response `200` `PutApiImGroupMemberByConversationIdByUserIdData` Response for status 200
    */
   export namespace PutApiImGroupMemberByConversationIdByUserId {
@@ -15334,8 +15626,7 @@ export namespace Im {
 
 export namespace Files {
   /**
-   * @description 软删除文件
-   * @tags files, files
+   * @description 软删除文�?   * @tags files, files
    * @name DeleteApiFilesById
    * @summary 删除文件
    * @request DELETE:/api/files/{id}
@@ -15359,8 +15650,7 @@ export namespace Files {
    * @description 软删除文件夹及其内容
    * @tags files, files
    * @name DeleteApiFilesFoldersById
-   * @summary 删除文件夹
-   * @request DELETE:/api/files/folders/{id}
+   * @summary 删除文件�?   * @request DELETE:/api/files/folders/{id}
    * @response `200` `DeleteApiFilesFoldersByIdData` Response for status 200
    */
   export namespace DeleteApiFilesFoldersById {
@@ -15375,6 +15665,59 @@ export namespace Files {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = DeleteApiFilesFoldersByIdData;
+  }
+
+  /**
+   * @description 删除资源的所有权限和继承关系
+   * @tags files, permission
+   * @name DeleteApiFilesPermissionAllByResourceTypeByResourceId
+   * @summary 删除所有权�?   * @request DELETE:/api/files/permission/all/{resourceType}/{resourceId}
+   * @response `200` `DeleteApiFilesPermissionAllByResourceTypeByResourceIdData` Response for status 200
+   */
+  export namespace DeleteApiFilesPermissionAllByResourceTypeByResourceId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      resourceId: string;
+      resourceType: DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams1ResourceTypeEnum;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      DeleteApiFilesPermissionAllByResourceTypeByResourceIdData;
+  }
+
+  /**
+   * @description 移除资源的权�?   * @tags files, permission
+   * @name DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission
+   * @summary 移除权限
+   * @request DELETE:/api/files/permission/{resourceType}/{resourceId}/{subjectType}/{subjectId}/{permission}
+   * @response `200` `DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData` Response for status 200
+   */
+  export namespace DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission {
+    export type RequestParams = {
+      permission: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1PermissionEnum;
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      resourceId: string;
+      resourceType: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1ResourceTypeEnum;
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      subjectId: string;
+      subjectType: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1SubjectTypeEnum;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData;
   }
 
   /**
@@ -15422,8 +15765,7 @@ export namespace Files {
   }
 
   /**
-   * @description 获取文本文件内容，仅支持纯文本文件
-   * @tags files, files
+   * @description 获取文本文件内容，仅支持纯文本文�?   * @tags files, files
    * @name GetApiFilesByIdTextContent
    * @summary 获取文本文件内容
    * @request GET:/api/files/{id}/text-content
@@ -15441,6 +15783,53 @@ export namespace Files {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiFilesByIdTextContentData;
+  }
+
+  /**
+   * @description 获取文件或文件夹的权限列�?   * @tags files, permission
+   * @name GetApiFilesPermissionByResourceTypeByResourceId
+   * @summary 获取资源权限
+   * @request GET:/api/files/permission/{resourceType}/{resourceId}
+   * @response `200` `GetApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
+   */
+  export namespace GetApiFilesPermissionByResourceTypeByResourceId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      resourceId: string;
+      resourceType: GetApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      GetApiFilesPermissionByResourceTypeByResourceIdData;
+  }
+
+  /**
+   * @description 获取用户对资源的所有有效权限（包括继承的权限）
+   * @tags files, permission
+   * @name GetApiFilesPermissionEffectiveByResourceTypeByResourceId
+   * @summary 获取有效权限
+   * @request GET:/api/files/permission/effective/{resourceType}/{resourceId}
+   * @response `200` `GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData` Response for status 200
+   */
+  export namespace GetApiFilesPermissionEffectiveByResourceTypeByResourceId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      resourceId: string;
+      resourceType: GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams1ResourceTypeEnum;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData;
   }
 
   /**
@@ -15488,11 +15877,10 @@ export namespace Files {
   }
 
   /**
-   * @description 复制文件到目标文件夹，自动生成唯一文件名 filename(num).ext
+   * @description 复制文件到目标文件夹，自动生成唯一文件�?filename(num).ext
    * @tags files, files
    * @name PostApiFilesByIdCopyAsDuplicate
-   * @summary 复制文件为副本
-   * @request POST:/api/files/{id}/copy-as-duplicate
+   * @summary 复制文件为副�?   * @request POST:/api/files/{id}/copy-as-duplicate
    * @response `200` `PostApiFilesByIdCopyAsDuplicateData` Response for status 200
    */
   export namespace PostApiFilesByIdCopyAsDuplicate {
@@ -15532,11 +15920,9 @@ export namespace Files {
   }
 
   /**
-   * @description 检查指定文件夹中是否存在同名文件
-   * @tags files, files
+   * @description 检查指定文件夹中是否存在同名文�?   * @tags files, files
    * @name PostApiFilesCheckExists
-   * @summary 检查文件是否存在
-   * @request POST:/api/files/check-exists
+   * @summary 检查文件是否存�?   * @request POST:/api/files/check-exists
    * @response `200` `PostApiFilesCheckExistsData` Response for status 200
    */
   export namespace PostApiFilesCheckExists {
@@ -15548,8 +15934,7 @@ export namespace Files {
   }
 
   /**
-   * @description 确认文件上传完成并创建记录
-   * @tags files, files
+   * @description 确认文件上传完成并创建记�?   * @tags files, files
    * @name PostApiFilesConfirmUpload
    * @summary 确认上传
    * @request POST:/api/files/confirm-upload
@@ -15564,8 +15949,7 @@ export namespace Files {
   }
 
   /**
-   * @description 批量软删除文件
-   * @tags files, files
+   * @description 批量软删除文�?   * @tags files, files
    * @name PostApiFilesDeleteBatch
    * @summary 批量删除文件
    * @request POST:/api/files/delete-batch
@@ -15583,8 +15967,7 @@ export namespace Files {
    * @description 创建新文件夹
    * @tags files, files
    * @name PostApiFilesFolders
-   * @summary 创建文件夹
-   * @request POST:/api/files/folders
+   * @summary 创建文件�?   * @request POST:/api/files/folders
    * @response `200` `PostApiFilesFoldersData` Response for status 200
    */
   export namespace PostApiFilesFolders {
@@ -15599,8 +15982,7 @@ export namespace Files {
    * @description 移动文件夹到目标位置
    * @tags files, files
    * @name PostApiFilesFoldersByIdMove
-   * @summary 移动文件夹
-   * @request POST:/api/files/folders/{id}/move
+   * @summary 移动文件�?   * @request POST:/api/files/folders/{id}/move
    * @response `200` `PostApiFilesFoldersByIdMoveData` Response for status 200
    */
   export namespace PostApiFilesFoldersByIdMove {
@@ -15618,8 +16000,122 @@ export namespace Files {
   }
 
   /**
-   * @description 上传文件到存储（如果文件已存在则返回冲突信息）
-   * @tags files, files
+   * @description 为资源添加单个权�?   * @tags files, permission
+   * @name PostApiFilesPermission
+   * @summary 添加权限
+   * @request POST:/api/files/permission
+   * @response `200` `PostApiFilesPermissionData` Response for status 200
+   */
+  export namespace PostApiFilesPermission {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiFilesPermissionPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiFilesPermissionData;
+  }
+
+  /**
+   * @description 设置文件或文件夹的权限（替换现有权限�?   * @tags files, permission
+   * @name PostApiFilesPermissionByResourceTypeByResourceId
+   * @summary 设置资源权限
+   * @request POST:/api/files/permission/{resourceType}/{resourceId}
+   * @response `200` `PostApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
+   */
+  export namespace PostApiFilesPermissionByResourceTypeByResourceId {
+    export type RequestParams = {
+      /**
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      resourceId: string;
+      resourceType: PostApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum;
+    };
+    export type RequestQuery = {};
+    export type RequestBody =
+      PostApiFilesPermissionByResourceTypeByResourceIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody =
+      PostApiFilesPermissionByResourceTypeByResourceIdData;
+  }
+
+  /**
+   * @description 检查用户对资源的权�?   * @tags files, permission
+   * @name PostApiFilesPermissionCheck
+   * @summary 检查权�?   * @request POST:/api/files/permission/check
+   * @response `200` `PostApiFilesPermissionCheckData` Response for status 200
+   */
+  export namespace PostApiFilesPermissionCheck {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiFilesPermissionCheckPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiFilesPermissionCheckData;
+  }
+
+  /**
+   * @description 将一个资源的权限复制到另一个资�?   * @tags files, permission
+   * @name PostApiFilesPermissionCopy
+   * @summary 复制权限
+   * @request POST:/api/files/permission/copy
+   * @response `200` `PostApiFilesPermissionCopyData` Response for status 200
+   */
+  export namespace PostApiFilesPermissionCopy {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiFilesPermissionCopyPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiFilesPermissionCopyData;
+  }
+
+  /**
+   * @description 设置文件或文件夹的父级文件夹（用于权限继承）
+   * @tags files, permission
+   * @name PostApiFilesPermissionParent
+   * @summary 设置资源父级
+   * @request POST:/api/files/permission/parent
+   * @response `200` `PostApiFilesPermissionParentData` Response for status 200
+   */
+  export namespace PostApiFilesPermissionParent {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiFilesPermissionParentPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiFilesPermissionParentData;
+  }
+
+  /**
+   * @description 获取当前用户共享给他人的文件和文件夹
+   * @tags files, share
+   * @name PostApiFilesShareMyShared
+   * @summary 获取我共享的资源
+   * @request POST:/api/files/share/my-shared
+   * @response `200` `PostApiFilesShareMySharedData` Response for status 200
+   */
+  export namespace PostApiFilesShareMyShared {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiFilesShareMySharedPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiFilesShareMySharedData;
+  }
+
+  /**
+   * @description 获取他人共享给当前用户的文件和文件夹
+   * @tags files, share
+   * @name PostApiFilesShareSharedWithMe
+   * @summary 获取收到的共�?   * @request POST:/api/files/share/shared-with-me
+   * @response `200` `PostApiFilesShareSharedWithMeData` Response for status 200
+   */
+  export namespace PostApiFilesShareSharedWithMe {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiFilesShareSharedWithMePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiFilesShareSharedWithMeData;
+  }
+
+  /**
+   * @description 上传文件到存储（如果文件已存在则返回冲突信息�?   * @tags files, files
    * @name PostApiFilesUpload
    * @summary 上传文件
    * @request POST:/api/files/upload
@@ -15634,8 +16130,7 @@ export namespace Files {
   }
 
   /**
-   * @description 上传文件并处理冲突（覆盖/创建新版本/创建副本）
-   * @tags files, files
+   * @description 上传文件并处理冲突（覆盖/创建新版�?创建副本�?   * @tags files, files
    * @name PostApiFilesUploadForce
    * @summary 强制上传文件
    * @request POST:/api/files/upload-force
@@ -15666,8 +16161,7 @@ export namespace Files {
   }
 
   /**
-   * @description 将历史版本恢复为当前版本（交换S3字段）
-   * @tags files, files
+   * @description 将历史版本恢复为当前版本（交换S3字段�?   * @tags files, files
    * @name PostApiFilesVersionsByIdRestore
    * @summary 恢复历史版本
    * @request POST:/api/files/versions/{id}/restore
@@ -15732,11 +16226,9 @@ export namespace Files {
   }
 
   /**
-   * @description 重命名文件
-   * @tags files, files
+   * @description 重命名文�?   * @tags files, files
    * @name PutApiFilesByIdRename
-   * @summary 重命名文件
-   * @request PUT:/api/files/{id}/rename
+   * @summary 重命名文�?   * @request PUT:/api/files/{id}/rename
    * @response `200` `PutApiFilesByIdRenameData` Response for status 200
    */
   export namespace PutApiFilesByIdRename {
@@ -15754,11 +16246,9 @@ export namespace Files {
   }
 
   /**
-   * @description 更新文件夹描述信息
-   * @tags files, files
+   * @description 更新文件夹描述信�?   * @tags files, files
    * @name PutApiFilesFoldersByIdDescription
-   * @summary 更新文件夹描述
-   * @request PUT:/api/files/folders/{id}/description
+   * @summary 更新文件夹描�?   * @request PUT:/api/files/folders/{id}/description
    * @response `200` `PutApiFilesFoldersByIdDescriptionData` Response for status 200
    */
   export namespace PutApiFilesFoldersByIdDescription {
@@ -15776,11 +16266,9 @@ export namespace Files {
   }
 
   /**
-   * @description 更新文件夹排序
-   * @tags files, files
+   * @description 更新文件夹排�?   * @tags files, files
    * @name PutApiFilesFoldersByIdOrder
-   * @summary 更新文件夹排序
-   * @request PUT:/api/files/folders/{id}/order
+   * @summary 更新文件夹排�?   * @request PUT:/api/files/folders/{id}/order
    * @response `200` `PutApiFilesFoldersByIdOrderData` Response for status 200
    */
   export namespace PutApiFilesFoldersByIdOrder {
@@ -15823,8 +16311,7 @@ export namespace Files {
    * @description 更新文件夹图标和颜色
    * @tags files, files
    * @name PutApiFilesFoldersByIdStyle
-   * @summary 更新文件夹样式
-   * @request PUT:/api/files/folders/{id}/style
+   * @summary 更新文件夹样�?   * @request PUT:/api/files/folders/{id}/style
    * @response `200` `PutApiFilesFoldersByIdStyleData` Response for status 200
    */
   export namespace PutApiFilesFoldersByIdStyle {
@@ -15839,6 +16326,53 @@ export namespace Files {
     export type RequestBody = PutApiFilesFoldersByIdStylePayload;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiFilesFoldersByIdStyleData;
+  }
+}
+
+export namespace Dev {
+  /**
+   * @description 获取 monorepo 项目根目录路�?   * @tags dev, project-code
+   * @name GetApiDevProjectCodeRoot
+   * @summary 获取项目根目�?   * @request GET:/api/dev/project-code/root
+   * @response `200` `GetApiDevProjectCodeRootData` Response for status 200
+   */
+  export namespace GetApiDevProjectCodeRoot {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiDevProjectCodeRootData;
+  }
+
+  /**
+   * @description 读取指定目录下的文件和子目录
+   * @tags dev, project-code
+   * @name PostApiDevProjectCodeDirectory
+   * @summary 读取目录
+   * @request POST:/api/dev/project-code/directory
+   * @response `200` `PostApiDevProjectCodeDirectoryData` Response for status 200
+   */
+  export namespace PostApiDevProjectCodeDirectory {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiDevProjectCodeDirectoryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiDevProjectCodeDirectoryData;
+  }
+
+  /**
+   * @description 读取指定文件的内�?   * @tags dev, project-code
+   * @name PostApiDevProjectCodeFile
+   * @summary 读取文件
+   * @request POST:/api/dev/project-code/file
+   * @response `200` `PostApiDevProjectCodeFileData` Response for status 200
+   */
+  export namespace PostApiDevProjectCodeFile {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiDevProjectCodeFilePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiDevProjectCodeFileData;
   }
 }
 
@@ -16123,6 +16657,979 @@ export class Api<SecurityDataType extends unknown> {
       ...params,
     });
 
+  ai = {
+    /**
+     * @description 根据ID删除AI智能�?     *
+     * @tags ai, agent
+     * @name DeleteApiAiAgentById
+     * @summary 删除AI智能�?     * @request DELETE:/api/ai/agent/{id}
+     * @response `200` `DeleteApiAiAgentByIdData` Response for status 200
+     */
+    deleteApiAiAgentById: (
+      { id, ...query }: DeleteApiAiAgentByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiAiAgentByIdData, any>({
+        path: `/api/ai/agent/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID软删除Agent会话
+     *
+     * @tags ai, agentSession
+     * @name DeleteApiAiAgentSessionById
+     * @summary 删除Agent会话
+     * @request DELETE:/api/ai/agent-session/{id}
+     * @response `200` `DeleteApiAiAgentSessionByIdData` Response for status 200
+     */
+    deleteApiAiAgentSessionById: (
+      { id, ...query }: DeleteApiAiAgentSessionByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiAiAgentSessionByIdData, any>({
+        path: `/api/ai/agent-session/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID删除AI模型
+     *
+     * @tags ai, model
+     * @name DeleteApiAiModelById
+     * @summary 删除AI模型
+     * @request DELETE:/api/ai/model/{id}
+     * @response `200` `DeleteApiAiModelByIdData` Response for status 200
+     */
+    deleteApiAiModelById: (
+      { id, ...query }: DeleteApiAiModelByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiAiModelByIdData, any>({
+        path: `/api/ai/model/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID删除AI提供�?     *
+     * @tags ai, provider
+     * @name DeleteApiAiProviderById
+     * @summary 删除AI提供�?     * @request DELETE:/api/ai/provider/{id}
+     * @response `200` `DeleteApiAiProviderByIdData` Response for status 200
+     */
+    deleteApiAiProviderById: (
+      { id, ...query }: DeleteApiAiProviderByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiAiProviderByIdData, any>({
+        path: `/api/ai/provider/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID删除工具�?     *
+     * @tags ai, toolGroup
+     * @name DeleteApiAiToolGroupById
+     * @summary 删除工具�?     * @request DELETE:/api/ai/tool-group/{id}
+     * @response `200` `DeleteApiAiToolGroupByIdData` Response for status 200
+     */
+    deleteApiAiToolGroupById: (
+      { id, ...query }: DeleteApiAiToolGroupByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiAiToolGroupByIdData, any>({
+        path: `/api/ai/tool-group/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据主键ID查询单个AI智能�?     *
+     * @tags ai, agent
+     * @name GetApiAiAgentById
+     * @summary 根据ID查询AI智能�?     * @request GET:/api/ai/agent/{id}
+     * @response `200` `GetApiAiAgentByIdData` Response for status 200
+     */
+    getApiAiAgentById: (
+      { id, ...query }: GetApiAiAgentByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiAgentByIdData, any>({
+        path: `/api/ai/agent/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据主键ID查询单个Agent消息
+     *
+     * @tags ai, agentMessage
+     * @name GetApiAiAgentMessageById
+     * @summary 根据ID查询Agent消息
+     * @request GET:/api/ai/agent-message/{id}
+     * @response `200` `GetApiAiAgentMessageByIdData` Response for status 200
+     */
+    getApiAiAgentMessageById: (
+      { id, ...query }: GetApiAiAgentMessageByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiAgentMessageByIdData, any>({
+        path: `/api/ai/agent-message/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取指定会话的消息历�?     *
+     * @tags ai, agentMessage
+     * @name GetApiAiAgentMessageHistoryBySessionId
+     * @summary 获取会话历史
+     * @request GET:/api/ai/agent-message/history/{sessionId}
+     * @response `200` `GetApiAiAgentMessageHistoryBySessionIdData` Response for status 200
+     */
+    getApiAiAgentMessageHistoryBySessionId: (
+      { sessionId, ...query }: GetApiAiAgentMessageHistoryBySessionIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiAgentMessageHistoryBySessionIdData, any>({
+        path: `/api/ai/agent-message/history/${sessionId}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取Agent消息表的JSON Schema
+     *
+     * @tags ai, agentMessage
+     * @name GetApiAiAgentMessageSchema
+     * @summary 获取Agent消息Schema
+     * @request GET:/api/ai/agent-message/schema
+     * @response `200` `GetApiAiAgentMessageSchemaData` Response for status 200
+     */
+    getApiAiAgentMessageSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiAiAgentMessageSchemaData, any>({
+        path: `/api/ai/agent-message/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取AI智能体表的JSON Schema
+     *
+     * @tags ai, agent
+     * @name GetApiAiAgentSchema
+     * @summary 获取AI智能体Schema
+     * @request GET:/api/ai/agent/schema
+     * @response `200` `GetApiAiAgentSchemaData` Response for status 200
+     */
+    getApiAiAgentSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiAiAgentSchemaData, any>({
+        path: `/api/ai/agent/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据主键ID查询单个Agent会话
+     *
+     * @tags ai, agentSession
+     * @name GetApiAiAgentSessionById
+     * @summary 根据ID查询Agent会话
+     * @request GET:/api/ai/agent-session/{id}
+     * @response `200` `GetApiAiAgentSessionByIdData` Response for status 200
+     */
+    getApiAiAgentSessionById: (
+      { id, ...query }: GetApiAiAgentSessionByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiAgentSessionByIdData, any>({
+        path: `/api/ai/agent-session/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取Agent会话表的JSON Schema
+     *
+     * @tags ai, agentSession
+     * @name GetApiAiAgentSessionSchema
+     * @summary 获取Agent会话Schema
+     * @request GET:/api/ai/agent-session/schema
+     * @response `200` `GetApiAiAgentSessionSchemaData` Response for status 200
+     */
+    getApiAiAgentSessionSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiAiAgentSessionSchemaData, any>({
+        path: `/api/ai/agent-session/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据主键ID查询单个AI模型
+     *
+     * @tags ai, model
+     * @name GetApiAiModelById
+     * @summary 根据ID查询AI模型
+     * @request GET:/api/ai/model/{id}
+     * @response `200` `GetApiAiModelByIdData` Response for status 200
+     */
+    getApiAiModelById: (
+      { id, ...query }: GetApiAiModelByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiModelByIdData, any>({
+        path: `/api/ai/model/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取AI模型表的JSON Schema
+     *
+     * @tags ai, model
+     * @name GetApiAiModelSchema
+     * @summary 获取AI模型Schema
+     * @request GET:/api/ai/model/schema
+     * @response `200` `GetApiAiModelSchemaData` Response for status 200
+     */
+    getApiAiModelSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiAiModelSchemaData, any>({
+        path: `/api/ai/model/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据主键ID查询单个AI提供�?     *
+     * @tags ai, provider
+     * @name GetApiAiProviderById
+     * @summary 根据ID查询AI提供�?     * @request GET:/api/ai/provider/{id}
+     * @response `200` `GetApiAiProviderByIdData` Response for status 200
+     */
+    getApiAiProviderById: (
+      { id, ...query }: GetApiAiProviderByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiProviderByIdData, any>({
+        path: `/api/ai/provider/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取AI提供商表的JSON Schema
+     *
+     * @tags ai, provider
+     * @name GetApiAiProviderSchema
+     * @summary 获取AI提供商Schema
+     * @request GET:/api/ai/provider/schema
+     * @response `200` `GetApiAiProviderSchemaData` Response for status 200
+     */
+    getApiAiProviderSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiAiProviderSchemaData, any>({
+        path: `/api/ai/provider/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据主键ID查询单个工具�?     *
+     * @tags ai, toolGroup
+     * @name GetApiAiToolGroupById
+     * @summary 根据ID查询工具�?     * @request GET:/api/ai/tool-group/{id}
+     * @response `200` `GetApiAiToolGroupByIdData` Response for status 200
+     */
+    getApiAiToolGroupById: (
+      { id, ...query }: GetApiAiToolGroupByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiToolGroupByIdData, any>({
+        path: `/api/ai/tool-group/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取工具组表的JSON Schema
+     *
+     * @tags ai, toolGroup
+     * @name GetApiAiToolGroupSchema
+     * @summary 获取工具组Schema
+     * @request GET:/api/ai/tool-group/schema
+     * @response `200` `GetApiAiToolGroupSchemaData` Response for status 200
+     */
+    getApiAiToolGroupSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiAiToolGroupSchemaData, any>({
+        path: `/api/ai/tool-group/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 创建单个AI智能�?     *
+     * @tags ai, agent
+     * @name PostApiAiAgent
+     * @summary 创建AI智能�?     * @request POST:/api/ai/agent
+     * @response `200` `PostApiAiAgentData` Response for status 200
+     */
+    postApiAiAgent: (data: PostApiAiAgentPayload, params: RequestParams = {}) =>
+      this.http.request<PostApiAiAgentData, any>({
+        path: `/api/ai/agent`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量创建多个AI智能�?     *
+     * @tags ai, agent
+     * @name PostApiAiAgentBatch
+     * @summary 批量创建AI智能�?     * @request POST:/api/ai/agent/batch
+     * @response `200` `PostApiAiAgentBatchData` Response for status 200
+     */
+    postApiAiAgentBatch: (
+      data: PostApiAiAgentBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentBatchData, any>({
+        path: `/api/ai/agent/batch`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 创建单条Agent消息
+     *
+     * @tags ai, agentMessage
+     * @name PostApiAiAgentMessage
+     * @summary 创建Agent消息
+     * @request POST:/api/ai/agent-message
+     * @response `200` `PostApiAiAgentMessageData` Response for status 200
+     */
+    postApiAiAgentMessage: (
+      data: PostApiAiAgentMessagePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentMessageData, any>({
+        path: `/api/ai/agent-message`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量创建Agent消息
+     *
+     * @tags ai, agentMessage
+     * @name PostApiAiAgentMessageBatch
+     * @summary 批量创建Agent消息
+     * @request POST:/api/ai/agent-message/batch
+     * @response `200` `PostApiAiAgentMessageBatchData` Response for status 200
+     */
+    postApiAiAgentMessageBatch: (
+      data: PostApiAiAgentMessageBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentMessageBatchData, any>({
+        path: `/api/ai/agent-message/batch`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询Agent消息列表
+     *
+     * @tags ai, agentMessage
+     * @name PostApiAiAgentMessageQuery
+     * @summary 分页查询Agent消息
+     * @request POST:/api/ai/agent-message/query
+     * @response `200` `PostApiAiAgentMessageQueryData` Response for status 200
+     */
+    postApiAiAgentMessageQuery: (
+      data: PostApiAiAgentMessageQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentMessageQueryData, any>({
+        path: `/api/ai/agent-message/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询AI智能体列�?     *
+     * @tags ai, agent
+     * @name PostApiAiAgentQuery
+     * @summary 分页查询AI智能�?     * @request POST:/api/ai/agent/query
+     * @response `200` `PostApiAiAgentQueryData` Response for status 200
+     */
+    postApiAiAgentQuery: (
+      data: PostApiAiAgentQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentQueryData, any>({
+        path: `/api/ai/agent/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 创建单个Agent会话
+     *
+     * @tags ai, agentSession
+     * @name PostApiAiAgentSession
+     * @summary 创建Agent会话
+     * @request POST:/api/ai/agent-session
+     * @response `200` `PostApiAiAgentSessionData` Response for status 200
+     */
+    postApiAiAgentSession: (
+      data: PostApiAiAgentSessionPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentSessionData, any>({
+        path: `/api/ai/agent-session`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询Agent会话列表
+     *
+     * @tags ai, agentSession
+     * @name PostApiAiAgentSessionQuery
+     * @summary 分页查询Agent会话
+     * @request POST:/api/ai/agent-session/query
+     * @response `200` `PostApiAiAgentSessionQueryData` Response for status 200
+     */
+    postApiAiAgentSessionQuery: (
+      data: PostApiAiAgentSessionQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiAgentSessionQueryData, any>({
+        path: `/api/ai/agent-session/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 发送消息到 AI 模型，返回完整响�?     *
+     * @tags AI
+     * @name PostApiAiChat
+     * @summary AI 对话（普通请求）
+     * @request POST:/api/ai/chat
+     */
+    postApiAiChat: (data: PostApiAiChatPayload, params: RequestParams = {}) =>
+      this.http.request<any, any>({
+        path: `/api/ai/chat`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用 Agent 配置进行对话，自动加�?Agent �?model、system prompt �?tools（包�?nativeTools 和自定义 tools�?     *
+     * @tags AI
+     * @name PostApiAiChatFromAgent
+     * @summary Agent 对话（流式响应）
+     * @request POST:/api/ai/chat/fromAgent
+     */
+    postApiAiChatFromAgent: (
+      data: PostApiAiChatFromAgentPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/api/ai/chat/fromAgent`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 发送消息到 AI 模型，返�?UIMessage 流式响应
+     *
+     * @tags AI
+     * @name PostApiAiChatStream
+     * @summary AI 对话（流式响应）
+     * @request POST:/api/ai/chat/stream
+     */
+    postApiAiChatStream: (
+      data: PostApiAiChatStreamPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/api/ai/chat/stream`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 创建单个AI模型
+     *
+     * @tags ai, model
+     * @name PostApiAiModel
+     * @summary 创建AI模型
+     * @request POST:/api/ai/model
+     * @response `200` `PostApiAiModelData` Response for status 200
+     */
+    postApiAiModel: (data: PostApiAiModelPayload, params: RequestParams = {}) =>
+      this.http.request<PostApiAiModelData, any>({
+        path: `/api/ai/model`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量创建多个AI模型
+     *
+     * @tags ai, model
+     * @name PostApiAiModelBatch
+     * @summary 批量创建AI模型
+     * @request POST:/api/ai/model/batch
+     * @response `200` `PostApiAiModelBatchData` Response for status 200
+     */
+    postApiAiModelBatch: (
+      data: PostApiAiModelBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiModelBatchData, any>({
+        path: `/api/ai/model/batch`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询AI模型列表
+     *
+     * @tags ai, model
+     * @name PostApiAiModelQuery
+     * @summary 分页查询AI模型
+     * @request POST:/api/ai/model/query
+     * @response `200` `PostApiAiModelQueryData` Response for status 200
+     */
+    postApiAiModelQuery: (
+      data: PostApiAiModelQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiModelQueryData, any>({
+        path: `/api/ai/model/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 创建单个AI提供�?     *
+     * @tags ai, provider
+     * @name PostApiAiProvider
+     * @summary 创建AI提供�?     * @request POST:/api/ai/provider
+     * @response `200` `PostApiAiProviderData` Response for status 200
+     */
+    postApiAiProvider: (
+      data: PostApiAiProviderPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiProviderData, any>({
+        path: `/api/ai/provider`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量创建多个AI提供�?     *
+     * @tags ai, provider
+     * @name PostApiAiProviderBatch
+     * @summary 批量创建AI提供�?     * @request POST:/api/ai/provider/batch
+     * @response `200` `PostApiAiProviderBatchData` Response for status 200
+     */
+    postApiAiProviderBatch: (
+      data: PostApiAiProviderBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiProviderBatchData, any>({
+        path: `/api/ai/provider/batch`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询AI提供商列�?     *
+     * @tags ai, provider
+     * @name PostApiAiProviderQuery
+     * @summary 分页查询AI提供�?     * @request POST:/api/ai/provider/query
+     * @response `200` `PostApiAiProviderQueryData` Response for status 200
+     */
+    postApiAiProviderQuery: (
+      data: PostApiAiProviderQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiProviderQueryData, any>({
+        path: `/api/ai/provider/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 创建单个工具�?     *
+     * @tags ai, toolGroup
+     * @name PostApiAiToolGroup
+     * @summary 创建工具�?     * @request POST:/api/ai/tool-group
+     * @response `200` `PostApiAiToolGroupData` Response for status 200
+     */
+    postApiAiToolGroup: (
+      data: PostApiAiToolGroupPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiToolGroupData, any>({
+        path: `/api/ai/tool-group`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量创建多个工具�?     *
+     * @tags ai, toolGroup
+     * @name PostApiAiToolGroupBatch
+     * @summary 批量创建工具�?     * @request POST:/api/ai/tool-group/batch
+     * @response `200` `PostApiAiToolGroupBatchData` Response for status 200
+     */
+    postApiAiToolGroupBatch: (
+      data: PostApiAiToolGroupBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiToolGroupBatchData, any>({
+        path: `/api/ai/tool-group/batch`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询工具组列�?     *
+     * @tags ai, toolGroup
+     * @name PostApiAiToolGroupQuery
+     * @summary 分页查询工具�?     * @request POST:/api/ai/tool-group/query
+     * @response `200` `PostApiAiToolGroupQueryData` Response for status 200
+     */
+    postApiAiToolGroupQuery: (
+      data: PostApiAiToolGroupQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiToolGroupQueryData, any>({
+        path: `/api/ai/tool-group/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID列表批量更新AI智能�?     *
+     * @tags ai, agent
+     * @name PutApiAiAgentBatch
+     * @summary 批量更新AI智能�?     * @request PUT:/api/ai/agent/batch
+     * @response `200` `PutApiAiAgentBatchData` Response for status 200
+     */
+    putApiAiAgentBatch: (
+      data: PutApiAiAgentBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiAgentBatchData, any>({
+        path: `/api/ai/agent/batch`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID更新单个AI智能�?     *
+     * @tags ai, agent
+     * @name PutApiAiAgentById
+     * @summary 更新AI智能�?     * @request PUT:/api/ai/agent/{id}
+     * @response `200` `PutApiAiAgentByIdData` Response for status 200
+     */
+    putApiAiAgentById: (
+      { id, ...query }: PutApiAiAgentByIdParams,
+      data: PutApiAiAgentByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiAgentByIdData, any>({
+        path: `/api/ai/agent/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID更新单个Agent会话
+     *
+     * @tags ai, agentSession
+     * @name PutApiAiAgentSessionById
+     * @summary 更新Agent会话
+     * @request PUT:/api/ai/agent-session/{id}
+     * @response `200` `PutApiAiAgentSessionByIdData` Response for status 200
+     */
+    putApiAiAgentSessionById: (
+      { id, ...query }: PutApiAiAgentSessionByIdParams,
+      data: PutApiAiAgentSessionByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiAgentSessionByIdData, any>({
+        path: `/api/ai/agent-session/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 归档指定Agent会话
+     *
+     * @tags ai, agentSession
+     * @name PutApiAiAgentSessionByIdArchive
+     * @summary 归档Agent会话
+     * @request PUT:/api/ai/agent-session/{id}/archive
+     * @response `200` `PutApiAiAgentSessionByIdArchiveData` Response for status 200
+     */
+    putApiAiAgentSessionByIdArchive: (
+      { id, ...query }: PutApiAiAgentSessionByIdArchiveParams,
+      data: PutApiAiAgentSessionByIdArchivePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiAgentSessionByIdArchiveData, any>({
+        path: `/api/ai/agent-session/${id}/archive`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 置顶/取消置顶Agent会话
+     *
+     * @tags ai, agentSession
+     * @name PutApiAiAgentSessionByIdPin
+     * @summary 置顶Agent会话
+     * @request PUT:/api/ai/agent-session/{id}/pin
+     * @response `200` `PutApiAiAgentSessionByIdPinData` Response for status 200
+     */
+    putApiAiAgentSessionByIdPin: (
+      { id, ...query }: PutApiAiAgentSessionByIdPinParams,
+      data: PutApiAiAgentSessionByIdPinPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiAgentSessionByIdPinData, any>({
+        path: `/api/ai/agent-session/${id}/pin`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID列表批量更新AI模型
+     *
+     * @tags ai, model
+     * @name PutApiAiModelBatch
+     * @summary 批量更新AI模型
+     * @request PUT:/api/ai/model/batch
+     * @response `200` `PutApiAiModelBatchData` Response for status 200
+     */
+    putApiAiModelBatch: (
+      data: PutApiAiModelBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiModelBatchData, any>({
+        path: `/api/ai/model/batch`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID更新单个AI模型
+     *
+     * @tags ai, model
+     * @name PutApiAiModelById
+     * @summary 更新AI模型
+     * @request PUT:/api/ai/model/{id}
+     * @response `200` `PutApiAiModelByIdData` Response for status 200
+     */
+    putApiAiModelById: (
+      { id, ...query }: PutApiAiModelByIdParams,
+      data: PutApiAiModelByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiModelByIdData, any>({
+        path: `/api/ai/model/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID列表批量更新AI提供�?     *
+     * @tags ai, provider
+     * @name PutApiAiProviderBatch
+     * @summary 批量更新AI提供�?     * @request PUT:/api/ai/provider/batch
+     * @response `200` `PutApiAiProviderBatchData` Response for status 200
+     */
+    putApiAiProviderBatch: (
+      data: PutApiAiProviderBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiProviderBatchData, any>({
+        path: `/api/ai/provider/batch`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID更新单个AI提供�?     *
+     * @tags ai, provider
+     * @name PutApiAiProviderById
+     * @summary 更新AI提供�?     * @request PUT:/api/ai/provider/{id}
+     * @response `200` `PutApiAiProviderByIdData` Response for status 200
+     */
+    putApiAiProviderById: (
+      { id, ...query }: PutApiAiProviderByIdParams,
+      data: PutApiAiProviderByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiProviderByIdData, any>({
+        path: `/api/ai/provider/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID列表批量更新工具�?     *
+     * @tags ai, toolGroup
+     * @name PutApiAiToolGroupBatch
+     * @summary 批量更新工具�?     * @request PUT:/api/ai/tool-group/batch
+     * @response `200` `PutApiAiToolGroupBatchData` Response for status 200
+     */
+    putApiAiToolGroupBatch: (
+      data: PutApiAiToolGroupBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiToolGroupBatchData, any>({
+        path: `/api/ai/tool-group/batch`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID更新单个工具�?     *
+     * @tags ai, toolGroup
+     * @name PutApiAiToolGroupById
+     * @summary 更新工具�?     * @request PUT:/api/ai/tool-group/{id}
+     * @response `200` `PutApiAiToolGroupByIdData` Response for status 200
+     */
+    putApiAiToolGroupById: (
+      { id, ...query }: PutApiAiToolGroupByIdParams,
+      data: PutApiAiToolGroupByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiToolGroupByIdData, any>({
+        path: `/api/ai/tool-group/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   auth = {
     /**
      * @description 获取 Token 过期时间配置
@@ -16142,8 +17649,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
- * @description 获取当前登录用户的详细信息
- *
+ * @description 获取当前登录用户的详细信�? *
  * @tags auth
  * @name GetApiAuthMe
  * @summary 获取当前用户
@@ -16200,7 +17706,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
- * @description 使用用户名密码登录，返回双 Token
+ * @description 使用用户名密码登录，返回�?Token
  *
  * @tags auth
  * @name PostApiAuthLogin
@@ -16234,8 +17740,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
- * @description 撤销用户的所有刷新令牌
- *
+ * @description 撤销用户的所有刷新令�? *
  * @tags auth
  * @name PostApiAuthLogout
  * @summary 用户登出
@@ -16399,8 +17904,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据。
-     *
+     * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据�?     *
      * @tags actions
      * @name PostApiActionsExecuteByName
      * @summary 通过名称执行Action
@@ -16443,8 +17947,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除部门
-     *
+     * @description 根据ID软删除部�?     *
      * @tags system, department
      * @name DeleteApiSystemDepartmentById
      * @summary 删除部门
@@ -16463,8 +17966,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除字典
-     *
+     * @description 根据ID软删除字�?     *
      * @tags system, dict
      * @name DeleteApiSystemDictById
      * @summary 删除字典
@@ -16483,12 +17985,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据Key删除字典组
-     *
+     * @description 根据Key删除字典�?     *
      * @tags system, dictGroup
      * @name DeleteApiSystemDictGroupByKey
-     * @summary 删除字典组
-     * @request DELETE:/api/system/dict-group/{key}
+     * @summary 删除字典�?     * @request DELETE:/api/system/dict-group/{key}
      * @response `200` `DeleteApiSystemDictGroupByKeyData` Response for status 200
      */
     deleteApiSystemDictGroupByKey: (
@@ -16623,8 +18123,26 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除岗位
-     *
+     * @description 根据ID删除权限（同时删除子权限�?     *
+     * @tags system, permission
+     * @name DeleteApiSystemPermissionById
+     * @summary 删除权限
+     * @request DELETE:/api/system/permission/{id}
+     * @response `200` `DeleteApiSystemPermissionByIdData` Response for status 200
+     */
+    deleteApiSystemPermissionById: (
+      { id, ...query }: DeleteApiSystemPermissionByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiSystemPermissionByIdData, any>({
+        path: `/api/system/permission/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID软删除岗�?     *
      * @tags system, post
      * @name DeleteApiSystemPostById
      * @summary 删除岗位
@@ -16643,8 +18161,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除角色
-     *
+     * @description 根据ID软删除角�?     *
      * @tags system, role
      * @name DeleteApiSystemRoleById
      * @summary 删除角色
@@ -16734,8 +18251,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除用户
-     *
+     * @description 根据ID软删除用�?     *
      * @tags system, user
      * @name DeleteApiSystemUserById
      * @summary 删除用户
@@ -16797,6 +18313,50 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<DeleteApiSystemUserRoleByUserIdByRoleIdData, any>({
         path: `/api/system/user-role/${userId}/${roleId}`,
         method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取指定角色的所有权限标�?     *
+     * @tags system, casbinRule
+     * @name GetApiSystemCasbinRuleRoleByRoleKeyPermissions
+     * @summary 获取角色权限
+     * @request GET:/api/system/casbin-rule/role/{roleKey}/permissions
+     * @response `200` `GetApiSystemCasbinRuleRoleByRoleKeyPermissionsData` Response for status 200
+     */
+    getApiSystemCasbinRuleRoleByRoleKeyPermissions: (
+      {
+        roleKey,
+        ...query
+      }: GetApiSystemCasbinRuleRoleByRoleKeyPermissionsParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        GetApiSystemCasbinRuleRoleByRoleKeyPermissionsData,
+        any
+      >({
+        path: `/api/system/casbin-rule/role/${roleKey}/permissions`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取指定用户的所有角�?     *
+     * @tags system, casbinRule
+     * @name GetApiSystemCasbinRuleUserByUserIdRoles
+     * @summary 获取用户角色
+     * @request GET:/api/system/casbin-rule/user/{userId}/roles
+     * @response `200` `GetApiSystemCasbinRuleUserByUserIdRolesData` Response for status 200
+     */
+    getApiSystemCasbinRuleUserByUserIdRoles: (
+      { userId, ...query }: GetApiSystemCasbinRuleUserByUserIdRolesParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiSystemCasbinRuleUserByUserIdRolesData, any>({
+        path: `/api/system/casbin-rule/user/${userId}/roles`,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -16896,12 +18456,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键Key查询单个字典组
-     *
+     * @description 根据主键Key查询单个字典�?     *
      * @tags system, dictGroup
      * @name GetApiSystemDictGroupByKey
-     * @summary 根据Key查询字典组
-     * @request GET:/api/system/dict-group/{key}
+     * @summary 根据Key查询字典�?     * @request GET:/api/system/dict-group/{key}
      * @response `200` `GetApiSystemDictGroupByKeyData` Response for status 200
      */
     getApiSystemDictGroupByKey: (
@@ -17172,6 +18730,59 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 根据主键ID查询单个权限
+     *
+     * @tags system, permission
+     * @name GetApiSystemPermissionById
+     * @summary 根据ID查询权限
+     * @request GET:/api/system/permission/{id}
+     * @response `200` `GetApiSystemPermissionByIdData` Response for status 200
+     */
+    getApiSystemPermissionById: (
+      { id, ...query }: GetApiSystemPermissionByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiSystemPermissionByIdData, any>({
+        path: `/api/system/permission/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取权限表的JSON Schema
+     *
+     * @tags system, permission
+     * @name GetApiSystemPermissionSchema
+     * @summary 获取权限Schema
+     * @request GET:/api/system/permission/schema
+     * @response `200` `GetApiSystemPermissionSchemaData` Response for status 200
+     */
+    getApiSystemPermissionSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiSystemPermissionSchemaData, any>({
+        path: `/api/system/permission/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取完整的权限树结构
+     *
+     * @tags system, permission
+     * @name GetApiSystemPermissionTree
+     * @summary 获取权限�?     * @request GET:/api/system/permission/tree
+     * @response `200` `GetApiSystemPermissionTreeData` Response for status 200
+     */
+    getApiSystemPermissionTree: (params: RequestParams = {}) =>
+      this.http.request<GetApiSystemPermissionTreeData, any>({
+        path: `/api/system/permission/tree`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 根据主键ID查询单个岗位
      *
      * @tags system, post
@@ -17287,6 +18898,26 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<GetApiSystemRoleMenuByRoleIdByMenuIdData, any>({
         path: `/api/system/role-menu/${roleId}/${menuId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取指定角色的所有菜单ID
+     *
+     * @tags system, roleMenu
+     * @name GetApiSystemRoleMenuRoleByRoleId
+     * @summary 获取角色菜单
+     * @request GET:/api/system/role-menu/role/{roleId}
+     * @response `200` `GetApiSystemRoleMenuRoleByRoleIdData` Response for status 200
+     */
+    getApiSystemRoleMenuRoleByRoleId: (
+      { roleId, ...query }: GetApiSystemRoleMenuRoleByRoleIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiSystemRoleMenuRoleByRoleIdData, any>({
+        path: `/api/system/role-menu/role/${roleId}`,
         method: "GET",
         format: "json",
         ...params,
@@ -17452,6 +19083,26 @@ export class Api<SecurityDataType extends unknown> {
     getApiSystemUserRoleSchema: (params: RequestParams = {}) =>
       this.http.request<GetApiSystemUserRoleSchemaData, any>({
         path: `/api/system/user-role/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取指定用户的所有角色ID
+     *
+     * @tags system, userRole
+     * @name GetApiSystemUserRoleUserByUserId
+     * @summary 获取用户角色
+     * @request GET:/api/system/user-role/user/{userId}
+     * @response `200` `GetApiSystemUserRoleUserByUserIdData` Response for status 200
+     */
+    getApiSystemUserRoleUserByUserId: (
+      { userId, ...query }: GetApiSystemUserRoleUserByUserIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiSystemUserRoleUserByUserIdData, any>({
+        path: `/api/system/user-role/user/${userId}`,
         method: "GET",
         format: "json",
         ...params,
@@ -17651,12 +19302,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个字典组
-     *
+     * @description 创建单个字典�?     *
      * @tags system, dictGroup
      * @name PostApiSystemDictGroup
-     * @summary 创建字典组
-     * @request POST:/api/system/dict-group
+     * @summary 创建字典�?     * @request POST:/api/system/dict-group
      * @response `200` `PostApiSystemDictGroupData` Response for status 200
      */
     postApiSystemDictGroup: (
@@ -17673,12 +19322,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个字典组
-     *
+     * @description 批量创建多个字典�?     *
      * @tags system, dictGroup
      * @name PostApiSystemDictGroupBatch
-     * @summary 批量创建字典组
-     * @request POST:/api/system/dict-group/batch
+     * @summary 批量创建字典�?     * @request POST:/api/system/dict-group/batch
      * @response `200` `PostApiSystemDictGroupBatchData` Response for status 200
      */
     postApiSystemDictGroupBatch: (
@@ -17695,12 +19342,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询字典组列表
-     *
+     * @description 分页查询字典组列�?     *
      * @tags system, dictGroup
      * @name PostApiSystemDictGroupQuery
-     * @summary 分页查询字典组
-     * @request POST:/api/system/dict-group/query
+     * @summary 分页查询字典�?     * @request POST:/api/system/dict-group/query
      * @response `200` `PostApiSystemDictGroupQueryData` Response for status 200
      */
     postApiSystemDictGroupQuery: (
@@ -18061,6 +19706,50 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 创建单个权限
+     *
+     * @tags system, permission
+     * @name PostApiSystemPermission
+     * @summary 创建权限
+     * @request POST:/api/system/permission
+     * @response `200` `PostApiSystemPermissionData` Response for status 200
+     */
+    postApiSystemPermission: (
+      data: PostApiSystemPermissionPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemPermissionData, any>({
+        path: `/api/system/permission`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询权限列表
+     *
+     * @tags system, permission
+     * @name PostApiSystemPermissionQuery
+     * @summary 分页查询权限
+     * @request POST:/api/system/permission/query
+     * @response `200` `PostApiSystemPermissionQueryData` Response for status 200
+     */
+    postApiSystemPermissionQuery: (
+      data: PostApiSystemPermissionQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemPermissionQueryData, any>({
+        path: `/api/system/permission/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 创建单个岗位
      *
      * @tags system, post
@@ -18403,8 +20092,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 重置用户密码为初始密码
-     *
+     * @description 重置用户密码为初始密�?     *
      * @tags system, user
      * @name PostApiSystemUserByIdResetPassword
      * @summary 重置密码
@@ -18577,6 +20265,56 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 设置指定角色的权限列表（全量替换�?     *
+     * @tags system, casbinRule
+     * @name PutApiSystemCasbinRuleRoleByRoleKeyPermissions
+     * @summary 设置角色权限
+     * @request PUT:/api/system/casbin-rule/role/{roleKey}/permissions
+     * @response `200` `PutApiSystemCasbinRuleRoleByRoleKeyPermissionsData` Response for status 200
+     */
+    putApiSystemCasbinRuleRoleByRoleKeyPermissions: (
+      {
+        roleKey,
+        ...query
+      }: PutApiSystemCasbinRuleRoleByRoleKeyPermissionsParams,
+      data: PutApiSystemCasbinRuleRoleByRoleKeyPermissionsPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        PutApiSystemCasbinRuleRoleByRoleKeyPermissionsData,
+        any
+      >({
+        path: `/api/system/casbin-rule/role/${roleKey}/permissions`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 设置指定用户的角色列表（全量替换�?     *
+     * @tags system, casbinRule
+     * @name PutApiSystemCasbinRuleUserByUserIdRoles
+     * @summary 设置用户角色
+     * @request PUT:/api/system/casbin-rule/user/{userId}/roles
+     * @response `200` `PutApiSystemCasbinRuleUserByUserIdRolesData` Response for status 200
+     */
+    putApiSystemCasbinRuleUserByUserIdRoles: (
+      { userId, ...query }: PutApiSystemCasbinRuleUserByUserIdRolesParams,
+      data: PutApiSystemCasbinRuleUserByUserIdRolesPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiSystemCasbinRuleUserByUserIdRolesData, any>({
+        path: `/api/system/casbin-rule/user/${userId}/roles`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 根据ID列表批量更新配置
      *
      * @tags system, config
@@ -18712,12 +20450,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据Key列表批量更新字典组
-     *
+     * @description 根据Key列表批量更新字典�?     *
      * @tags system, dictGroup
      * @name PutApiSystemDictGroupBatch
-     * @summary 批量更新字典组
-     * @request PUT:/api/system/dict-group/batch
+     * @summary 批量更新字典�?     * @request PUT:/api/system/dict-group/batch
      * @response `200` `PutApiSystemDictGroupBatchData` Response for status 200
      */
     putApiSystemDictGroupBatch: (
@@ -18734,12 +20470,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据Key更新单个字典组
-     *
+     * @description 根据Key更新单个字典�?     *
      * @tags system, dictGroup
      * @name PutApiSystemDictGroupByKey
-     * @summary 更新字典组
-     * @request PUT:/api/system/dict-group/{key}
+     * @summary 更新字典�?     * @request PUT:/api/system/dict-group/{key}
      * @response `200` `PutApiSystemDictGroupByKeyData` Response for status 200
      */
     putApiSystemDictGroupByKey: (
@@ -18921,6 +20655,29 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 根据ID更新单个权限
+     *
+     * @tags system, permission
+     * @name PutApiSystemPermissionById
+     * @summary 更新权限
+     * @request PUT:/api/system/permission/{id}
+     * @response `200` `PutApiSystemPermissionByIdData` Response for status 200
+     */
+    putApiSystemPermissionById: (
+      { id, ...query }: PutApiSystemPermissionByIdParams,
+      data: PutApiSystemPermissionByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiSystemPermissionByIdData, any>({
+        path: `/api/system/permission/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 根据ID列表批量更新岗位
      *
      * @tags system, post
@@ -19011,6 +20768,28 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 设置指定角色的菜单列表（全量替换�?     *
+     * @tags system, roleMenu
+     * @name PutApiSystemRoleMenuRoleByRoleId
+     * @summary 设置角色菜单
+     * @request PUT:/api/system/role-menu/role/{roleId}
+     * @response `200` `PutApiSystemRoleMenuRoleByRoleIdData` Response for status 200
+     */
+    putApiSystemRoleMenuRoleByRoleId: (
+      { roleId, ...query }: PutApiSystemRoleMenuRoleByRoleIdParams,
+      data: PutApiSystemRoleMenuRoleByRoleIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiSystemRoleMenuRoleByRoleIdData, any>({
+        path: `/api/system/role-menu/role/${roleId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 根据ID更新单个令牌
      *
      * @tags system, token
@@ -19069,1126 +20848,22 @@ export class Api<SecurityDataType extends unknown> {
         format: "json",
         ...params,
       }),
-  };
-  ai = {
+
     /**
-     * @description 根据ID删除AI智能体
-     *
-     * @tags ai, agent
-     * @name DeleteApiAiAgentById
-     * @summary 删除AI智能体
-     * @request DELETE:/api/ai/agent/{id}
-     * @response `200` `DeleteApiAiAgentByIdData` Response for status 200
+     * @description 设置指定用户的角色列表（全量替换�?     *
+     * @tags system, userRole
+     * @name PutApiSystemUserRoleUserByUserId
+     * @summary 设置用户角色
+     * @request PUT:/api/system/user-role/user/{userId}
+     * @response `200` `PutApiSystemUserRoleUserByUserIdData` Response for status 200
      */
-    deleteApiAiAgentById: (
-      { id, ...query }: DeleteApiAiAgentByIdParams,
+    putApiSystemUserRoleUserByUserId: (
+      { userId, ...query }: PutApiSystemUserRoleUserByUserIdParams,
+      data: PutApiSystemUserRoleUserByUserIdPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<DeleteApiAiAgentByIdData, any>({
-        path: `/api/ai/agent/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID软删除Agent会话
-     *
-     * @tags ai, agentSession
-     * @name DeleteApiAiAgentSessionById
-     * @summary 删除Agent会话
-     * @request DELETE:/api/ai/agent-session/{id}
-     * @response `200` `DeleteApiAiAgentSessionByIdData` Response for status 200
-     */
-    deleteApiAiAgentSessionById: (
-      { id, ...query }: DeleteApiAiAgentSessionByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiAiAgentSessionByIdData, any>({
-        path: `/api/ai/agent-session/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID删除AI模型
-     *
-     * @tags ai, model
-     * @name DeleteApiAiModelById
-     * @summary 删除AI模型
-     * @request DELETE:/api/ai/model/{id}
-     * @response `200` `DeleteApiAiModelByIdData` Response for status 200
-     */
-    deleteApiAiModelById: (
-      { id, ...query }: DeleteApiAiModelByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiAiModelByIdData, any>({
-        path: `/api/ai/model/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID删除AI提供商
-     *
-     * @tags ai, provider
-     * @name DeleteApiAiProviderById
-     * @summary 删除AI提供商
-     * @request DELETE:/api/ai/provider/{id}
-     * @response `200` `DeleteApiAiProviderByIdData` Response for status 200
-     */
-    deleteApiAiProviderById: (
-      { id, ...query }: DeleteApiAiProviderByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiAiProviderByIdData, any>({
-        path: `/api/ai/provider/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID删除工具
-     *
-     * @tags ai, tool
-     * @name DeleteApiAiToolById
-     * @summary 删除工具
-     * @request DELETE:/api/ai/tool/{id}
-     * @response `200` `DeleteApiAiToolByIdData` Response for status 200
-     */
-    deleteApiAiToolById: (
-      { id, ...query }: DeleteApiAiToolByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiAiToolByIdData, any>({
-        path: `/api/ai/tool/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID删除工具组
-     *
-     * @tags ai, toolGroup
-     * @name DeleteApiAiToolGroupById
-     * @summary 删除工具组
-     * @request DELETE:/api/ai/tool-group/{id}
-     * @response `200` `DeleteApiAiToolGroupByIdData` Response for status 200
-     */
-    deleteApiAiToolGroupById: (
-      { id, ...query }: DeleteApiAiToolGroupByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiAiToolGroupByIdData, any>({
-        path: `/api/ai/tool-group/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个AI智能体
-     *
-     * @tags ai, agent
-     * @name GetApiAiAgentById
-     * @summary 根据ID查询AI智能体
-     * @request GET:/api/ai/agent/{id}
-     * @response `200` `GetApiAiAgentByIdData` Response for status 200
-     */
-    getApiAiAgentById: (
-      { id, ...query }: GetApiAiAgentByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiAgentByIdData, any>({
-        path: `/api/ai/agent/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个Agent消息
-     *
-     * @tags ai, agentMessage
-     * @name GetApiAiAgentMessageById
-     * @summary 根据ID查询Agent消息
-     * @request GET:/api/ai/agent-message/{id}
-     * @response `200` `GetApiAiAgentMessageByIdData` Response for status 200
-     */
-    getApiAiAgentMessageById: (
-      { id, ...query }: GetApiAiAgentMessageByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiAgentMessageByIdData, any>({
-        path: `/api/ai/agent-message/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取指定会话的消息历史
-     *
-     * @tags ai, agentMessage
-     * @name GetApiAiAgentMessageHistoryBySessionId
-     * @summary 获取会话历史
-     * @request GET:/api/ai/agent-message/history/{sessionId}
-     * @response `200` `GetApiAiAgentMessageHistoryBySessionIdData` Response for status 200
-     */
-    getApiAiAgentMessageHistoryBySessionId: (
-      { sessionId, ...query }: GetApiAiAgentMessageHistoryBySessionIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiAgentMessageHistoryBySessionIdData, any>({
-        path: `/api/ai/agent-message/history/${sessionId}`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取Agent消息表的JSON Schema
-     *
-     * @tags ai, agentMessage
-     * @name GetApiAiAgentMessageSchema
-     * @summary 获取Agent消息Schema
-     * @request GET:/api/ai/agent-message/schema
-     * @response `200` `GetApiAiAgentMessageSchemaData` Response for status 200
-     */
-    getApiAiAgentMessageSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiAgentMessageSchemaData, any>({
-        path: `/api/ai/agent-message/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取AI智能体表的JSON Schema
-     *
-     * @tags ai, agent
-     * @name GetApiAiAgentSchema
-     * @summary 获取AI智能体Schema
-     * @request GET:/api/ai/agent/schema
-     * @response `200` `GetApiAiAgentSchemaData` Response for status 200
-     */
-    getApiAiAgentSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiAgentSchemaData, any>({
-        path: `/api/ai/agent/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个Agent会话
-     *
-     * @tags ai, agentSession
-     * @name GetApiAiAgentSessionById
-     * @summary 根据ID查询Agent会话
-     * @request GET:/api/ai/agent-session/{id}
-     * @response `200` `GetApiAiAgentSessionByIdData` Response for status 200
-     */
-    getApiAiAgentSessionById: (
-      { id, ...query }: GetApiAiAgentSessionByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiAgentSessionByIdData, any>({
-        path: `/api/ai/agent-session/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取Agent会话表的JSON Schema
-     *
-     * @tags ai, agentSession
-     * @name GetApiAiAgentSessionSchema
-     * @summary 获取Agent会话Schema
-     * @request GET:/api/ai/agent-session/schema
-     * @response `200` `GetApiAiAgentSessionSchemaData` Response for status 200
-     */
-    getApiAiAgentSessionSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiAgentSessionSchemaData, any>({
-        path: `/api/ai/agent-session/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个AI模型
-     *
-     * @tags ai, model
-     * @name GetApiAiModelById
-     * @summary 根据ID查询AI模型
-     * @request GET:/api/ai/model/{id}
-     * @response `200` `GetApiAiModelByIdData` Response for status 200
-     */
-    getApiAiModelById: (
-      { id, ...query }: GetApiAiModelByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiModelByIdData, any>({
-        path: `/api/ai/model/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取AI模型表的JSON Schema
-     *
-     * @tags ai, model
-     * @name GetApiAiModelSchema
-     * @summary 获取AI模型Schema
-     * @request GET:/api/ai/model/schema
-     * @response `200` `GetApiAiModelSchemaData` Response for status 200
-     */
-    getApiAiModelSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiModelSchemaData, any>({
-        path: `/api/ai/model/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个AI提供商
-     *
-     * @tags ai, provider
-     * @name GetApiAiProviderById
-     * @summary 根据ID查询AI提供商
-     * @request GET:/api/ai/provider/{id}
-     * @response `200` `GetApiAiProviderByIdData` Response for status 200
-     */
-    getApiAiProviderById: (
-      { id, ...query }: GetApiAiProviderByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiProviderByIdData, any>({
-        path: `/api/ai/provider/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取AI提供商表的JSON Schema
-     *
-     * @tags ai, provider
-     * @name GetApiAiProviderSchema
-     * @summary 获取AI提供商Schema
-     * @request GET:/api/ai/provider/schema
-     * @response `200` `GetApiAiProviderSchemaData` Response for status 200
-     */
-    getApiAiProviderSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiProviderSchemaData, any>({
-        path: `/api/ai/provider/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个工具
-     *
-     * @tags ai, tool
-     * @name GetApiAiToolById
-     * @summary 根据ID查询工具
-     * @request GET:/api/ai/tool/{id}
-     * @response `200` `GetApiAiToolByIdData` Response for status 200
-     */
-    getApiAiToolById: (
-      { id, ...query }: GetApiAiToolByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiToolByIdData, any>({
-        path: `/api/ai/tool/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个工具组
-     *
-     * @tags ai, toolGroup
-     * @name GetApiAiToolGroupById
-     * @summary 根据ID查询工具组
-     * @request GET:/api/ai/tool-group/{id}
-     * @response `200` `GetApiAiToolGroupByIdData` Response for status 200
-     */
-    getApiAiToolGroupById: (
-      { id, ...query }: GetApiAiToolGroupByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiAiToolGroupByIdData, any>({
-        path: `/api/ai/tool-group/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取工具组表的JSON Schema
-     *
-     * @tags ai, toolGroup
-     * @name GetApiAiToolGroupSchema
-     * @summary 获取工具组Schema
-     * @request GET:/api/ai/tool-group/schema
-     * @response `200` `GetApiAiToolGroupSchemaData` Response for status 200
-     */
-    getApiAiToolGroupSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiToolGroupSchemaData, any>({
-        path: `/api/ai/tool-group/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取AI工具表的JSON Schema
-     *
-     * @tags ai, tool
-     * @name GetApiAiToolSchema
-     * @summary 获取AI工具Schema
-     * @request GET:/api/ai/tool/schema
-     * @response `200` `GetApiAiToolSchemaData` Response for status 200
-     */
-    getApiAiToolSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiAiToolSchemaData, any>({
-        path: `/api/ai/tool/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个AI智能体
-     *
-     * @tags ai, agent
-     * @name PostApiAiAgent
-     * @summary 创建AI智能体
-     * @request POST:/api/ai/agent
-     * @response `200` `PostApiAiAgentData` Response for status 200
-     */
-    postApiAiAgent: (data: PostApiAiAgentPayload, params: RequestParams = {}) =>
-      this.http.request<PostApiAiAgentData, any>({
-        path: `/api/ai/agent`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个AI智能体
-     *
-     * @tags ai, agent
-     * @name PostApiAiAgentBatch
-     * @summary 批量创建AI智能体
-     * @request POST:/api/ai/agent/batch
-     * @response `200` `PostApiAiAgentBatchData` Response for status 200
-     */
-    postApiAiAgentBatch: (
-      data: PostApiAiAgentBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentBatchData, any>({
-        path: `/api/ai/agent/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单条Agent消息
-     *
-     * @tags ai, agentMessage
-     * @name PostApiAiAgentMessage
-     * @summary 创建Agent消息
-     * @request POST:/api/ai/agent-message
-     * @response `200` `PostApiAiAgentMessageData` Response for status 200
-     */
-    postApiAiAgentMessage: (
-      data: PostApiAiAgentMessagePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentMessageData, any>({
-        path: `/api/ai/agent-message`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建Agent消息
-     *
-     * @tags ai, agentMessage
-     * @name PostApiAiAgentMessageBatch
-     * @summary 批量创建Agent消息
-     * @request POST:/api/ai/agent-message/batch
-     * @response `200` `PostApiAiAgentMessageBatchData` Response for status 200
-     */
-    postApiAiAgentMessageBatch: (
-      data: PostApiAiAgentMessageBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentMessageBatchData, any>({
-        path: `/api/ai/agent-message/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询Agent消息列表
-     *
-     * @tags ai, agentMessage
-     * @name PostApiAiAgentMessageQuery
-     * @summary 分页查询Agent消息
-     * @request POST:/api/ai/agent-message/query
-     * @response `200` `PostApiAiAgentMessageQueryData` Response for status 200
-     */
-    postApiAiAgentMessageQuery: (
-      data: PostApiAiAgentMessageQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentMessageQueryData, any>({
-        path: `/api/ai/agent-message/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询AI智能体列表
-     *
-     * @tags ai, agent
-     * @name PostApiAiAgentQuery
-     * @summary 分页查询AI智能体
-     * @request POST:/api/ai/agent/query
-     * @response `200` `PostApiAiAgentQueryData` Response for status 200
-     */
-    postApiAiAgentQuery: (
-      data: PostApiAiAgentQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentQueryData, any>({
-        path: `/api/ai/agent/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个Agent会话
-     *
-     * @tags ai, agentSession
-     * @name PostApiAiAgentSession
-     * @summary 创建Agent会话
-     * @request POST:/api/ai/agent-session
-     * @response `200` `PostApiAiAgentSessionData` Response for status 200
-     */
-    postApiAiAgentSession: (
-      data: PostApiAiAgentSessionPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentSessionData, any>({
-        path: `/api/ai/agent-session`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询Agent会话列表
-     *
-     * @tags ai, agentSession
-     * @name PostApiAiAgentSessionQuery
-     * @summary 分页查询Agent会话
-     * @request POST:/api/ai/agent-session/query
-     * @response `200` `PostApiAiAgentSessionQueryData` Response for status 200
-     */
-    postApiAiAgentSessionQuery: (
-      data: PostApiAiAgentSessionQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiAgentSessionQueryData, any>({
-        path: `/api/ai/agent-session/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个AI模型
-     *
-     * @tags ai, model
-     * @name PostApiAiModel
-     * @summary 创建AI模型
-     * @request POST:/api/ai/model
-     * @response `200` `PostApiAiModelData` Response for status 200
-     */
-    postApiAiModel: (data: PostApiAiModelPayload, params: RequestParams = {}) =>
-      this.http.request<PostApiAiModelData, any>({
-        path: `/api/ai/model`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个AI模型
-     *
-     * @tags ai, model
-     * @name PostApiAiModelBatch
-     * @summary 批量创建AI模型
-     * @request POST:/api/ai/model/batch
-     * @response `200` `PostApiAiModelBatchData` Response for status 200
-     */
-    postApiAiModelBatch: (
-      data: PostApiAiModelBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiModelBatchData, any>({
-        path: `/api/ai/model/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询AI模型列表
-     *
-     * @tags ai, model
-     * @name PostApiAiModelQuery
-     * @summary 分页查询AI模型
-     * @request POST:/api/ai/model/query
-     * @response `200` `PostApiAiModelQueryData` Response for status 200
-     */
-    postApiAiModelQuery: (
-      data: PostApiAiModelQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiModelQueryData, any>({
-        path: `/api/ai/model/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个AI提供商
-     *
-     * @tags ai, provider
-     * @name PostApiAiProvider
-     * @summary 创建AI提供商
-     * @request POST:/api/ai/provider
-     * @response `200` `PostApiAiProviderData` Response for status 200
-     */
-    postApiAiProvider: (
-      data: PostApiAiProviderPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiProviderData, any>({
-        path: `/api/ai/provider`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个AI提供商
-     *
-     * @tags ai, provider
-     * @name PostApiAiProviderBatch
-     * @summary 批量创建AI提供商
-     * @request POST:/api/ai/provider/batch
-     * @response `200` `PostApiAiProviderBatchData` Response for status 200
-     */
-    postApiAiProviderBatch: (
-      data: PostApiAiProviderBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiProviderBatchData, any>({
-        path: `/api/ai/provider/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询AI提供商列表
-     *
-     * @tags ai, provider
-     * @name PostApiAiProviderQuery
-     * @summary 分页查询AI提供商
-     * @request POST:/api/ai/provider/query
-     * @response `200` `PostApiAiProviderQueryData` Response for status 200
-     */
-    postApiAiProviderQuery: (
-      data: PostApiAiProviderQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiProviderQueryData, any>({
-        path: `/api/ai/provider/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个工具
-     *
-     * @tags ai, tool
-     * @name PostApiAiTool
-     * @summary 创建工具
-     * @request POST:/api/ai/tool
-     * @response `200` `PostApiAiToolData` Response for status 200
-     */
-    postApiAiTool: (data: PostApiAiToolPayload, params: RequestParams = {}) =>
-      this.http.request<PostApiAiToolData, any>({
-        path: `/api/ai/tool`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个工具
-     *
-     * @tags ai, tool
-     * @name PostApiAiToolBatch
-     * @summary 批量创建工具
-     * @request POST:/api/ai/tool/batch
-     * @response `200` `PostApiAiToolBatchData` Response for status 200
-     */
-    postApiAiToolBatch: (
-      data: PostApiAiToolBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiToolBatchData, any>({
-        path: `/api/ai/tool/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个工具组
-     *
-     * @tags ai, toolGroup
-     * @name PostApiAiToolGroup
-     * @summary 创建工具组
-     * @request POST:/api/ai/tool-group
-     * @response `200` `PostApiAiToolGroupData` Response for status 200
-     */
-    postApiAiToolGroup: (
-      data: PostApiAiToolGroupPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiToolGroupData, any>({
-        path: `/api/ai/tool-group`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个工具组
-     *
-     * @tags ai, toolGroup
-     * @name PostApiAiToolGroupBatch
-     * @summary 批量创建工具组
-     * @request POST:/api/ai/tool-group/batch
-     * @response `200` `PostApiAiToolGroupBatchData` Response for status 200
-     */
-    postApiAiToolGroupBatch: (
-      data: PostApiAiToolGroupBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiToolGroupBatchData, any>({
-        path: `/api/ai/tool-group/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询工具组列表
-     *
-     * @tags ai, toolGroup
-     * @name PostApiAiToolGroupQuery
-     * @summary 分页查询工具组
-     * @request POST:/api/ai/tool-group/query
-     * @response `200` `PostApiAiToolGroupQueryData` Response for status 200
-     */
-    postApiAiToolGroupQuery: (
-      data: PostApiAiToolGroupQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiToolGroupQueryData, any>({
-        path: `/api/ai/tool-group/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询工具列表
-     *
-     * @tags ai, tool
-     * @name PostApiAiToolQuery
-     * @summary 分页查询工具
-     * @request POST:/api/ai/tool/query
-     * @response `200` `PostApiAiToolQueryData` Response for status 200
-     */
-    postApiAiToolQuery: (
-      data: PostApiAiToolQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiAiToolQueryData, any>({
-        path: `/api/ai/tool/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新AI智能体
-     *
-     * @tags ai, agent
-     * @name PutApiAiAgentBatch
-     * @summary 批量更新AI智能体
-     * @request PUT:/api/ai/agent/batch
-     * @response `200` `PutApiAiAgentBatchData` Response for status 200
-     */
-    putApiAiAgentBatch: (
-      data: PutApiAiAgentBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiAgentBatchData, any>({
-        path: `/api/ai/agent/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个AI智能体
-     *
-     * @tags ai, agent
-     * @name PutApiAiAgentById
-     * @summary 更新AI智能体
-     * @request PUT:/api/ai/agent/{id}
-     * @response `200` `PutApiAiAgentByIdData` Response for status 200
-     */
-    putApiAiAgentById: (
-      { id, ...query }: PutApiAiAgentByIdParams,
-      data: PutApiAiAgentByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiAgentByIdData, any>({
-        path: `/api/ai/agent/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个Agent会话
-     *
-     * @tags ai, agentSession
-     * @name PutApiAiAgentSessionById
-     * @summary 更新Agent会话
-     * @request PUT:/api/ai/agent-session/{id}
-     * @response `200` `PutApiAiAgentSessionByIdData` Response for status 200
-     */
-    putApiAiAgentSessionById: (
-      { id, ...query }: PutApiAiAgentSessionByIdParams,
-      data: PutApiAiAgentSessionByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiAgentSessionByIdData, any>({
-        path: `/api/ai/agent-session/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 归档指定Agent会话
-     *
-     * @tags ai, agentSession
-     * @name PutApiAiAgentSessionByIdArchive
-     * @summary 归档Agent会话
-     * @request PUT:/api/ai/agent-session/{id}/archive
-     * @response `200` `PutApiAiAgentSessionByIdArchiveData` Response for status 200
-     */
-    putApiAiAgentSessionByIdArchive: (
-      { id, ...query }: PutApiAiAgentSessionByIdArchiveParams,
-      data: PutApiAiAgentSessionByIdArchivePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiAgentSessionByIdArchiveData, any>({
-        path: `/api/ai/agent-session/${id}/archive`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 置顶/取消置顶Agent会话
-     *
-     * @tags ai, agentSession
-     * @name PutApiAiAgentSessionByIdPin
-     * @summary 置顶Agent会话
-     * @request PUT:/api/ai/agent-session/{id}/pin
-     * @response `200` `PutApiAiAgentSessionByIdPinData` Response for status 200
-     */
-    putApiAiAgentSessionByIdPin: (
-      { id, ...query }: PutApiAiAgentSessionByIdPinParams,
-      data: PutApiAiAgentSessionByIdPinPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiAgentSessionByIdPinData, any>({
-        path: `/api/ai/agent-session/${id}/pin`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新AI模型
-     *
-     * @tags ai, model
-     * @name PutApiAiModelBatch
-     * @summary 批量更新AI模型
-     * @request PUT:/api/ai/model/batch
-     * @response `200` `PutApiAiModelBatchData` Response for status 200
-     */
-    putApiAiModelBatch: (
-      data: PutApiAiModelBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiModelBatchData, any>({
-        path: `/api/ai/model/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个AI模型
-     *
-     * @tags ai, model
-     * @name PutApiAiModelById
-     * @summary 更新AI模型
-     * @request PUT:/api/ai/model/{id}
-     * @response `200` `PutApiAiModelByIdData` Response for status 200
-     */
-    putApiAiModelById: (
-      { id, ...query }: PutApiAiModelByIdParams,
-      data: PutApiAiModelByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiModelByIdData, any>({
-        path: `/api/ai/model/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新AI提供商
-     *
-     * @tags ai, provider
-     * @name PutApiAiProviderBatch
-     * @summary 批量更新AI提供商
-     * @request PUT:/api/ai/provider/batch
-     * @response `200` `PutApiAiProviderBatchData` Response for status 200
-     */
-    putApiAiProviderBatch: (
-      data: PutApiAiProviderBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiProviderBatchData, any>({
-        path: `/api/ai/provider/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个AI提供商
-     *
-     * @tags ai, provider
-     * @name PutApiAiProviderById
-     * @summary 更新AI提供商
-     * @request PUT:/api/ai/provider/{id}
-     * @response `200` `PutApiAiProviderByIdData` Response for status 200
-     */
-    putApiAiProviderById: (
-      { id, ...query }: PutApiAiProviderByIdParams,
-      data: PutApiAiProviderByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiProviderByIdData, any>({
-        path: `/api/ai/provider/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新工具
-     *
-     * @tags ai, tool
-     * @name PutApiAiToolBatch
-     * @summary 批量更新工具
-     * @request PUT:/api/ai/tool/batch
-     * @response `200` `PutApiAiToolBatchData` Response for status 200
-     */
-    putApiAiToolBatch: (
-      data: PutApiAiToolBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiToolBatchData, any>({
-        path: `/api/ai/tool/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个工具
-     *
-     * @tags ai, tool
-     * @name PutApiAiToolById
-     * @summary 更新工具
-     * @request PUT:/api/ai/tool/{id}
-     * @response `200` `PutApiAiToolByIdData` Response for status 200
-     */
-    putApiAiToolById: (
-      { id, ...query }: PutApiAiToolByIdParams,
-      data: PutApiAiToolByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiToolByIdData, any>({
-        path: `/api/ai/tool/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新工具组
-     *
-     * @tags ai, toolGroup
-     * @name PutApiAiToolGroupBatch
-     * @summary 批量更新工具组
-     * @request PUT:/api/ai/tool-group/batch
-     * @response `200` `PutApiAiToolGroupBatchData` Response for status 200
-     */
-    putApiAiToolGroupBatch: (
-      data: PutApiAiToolGroupBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiToolGroupBatchData, any>({
-        path: `/api/ai/tool-group/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个工具组
-     *
-     * @tags ai, toolGroup
-     * @name PutApiAiToolGroupById
-     * @summary 更新工具组
-     * @request PUT:/api/ai/tool-group/{id}
-     * @response `200` `PutApiAiToolGroupByIdData` Response for status 200
-     */
-    putApiAiToolGroupById: (
-      { id, ...query }: PutApiAiToolGroupByIdParams,
-      data: PutApiAiToolGroupByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiAiToolGroupByIdData, any>({
-        path: `/api/ai/tool-group/${id}`,
+      this.http.request<PutApiSystemUserRoleUserByUserIdData, any>({
+        path: `/api/system/user-role/user/${userId}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -20198,8 +20873,34 @@ export class Api<SecurityDataType extends unknown> {
   };
   knowledge = {
     /**
-     * @description 根据ID软删除文件
+     * @description 取消收藏文件或文件夹
      *
+     * @tags knowledge, favorite
+     * @name DeleteApiKnowledgeFavoriteByResourceTypeByResourceId
+     * @summary 取消收藏
+     * @request DELETE:/api/knowledge/favorite/{resourceType}/{resourceId}
+     * @response `200` `DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData` Response for status 200
+     */
+    deleteApiKnowledgeFavoriteByResourceTypeByResourceId: (
+      {
+        resourceType,
+        resourceId,
+        ...query
+      }: DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData,
+        any
+      >({
+        path: `/api/knowledge/favorite/${resourceType}/${resourceId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID软删除文�?     *
      * @tags knowledge, file
      * @name DeleteApiKnowledgeFileById
      * @summary 删除文件
@@ -20218,8 +20919,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID硬删除文件版本
-     *
+     * @description 根据ID硬删除文件版�?     *
      * @tags knowledge, fileVersion
      * @name DeleteApiKnowledgeFileVersionById
      * @summary 删除文件版本
@@ -20242,8 +20942,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags knowledge, folder
      * @name DeleteApiKnowledgeFolderById
-     * @summary 删除文件夹
-     * @request DELETE:/api/knowledge/folder/{id}
+     * @summary 删除文件�?     * @request DELETE:/api/knowledge/folder/{id}
      * @response `200` `DeleteApiKnowledgeFolderByIdData` Response for status 200
      */
     deleteApiKnowledgeFolderById: (
@@ -20258,48 +20957,26 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除权限
-     *
-     * @tags knowledge, resourcePermission
-     * @name DeleteApiKnowledgeResourcePermissionById
-     * @summary 删除权限
-     * @request DELETE:/api/knowledge/resource-permission/{id}
-     * @response `200` `DeleteApiKnowledgeResourcePermissionByIdData` Response for status 200
+     * @description 检查资源是否已被收�?     *
+     * @tags knowledge, favorite
+     * @name GetApiKnowledgeFavoriteCheckByResourceTypeByResourceId
+     * @summary 检查收藏状�?     * @request GET:/api/knowledge/favorite/check/{resourceType}/{resourceId}
+     * @response `200` `GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData` Response for status 200
      */
-    deleteApiKnowledgeResourcePermissionById: (
-      { id, ...query }: DeleteApiKnowledgeResourcePermissionByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiKnowledgeResourcePermissionByIdData, any>({
-        path: `/api/knowledge/resource-permission/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 删除指定资源的所有权限
-     *
-     * @tags knowledge, resourcePermission
-     * @name DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId
-     * @summary 删除资源所有权限
-     * @request DELETE:/api/knowledge/resource-permission/resource/{resourceType}/{resourceId}
-     * @response `200` `DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData` Response for status 200
-     */
-    deleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId: (
+    getApiKnowledgeFavoriteCheckByResourceTypeByResourceId: (
       {
         resourceType,
         resourceId,
         ...query
-      }: DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams,
+      }: GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams,
       params: RequestParams = {},
     ) =>
       this.http.request<
-        DeleteApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData,
+        GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData,
         any
       >({
-        path: `/api/knowledge/resource-permission/resource/${resourceType}/${resourceId}`,
-        method: "DELETE",
+        path: `/api/knowledge/favorite/check/${resourceType}/${resourceId}`,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -20379,12 +21056,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个文件夹
-     *
+     * @description 根据主键ID查询单个文件�?     *
      * @tags knowledge, folder
      * @name GetApiKnowledgeFolderById
-     * @summary 根据ID查询文件夹
-     * @request GET:/api/knowledge/folder/{id}
+     * @summary 根据ID查询文件�?     * @request GET:/api/knowledge/folder/{id}
      * @response `200` `GetApiKnowledgeFolderByIdData` Response for status 200
      */
     getApiKnowledgeFolderById: (
@@ -20416,45 +21091,44 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定资源的所有权限
+     * @description 收藏文件或文件夹
      *
-     * @tags knowledge, resourcePermission
-     * @name GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId
-     * @summary 获取资源权限
-     * @request GET:/api/knowledge/resource-permission/resource/{resourceType}/{resourceId}
-     * @response `200` `GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData` Response for status 200
+     * @tags knowledge, favorite
+     * @name PostApiKnowledgeFavorite
+     * @summary 添加收藏
+     * @request POST:/api/knowledge/favorite
+     * @response `200` `PostApiKnowledgeFavoriteData` Response for status 200
      */
-    getApiKnowledgeResourcePermissionResourceByResourceTypeByResourceId: (
-      {
-        resourceType,
-        resourceId,
-        ...query
-      }: GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdParams,
+    postApiKnowledgeFavorite: (
+      data: PostApiKnowledgeFavoritePayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<
-        GetApiKnowledgeResourcePermissionResourceByResourceTypeByResourceIdData,
-        any
-      >({
-        path: `/api/knowledge/resource-permission/resource/${resourceType}/${resourceId}`,
-        method: "GET",
+      this.http.request<PostApiKnowledgeFavoriteData, any>({
+        path: `/api/knowledge/favorite`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
 
     /**
-     * @description 获取资源权限表的JSON Schema
-     *
-     * @tags knowledge, resourcePermission
-     * @name GetApiKnowledgeResourcePermissionSchema
-     * @summary 获取资源权限Schema
-     * @request GET:/api/knowledge/resource-permission/schema
-     * @response `200` `GetApiKnowledgeResourcePermissionSchemaData` Response for status 200
+     * @description 获取当前用户的收藏列�?     *
+     * @tags knowledge, favorite
+     * @name PostApiKnowledgeFavoriteList
+     * @summary 获取收藏列表
+     * @request POST:/api/knowledge/favorite/list
+     * @response `200` `PostApiKnowledgeFavoriteListData` Response for status 200
      */
-    getApiKnowledgeResourcePermissionSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiKnowledgeResourcePermissionSchemaData, any>({
-        path: `/api/knowledge/resource-permission/schema`,
-        method: "GET",
+    postApiKnowledgeFavoriteList: (
+      data: PostApiKnowledgeFavoriteListPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeFavoriteListData, any>({
+        path: `/api/knowledge/favorite/list`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -20592,12 +21266,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个文件夹
-     *
+     * @description 创建单个文件�?     *
      * @tags knowledge, folder
      * @name PostApiKnowledgeFolder
-     * @summary 创建文件夹
-     * @request POST:/api/knowledge/folder
+     * @summary 创建文件�?     * @request POST:/api/knowledge/folder
      * @response `200` `PostApiKnowledgeFolderData` Response for status 200
      */
     postApiKnowledgeFolder: (
@@ -20614,12 +21286,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个文件夹
-     *
+     * @description 批量创建多个文件�?     *
      * @tags knowledge, folder
      * @name PostApiKnowledgeFolderBatch
-     * @summary 批量创建文件夹
-     * @request POST:/api/knowledge/folder/batch
+     * @summary 批量创建文件�?     * @request POST:/api/knowledge/folder/batch
      * @response `200` `PostApiKnowledgeFolderBatchData` Response for status 200
      */
     postApiKnowledgeFolderBatch: (
@@ -20636,12 +21306,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询文件夹列表，自动排除已删除数据
-     *
+     * @description 分页查询文件夹列表，自动排除已删除数�?     *
      * @tags knowledge, folder
      * @name PostApiKnowledgeFolderQuery
-     * @summary 分页查询文件夹
-     * @request POST:/api/knowledge/folder/query
+     * @summary 分页查询文件�?     * @request POST:/api/knowledge/folder/query
      * @response `200` `PostApiKnowledgeFolderQueryData` Response for status 200
      */
     postApiKnowledgeFolderQuery: (
@@ -20650,72 +21318,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PostApiKnowledgeFolderQueryData, any>({
         path: `/api/knowledge/folder/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 添加单个资源权限
-     *
-     * @tags knowledge, resourcePermission
-     * @name PostApiKnowledgeResourcePermission
-     * @summary 添加权限
-     * @request POST:/api/knowledge/resource-permission
-     * @response `200` `PostApiKnowledgeResourcePermissionData` Response for status 200
-     */
-    postApiKnowledgeResourcePermission: (
-      data: PostApiKnowledgeResourcePermissionPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiKnowledgeResourcePermissionData, any>({
-        path: `/api/knowledge/resource-permission`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询资源权限列表
-     *
-     * @tags knowledge, resourcePermission
-     * @name PostApiKnowledgeResourcePermissionQuery
-     * @summary 分页查询资源权限
-     * @request POST:/api/knowledge/resource-permission/query
-     * @response `200` `PostApiKnowledgeResourcePermissionQueryData` Response for status 200
-     */
-    postApiKnowledgeResourcePermissionQuery: (
-      data: PostApiKnowledgeResourcePermissionQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiKnowledgeResourcePermissionQueryData, any>({
-        path: `/api/knowledge/resource-permission/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量设置资源权限（替换现有权限）
-     *
-     * @tags knowledge, resourcePermission
-     * @name PostApiKnowledgeResourcePermissionSet
-     * @summary 设置资源权限
-     * @request POST:/api/knowledge/resource-permission/set
-     * @response `200` `PostApiKnowledgeResourcePermissionSetData` Response for status 200
-     */
-    postApiKnowledgeResourcePermissionSet: (
-      data: PostApiKnowledgeResourcePermissionSetPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiKnowledgeResourcePermissionSetData, any>({
-        path: `/api/knowledge/resource-permission/set`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -20814,12 +21416,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新文件夹
-     *
+     * @description 根据ID列表批量更新文件�?     *
      * @tags knowledge, folder
      * @name PutApiKnowledgeFolderBatch
-     * @summary 批量更新文件夹
-     * @request PUT:/api/knowledge/folder/batch
+     * @summary 批量更新文件�?     * @request PUT:/api/knowledge/folder/batch
      * @response `200` `PutApiKnowledgeFolderBatchData` Response for status 200
      */
     putApiKnowledgeFolderBatch: (
@@ -20836,12 +21436,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个文件夹
-     *
+     * @description 根据ID更新单个文件�?     *
      * @tags knowledge, folder
      * @name PutApiKnowledgeFolderById
-     * @summary 更新文件夹
-     * @request PUT:/api/knowledge/folder/{id}
+     * @summary 更新文件�?     * @request PUT:/api/knowledge/folder/{id}
      * @response `200` `PutApiKnowledgeFolderByIdData` Response for status 200
      */
     putApiKnowledgeFolderById: (
@@ -20860,8 +21458,7 @@ export class Api<SecurityDataType extends unknown> {
   };
   im = {
     /**
-     * @description 根据ID软删除会话
-     *
+     * @description 根据ID软删除会�?     *
      * @tags im, conversation
      * @name DeleteApiImConversationById
      * @summary 删除会话
@@ -20880,12 +21477,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 移除群成员
-     *
+     * @description 移除群成�?     *
      * @tags im, groupMember
      * @name DeleteApiImGroupMemberByConversationIdByUserId
-     * @summary 移除群成员
-     * @request DELETE:/api/im/group-member/{conversationId}/{userId}
+     * @summary 移除群成�?     * @request DELETE:/api/im/group-member/{conversationId}/{userId}
      * @response `200` `DeleteApiImGroupMemberByConversationIdByUserIdData` Response for status 200
      */
     deleteApiImGroupMemberByConversationIdByUserId: (
@@ -20981,12 +21576,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据会话ID和用户ID查询已读状态
-     *
+     * @description 根据会话ID和用户ID查询已读状�?     *
      * @tags im, conversationRead
      * @name GetApiImConversationReadByConversationIdByUserId
-     * @summary 查询已读状态
-     * @request GET:/api/im/conversation-read/{conversationId}/{userId}
+     * @summary 查询已读状�?     * @request GET:/api/im/conversation-read/{conversationId}/{userId}
      * @response `200` `GetApiImConversationReadByConversationIdByUserIdData` Response for status 200
      */
     getApiImConversationReadByConversationIdByUserId: (
@@ -21042,12 +21635,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据会话ID和用户ID查询群成员
-     *
+     * @description 根据会话ID和用户ID查询群成�?     *
      * @tags im, groupMember
      * @name GetApiImGroupMemberByConversationIdByUserId
-     * @summary 查询群成员
-     * @request GET:/api/im/group-member/{conversationId}/{userId}
+     * @summary 查询群成�?     * @request GET:/api/im/group-member/{conversationId}/{userId}
      * @response `200` `GetApiImGroupMemberByConversationIdByUserIdData` Response for status 200
      */
     getApiImGroupMemberByConversationIdByUserId: (
@@ -21219,8 +21810,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建群聊会话并添加成员
-     *
+     * @description 创建群聊会话并添加成�?     *
      * @tags im, conversation
      * @name PostApiImConversationGroup
      * @summary 创建群聊
@@ -21241,8 +21831,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 隐藏会话（不再显示在消息列表）
-     *
+     * @description 隐藏会话（不再显示在消息列表�?     *
      * @tags im, conversationHidden
      * @name PostApiImConversationHiddenHide
      * @summary 隐藏会话
@@ -21289,8 +21878,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags im, conversation
      * @name PostApiImConversationPrivate
-     * @summary 查找或创建私聊
-     * @request POST:/api/im/conversation/private
+     * @summary 查找或创建私�?     * @request POST:/api/im/conversation/private
      * @response `200` `PostApiImConversationPrivateData` Response for status 200
      */
     postApiImConversationPrivate: (
@@ -21329,12 +21917,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询已读状态列表
-     *
+     * @description 分页查询已读状态列�?     *
      * @tags im, conversationRead
      * @name PostApiImConversationReadQuery
-     * @summary 分页查询已读状态
-     * @request POST:/api/im/conversation-read/query
+     * @summary 分页查询已读状�?     * @request POST:/api/im/conversation-read/query
      * @response `200` `PostApiImConversationReadQueryData` Response for status 200
      */
     postApiImConversationReadQuery: (
@@ -21351,12 +21937,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 添加群成员
-     *
+     * @description 添加群成�?     *
      * @tags im, groupMember
      * @name PostApiImGroupMember
-     * @summary 添加群成员
-     * @request POST:/api/im/group-member
+     * @summary 添加群成�?     * @request POST:/api/im/group-member
      * @response `200` `PostApiImGroupMemberData` Response for status 200
      */
     postApiImGroupMember: (
@@ -21373,12 +21957,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量添加群成员
-     *
+     * @description 批量添加群成�?     *
      * @tags im, groupMember
      * @name PostApiImGroupMemberBatch
-     * @summary 批量添加群成员
-     * @request POST:/api/im/group-member/batch
+     * @summary 批量添加群成�?     * @request POST:/api/im/group-member/batch
      * @response `200` `PostApiImGroupMemberBatchData` Response for status 200
      */
     postApiImGroupMemberBatch: (
@@ -21395,12 +21977,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询群成员列表
-     *
+     * @description 分页查询群成员列�?     *
      * @tags im, groupMember
      * @name PostApiImGroupMemberQuery
-     * @summary 分页查询群成员
-     * @request POST:/api/im/group-member/query
+     * @summary 分页查询群成�?     * @request POST:/api/im/group-member/query
      * @response `200` `PostApiImGroupMemberQueryData` Response for status 200
      */
     postApiImGroupMemberQuery: (
@@ -21417,12 +21997,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 发送单条消息
-     *
+     * @description 发送单条消�?     *
      * @tags im, message
      * @name PostApiImMessage
-     * @summary 发送消息
-     * @request POST:/api/im/message
+     * @summary 发送消�?     * @request POST:/api/im/message
      * @response `200` `PostApiImMessageData` Response for status 200
      */
     postApiImMessage: (
@@ -21505,8 +22083,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 上传文件到S3并创建临时文件记录
-     *
+     * @description 上传文件到S3并创建临时文件记�?     *
      * @tags im, tempFile
      * @name PostApiImTempFileUpload
      * @summary 上传临时文件
@@ -21554,8 +22131,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags im, conversationRead
      * @name PutApiImConversationReadIncrementUnread
-     * @summary 增加未读数
-     * @request PUT:/api/im/conversation-read/increment-unread
+     * @summary 增加未读�?     * @request PUT:/api/im/conversation-read/increment-unread
      * @response `200` `PutApiImConversationReadIncrementUnreadData` Response for status 200
      */
     putApiImConversationReadIncrementUnread: (
@@ -21572,8 +22148,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 标记会话已读到指定消息序号
-     *
+     * @description 标记会话已读到指定消息序�?     *
      * @tags im, conversationRead
      * @name PutApiImConversationReadMark
      * @summary 标记已读
@@ -21594,12 +22169,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 更新群成员信息
-     *
+     * @description 更新群成员信�?     *
      * @tags im, groupMember
      * @name PutApiImGroupMemberByConversationIdByUserId
-     * @summary 更新群成员
-     * @request PUT:/api/im/group-member/{conversationId}/{userId}
+     * @summary 更新群成�?     * @request PUT:/api/im/group-member/{conversationId}/{userId}
      * @response `200` `PutApiImGroupMemberByConversationIdByUserIdData` Response for status 200
      */
     putApiImGroupMemberByConversationIdByUserId: (
@@ -21665,8 +22238,7 @@ export class Api<SecurityDataType extends unknown> {
   };
   files = {
     /**
-     * @description 软删除文件
-     *
+     * @description 软删除文�?     *
      * @tags files, files
      * @name DeleteApiFilesById
      * @summary 删除文件
@@ -21689,8 +22261,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags files, files
      * @name DeleteApiFilesFoldersById
-     * @summary 删除文件夹
-     * @request DELETE:/api/files/folders/{id}
+     * @summary 删除文件�?     * @request DELETE:/api/files/folders/{id}
      * @response `200` `DeleteApiFilesFoldersByIdData` Response for status 200
      */
     deleteApiFilesFoldersById: (
@@ -21703,6 +22274,62 @@ export class Api<SecurityDataType extends unknown> {
         format: "json",
         ...params,
       }),
+
+    /**
+     * @description 删除资源的所有权限和继承关系
+     *
+     * @tags files, permission
+     * @name DeleteApiFilesPermissionAllByResourceTypeByResourceId
+     * @summary 删除所有权�?     * @request DELETE:/api/files/permission/all/{resourceType}/{resourceId}
+     * @response `200` `DeleteApiFilesPermissionAllByResourceTypeByResourceIdData` Response for status 200
+     */
+    deleteApiFilesPermissionAllByResourceTypeByResourceId: (
+      {
+        resourceType,
+        resourceId,
+        ...query
+      }: DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        DeleteApiFilesPermissionAllByResourceTypeByResourceIdData,
+        any
+      >({
+        path: `/api/files/permission/all/${resourceType}/${resourceId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 移除资源的权�?     *
+     * @tags files, permission
+     * @name DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission
+     * @summary 移除权限
+     * @request DELETE:/api/files/permission/{resourceType}/{resourceId}/{subjectType}/{subjectId}/{permission}
+     * @response `200` `DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData` Response for status 200
+     */
+    deleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission:
+      (
+        {
+          resourceType,
+          resourceId,
+          subjectType,
+          subjectId,
+          permission,
+          ...query
+        }: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams,
+        params: RequestParams = {},
+      ) =>
+        this.http.request<
+          DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData,
+          any
+        >({
+          path: `/api/files/permission/${resourceType}/${resourceId}/${subjectType}/${subjectId}/${permission}`,
+          method: "DELETE",
+          format: "json",
+          ...params,
+        }),
 
     /**
      * @description 获取文本文件内容
@@ -21745,8 +22372,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取文本文件内容，仅支持纯文本文件
-     *
+     * @description 获取文本文件内容，仅支持纯文本文�?     *
      * @tags files, files
      * @name GetApiFilesByIdTextContent
      * @summary 获取文本文件内容
@@ -21759,6 +22385,59 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<GetApiFilesByIdTextContentData, any>({
         path: `/api/files/${id}/text-content`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取文件或文件夹的权限列�?     *
+     * @tags files, permission
+     * @name GetApiFilesPermissionByResourceTypeByResourceId
+     * @summary 获取资源权限
+     * @request GET:/api/files/permission/{resourceType}/{resourceId}
+     * @response `200` `GetApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
+     */
+    getApiFilesPermissionByResourceTypeByResourceId: (
+      {
+        resourceType,
+        resourceId,
+        ...query
+      }: GetApiFilesPermissionByResourceTypeByResourceIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        GetApiFilesPermissionByResourceTypeByResourceIdData,
+        any
+      >({
+        path: `/api/files/permission/${resourceType}/${resourceId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取用户对资源的所有有效权限（包括继承的权限）
+     *
+     * @tags files, permission
+     * @name GetApiFilesPermissionEffectiveByResourceTypeByResourceId
+     * @summary 获取有效权限
+     * @request GET:/api/files/permission/effective/{resourceType}/{resourceId}
+     * @response `200` `GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData` Response for status 200
+     */
+    getApiFilesPermissionEffectiveByResourceTypeByResourceId: (
+      {
+        resourceType,
+        resourceId,
+        ...query
+      }: GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData,
+        any
+      >({
+        path: `/api/files/permission/effective/${resourceType}/${resourceId}`,
         method: "GET",
         format: "json",
         ...params,
@@ -21808,12 +22487,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 复制文件到目标文件夹，自动生成唯一文件名 filename(num).ext
+     * @description 复制文件到目标文件夹，自动生成唯一文件�?filename(num).ext
      *
      * @tags files, files
      * @name PostApiFilesByIdCopyAsDuplicate
-     * @summary 复制文件为副本
-     * @request POST:/api/files/{id}/copy-as-duplicate
+     * @summary 复制文件为副�?     * @request POST:/api/files/{id}/copy-as-duplicate
      * @response `200` `PostApiFilesByIdCopyAsDuplicateData` Response for status 200
      */
     postApiFilesByIdCopyAsDuplicate: (
@@ -21854,12 +22532,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 检查指定文件夹中是否存在同名文件
-     *
+     * @description 检查指定文件夹中是否存在同名文�?     *
      * @tags files, files
      * @name PostApiFilesCheckExists
-     * @summary 检查文件是否存在
-     * @request POST:/api/files/check-exists
+     * @summary 检查文件是否存�?     * @request POST:/api/files/check-exists
      * @response `200` `PostApiFilesCheckExistsData` Response for status 200
      */
     postApiFilesCheckExists: (
@@ -21876,8 +22552,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 确认文件上传完成并创建记录
-     *
+     * @description 确认文件上传完成并创建记�?     *
      * @tags files, files
      * @name PostApiFilesConfirmUpload
      * @summary 确认上传
@@ -21898,8 +22573,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量软删除文件
-     *
+     * @description 批量软删除文�?     *
      * @tags files, files
      * @name PostApiFilesDeleteBatch
      * @summary 批量删除文件
@@ -21924,8 +22598,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags files, files
      * @name PostApiFilesFolders
-     * @summary 创建文件夹
-     * @request POST:/api/files/folders
+     * @summary 创建文件�?     * @request POST:/api/files/folders
      * @response `200` `PostApiFilesFoldersData` Response for status 200
      */
     postApiFilesFolders: (
@@ -21946,8 +22619,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags files, files
      * @name PostApiFilesFoldersByIdMove
-     * @summary 移动文件夹
-     * @request POST:/api/files/folders/{id}/move
+     * @summary 移动文件�?     * @request POST:/api/files/folders/{id}/move
      * @response `200` `PostApiFilesFoldersByIdMoveData` Response for status 200
      */
     postApiFilesFoldersByIdMove: (
@@ -21965,8 +22637,163 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 上传文件到存储（如果文件已存在则返回冲突信息）
+     * @description 为资源添加单个权�?     *
+     * @tags files, permission
+     * @name PostApiFilesPermission
+     * @summary 添加权限
+     * @request POST:/api/files/permission
+     * @response `200` `PostApiFilesPermissionData` Response for status 200
+     */
+    postApiFilesPermission: (
+      data: PostApiFilesPermissionPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiFilesPermissionData, any>({
+        path: `/api/files/permission`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 设置文件或文件夹的权限（替换现有权限�?     *
+     * @tags files, permission
+     * @name PostApiFilesPermissionByResourceTypeByResourceId
+     * @summary 设置资源权限
+     * @request POST:/api/files/permission/{resourceType}/{resourceId}
+     * @response `200` `PostApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
+     */
+    postApiFilesPermissionByResourceTypeByResourceId: (
+      {
+        resourceType,
+        resourceId,
+        ...query
+      }: PostApiFilesPermissionByResourceTypeByResourceIdParams,
+      data: PostApiFilesPermissionByResourceTypeByResourceIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        PostApiFilesPermissionByResourceTypeByResourceIdData,
+        any
+      >({
+        path: `/api/files/permission/${resourceType}/${resourceId}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 检查用户对资源的权�?     *
+     * @tags files, permission
+     * @name PostApiFilesPermissionCheck
+     * @summary 检查权�?     * @request POST:/api/files/permission/check
+     * @response `200` `PostApiFilesPermissionCheckData` Response for status 200
+     */
+    postApiFilesPermissionCheck: (
+      data: PostApiFilesPermissionCheckPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiFilesPermissionCheckData, any>({
+        path: `/api/files/permission/check`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 将一个资源的权限复制到另一个资�?     *
+     * @tags files, permission
+     * @name PostApiFilesPermissionCopy
+     * @summary 复制权限
+     * @request POST:/api/files/permission/copy
+     * @response `200` `PostApiFilesPermissionCopyData` Response for status 200
+     */
+    postApiFilesPermissionCopy: (
+      data: PostApiFilesPermissionCopyPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiFilesPermissionCopyData, any>({
+        path: `/api/files/permission/copy`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 设置文件或文件夹的父级文件夹（用于权限继承）
      *
+     * @tags files, permission
+     * @name PostApiFilesPermissionParent
+     * @summary 设置资源父级
+     * @request POST:/api/files/permission/parent
+     * @response `200` `PostApiFilesPermissionParentData` Response for status 200
+     */
+    postApiFilesPermissionParent: (
+      data: PostApiFilesPermissionParentPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiFilesPermissionParentData, any>({
+        path: `/api/files/permission/parent`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取当前用户共享给他人的文件和文件夹
+     *
+     * @tags files, share
+     * @name PostApiFilesShareMyShared
+     * @summary 获取我共享的资源
+     * @request POST:/api/files/share/my-shared
+     * @response `200` `PostApiFilesShareMySharedData` Response for status 200
+     */
+    postApiFilesShareMyShared: (
+      data: PostApiFilesShareMySharedPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiFilesShareMySharedData, any>({
+        path: `/api/files/share/my-shared`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取他人共享给当前用户的文件和文件夹
+     *
+     * @tags files, share
+     * @name PostApiFilesShareSharedWithMe
+     * @summary 获取收到的共�?     * @request POST:/api/files/share/shared-with-me
+     * @response `200` `PostApiFilesShareSharedWithMeData` Response for status 200
+     */
+    postApiFilesShareSharedWithMe: (
+      data: PostApiFilesShareSharedWithMePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiFilesShareSharedWithMeData, any>({
+        path: `/api/files/share/shared-with-me`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 上传文件到存储（如果文件已存在则返回冲突信息�?     *
      * @tags files, files
      * @name PostApiFilesUpload
      * @summary 上传文件
@@ -21987,8 +22814,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 上传文件并处理冲突（覆盖/创建新版本/创建副本）
-     *
+     * @description 上传文件并处理冲突（覆盖/创建新版�?创建副本�?     *
      * @tags files, files
      * @name PostApiFilesUploadForce
      * @summary 强制上传文件
@@ -22031,8 +22857,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 将历史版本恢复为当前版本（交换S3字段）
-     *
+     * @description 将历史版本恢复为当前版本（交换S3字段�?     *
      * @tags files, files
      * @name PostApiFilesVersionsByIdRestore
      * @summary 恢复历史版本
@@ -22097,12 +22922,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 重命名文件
-     *
+     * @description 重命名文�?     *
      * @tags files, files
      * @name PutApiFilesByIdRename
-     * @summary 重命名文件
-     * @request PUT:/api/files/{id}/rename
+     * @summary 重命名文�?     * @request PUT:/api/files/{id}/rename
      * @response `200` `PutApiFilesByIdRenameData` Response for status 200
      */
     putApiFilesByIdRename: (
@@ -22120,12 +22943,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 更新文件夹描述信息
-     *
+     * @description 更新文件夹描述信�?     *
      * @tags files, files
      * @name PutApiFilesFoldersByIdDescription
-     * @summary 更新文件夹描述
-     * @request PUT:/api/files/folders/{id}/description
+     * @summary 更新文件夹描�?     * @request PUT:/api/files/folders/{id}/description
      * @response `200` `PutApiFilesFoldersByIdDescriptionData` Response for status 200
      */
     putApiFilesFoldersByIdDescription: (
@@ -22143,12 +22964,10 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 更新文件夹排序
-     *
+     * @description 更新文件夹排�?     *
      * @tags files, files
      * @name PutApiFilesFoldersByIdOrder
-     * @summary 更新文件夹排序
-     * @request PUT:/api/files/folders/{id}/order
+     * @summary 更新文件夹排�?     * @request PUT:/api/files/folders/{id}/order
      * @response `200` `PutApiFilesFoldersByIdOrderData` Response for status 200
      */
     putApiFilesFoldersByIdOrder: (
@@ -22193,8 +23012,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags files, files
      * @name PutApiFilesFoldersByIdStyle
-     * @summary 更新文件夹样式
-     * @request PUT:/api/files/folders/{id}/style
+     * @summary 更新文件夹样�?     * @request PUT:/api/files/folders/{id}/style
      * @response `200` `PutApiFilesFoldersByIdStyleData` Response for status 200
      */
     putApiFilesFoldersByIdStyle: (
@@ -22205,6 +23023,65 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<PutApiFilesFoldersByIdStyleData, any>({
         path: `/api/files/folders/${id}/style`,
         method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  dev = {
+    /**
+     * @description 获取 monorepo 项目根目录路�?     *
+     * @tags dev, project-code
+     * @name GetApiDevProjectCodeRoot
+     * @summary 获取项目根目�?     * @request GET:/api/dev/project-code/root
+     * @response `200` `GetApiDevProjectCodeRootData` Response for status 200
+     */
+    getApiDevProjectCodeRoot: (params: RequestParams = {}) =>
+      this.http.request<GetApiDevProjectCodeRootData, any>({
+        path: `/api/dev/project-code/root`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 读取指定目录下的文件和子目录
+     *
+     * @tags dev, project-code
+     * @name PostApiDevProjectCodeDirectory
+     * @summary 读取目录
+     * @request POST:/api/dev/project-code/directory
+     * @response `200` `PostApiDevProjectCodeDirectoryData` Response for status 200
+     */
+    postApiDevProjectCodeDirectory: (
+      data: PostApiDevProjectCodeDirectoryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiDevProjectCodeDirectoryData, any>({
+        path: `/api/dev/project-code/directory`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 读取指定文件的内�?     *
+     * @tags dev, project-code
+     * @name PostApiDevProjectCodeFile
+     * @summary 读取文件
+     * @request POST:/api/dev/project-code/file
+     * @response `200` `PostApiDevProjectCodeFileData` Response for status 200
+     */
+    postApiDevProjectCodeFile: (
+      data: PostApiDevProjectCodeFilePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiDevProjectCodeFileData, any>({
+        path: `/api/dev/project-code/file`,
+        method: "POST",
         body: data,
         type: ContentType.Json,
         format: "json",

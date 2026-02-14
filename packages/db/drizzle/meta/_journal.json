@@ -5,78 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1769614953234,
-      "tag": "0001_yummy_skreet",
+      "when": 1771050216071,
+      "tag": "0000_bitter_arachne",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1769622301694,
-      "tag": "0001_spotty_george_stacy",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1769622544743,
-      "tag": "0002_volatile_jazinda",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1769643909700,
-      "tag": "0003_perfect_hammerhead",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1769931466588,
-      "tag": "0004_lazy_shape",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1770219043487,
-      "tag": "0005_drop_skill",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1770266565835,
-      "tag": "0006_cultured_saracen",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1770287891556,
-      "tag": "0007_light_ezekiel",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1770433133345,
-      "tag": "0008_typical_nick_fury",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1770433383821,
-      "tag": "0009_mixed_revanche",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1770433713473,
-      "tag": "0010_tranquil_betty_ross",
+      "when": 1771050740415,
+      "tag": "0001_regular_wallop",
       "breakpoints": true
     }
   ]

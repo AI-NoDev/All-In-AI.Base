@@ -1,11 +1,11 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Table from '@/lib/components/ui/table';
-  import { Button } from '@/lib/components/ui/button';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
+  import * as Table from '$lib/components/ui/table';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Checkbox } from '$lib/components/ui/checkbox';
 
   interface Model {
     id: string;

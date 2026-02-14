@@ -10,10 +10,10 @@ type GroupMemberInsert = typeof groupMember.$inferInsert;
 
 // ============ Filter Schema ============
 const groupMemberFilterSchema = z.object({
-  conversationId: z.uuid().optional(),
-  conversationIds: z.array(z.uuid()).optional(),
-  userId: z.uuid().optional(),
-  userIds: z.array(z.uuid()).optional(),
+  conversationId: z.string().optional(),
+  conversationIds: z.array(z.string()).optional(),
+  userId: z.string().optional(),
+  userIds: z.array(z.string()).optional(),
   role: z.string().optional(),
   roles: z.array(z.string()).optional(),
   isMuted: z.boolean().optional(),
@@ -69,7 +69,7 @@ export const groupMemberGetByPagination = defineAction({
 export const groupMemberGetByPk = defineAction({
   meta: { name: 'im.groupMember.getByPk', displayName: '查询群成员', description: '根据会话ID和用户ID查询群成员', tags: ['im', 'groupMember'], method: 'GET', path: '/api/im/group-member/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.uuid(), userId: z.uuid() }),
+    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: groupMemberZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -124,7 +124,7 @@ export const groupMemberAddMany = defineAction({
 export const groupMemberUpdate = defineAction({
   meta: { name: 'im.groupMember.update', displayName: '更新群成员', description: '更新群成员信息', tags: ['im', 'groupMember'], method: 'PUT', path: '/api/im/group-member/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.uuid(), userId: z.uuid() }),
+    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     bodySchema: z.object({ data: groupMemberZodSchemas.update }),
     outputSchema: groupMemberZodSchemas.select,
   },
@@ -138,7 +138,7 @@ export const groupMemberUpdate = defineAction({
 export const groupMemberRemove = defineAction({
   meta: { name: 'im.groupMember.remove', displayName: '移除群成员', description: '移除群成员', tags: ['im', 'groupMember'], method: 'DELETE', path: '/api/im/group-member/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.uuid(), userId: z.uuid() }),
+    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

@@ -1,11 +1,11 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as DropdownMenu from '@/lib/components/ui/dropdown-menu';
-  import { Button } from '@/lib/components/ui/button';
-  import { Avatar, AvatarFallback, AvatarImage } from '@/lib/components/ui/avatar';
-  import { Badge } from '@/lib/components/ui/badge';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import { Button } from '$lib/components/ui/button';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
+  import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { imStore } from '@/lib/stores/im.svelte';
+  import { imStore } from '@/lib/stores/im';
 
   interface Props {
     onDissolve: (convId: string) => void;

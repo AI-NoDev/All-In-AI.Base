@@ -11,7 +11,7 @@ type OperationLogInsert = typeof operationLog.$inferInsert;
 // ============ Filter Schema ============
 const operationLogFilterSchema = z.object({
   // IN 查询
-  ids: z.array(z.uuid()).optional(),
+  ids: z.array(z.string()).optional(),
   titles: z.array(z.string()).optional(),
   names: z.array(z.string()).optional(),
   // 精确匹配
@@ -81,7 +81,7 @@ export const operationLogGetByPagination = defineAction({
 export const operationLogGetByPk = defineAction({
   meta: { name: 'system.operationLog.getByPk', displayName: '根据ID查询操作日志', description: '根据主键ID查询单个操作日志', tags: ['system', 'operationLog'], method: 'GET', path: '/api/system/operation-log/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: operationLogZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -105,7 +105,7 @@ export const operationLogCreate = defineAction({
 export const operationLogDeleteByPk = defineAction({
   meta: { name: 'system.operationLog.deleteByPk', displayName: '删除操作日志', description: '根据ID删除操作日志', tags: ['system', 'operationLog'], method: 'DELETE', path: '/api/system/operation-log/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, _context) => {

@@ -4,20 +4,17 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tSystem, tSystemMeta } from '../../i18n';
-
-const f = (field: string) => tSystem('roleDepartment', field);
 
 // ============ Fields ============
 export const roleDepartmentFields = {
   roleId: {
     field: uuid('role_id').notNull(),
-    comment: f('roleId'),
+    comment: () => '角色ID',
     config: { canExport: false, canImport: false }
   },
   departmentId: {
     field: uuid('department_id').notNull(),
-    comment: f('departmentId'),
+    comment: () => '部门ID',
     config: { canExport: false, canImport: false }
   },
 } satisfies FieldMap;
@@ -25,9 +22,9 @@ export const roleDepartmentFields = {
 // ============ Meta ============
 export const roleDepartmentMeta: EntityMeta = {
   name: 'system_role_department',
-  displayName: tSystemMeta('roleDepartment', 'displayName'),
-  verboseName: tSystemMeta('roleDepartment', 'verboseName'),
-  verboseNamePlural: tSystemMeta('roleDepartment', 'verboseNamePlural'),
+  displayName: () => '角色部门关联',
+  verboseName: () => '角色部门',
+  verboseNamePlural: () => '角色部门',
   permissions: createPermissions('system_role_department'),
 };
 

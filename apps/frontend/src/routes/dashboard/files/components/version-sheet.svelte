@@ -1,12 +1,12 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Sheet from '@/lib/components/ui/sheet';
-  import { Button } from '@/lib/components/ui/button';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import * as Table from '@/lib/components/ui/table';
+  import * as Sheet from '$lib/components/ui/sheet';
+  import { Button } from '$lib/components/ui/button';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import * as Table from '$lib/components/ui/table';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { knowledgeStore } from '@/lib/stores/knowledge.svelte';
+  import { knowledgeStore } from '@/lib/stores/knowledge';
   import {
     PostApiKnowledgeFileVersionQueryFieldEnum,
     PostApiKnowledgeFileVersionQueryOrderEnum,

@@ -38,12 +38,12 @@ function generateSalt(): string {
 // ============ Filter Schema ============
 const userFilterSchema = z.object({
   // IN 查询
-  ids: z.preprocess(emptyArrayToUndefined, z.array(z.uuid()).optional()),
+  ids: z.preprocess(emptyArrayToUndefined, z.array(z.string()).optional()),
   loginNames: z.preprocess(emptyArrayToUndefined, z.array(z.string()).optional()),
   // 精确匹配
-  deptId: z.preprocess(emptyToUndefined, z.uuid().optional()),
-  parentId: z.preprocess(emptyToUndefined, z.uuid().optional()),
-  roleId: z.preprocess(emptyToUndefined, z.uuid().optional()),
+  deptId: z.preprocess(emptyToUndefined, z.string().optional()),
+  parentId: z.preprocess(emptyToUndefined, z.string().optional()),
+  roleId: z.preprocess(emptyToUndefined, z.string().optional()),
   userType: z.preprocess(emptyToUndefined, z.string().optional()),
   sex: z.preprocess(emptyToUndefined, z.string().optional()),
   status: z.preprocess(emptyToUndefined, z.string().optional()),
@@ -130,7 +130,7 @@ export const userGetByPagination = defineAction({
 export const userGetByPk = defineAction({
   meta: { name: 'system.user.getByPk', displayName: '根据ID查询用户', description: '根据主键ID查询单个用户', tags: ['system', 'user'], method: 'GET', path: '/api/system/user/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: userZodSchemas.select.nullable(),
   },
   execute: async (input, _context) => {
@@ -220,7 +220,7 @@ async function checkIsSystemAdmin(userId: string): Promise<boolean> {
 export const userUpdate = defineAction({
   meta: { name: 'system.user.update', displayName: '更新用户', description: '根据ID更新单个用户', tags: ['system', 'user'], method: 'PUT', path: '/api/system/user/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     bodySchema: z.object({ data: userZodSchemas.update }),
     outputSchema: userZodSchemas.select,
   },
@@ -242,7 +242,7 @@ export const userUpdate = defineAction({
 export const userUpdateMany = defineAction({
   meta: { name: 'system.user.updateMany', displayName: '批量更新用户', description: '根据ID列表批量更新用户', tags: ['system', 'user'], method: 'PUT', path: '/api/system/user/batch' },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.uuid()), data: userZodSchemas.update }),
+    bodySchema: z.object({ ids: z.array(z.string()), data: userZodSchemas.update }),
     outputSchema: z.array(userZodSchemas.select),
   },
   execute: async (input, _context) => {
@@ -269,7 +269,7 @@ export const userUpdateMany = defineAction({
 export const userDeleteByPk = defineAction({
   meta: { name: 'system.user.deleteByPk', displayName: '删除用户', description: '根据ID软删除用户', tags: ['system', 'user'], method: 'DELETE', path: '/api/system/user/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
@@ -310,7 +310,7 @@ async function getInitPassword(pwd?: string | null): Promise<string> {
 export const userResetPassword = defineAction({
   meta: { name: 'system.user.resetPassword', displayName: '重置密码', description: '重置用户密码为初始密码', tags: ['system', 'user'], method: 'POST', path: '/api/system/user/:id/reset-password' },
   schemas: {
-    paramsSchema: z.object({ id: z.uuid() }),
+    paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.object({ success: z.boolean() }),
   },
   execute: async (input, context) => {

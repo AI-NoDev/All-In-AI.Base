@@ -32,17 +32,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '@/lib/components/ui/table';
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import * as Select from '@/lib/components/ui/select';
-  import * as Pagination from '@/lib/components/ui/pagination';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { Badge } from '@/lib/components/ui/badge';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import * as Pagination from '$lib/components/ui/pagination';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemPostQueryFieldEnum, PostApiSystemPostQueryOrderEnum } from '@/lib/api/Api';
 

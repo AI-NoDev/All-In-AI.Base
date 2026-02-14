@@ -4,53 +4,50 @@ import {
   createZodSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
-import { tSystem, tSystemMeta } from '../../i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-
-const f = (field: string) => tSystem('jobLog', field);
 
 // ============ Fields ============
 const jobLogOwnFields = {
   jobName: {
     field: varchar("job_name", { length: 64 }).notNull(),
-    comment: f('jobName'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('jobName'), cellType: "STRING" as const }
+    comment: () => '任务名称',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '任务名称', cellType: "STRING" as const }
   },
   jobGroup: {
     field: varchar("job_group", { length: 64 }).notNull(),
-    comment: f('jobGroup'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('jobGroup'), cellType: "STRING" as const }
+    comment: () => '任务组名',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '任务组名', cellType: "STRING" as const }
   },
   invokeTarget: {
     field: varchar("invoke_target", { length: 500 }).notNull(),
-    comment: f('invokeTarget'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('invokeTarget'), cellType: "STRING" as const }
+    comment: () => '调用目标',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '调用目标', cellType: "STRING" as const }
   },
   jobMessage: {
     field: text("job_message"),
-    comment: f('jobMessage'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('jobMessage'), cellType: "TEXT" as const }
+    comment: () => '日志信息',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '日志信息', cellType: "TEXT" as const }
   },
   status: {
     field: char('status', { length: 1 }).default("0"),
-    comment: f('status'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('status'), cellType: "STRING" as const }
+    comment: () => '状态',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '状态', cellType: "STRING" as const }
   },
   exceptionInfo: {
     field: text("exception_info"),
-    comment: f('exceptionInfo'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('exceptionInfo'), cellType: "TEXT" as const }
+    comment: () => '异常信息',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '异常信息', cellType: "TEXT" as const }
   },
   startTime: {
     field: timestamp("start_time"),
-    comment: f('startTime'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('startTime'), cellType: "STRING" as const }
+    comment: () => '开始时间',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '开始时间', cellType: "STRING" as const }
   },
   stopTime: {
     field: timestamp("stop_time"),
-    comment: f('stopTime'),
-    config: { canExport: true, canImport: false, exportExcelColumnName: f('stopTime'), cellType: "STRING" as const }
+    comment: () => '结束时间',
+    config: { canExport: true, canImport: false, exportExcelColumnName: () => '结束时间', cellType: "STRING" as const }
   },
 } satisfies FieldMap;
 
@@ -59,9 +56,9 @@ export const jobLogFields = mergeFields(pkSchema, auditSchema, jobLogOwnFields);
 // ============ Meta ============
 export const jobLogMeta: EntityMeta = {
   name: 'system_job_log',
-  displayName: tSystemMeta('jobLog', 'displayName'),
-  verboseName: tSystemMeta('jobLog', 'verboseName'),
-  verboseNamePlural: tSystemMeta('jobLog', 'verboseNamePlural'),
+  displayName: () => '任务日志',
+  verboseName: () => '任务日志',
+  verboseNamePlural: () => '任务日志',
   permissions: createPermissions('system_job_log'),
 };
 

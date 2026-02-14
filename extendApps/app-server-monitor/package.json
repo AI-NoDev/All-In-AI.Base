@@ -1,0 +1,21 @@
+{
+  "name": "@qiyu-allinai/app-server-monitor",
+  "appName": "app-server-monitor",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./actions": "./actions/index.ts",
+    "./client/$lib/*": "./client/$lib/*",
+    "./client/routes/*": "./client/routes/*",
+    "./server": "./server/index.ts"
+  },
+  "dependencies": {
+    "@qiyu-allinai/actions": "workspace:*",
+    "systeminformation": "^5.23.5"
+  },
+  "devDependencies": {
+    "svelte": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}

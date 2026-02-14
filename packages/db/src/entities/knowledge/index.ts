@@ -2,7 +2,7 @@
 export { folder, folderFields, folderMeta, folderConfig, folderZodSchemas } from './folder';
 export { file, fileFields, fileMeta, fileConfig, fileZodSchemas } from './file';
 export { fileVersion, fileVersionFields, fileVersionMeta, fileVersionConfig, fileVersionZodSchemas } from './fileVersion';
-export { resourcePermission, resourcePermissionFields, resourcePermissionMeta, resourcePermissionConfig, resourcePermissionZodSchemas } from './resourcePermission';
+export { favorite, favoriteFields, favoriteMeta, favoriteConfig, favoriteZodSchemas } from './favorite';
 
 // Relations
 export * from './relations';

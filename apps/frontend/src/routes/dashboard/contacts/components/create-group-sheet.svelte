@@ -1,13 +1,13 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Sheet from '@/lib/components/ui/sheet';
-  import { Button } from '@/lib/components/ui/button';
-  import { Input } from '@/lib/components/ui/input';
-  import { Label } from '@/lib/components/ui/label';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
-  import { Checkbox } from '@/lib/components/ui/checkbox';
-  import { Avatar, AvatarFallback, AvatarImage } from '@/lib/components/ui/avatar';
-  import { Badge } from '@/lib/components/ui/badge';
+  import * as Sheet from '$lib/components/ui/sheet';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
+  import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
 
   interface DeptNode {
@@ -52,7 +52,7 @@
   // 默认群名
   let defaultGroupName = $derived(() => {
     const count = selectedUsersMap.size + 1; // +1 for current user
-    return `${currentUser?.name || currentUser?.loginName || '我'}等(${count})人群聊`;
+    return `${currentUser?.name || currentUser?.loginName || '我'}的(${count})人群聊`;
   });
 
   // 过滤用户（当前部门下的用户列表）

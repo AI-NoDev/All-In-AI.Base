@@ -9,3 +9,6 @@ export * from './db';
 
 // Files Actions
 export * from './files';
+
+// Dev Actions
+export * from './dev';
