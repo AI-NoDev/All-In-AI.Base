@@ -1479,8 +1479,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1507,8 +1506,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1538,8 +1536,7 @@
                     "minLength": 1,
                     "type": "string"
                   }
-                },
-                "additionalProperties": false
+                }
               }
             },
             "application/x-www-form-urlencoded": {
@@ -1553,8 +1550,7 @@
                     "minLength": 1,
                     "type": "string"
                   }
-                },
-                "additionalProperties": false
+                }
               }
             },
             "multipart/form-data": {
@@ -1568,8 +1564,7 @@
                     "minLength": 1,
                     "type": "string"
                   }
-                },
-                "additionalProperties": false
+                }
               }
             }
           }
@@ -1613,8 +1608,7 @@
                         }
                       }
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1641,8 +1635,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1669,8 +1662,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1803,8 +1795,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1831,8 +1822,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1898,8 +1888,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -1926,8 +1915,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -2128,8 +2116,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -2156,8 +2143,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -2285,8 +2271,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -2313,8 +2298,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -2341,8 +2325,7 @@
                     "data": {
                       "type": "null"
                     }
-                  },
-                  "additionalProperties": false
+                  }
                 }
               }
             }
@@ -2405,11 +2388,6 @@
     "/ws/im": {
       "ws": {
         "operationId": "wsWsIm"
-      }
-    },
-    "/api/app-server-monitor/ws": {
-      "ws": {
-        "operationId": "wsApiApp-server-monitorWs"
       }
     },
     "/": {
@@ -2548,12 +2526,6 @@
                       "deptId": {
                         "type": "string"
                       },
-                      "parentId": {
-                        "type": "string"
-                      },
-                      "roleId": {
-                        "type": "string"
-                      },
                       "userType": {
                         "type": "string"
                       },
@@ -2600,8 +2572,6 @@
                       "ids",
                       "loginNames",
                       "deptId",
-                      "parentId",
-                      "roleId",
                       "userType",
                       "sex",
                       "status",
@@ -2679,12 +2649,6 @@
                       "deptId": {
                         "type": "string"
                       },
-                      "parentId": {
-                        "type": "string"
-                      },
-                      "roleId": {
-                        "type": "string"
-                      },
                       "userType": {
                         "type": "string"
                       },
@@ -2731,8 +2695,6 @@
                       "ids",
                       "loginNames",
                       "deptId",
-                      "parentId",
-                      "roleId",
                       "userType",
                       "sex",
                       "status",
@@ -2810,12 +2772,6 @@
                       "deptId": {
                         "type": "string"
                       },
-                      "parentId": {
-                        "type": "string"
-                      },
-                      "roleId": {
-                        "type": "string"
-                      },
                       "userType": {
                         "type": "string"
                       },
@@ -2862,8 +2818,6 @@
                       "ids",
                       "loginNames",
                       "deptId",
-                      "parentId",
-                      "roleId",
                       "userType",
                       "sex",
                       "status",
@@ -2942,7 +2896,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -5310,7 +5265,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -22061,7 +22017,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -27876,6 +27833,55 @@
           }
         },
         "operationId": "getApiSystemUser-postSchema"
+      }
+    },
+    "/api/system/user-post/user/{userId}": {
+      "get": {
+        "summary": "获取用户岗位",
+        "description": "获取指定用户的所有岗位ID",
+        "tags": [
+          "system",
+          "userPost"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiSystemUser-postUserByUserId"
       }
     },
     "/api/system/user-role/query": {
@@ -57555,7 +57561,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -59447,7 +59454,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -59628,6 +59636,45 @@
           }
         },
         "operationId": "postApiImConversationByIdDissolve"
+      }
+    },
+    "/api/im/conversation-files": {
+      "get": {
+        "summary": "获取会话文件",
+        "description": "获取当前用户所有会话中的文件列表",
+        "tags": [
+          "im",
+          "conversation"
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiImConversation-files"
       }
     },
     "/api/im/message/query": {
@@ -59965,7 +60012,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -62580,7 +62628,8 @@
                       "default": "ok",
                       "type": "string"
                     }
-                  }
+                  },
+                  "additionalProperties": false
                 }
               }
             }
@@ -69465,86 +69514,6 @@
           }
         },
         "operationId": "postApiDevProject-codeDirectory"
-      }
-    },
-    "/api/app-server-monitor/metrics": {
-      "get": {
-        "summary": "获取服务器指标",
-        "description": "获取当前服务器性能指标",
-        "tags": [
-          "app-server-monitor",
-          "query"
-        ],
-        "responses": {
-          "200": {
-            "description": "Response for status 200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data",
-                    "status",
-                    "message"
-                  ],
-                  "properties": {
-                    "data": {},
-                    "status": {
-                      "default": 200,
-                      "type": "number"
-                    },
-                    "message": {
-                      "default": "ok",
-                      "type": "string"
-                    }
-                  },
-                  "additionalProperties": false
-                }
-              }
-            }
-          }
-        },
-        "operationId": "getApiApp-server-monitorMetrics"
-      }
-    },
-    "/api/app-server-monitor/history": {
-      "get": {
-        "summary": "获取历史指标",
-        "description": "获取服务器性能历史数据",
-        "tags": [
-          "app-server-monitor",
-          "query"
-        ],
-        "responses": {
-          "200": {
-            "description": "Response for status 200",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data",
-                    "status",
-                    "message"
-                  ],
-                  "properties": {
-                    "data": {},
-                    "status": {
-                      "default": 200,
-                      "type": "number"
-                    },
-                    "message": {
-                      "default": "ok",
-                      "type": "string"
-                    }
-                  },
-                  "additionalProperties": false
-                }
-              }
-            }
-          }
-        },
-        "operationId": "getApiApp-server-monitorHistory"
       }
     }
   },

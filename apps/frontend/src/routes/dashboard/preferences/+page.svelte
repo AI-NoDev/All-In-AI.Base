@@ -14,8 +14,8 @@
     type ThemeMode,
     type ThemeColor,
     type Language
-  } from '@/lib/stores/preferences';
-  import { i18n } from '@/lib/stores/i18n';
+  } from '@/lib/stores/preferences.svelte';
+  import { i18n } from '@/lib/stores/i18n.svelte';
 
   const themeOptions: { value: ThemeMode; label: string; icon: string }[] = [
     { value: 'light', label: '浅色模式', icon: 'tdesign:sunny' },

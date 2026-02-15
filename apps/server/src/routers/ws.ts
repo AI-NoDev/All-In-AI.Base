@@ -1,3 +1,8 @@
+/**
+ * @deprecated This router is deprecated. Use the new multi-channel WebSocket architecture instead.
+ * See: apps/server/src/server/plugins/ws/
+ * The new architecture uses a single WebSocket connection at /ws/main with channel subscriptions.
+ */
 import { Elysia, t } from "elysia";
 import { eq, and, sql, inArray } from "drizzle-orm";
 import db from "@qiyu-allinai/db/connect";

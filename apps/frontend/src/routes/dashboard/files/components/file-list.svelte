@@ -5,6 +5,8 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import * as Tooltip from '$lib/components/ui/tooltip';
   import FileContextMenu from './file-context-menu.svelte';
   import type { FolderItem, FileItem } from './types';
 
@@ -89,6 +91,7 @@
             <Table.Head class="text-left">名称</Table.Head>
             <Table.Head class="w-24 text-left">大小</Table.Head>
             <Table.Head class="w-40 text-left">修改时间</Table.Head>
+            <Table.Head class="w-20 text-center">操作</Table.Head>
           </Table.Row>
         </Table.Header>
       </Table.Root>
@@ -107,6 +110,7 @@
               </Table.Cell>
               <Table.Cell class="text-left">-</Table.Cell>
               <Table.Cell class="text-left">-</Table.Cell>
+              <Table.Cell></Table.Cell>
             </Table.Row>
           {/if}
 
@@ -133,6 +137,16 @@
                 <Table.Cell class="text-left w-24" onclick={() => onNavigateToFolder(folder)}>-</Table.Cell>
                 <Table.Cell class="text-muted-foreground text-left w-40" onclick={() => onNavigateToFolder(folder)}>
                   {new Date(folder.updatedAt || folder.createdAt).toLocaleString('zh-CN')}
+                </Table.Cell>
+                <Table.Cell class="w-20 text-center" onclick={(e: MouseEvent) => e.stopPropagation()}>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger>
+                      <Button variant="ghost" size="icon" class="size-8" onclick={() => onShowFolderInfo(folder)}>
+                        <Icon icon="tdesign:file-setting" class="size-4" />
+                      </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>查看描述</Tooltip.Content>
+                  </Tooltip.Root>
                 </Table.Cell>
               </Table.Row>
             </FileContextMenu>
@@ -169,13 +183,23 @@
                 </Table.Cell>
                 <Table.Cell class="text-muted-foreground text-left w-24">{formatSize(file.size)}</Table.Cell>
                 <Table.Cell class="text-muted-foreground text-left w-40">{new Date(file.updatedAt || file.createdAt).toLocaleString('zh-CN')}</Table.Cell>
+                <Table.Cell class="w-20 text-center" onclick={(e: MouseEvent) => e.stopPropagation()}>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger>
+                      <Button variant="ghost" size="icon" class="size-8" onclick={() => onShowFileInfo(file)}>
+                        <Icon icon="tdesign:file-setting" class="size-4" />
+                      </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>查看描述</Tooltip.Content>
+                  </Tooltip.Root>
+                </Table.Cell>
               </Table.Row>
             </FileContextMenu>
           {/each}
 
           {#if folders.length === 0 && files.length === 0 && currentFolderId === null}
             <Table.Row>
-              <Table.Cell colspan={4} class="h-24 text-center text-muted-foreground">暂无文件</Table.Cell>
+              <Table.Cell colspan={5} class="h-24 text-center text-muted-foreground">暂无文件</Table.Cell>
             </Table.Row>
           {/if}
         </Table.Body>

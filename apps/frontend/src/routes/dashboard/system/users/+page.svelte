@@ -294,7 +294,7 @@
       });
       
       if (res.data?.conversation) {
-        goto(`/dashboard/contacts?conversationId=${res.data.conversation.id}`);
+        goto(`/dashboard/contacts/chat?id=${res.data.conversation.id}`);
       }
     } catch (err) {
       console.error('Failed to create conversation:', err);

@@ -130,4 +130,18 @@ export const userPostGetSchema = defineAction({
   },
 });
 
-export const userPostActions = [userPostGetByPagination, userPostGetByPk, userPostCreate, userPostCreateMany, userPostDeleteByPk, userPostGetSchema];
+// ============ 获取用户的岗位ID列表 ============
+export const userPostGetByUserId = defineAction({
+  meta: { name: 'system.userPost.getByUserId', displayName: '获取用户岗位', description: '获取指定用户的所有岗位ID', tags: ['system', 'userPost'], method: 'GET', path: '/api/system/user-post/user/:userId' },
+  schemas: {
+    paramsSchema: z.object({ userId: z.string() }),
+    outputSchema: z.array(z.string()),
+  },
+  execute: async (input, context) => {
+    const { db } = context;
+    const data = await db.select({ postId: userPost.postId }).from(userPost).where(eq(userPost.userId, input.userId));
+    return data.map(d => d.postId);
+  },
+});
+
+export const userPostActions = [userPostGetByPagination, userPostGetByPk, userPostCreate, userPostCreateMany, userPostDeleteByPk, userPostGetSchema, userPostGetByUserId];

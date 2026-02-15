@@ -656,22 +656,6 @@ export interface GetApiAiToolGroupSchemaData {
   status: number;
 }
 
-export interface GetApiAppServerMonitorHistoryData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiAppServerMonitorMetricsData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
 export interface GetApiAuthConfigData {
   data: {
     accessTokenExpMinutes: number;
@@ -839,6 +823,14 @@ export interface GetApiImConversationByIdData {
 
 export interface GetApiImConversationByIdParams {
   id: string;
+}
+
+export interface GetApiImConversationFilesData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
 }
 
 export interface GetApiImConversationHiddenListData {
@@ -1435,6 +1427,18 @@ export interface GetApiSystemUserPostSchemaData {
   message: string;
   /** @default 200 */
   status: number;
+}
+
+export interface GetApiSystemUserPostUserByUserIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiSystemUserPostUserByUserIdParams {
+  userId: string;
 }
 
 export interface GetApiSystemUserRoleByUserIdByRoleIdData {
@@ -7047,9 +7051,7 @@ export interface PostApiSystemUserQueryPayload {
     loginName: string;
     loginNames: string[];
     name: string;
-    parentId: string;
     phonenumber: string;
-    roleId: string;
     sex: string;
     status: string;
     userType: string;
@@ -11160,21 +11162,6 @@ export namespace Ws {
   }
 }
 
-export namespace Api {
-  /**
-   * No description
-   * @name WsApiAppServerMonitorWs
-   * @request WS:/api/app-server-monitor/ws
-   */
-  export namespace WsApiAppServerMonitorWs {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = any;
-  }
-}
-
 export namespace Health {
   /**
    * No description
@@ -12267,6 +12254,24 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiSystemUserPostSchemaData;
+  }
+
+  /**
+   * @description 获取指定用户的所有岗位ID
+   * @tags system, userPost
+   * @name GetApiSystemUserPostUserByUserId
+   * @summary 获取用户岗位
+   * @request GET:/api/system/user-post/user/{userId}
+   * @response `200` `GetApiSystemUserPostUserByUserIdData` Response for status 200
+   */
+  export namespace GetApiSystemUserPostUserByUserId {
+    export type RequestParams = {
+      userId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemUserPostUserByUserIdData;
   }
 
   /**
@@ -14261,6 +14266,22 @@ export namespace Im {
   }
 
   /**
+   * @description 获取当前用户所有会话中的文件列表
+   * @tags im, conversation
+   * @name GetApiImConversationFiles
+   * @summary 获取会话文件
+   * @request GET:/api/im/conversation-files
+   * @response `200` `GetApiImConversationFilesData` Response for status 200
+   */
+  export namespace GetApiImConversationFiles {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiImConversationFilesData;
+  }
+
+  /**
    * @description 获取当前用户隐藏的会话ID列表
    * @tags im, conversationHidden
    * @name GetApiImConversationHiddenList
@@ -15499,40 +15520,6 @@ export namespace Dev {
     export type RequestBody = PostApiDevProjectCodeFilePayload;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiDevProjectCodeFileData;
-  }
-}
-
-export namespace AppServerMonitor {
-  /**
-   * @description 获取服务器性能历史数据
-   * @tags app-server-monitor, query
-   * @name GetApiAppServerMonitorHistory
-   * @summary 获取历史指标
-   * @request GET:/api/app-server-monitor/history
-   * @response `200` `GetApiAppServerMonitorHistoryData` Response for status 200
-   */
-  export namespace GetApiAppServerMonitorHistory {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAppServerMonitorHistoryData;
-  }
-
-  /**
-   * @description 获取当前服务器性能指标
-   * @tags app-server-monitor, query
-   * @name GetApiAppServerMonitorMetrics
-   * @summary 获取服务器指标
-   * @request GET:/api/app-server-monitor/metrics
-   * @response `200` `GetApiAppServerMonitorMetricsData` Response for status 200
-   */
-  export namespace GetApiAppServerMonitorMetrics {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiAppServerMonitorMetricsData;
   }
 }
 
@@ -17062,20 +17049,6 @@ export class Api<SecurityDataType extends unknown> {
         ...params,
       }),
   };
-  api = {
-    /**
-     * No description
-     *
-     * @name WsApiAppServerMonitorWs
-     * @request WS:/api/app-server-monitor/ws
-     */
-    wsApiAppServerMonitorWs: (params: RequestParams = {}) =>
-      this.http.request<any, any>({
-        path: `/api/app-server-monitor/ws`,
-        method: "WS",
-        ...params,
-      }),
-  };
   health = {
     /**
      * No description
@@ -18281,6 +18254,26 @@ export class Api<SecurityDataType extends unknown> {
     getApiSystemUserPostSchema: (params: RequestParams = {}) =>
       this.http.request<GetApiSystemUserPostSchemaData, any>({
         path: `/api/system/user-post/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取指定用户的所有岗位ID
+     *
+     * @tags system, userPost
+     * @name GetApiSystemUserPostUserByUserId
+     * @summary 获取用户岗位
+     * @request GET:/api/system/user-post/user/{userId}
+     * @response `200` `GetApiSystemUserPostUserByUserIdData` Response for status 200
+     */
+    getApiSystemUserPostUserByUserId: (
+      { userId, ...query }: GetApiSystemUserPostUserByUserIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiSystemUserPostUserByUserIdData, any>({
+        path: `/api/system/user-post/user/${userId}`,
         method: "GET",
         format: "json",
         ...params,
@@ -20830,6 +20823,23 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 获取当前用户所有会话中的文件列表
+     *
+     * @tags im, conversation
+     * @name GetApiImConversationFiles
+     * @summary 获取会话文件
+     * @request GET:/api/im/conversation-files
+     * @response `200` `GetApiImConversationFilesData` Response for status 200
+     */
+    getApiImConversationFiles: (params: RequestParams = {}) =>
+      this.http.request<GetApiImConversationFilesData, any>({
+        path: `/api/im/conversation-files`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 获取当前用户隐藏的会话ID列表
      *
      * @tags im, conversationHidden
@@ -22409,41 +22419,6 @@ export class Api<SecurityDataType extends unknown> {
         method: "POST",
         body: data,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
-  appServerMonitor = {
-    /**
-     * @description 获取服务器性能历史数据
-     *
-     * @tags app-server-monitor, query
-     * @name GetApiAppServerMonitorHistory
-     * @summary 获取历史指标
-     * @request GET:/api/app-server-monitor/history
-     * @response `200` `GetApiAppServerMonitorHistoryData` Response for status 200
-     */
-    getApiAppServerMonitorHistory: (params: RequestParams = {}) =>
-      this.http.request<GetApiAppServerMonitorHistoryData, any>({
-        path: `/api/app-server-monitor/history`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取当前服务器性能指标
-     *
-     * @tags app-server-monitor, query
-     * @name GetApiAppServerMonitorMetrics
-     * @summary 获取服务器指标
-     * @request GET:/api/app-server-monitor/metrics
-     * @response `200` `GetApiAppServerMonitorMetricsData` Response for status 200
-     */
-    getApiAppServerMonitorMetrics: (params: RequestParams = {}) =>
-      this.http.request<GetApiAppServerMonitorMetricsData, any>({
-        path: `/api/app-server-monitor/metrics`,
-        method: "GET",
         format: "json",
         ...params,
       }),

@@ -94,7 +94,7 @@ export const extensionIconMap: Record<string, string> = {
   xlsx: 'vscode-icons:file-type-excel',
   ppt: 'vscode-icons:file-type-powerpoint',
   pptx: 'vscode-icons:file-type-powerpoint',
-  csv: 'vscode-icons:file-type-csv',
+  csv: 'vscode-icons:file-type-excel',
   rtf: 'vscode-icons:file-type-text',
   
   // === 图片 ===

@@ -1,6 +1,15 @@
 import { authStore } from './auth.svelte';
 import { wsStore } from './websocket.svelte';
 import { 
+  initImChannel,
+  sendRead,
+  onMessage as onImMessage,
+  onRead as onImRead,
+  onGroupCreated as onImGroupCreated,
+  onGroupDissolved as onImGroupDissolved,
+  onMessageRecalled as onImMessageRecalled,
+} from './ws-channels/im.svelte';
+import { 
   PostApiImConversationQueryFieldEnum, 
   PostApiImConversationQueryOrderEnum,
   PostApiImMessageQueryFieldEnum,
@@ -25,6 +34,7 @@ interface Conversation {
 interface ConversationWithUnread extends Conversation {
   unreadCount: number;
   lastMessageContent: string | null;
+  displayName: string | null; // 用于私聊显示对方名称
 }
 
 interface Message {
@@ -199,12 +209,59 @@ function createImStore() {
         }
       }
       
+      // 对于私聊会话，获取对方用户的信息
+      const privateConvs = (convData || []).filter(c => c.type === '1');
+      const privateConvIds = privateConvs.map(c => c.id);
+      
+      // 获取私聊会话中对方用户的ID
+      let otherUserMap = new Map<string, string>(); // conversationId -> otherUserId
+      if (privateConvIds.length > 0) {
+        try {
+          // 获取这些私聊会话的所有成员
+          const allMembersRes = await api.im.postApiImGroupMemberQuery({
+            filter: { conversationIds: privateConvIds },
+            limit: 100,
+            offset: 0,
+          });
+          const allMembers = allMembersRes.data?.data as GroupMember[] | undefined;
+          
+          // 找出每个私聊会话中对方的用户ID
+          for (const convId of privateConvIds) {
+            const members = (allMembers || []).filter(m => m.conversationId === convId);
+            const otherMember = members.find(m => m.userId !== currentUserId);
+            if (otherMember) {
+              otherUserMap.set(convId, otherMember.userId);
+            }
+          }
+          
+          // 加载对方用户的信息
+          const otherUserIds = [...new Set(otherUserMap.values())];
+          if (otherUserIds.length > 0) {
+            await loadUsers(otherUserIds);
+          }
+        } catch {
+          // Ignore error
+        }
+      }
+      
       state.conversations = (convData || []).map((conv: Conversation) => {
         const lastMsg = conv.lastMessageId ? lastMessagesMap.get(conv.lastMessageId) : null;
+        
+        // 对于私聊，使用对方用户的名称作为显示名称
+        let displayName: string | null = conv.name;
+        if (conv.type === '1') {
+          const otherUserId = otherUserMap.get(conv.id);
+          if (otherUserId) {
+            const otherUser = state.users.get(otherUserId);
+            displayName = otherUser?.name || otherUser?.loginName || conv.name;
+          }
+        }
+        
         return {
           ...conv,
           unreadCount: readMap.get(conv.id) || 0,
           lastMessageContent: lastMsg ? formatMessagePreview(lastMsg) : null,
+          displayName,
         };
       });
 
@@ -245,7 +302,7 @@ function createImStore() {
       // Mark as read
       if (state.messages.length > 0) {
         const lastSeq = Math.max(...state.messages.map(m => m.msgSeq));
-        wsStore.sendRead(conversationId, lastSeq);
+        sendRead(conversationId, lastSeq);
         
         // Update local unread count
         const conv = state.conversations.find(c => c.id === conversationId);
@@ -402,7 +459,7 @@ function createImStore() {
   // ============ WebSocket Handlers ============
   function setupWsListeners() {
     // New message
-    unsubscribers.push(wsStore.onMessage((data) => {
+    unsubscribers.push(onImMessage((data) => {
       const { message: newMsg } = data;
       
       // Unhide conversation if hidden
@@ -418,7 +475,7 @@ function createImStore() {
       // If current conversation, add message
       if (state.selectedConversationId === newMsg.conversationId) {
         addMessage(newMsg);
-        wsStore.sendRead(newMsg.conversationId, newMsg.msgSeq);
+        sendRead(newMsg.conversationId, newMsg.msgSeq);
         // Update last message content but not unread count
         state.conversations = state.conversations.map(c =>
           c.id === newMsg.conversationId
@@ -444,12 +501,12 @@ function createImStore() {
     }));
 
     // Read receipt
-    unsubscribers.push(wsStore.onRead((data) => {
+    unsubscribers.push(onImRead((data) => {
       console.log('Read receipt:', data);
     }));
 
     // Group created
-    unsubscribers.push(wsStore.onGroupCreated((data) => {
+    unsubscribers.push(onImGroupCreated((data) => {
       const newConv: ConversationWithUnread = {
         id: data.conversation.id,
         type: data.conversation.type,
@@ -464,6 +521,7 @@ function createImStore() {
         status: '0',
         unreadCount: 0,
         lastMessageContent: null,
+        displayName: data.conversation.name, // 群聊使用群名称
       };
       
       const exists = state.conversations.some(c => c.id === newConv.id);
@@ -473,14 +531,14 @@ function createImStore() {
     }));
 
     // Group dissolved
-    unsubscribers.push(wsStore.onGroupDissolved((data) => {
+    unsubscribers.push(onImGroupDissolved((data) => {
       state.conversations = state.conversations.map(c =>
         c.id === data.conversationId ? { ...c, status: '1' } : c
       );
     }));
 
     // Message recalled
-    unsubscribers.push(wsStore.onMessageRecalled((data) => {
+    unsubscribers.push(onImMessageRecalled((data) => {
       if (state.selectedConversationId === data.conversationId) {
         updateMessageRecalled(data.messageId);
       }
@@ -501,7 +559,8 @@ function createImStore() {
   }
 
   function init() {
-    wsStore.connect();
+    wsStore.connect(['im']);
+    initImChannel();
     setupWsListeners();
     loadConversations();
   }

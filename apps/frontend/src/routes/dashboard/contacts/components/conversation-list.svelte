@@ -22,7 +22,9 @@
     )
   );
 
-  function getConversationName(conv: { name: string | null; type: string }): string {
+  function getConversationName(conv: { name: string | null; type: string; displayName?: string | null }): string {
+    // 优先使用 displayName（私聊时为对方名称）
+    if (conv.displayName) return conv.displayName;
     if (conv.name) return conv.name;
     if (conv.type === '1') return '私聊';
     return '群聊';

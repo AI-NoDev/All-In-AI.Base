@@ -1,6 +1,6 @@
-export const _meta = {
-  title: '联系人',
-  icon: 'tdesign:user-talk',
-  group: '沟通',
-  order: 5,
+import { redirect } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
+
+export const load: PageLoad = () => {
+  redirect(302, '/dashboard/contacts/chat');
 };

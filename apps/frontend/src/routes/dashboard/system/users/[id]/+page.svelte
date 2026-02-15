@@ -95,17 +95,21 @@
     }
     try {
       const api = authStore.createApi(true);
-      const [deptRes, roleRes, postRes, userRes] = await Promise.all([
+      const [deptRes, roleRes, postRes, userRes, userRolesRes, userPostsRes] = await Promise.all([
         api.system.postApiSystemDepartmentQuery({ limit: 100, offset: 0 } as Parameters<typeof api.system.postApiSystemDepartmentQuery>[0]),
         api.system.postApiSystemRoleQuery({ limit: 100, offset: 0 } as Parameters<typeof api.system.postApiSystemRoleQuery>[0]),
         api.system.postApiSystemPostQuery({ limit: 100, offset: 0 } as Parameters<typeof api.system.postApiSystemPostQuery>[0]),
         api.system.getApiSystemUserById({ id }),
+        api.system.getApiSystemUserRoleUserByUserId({ userId: id }),
+        api.system.getApiSystemUserPostUserByUserId({ userId: id }),
       ]);
       if (deptRes.data?.data) departments = deptRes.data.data;
       if (roleRes.data?.data) roles = roleRes.data.data;
       if (postRes.data?.data) posts = postRes.data.data;
       
       const user = userRes.data;
+      const userRoleIds = userRolesRes.data || [];
+      const userPostIds = userPostsRes.data || [];
       if (user) {
         if (user.userType === '00') {
           isSystemAdmin = true;
@@ -118,8 +122,8 @@
         form.loginName = user.loginName || '';
         form.sex = user.sex || '0';
         form.status = user.status || '0';
-        form.postIds = user.postIds || [];
-        form.roleIds = user.roleIds || [];
+        form.postIds = userPostIds;
+        form.roleIds = userRoleIds;
       }
     } catch (err) {
       console.error('Failed to load data:', err);

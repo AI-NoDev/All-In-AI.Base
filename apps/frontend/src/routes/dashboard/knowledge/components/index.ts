@@ -9,6 +9,7 @@ export { default as SearchDialog } from '../../files/components/search-dialog.sv
 export { default as FileContextMenu } from '../../files/components/file-context-menu.svelte';
 export { default as RenameDialog } from '../../files/components/rename-dialog.svelte';
 export { default as DescriptionDialog } from '../../files/components/description-dialog.svelte';
+export { default as DescriptionSheet } from '../../files/components/description-sheet.svelte';
 export { default as FolderStyleDialog } from '../../files/components/folder-style-dialog.svelte';
 export { default as UploadDialog } from '../../files/components/upload-dialog.svelte';
 export { default as PermissionSheet } from '../../files/components/permission-sheet.svelte';
@@ -21,10 +22,10 @@ export type KnowledgeViewMode = 'my-files' | 'shared-with-me' | 'my-shared' | 'f
 
 // Permission config for each view mode
 export interface KnowledgePagePermissions {
-  canCreate: boolean;      // 新建文件�?文件
+  canCreate: boolean;      // 新建文件�?文件
   canUpload: boolean;      // 上传文件
   canDelete: boolean;      // 删除
-  canEdit: boolean;        // 编辑/重命�?
+  canEdit: boolean;        // 编辑/重命�?
   canShare: boolean;       // 共享权限设置
   canDownload: boolean;    // 下载
   canCopyPaste: boolean;   // 复制粘贴
@@ -45,7 +46,7 @@ export const VIEW_MODE_PERMISSIONS: Record<KnowledgeViewMode, KnowledgePagePermi
     canCreate: false,
     canUpload: false,
     canDelete: false,
-    canEdit: false,  // 根据共享权限动态判�?
+    canEdit: false,  // 根据共享权限动态判�?
     canShare: false,
     canDownload: true,
     canCopyPaste: false,

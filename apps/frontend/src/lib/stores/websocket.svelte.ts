@@ -1,146 +1,36 @@
+/**
+ * WebSocket Store - 多频道架构
+ * 统一的 WebSocket 连接，支持多个频道订阅
+ */
+
 import { authStore } from './auth.svelte';
 
 const WS_BASE = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:3030';
 
 // ============ Types ============
-type WsMessageType =
-  | 'auth'
-  | 'auth_success'
-  | 'auth_error'
-  | 'message'
-  | 'message_ack'
-  | 'new_message'
-  | 'typing'
-  | 'read'
-  | 'online'
-  | 'offline'
-  | 'error'
-  | 'ping'
-  | 'pong'
-  | 'group_created'
-  | 'group_dissolved'
-  | 'message_recalled';
-
-interface WsMessage {
-  type: WsMessageType;
-  data?: unknown;
+export interface WsMessage<T = unknown> {
+  channel: string;
+  type: string;
+  data?: T;
   requestId?: string;
 }
 
-interface WsUser {
+export interface WsUser {
   id: string;
   name: string | null;
   loginName: string;
 }
-
-interface MessageContent {
-  text?: string;
-  fileId?: string;
-  url?: string;
-  [key: string]: unknown;
-}
-
-interface Message {
-  id: string;
-  conversationId: string;
-  senderId: string;
-  msgType: string;
-  msgSeq: number;
-  content: MessageContent;
-  replyToId: string | null;
-  atUserIds: string[];
-  isRecalled: boolean;
-  recalledAt: string | null;
-  recalledById: string | null;
-  extra: Record<string, unknown>;
-  createdAt: string;
-}
-
-interface NewMessageData {
-  message: Message;
-  sender: WsUser;
-}
-
-interface TypingData {
-  conversationId: string;
-  userId: string;
-  userName: string;
-}
-
-interface ReadData {
-  conversationId: string;
-  userId: string;
-  lastReadSeq: number;
-}
-
-interface OnlineOfflineData {
-  userId: string;
-  userName: string;
-}
-
-interface MessageAckData {
-  success: boolean;
-  message?: Message;
-  error?: string;
-}
-
-interface GroupCreatedData {
-  conversation: {
-    id: string;
-    type: string;
-    name: string | null;
-    avatar: string | null;
-    ownerId: string | null;
-    memberCount: number;
-    createdAt: string;
-  };
-  memberIds: string[];
-  createdBy: {
-    id: string;
-    name: string | null;
-    loginName: string;
-  };
-}
-
-interface GroupDissolvedData {
-  conversationId: string;
-  memberIds: string[];
-  dissolvedBy: {
-    id: string;
-    name: string | null;
-    loginName: string;
-  };
-}
-
-interface MessageRecalledData {
-  messageId: string;
-  conversationId: string;
-  msgSeq: number;
-  memberIds: string[];
-  recalledBy: {
-    id: string;
-    name: string | null;
-    loginName: string;
-  };
-}
-
-type MessageHandler = (data: NewMessageData) => void;
-type TypingHandler = (data: TypingData) => void;
-type ReadHandler = (data: ReadData) => void;
-type OnlineHandler = (data: OnlineOfflineData) => void;
-type OfflineHandler = (data: OnlineOfflineData) => void;
-type MessageAckHandler = (requestId: string, data: MessageAckData) => void;
-type GroupCreatedHandler = (data: GroupCreatedData) => void;
-type GroupDissolvedHandler = (data: GroupDissolvedData) => void;
-type MessageRecalledHandler = (data: MessageRecalledData) => void;
 
 interface WsState {
   isConnected: boolean;
   isAuthenticated: boolean;
   user: WsUser | null;
   onlineUsers: string[];
+  subscribedChannels: Set<string>;
   reconnectAttempts: number;
 }
+
+type MessageHandler<T = unknown> = (type: string, data: T) => void;
 
 // ============ WebSocket Store ============
 function createWebSocketStore() {
@@ -148,6 +38,7 @@ function createWebSocketStore() {
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let pingTimer: ReturnType<typeof setInterval> | null = null;
   let requestIdCounter = 0;
+  let pendingSubscriptions: string[] = [];
 
   const MAX_RECONNECT_ATTEMPTS = 5;
   const RECONNECT_DELAY = 3000;
@@ -158,19 +49,14 @@ function createWebSocketStore() {
     isAuthenticated: false,
     user: null,
     onlineUsers: [],
+    subscribedChannels: new Set(),
     reconnectAttempts: 0,
   });
 
-  // Event handlers
-  const messageHandlers = new Set<MessageHandler>();
-  const typingHandlers = new Set<TypingHandler>();
-  const readHandlers = new Set<ReadHandler>();
-  const onlineHandlers = new Set<OnlineHandler>();
-  const offlineHandlers = new Set<OfflineHandler>();
-  const messageAckHandlers = new Map<string, MessageAckHandler>();
-  const groupCreatedHandlers = new Set<GroupCreatedHandler>();
-  const groupDissolvedHandlers = new Set<GroupDissolvedHandler>();
-  const messageRecalledHandlers = new Set<MessageRecalledHandler>();
+  // 频道消息处理器
+  const channelHandlers = new Map<string, Set<MessageHandler>>();
+  // 请求响应处理器
+  const requestHandlers = new Map<string, (data: unknown) => void>();
 
   function generateRequestId(): string {
     return `req_${Date.now()}_${++requestIdCounter}`;
@@ -180,7 +66,7 @@ function createWebSocketStore() {
     stopPing();
     pingTimer = setInterval(() => {
       if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: 'ping' }));
+        ws.send(JSON.stringify({ channel: 'system', type: 'ping' }));
       }
     }, PING_INTERVAL);
   }
@@ -195,122 +81,114 @@ function createWebSocketStore() {
   function handleMessage(event: MessageEvent) {
     try {
       const msg: WsMessage = JSON.parse(event.data);
+      const { channel, type, data, requestId } = msg;
 
-      switch (msg.type) {
-        case 'auth_success': {
-          const data = msg.data as { user: WsUser; onlineUsers: string[] };
-          state.isAuthenticated = true;
-          state.user = data.user;
-          state.onlineUsers = data.onlineUsers;
-          state.reconnectAttempts = 0;
-          startPing();
-          console.log('WebSocket authenticated:', data.user.loginName);
-          break;
-        }
+      // 处理请求响应
+      if (requestId && requestHandlers.has(requestId)) {
+        const handler = requestHandlers.get(requestId)!;
+        requestHandlers.delete(requestId);
+        handler(data);
+        return;
+      }
 
-        case 'auth_error': {
-          console.error('WebSocket auth error:', msg.data);
-          state.isAuthenticated = false;
-          disconnect();
-          break;
-        }
+      // 系统频道消息
+      if (channel === 'system') {
+        handleSystemMessage(type, data);
+        return;
+      }
 
-        case 'new_message': {
-          const data = msg.data as NewMessageData;
-          messageHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'message_ack': {
-          const data = msg.data as MessageAckData;
-          if (msg.requestId) {
-            const handler = messageAckHandlers.get(msg.requestId);
-            if (handler) {
-              handler(msg.requestId, data);
-              messageAckHandlers.delete(msg.requestId);
-            }
-          }
-          break;
-        }
-
-        case 'typing': {
-          const data = msg.data as TypingData;
-          typingHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'read': {
-          const data = msg.data as ReadData;
-          readHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'online': {
-          const data = msg.data as OnlineOfflineData;
-          if (!state.onlineUsers.includes(data.userId)) {
-            state.onlineUsers = [...state.onlineUsers, data.userId];
-          }
-          onlineHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'offline': {
-          const data = msg.data as OnlineOfflineData;
-          state.onlineUsers = state.onlineUsers.filter(id => id !== data.userId);
-          offlineHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'group_created': {
-          const data = msg.data as GroupCreatedData;
-          groupCreatedHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'group_dissolved': {
-          const data = msg.data as GroupDissolvedData;
-          groupDissolvedHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'message_recalled': {
-          const data = msg.data as MessageRecalledData;
-          messageRecalledHandlers.forEach(handler => handler(data));
-          break;
-        }
-
-        case 'pong':
-          // Heartbeat response, no action needed
-          break;
-
-        case 'error':
-          console.error('WebSocket error:', msg.data);
-          break;
+      // 转发到频道处理器
+      const handlers = channelHandlers.get(channel);
+      if (handlers) {
+        handlers.forEach(handler => handler(type, data));
       }
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
     }
   }
 
-  function connect() {
+  function handleSystemMessage(type: string, data: unknown) {
+    switch (type) {
+      case 'auth_success': {
+        const authData = data as { user: WsUser; onlineUsers: string[] };
+        state.isAuthenticated = true;
+        state.user = authData.user;
+        state.onlineUsers = authData.onlineUsers;
+        state.reconnectAttempts = 0;
+        startPing();
+        
+        // 订阅待处理的频道
+        if (pendingSubscriptions.length > 0) {
+          subscribe(pendingSubscriptions);
+          pendingSubscriptions = [];
+        }
+        
+        console.log('[WS] Authenticated:', authData.user.loginName);
+        break;
+      }
+
+      case 'auth_error':
+        console.error('[WS] Auth error:', data);
+        state.isAuthenticated = false;
+        disconnect();
+        break;
+
+      case 'subscribe_success': {
+        const subData = data as { channels: Record<string, boolean> };
+        for (const [ch, success] of Object.entries(subData.channels)) {
+          if (success) {
+            state.subscribedChannels.add(ch);
+          }
+        }
+        console.log('[WS] Subscribed:', Object.keys(subData.channels).filter(ch => subData.channels[ch]));
+        break;
+      }
+
+      case 'unsubscribe_success': {
+        const unsubData = data as { channels: string[] };
+        for (const ch of unsubData.channels) {
+          state.subscribedChannels.delete(ch);
+        }
+        break;
+      }
+
+      case 'pong':
+        break;
+
+      case 'error':
+        console.error('[WS] Error:', data);
+        break;
+    }
+  }
+
+  function connect(channels?: string[]) {
     if (ws && (ws.readyState === WebSocket.CONNECTING || ws.readyState === WebSocket.OPEN)) {
+      // 如果已连接，直接订阅频道
+      if (channels && state.isAuthenticated) {
+        subscribe(channels);
+      }
       return;
     }
 
     if (!authStore.accessToken) {
-      console.warn('Cannot connect WebSocket: no access token');
+      console.warn('[WS] Cannot connect: no access token');
       return;
     }
 
+    // 保存待订阅的频道
+    if (channels) {
+      pendingSubscriptions = [...new Set([...pendingSubscriptions, ...channels])];
+    }
+
     try {
-      ws = new WebSocket(`${WS_BASE}/ws/im`);
+      ws = new WebSocket(`${WS_BASE}/ws/main`);
 
       ws.onopen = () => {
         state.isConnected = true;
-        console.log('WebSocket connected, sending auth...');
+        console.log('[WS] Connected, authenticating...');
         
-        // Send auth message
         ws!.send(JSON.stringify({
+          channel: 'system',
           type: 'auth',
           data: { token: authStore.accessToken },
         }));
@@ -321,20 +199,20 @@ function createWebSocketStore() {
       ws.onclose = (event) => {
         state.isConnected = false;
         state.isAuthenticated = false;
+        state.subscribedChannels.clear();
         stopPing();
-        console.log('WebSocket closed:', event.code, event.reason);
+        console.log('[WS] Closed:', event.code, event.reason);
 
-        // Auto reconnect if not intentionally closed
         if (event.code !== 1000 && state.reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
           scheduleReconnect();
         }
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error('[WS] Error:', error);
       };
     } catch (e) {
-      console.error('Failed to create WebSocket:', e);
+      console.error('[WS] Failed to create WebSocket:', e);
     }
   }
 
@@ -352,7 +230,9 @@ function createWebSocketStore() {
     state.isAuthenticated = false;
     state.user = null;
     state.onlineUsers = [];
+    state.subscribedChannels.clear();
     state.reconnectAttempts = 0;
+    pendingSubscriptions = [];
   }
 
   function scheduleReconnect() {
@@ -360,7 +240,7 @@ function createWebSocketStore() {
 
     state.reconnectAttempts++;
     const delay = RECONNECT_DELAY * state.reconnectAttempts;
-    console.log(`Scheduling reconnect in ${delay}ms (attempt ${state.reconnectAttempts})`);
+    console.log(`[WS] Reconnecting in ${delay}ms (attempt ${state.reconnectAttempts})`);
 
     reconnectTimer = setTimeout(() => {
       reconnectTimer = null;
@@ -368,112 +248,56 @@ function createWebSocketStore() {
     }, delay);
   }
 
-  function send(message: WsMessage) {
+  // ============ Public API ============
+
+  function send<T>(channel: string, type: string, data?: T, requestId?: string) {
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(message));
+      ws.send(JSON.stringify({ channel, type, data, requestId }));
     } else {
-      console.warn('WebSocket not connected, cannot send message');
+      console.warn('[WS] Not connected, cannot send message');
     }
   }
 
-  // ============ Public API ============
-  function sendMessage(
-    conversationId: string,
-    msgType: string,
-    content: MessageContent,
-    options?: { replyToId?: string; atUserIds?: string[] }
-  ): Promise<Message> {
+  function sendWithResponse<T, R>(channel: string, type: string, data?: T, timeout = 10000): Promise<R> {
     return new Promise((resolve, reject) => {
       const requestId = generateRequestId();
+      
+      const timer = setTimeout(() => {
+        requestHandlers.delete(requestId);
+        reject(new Error('Request timeout'));
+      }, timeout);
 
-      const handler: MessageAckHandler = (_reqId, data) => {
-        if (data.success && data.message) {
-          resolve(data.message);
-        } else {
-          reject(new Error(data.error || 'Failed to send message'));
-        }
-      };
-
-      messageAckHandlers.set(requestId, handler);
-
-      // Timeout after 10 seconds
-      setTimeout(() => {
-        if (messageAckHandlers.has(requestId)) {
-          messageAckHandlers.delete(requestId);
-          reject(new Error('Message send timeout'));
-        }
-      }, 10000);
-
-      send({
-        type: 'message',
-        requestId,
-        data: {
-          conversationId,
-          msgType,
-          content,
-          ...options,
-        },
+      requestHandlers.set(requestId, (response) => {
+        clearTimeout(timer);
+        resolve(response as R);
       });
+
+      send(channel, type, data, requestId);
     });
   }
 
-  function sendTyping(conversationId: string) {
-    send({
-      type: 'typing',
-      data: { conversationId },
-    });
+  function subscribe(channels: string[]) {
+    if (!state.isAuthenticated) {
+      pendingSubscriptions = [...new Set([...pendingSubscriptions, ...channels])];
+      return;
+    }
+    send('system', 'subscribe', { channels });
   }
 
-  function sendRead(conversationId: string, lastReadSeq: number) {
-    send({
-      type: 'read',
-      data: { conversationId, lastReadSeq },
-    });
+  function unsubscribe(channels: string[]) {
+    send('system', 'unsubscribe', { channels });
+  }
+
+  function onChannel<T = unknown>(channel: string, handler: MessageHandler<T>): () => void {
+    if (!channelHandlers.has(channel)) {
+      channelHandlers.set(channel, new Set());
+    }
+    channelHandlers.get(channel)!.add(handler as MessageHandler);
+    return () => channelHandlers.get(channel)?.delete(handler as MessageHandler);
   }
 
   function isUserOnline(userId: string): boolean {
     return state.onlineUsers.includes(userId);
-  }
-
-  // Event subscription
-  function onMessage(handler: MessageHandler): () => void {
-    messageHandlers.add(handler);
-    return () => messageHandlers.delete(handler);
-  }
-
-  function onTyping(handler: TypingHandler): () => void {
-    typingHandlers.add(handler);
-    return () => typingHandlers.delete(handler);
-  }
-
-  function onRead(handler: ReadHandler): () => void {
-    readHandlers.add(handler);
-    return () => readHandlers.delete(handler);
-  }
-
-  function onOnline(handler: OnlineHandler): () => void {
-    onlineHandlers.add(handler);
-    return () => onlineHandlers.delete(handler);
-  }
-
-  function onOffline(handler: OfflineHandler): () => void {
-    offlineHandlers.add(handler);
-    return () => offlineHandlers.delete(handler);
-  }
-
-  function onGroupCreated(handler: GroupCreatedHandler): () => void {
-    groupCreatedHandlers.add(handler);
-    return () => groupCreatedHandlers.delete(handler);
-  }
-
-  function onGroupDissolved(handler: GroupDissolvedHandler): () => void {
-    groupDissolvedHandlers.add(handler);
-    return () => groupDissolvedHandlers.delete(handler);
-  }
-
-  function onMessageRecalled(handler: MessageRecalledHandler): () => void {
-    messageRecalledHandlers.add(handler);
-    return () => messageRecalledHandlers.delete(handler);
   }
 
   return {
@@ -481,20 +305,15 @@ function createWebSocketStore() {
     get isConnected() { return state.isConnected; },
     get isAuthenticated() { return state.isAuthenticated; },
     get onlineUsers() { return state.onlineUsers; },
+    get subscribedChannels() { return state.subscribedChannels; },
     connect,
     disconnect,
-    sendMessage,
-    sendTyping,
-    sendRead,
+    send,
+    sendWithResponse,
+    subscribe,
+    unsubscribe,
+    onChannel,
     isUserOnline,
-    onMessage,
-    onTyping,
-    onRead,
-    onOnline,
-    onOffline,
-    onGroupCreated,
-    onGroupDissolved,
-    onMessageRecalled,
   };
 }
 

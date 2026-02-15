@@ -5,6 +5,7 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
   import { FileIcon } from '@qiyu-allinai/file-icons';
+  import { onMount } from 'svelte';
 
   interface MessageContent {
     text?: string;
@@ -34,6 +35,21 @@
   }
 
   let { message }: Props = $props();
+  let downloadUrl = $state(message.content.downloadUrl || '');
+
+  onMount(async () => {
+    if (message.content.fileId && isFileMessage(message.msgType)) {
+      const api = authStore.createApi(true);
+      try {
+        const res = await api.im.getApiImTempFileByIdDownloadUrl({ id: message.content.fileId });
+        if (res.data?.url) {
+          downloadUrl = res.data.url;
+        }
+      } catch (e) {
+        console.warn('Failed to refresh download url:', e);
+      }
+    }
+  });
 
   function getUserName(userId: string): string {
     const user = imStore.users.get(userId);
@@ -80,9 +96,10 @@
   }
 
   function downloadFile(content: MessageContent) {
-    if (content.downloadUrl) {
+    const url = downloadUrl || content.downloadUrl;
+    if (url) {
       const link = document.createElement('a');
-      link.href = content.downloadUrl;
+      link.href = url;
       link.download = content.fileName || 'file';
       link.target = '_blank';
       document.body.appendChild(link);
@@ -121,17 +138,17 @@
               <span class="whitespace-pre-wrap break-words">{message.content.text || ''}</span>
             {:else if message.msgType === '06'}
               {@const fileExt = (message.content.fileName || '').split('.').pop() || ''}
-              <div class="flex items-center gap-2 min-w-48">
+              <div class="flex items-center gap-2 w-72">
                 <FileIcon type={fileExt} size={32} />
                 <div class="flex-1 min-w-0">
-                  <div class="font-medium truncate text-sm">{message.content.fileName}</div>
+                  <div class="font-medium text-sm line-clamp-2 break-all">{message.content.fileName}</div>
                   <div class="text-xs opacity-70">{formatFileSize(message.content.fileSize ?? 0)}</div>
                 </div>
               </div>
             {:else if message.msgType === '03'}
               <div class="w-48 min-w-48 max-h-64 overflow-hidden rounded">
                 <img 
-                  src={message.content.downloadUrl} 
+                  src={downloadUrl} 
                   alt={message.content.fileName || '图片'} 
                   class="w-full h-full object-cover"
                   loading="lazy"
@@ -140,7 +157,7 @@
             {:else if message.msgType === '04'}
               <div class="w-48 min-w-48 max-h-64 overflow-hidden rounded">
                 <video 
-                  src={message.content.downloadUrl}
+                  src={downloadUrl}
                   class="w-full h-full object-cover"
                   controls
                   preload="metadata"
@@ -169,7 +186,7 @@
               <Icon icon="mdi:content-copy" class="mr-2 size-4" />
               复制
             </ContextMenu.Item>
-            {#if isFileMessage(message.msgType) && message.content.downloadUrl}
+            {#if isFileMessage(message.msgType) && (downloadUrl || message.content.downloadUrl)}
               <ContextMenu.Item onclick={() => downloadFile(message.content)}>
                 <Icon icon="mdi:download" class="mr-2 size-4" />
                 下载

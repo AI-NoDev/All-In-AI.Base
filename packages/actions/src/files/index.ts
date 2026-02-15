@@ -205,35 +205,39 @@ export const fileUploadForce = defineAction({
     
     // 根据冲突模式处理
     if (input.conflictMode === 'overwrite') {
-      // 覆盖模式：软删除旧文件，上传新文件
-      if (input.existingFileId) {
-        await db.update(file)
-          .set({
-            deletedAt: new Date().toISOString(),
-            deletedById: context.currentUserId,
-            deletedBy: context.currentUserName,
-          })
-          .where(eq(file.id, input.existingFileId));
+      // 覆盖模式：直接替换文件内容，保留历史版本不变
+      if (!input.existingFileId) {
+        throw new Error('error.files.existingFileIdRequired');
       }
       
-      const storageKey = generateStorageKey(context.currentUserId, folderId, input.name);
+      // 获取现有文件
+      const [existingFile] = await db.select().from(file)
+        .where(and(eq(file.id, input.existingFileId), isNull(file.deletedAt)))
+        .limit(1);
+      
+      if (!existingFile) {
+        throw new Error('error.files.notFound');
+      }
+      
+      // 上传新文件到 S3（使用新的 storageKey）
+      const storageKey = generateStorageKey(context.currentUserId, existingFile.folderId, input.name);
       const uploadResult = await uploadFile(storageKey, buffer, mimeType);
       
-      const [result] = await db.insert(file).values({
-        folderId,
-        name: input.name,
-        originalName: input.name,
-        extension: ext,
-        mimeType,
-        size: buffer.length,
-        storageKey,
-        bucket: uploadResult.bucket,
-        etag: uploadResult.etag,
-        versionId: uploadResult.versionId,
-        description: input.description,
-        createdBy: context.currentUserName,
-        updatedBy: context.currentUserName,
-      } as FileInsert).returning();
+      // 更新主文件记录（不改变 versionCount，历史版本保持不变）
+      const [result] = await db.update(file)
+        .set({
+          storageKey,
+          bucket: uploadResult.bucket,
+          etag: uploadResult.etag,
+          versionId: uploadResult.versionId,
+          size: buffer.length,
+          mimeType,
+          name: input.name,
+          extension: ext,
+          updatedBy: context.currentUserName,
+        })
+        .where(eq(file.id, input.existingFileId))
+        .returning();
       
       return result as FileSelect;
       

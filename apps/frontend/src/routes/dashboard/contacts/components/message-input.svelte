@@ -7,7 +7,7 @@
   import { Kbd } from '$lib/components/ui/kbd';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
-  import { wsStore } from '@/lib/stores/websocket.svelte';
+  import { sendMessage } from '@/lib/stores/ws-channels/im.svelte';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
 	import { theme } from 'mode-watcher';
 
@@ -142,7 +142,7 @@
 
         const msgType = getMsgTypeByMimeType(uploadedFile.mimeType || pf.file.type || 'application/octet-stream');
 
-        const newMessage = await wsStore.sendMessage(
+        const newMessage = await sendMessage(
           conversationId,
           msgType,
           { 
@@ -180,7 +180,7 @@
     isSending = true;
 
     try {
-      const newMessage = await wsStore.sendMessage(
+      const newMessage = await sendMessage(
         imStore.selectedConversation.id,
         '01',
         { text: content }

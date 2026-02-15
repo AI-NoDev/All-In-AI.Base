@@ -3,7 +3,7 @@ import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizz
 import { defineAction } from '../../../core/define';
 import type { DrizzleDB } from '../../../core/types';
 import { toJSONSchema } from '../../../core/schema';
-import { user, userZodSchemas, config } from '@qiyu-allinai/db/entities/system';
+import { user, userZodSchemas, config, userRole, userPost } from '@qiyu-allinai/db/entities/system';
 
 type UserSelect = typeof user.$inferSelect & {
   salt: undefined
@@ -42,8 +42,6 @@ const userFilterSchema = z.object({
   loginNames: z.preprocess(emptyArrayToUndefined, z.array(z.string()).optional()),
   // 精确匹配
   deptId: z.preprocess(emptyToUndefined, z.string().optional()),
-  parentId: z.preprocess(emptyToUndefined, z.string().optional()),
-  roleId: z.preprocess(emptyToUndefined, z.string().optional()),
   userType: z.preprocess(emptyToUndefined, z.string().optional()),
   sex: z.preprocess(emptyToUndefined, z.string().optional()),
   status: z.preprocess(emptyToUndefined, z.string().optional()),
@@ -90,8 +88,6 @@ export const userGetByPagination = defineAction({
       if (filter.loginNames?.length) conditions.push(inArray(user.loginName, filter.loginNames));
       // 精确匹配
       if (filter.deptId) conditions.push(eq(user.deptId, filter.deptId));
-      if (filter.parentId) conditions.push(eq(user.parentId, filter.parentId));
-      if (filter.roleId) conditions.push(eq(user.roleId, filter.roleId));
       if (filter.userType) conditions.push(eq(user.userType, filter.userType));
       if (filter.sex) conditions.push(eq(user.sex, filter.sex));
       if (filter.status) conditions.push(eq(user.status, filter.status));
@@ -149,23 +145,48 @@ export const userCreate = defineAction({
   meta: { name: 'system.user.create', displayName: '创建用户', description: '创建单个用户', tags: ['system', 'user'], method: 'POST', path: '/api/system/user' },
   schemas: {
     bodySchema: z.object({ 
-      data: userZodSchemas.insert,
+      data: userZodSchemas.insert.extend({
+        roleIds: z.array(z.string()).optional(),
+        postIds: z.array(z.string()).optional(),
+      }),
     }),
     outputSchema: userZodSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
-    const { data } = input;
+    const { roleIds, postIds, ...userData } = input.data;
     
     // 生成盐值和哈希密码
     const salt = generateSalt();
-    const hashedPassword = await hashPassword(await getInitPassword(db, data.password), salt);
+    const hashedPassword = await hashPassword(await getInitPassword(db, userData.password), salt);
     
     const [result] = await db.insert(user).values({
-      ...data,
+      ...userData,
       salt,
       password: hashedPassword,
     } as UserInsert).returning();
+    
+    if (!result) {
+      throw new Error('error.business.createFailed');
+    }
+    
+    // 处理角色关联
+    if (roleIds && roleIds.length > 0) {
+      const roleRecords = roleIds.map(roleId => ({
+        userId: result.id,
+        roleId,
+      }));
+      await db.insert(userRole).values(roleRecords);
+    }
+    
+    // 处理岗位关联
+    if (postIds && postIds.length > 0) {
+      const postRecords = postIds.map(postId => ({
+        userId: result.id,
+        postId,
+      }));
+      await db.insert(userPost).values(postRecords);
+    }
     
     return {
       ...result,
@@ -225,17 +246,57 @@ export const userUpdate = defineAction({
   meta: { name: 'system.user.update', displayName: '更新用户', description: '根据ID更新单个用户', tags: ['system', 'user'], method: 'PUT', path: '/api/system/user/:id' },
   schemas: {
     paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: userZodSchemas.update }),
+    bodySchema: z.object({ 
+      data: userZodSchemas.update.extend({
+        roleIds: z.array(z.string()).nullable().optional(),
+        postIds: z.array(z.string()).nullable().optional(),
+      }),
+    }),
     outputSchema: userZodSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
+    const { roleIds, postIds, ...userData } = input.data;
+    
     // 检查是否是系统管理员
     if (await checkIsSystemAdmin(db, input.id)) {
       throw new Error('error.system.admin.cannot.modify');
     }
     
-    const [result] = await db.update(user).set(input.data as Partial<UserInsert>).where(and(eq(user.id, input.id), isNull(user.deletedAt))).returning();
+    const [result] = await db.update(user).set(userData as Partial<UserInsert>).where(and(eq(user.id, input.id), isNull(user.deletedAt))).returning();
+    
+    if (!result) {
+      throw new Error('error.business.dataNotFound');
+    }
+    
+    // 处理角色关联（如果传入了 roleIds）
+    if (roleIds !== undefined) {
+      // 删除该用户的所有角色关联
+      await db.delete(userRole).where(eq(userRole.userId, input.id));
+      // 插入新的角色关联
+      if (roleIds && roleIds.length > 0) {
+        const roleRecords = roleIds.map(roleId => ({
+          userId: input.id,
+          roleId,
+        }));
+        await db.insert(userRole).values(roleRecords);
+      }
+    }
+    
+    // 处理岗位关联（如果传入了 postIds）
+    if (postIds !== undefined) {
+      // 删除该用户的所有岗位关联
+      await db.delete(userPost).where(eq(userPost.userId, input.id));
+      // 插入新的岗位关联
+      if (postIds && postIds.length > 0) {
+        const postRecords = postIds.map(postId => ({
+          userId: input.id,
+          postId,
+        }));
+        await db.insert(userPost).values(postRecords);
+      }
+    }
+    
     return {
       ...result,
       salt: undefined,

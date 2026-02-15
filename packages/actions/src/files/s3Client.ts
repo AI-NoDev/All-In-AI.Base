@@ -95,10 +95,12 @@ export async function copyFile(
   sourceBucket: string = DEFAULT_BUCKET,
   destBucket: string = DEFAULT_BUCKET
 ): Promise<UploadResult> {
+  // CopySource must be URL-encoded for special characters (Chinese, spaces, etc.)
+  const encodedSourceKey = encodeURIComponent(sourceKey);
   const command = new CopyObjectCommand({
     Bucket: destBucket,
     Key: destKey,
-    CopySource: `${sourceBucket}/${sourceKey}`,
+    CopySource: `${sourceBucket}/${encodedSourceKey}`,
   });
 
   const result = await s3Client.send(command);

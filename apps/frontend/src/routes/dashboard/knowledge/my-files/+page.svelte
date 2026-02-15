@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge.svelte';
+  import { authStore } from '$lib/stores/auth.svelte';
+  import { knowledgeStore, type FolderItem, type FileItem } from '$lib/stores/knowledge.svelte';
   import { PostApiFilesUploadForceConflictModeEnum } from '@qiyu-allinai/api';
   import {
     FileBreadcrumb,
@@ -11,7 +11,7 @@
     NewFolderDialog,
     SearchDialog,
     RenameDialog,
-    DescriptionDialog,
+    DescriptionSheet,
     FolderStyleDialog,
     UploadDialog,
     PermissionSheet,
@@ -27,7 +27,7 @@
   let searchOpen = $state(false);
   let newFolderDialogOpen = $state(false);
   let renameDialogOpen = $state(false);
-  let descriptionDialogOpen = $state(false);
+  let descriptionSheetOpen = $state(false);
   let folderStyleDialogOpen = $state(false);
   let uploadDialogOpen = $state(false);
   let permissionSheetOpen = $state(false);
@@ -188,8 +188,8 @@
   function handleRenameFolder(f: FolderItem) { renameTarget = { type: 'folder', id: f.id, name: f.name }; renameDialogOpen = true; }
   async function handleDeleteFolder(f: FolderItem) { if (confirm(`确定要删除文件夹 "${f.name}" 吗？`)) await knowledgeStore.deleteFolder(f); }
   function handleDownloadFolder(f: FolderItem) { console.log('下载文件夹', f.name); }
-  function handleShowFolderInfo(f: FolderItem) { descriptionTarget = { type: 'folder', id: f.id, name: f.name, description: f.description, readOnly: true }; descriptionDialogOpen = true; }
-  function handleEditFolderDescription(f: FolderItem) { descriptionTarget = { type: 'folder', id: f.id, name: f.name, description: f.description, readOnly: false }; descriptionDialogOpen = true; }
+  function handleShowFolderInfo(f: FolderItem) { descriptionTarget = { type: 'folder', id: f.id, name: f.name, description: f.description, readOnly: true }; descriptionSheetOpen = true; }
+  function handleEditFolderDescription(f: FolderItem) { descriptionTarget = { type: 'folder', id: f.id, name: f.name, description: f.description, readOnly: false }; descriptionSheetOpen = true; }
   function handleEditFolderStyle(f: FolderItem) { styleTarget = f; folderStyleDialogOpen = true; }
   function handleEditFolderPermission(f: FolderItem) { permissionTarget = { type: 'folder', id: f.id, name: f.name, isPublic: f.isPublic }; permissionSheetOpen = true; }
 
@@ -197,8 +197,8 @@
   function handleRenameFile(f: FileItem) { renameTarget = { type: 'file', id: f.id, name: f.name }; renameDialogOpen = true; }
   async function handleDeleteFile(f: FileItem) { if (confirm(`确定要删除文件 "${f.name}" 吗？`)) await knowledgeStore.deleteFile(f); }
   function handleDownloadFile(f: FileItem) { console.log('下载文件:', f.name); }
-  function handleShowFileInfo(f: FileItem) { descriptionTarget = { type: 'file', id: f.id, name: f.name, description: f.description, readOnly: true }; descriptionDialogOpen = true; }
-  function handleEditFileDescription(f: FileItem) { descriptionTarget = { type: 'file', id: f.id, name: f.name, description: f.description, readOnly: false }; descriptionDialogOpen = true; }
+  function handleShowFileInfo(f: FileItem) { descriptionTarget = { type: 'file', id: f.id, name: f.name, description: f.description, readOnly: true }; descriptionSheetOpen = true; }
+  function handleEditFileDescription(f: FileItem) { descriptionTarget = { type: 'file', id: f.id, name: f.name, description: f.description, readOnly: false }; descriptionSheetOpen = true; }
   function handleEditFile(f: FileItem) { goto(`/dashboard/knowledge/my-files/${f.folderId || 'root'}/edit/${f.id}`); }
   function handleFileDoubleClick(f: FileItem) { goto(`/dashboard/knowledge/my-files/${f.folderId || 'root'}/edit/${f.id}`); }
   function handleEditFilePermission(f: FileItem) { permissionTarget = { type: 'file', id: f.id, name: f.name, isPublic: f.isPublic }; permissionSheetOpen = true; }
@@ -213,8 +213,16 @@
 
   async function handleSaveDescription(desc: string | null) {
     if (!descriptionTarget) return;
-    console.log('保存简介', descriptionTarget.type, descriptionTarget.id, desc);
-    descriptionDialogOpen = false; descriptionTarget = null; await knowledgeStore.refresh();
+    try {
+      if (descriptionTarget.type === 'folder') {
+        await api.knowledge.putApiKnowledgeFolderById({ id: descriptionTarget.id }, { data: { description: desc, updatedBy: '' } });
+      } else {
+        await api.knowledge.putApiKnowledgeFileById({ id: descriptionTarget.id }, { data: { description: desc, updatedBy: '' } });
+      }
+      descriptionSheetOpen = false; descriptionTarget = null; await knowledgeStore.refresh();
+    } catch (err) {
+      console.error('保存描述失败:', err);
+    }
   }
 
   async function handleSaveFolderStyle(icon: string | null, color: string | null) {
@@ -483,7 +491,7 @@
 <NewFolderDialog open={newFolderDialogOpen} onOpenChange={(o) => (newFolderDialogOpen = o)} onCreate={handleCreateFolder} />
 <SearchDialog open={searchOpen} onOpenChange={(o) => (searchOpen = o)} onSearch={handleSearch} />
 <RenameDialog open={renameDialogOpen} onOpenChange={(o) => (renameDialogOpen = o)} currentName={renameTarget?.name || ''} onRename={handleRename} />
-<DescriptionDialog open={descriptionDialogOpen} onOpenChange={(o) => (descriptionDialogOpen = o)} title={descriptionTarget?.name || ''} currentDescription={descriptionTarget?.description || null} readOnly={descriptionTarget?.readOnly || false} onSave={handleSaveDescription} />
+<DescriptionSheet open={descriptionSheetOpen} onOpenChange={(o) => (descriptionSheetOpen = o)} title={descriptionTarget?.name || ''} currentDescription={descriptionTarget?.description || null} readOnly={descriptionTarget?.readOnly || false} onSave={handleSaveDescription} />
 <FolderStyleDialog open={folderStyleDialogOpen} onOpenChange={(o) => (folderStyleDialogOpen = o)} folderName={styleTarget?.name || ''} currentIcon={styleTarget?.icon || null} currentColor={styleTarget?.color || null} onSave={handleSaveFolderStyle} />
 <UploadDialog open={uploadDialogOpen} onOpenChange={(o) => (uploadDialogOpen = o)} items={uploadItems} onStartUpload={handleStartUpload} onCancel={handleCancelUpload} onHandleDuplicate={handleDuplicate} {isUploading} isComplete={isUploadComplete} {hasDuplicates} />
 <PermissionSheet open={permissionSheetOpen} onOpenChange={(o: boolean) => (permissionSheetOpen = o)} resourceType={permissionTarget?.type || 'folder'} resourceId={permissionTarget?.id || ''} resourceName={permissionTarget?.name || ''} isPublic={permissionTarget?.isPublic || false} onSave={handleSavePermission} />

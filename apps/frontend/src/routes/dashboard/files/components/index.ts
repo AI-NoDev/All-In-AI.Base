@@ -8,6 +8,7 @@ export { default as SearchDialog } from './search-dialog.svelte';
 export { default as FileContextMenu } from './file-context-menu.svelte';
 export { default as RenameDialog } from './rename-dialog.svelte';
 export { default as DescriptionDialog } from './description-dialog.svelte';
+export { default as DescriptionSheet } from './description-sheet.svelte';
 export { default as FolderStyleDialog } from './folder-style-dialog.svelte';
 export { default as UploadDialog } from './upload-dialog.svelte';
 export { default as PermissionSheet } from './permission-sheet.svelte';
