@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, asc, desc, inArray, gte, lte, lt, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { tempFile, tempFileZodSchemas } from '@qiyu-allinai/db/entities/im';
 import { uploadFile, getPresignedDownloadUrl, DEFAULT_BUCKET } from '../../../files/s3Client';
 
@@ -41,7 +40,8 @@ export const tempFileGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(tempFileZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -75,7 +75,8 @@ export const tempFileGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: tempFileZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(tempFile).where(eq(tempFile.id, input.id)).limit(1);
     return (result as TempFileSelect) ?? null;
   },
@@ -87,7 +88,8 @@ export const tempFileCreate = defineAction({
     bodySchema: z.object({ data: tempFileZodSchemas.insert }),
     outputSchema: tempFileZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(tempFile).values(input.data as TempFileInsert).returning();
     return result as TempFileSelect;
   },
@@ -100,7 +102,8 @@ export const tempFileUpdate = defineAction({
     bodySchema: z.object({ data: tempFileZodSchemas.update }),
     outputSchema: tempFileZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(tempFile).set(input.data as Partial<TempFileInsert>).where(eq(tempFile.id, input.id)).returning();
     return result as TempFileSelect;
   },
@@ -112,7 +115,8 @@ export const tempFileDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(tempFile).where(eq(tempFile.id, input.id)).returning();
     return !!result;
   },
@@ -123,7 +127,8 @@ export const tempFileCleanExpired = defineAction({
   schemas: {
     outputSchema: z.number(),
   },
-  execute: async (_input, _context) => {
+  execute: async (_input, context) => {
+    const { db } = context;
     const now = new Date().toISOString();
     const result = await db.delete(tempFile).where(lt(tempFile.expiresAt, now)).returning();
     return result.length;
@@ -163,6 +168,7 @@ export const tempFileUpload = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { conversationId, fileName, mimeType, base64Data } = input;
     const userId = context.currentUserId;
     
@@ -232,7 +238,8 @@ export const tempFileGetDownloadUrl = defineAction({
       expiresAt: z.string(),
     }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [file] = await db.select().from(tempFile).where(eq(tempFile.id, input.id)).limit(1);
     if (!file) {
       throw new Error('error.business.dataNotFound');

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { RootSchema } from '../schema-types.js';
 	import { ZodVisualEditor } from '@qiyu-allinai/zod-visual-editor';
-	import * as Dialog from '@qiyu-allinai/ui/components/dialog';
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	interface Props {
 		open: boolean;

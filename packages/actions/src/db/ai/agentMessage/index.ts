@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { agentMessage, agentMessageZodSchemas, agentSession } from '@qiyu-allinai/db/entities/ai';
 
 type AgentMessageSelect = typeof agentMessage.$inferSelect;
@@ -43,7 +42,8 @@ export const agentMessageGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(agentMessageZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -80,7 +80,8 @@ export const agentMessageGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: agentMessageZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(agentMessage).where(eq(agentMessage.id, input.id)).limit(1);
     return (result as AgentMessageSelect) ?? null;
   },
@@ -92,7 +93,8 @@ export const agentMessageCreate = defineAction({
     bodySchema: z.object({ data: agentMessageZodSchemas.insert }),
     outputSchema: agentMessageZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // Get next msgSeq for session
     const seqResult = await db.select({ maxSeq: sql<number>`COALESCE(MAX(msg_seq), 0)` })
       .from(agentMessage).where(eq(agentMessage.sessionId, input.data.sessionId));
@@ -132,7 +134,8 @@ export const agentMessageCreateMany = defineAction({
     }),
     outputSchema: z.array(agentMessageZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { sessionId, messages } = input;
     
     // Get current max msgSeq
@@ -190,7 +193,8 @@ export const agentMessageGetHistory = defineAction({
     }).optional(),
     outputSchema: z.array(agentMessageZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const conditions = [eq(agentMessage.sessionId, input.sessionId)];
     if (input.beforeSeq !== undefined) {
       conditions.push(lte(agentMessage.msgSeq, input.beforeSeq));

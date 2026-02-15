@@ -2,9 +2,9 @@
 	import Icon from '@iconify/svelte';
 	import { useSvelteFlow } from '@xyflow/svelte';
 	import { workflowState } from '../contexts/index.js';
-	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
-	import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu/index.js';
-	import * as Popover from '@qiyu-allinai/ui/components/popover/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Popover from '$lib/components/ui/popover/index.js';
 	import NodePicker, { type NodeTemplate } from './NodePicker.svelte';
 	import ELK from 'elkjs/lib/elk.bundled.js';
 

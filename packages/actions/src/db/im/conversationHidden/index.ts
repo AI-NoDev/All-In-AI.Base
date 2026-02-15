@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import db from '@qiyu-allinai/db/connect';
 import { conversationHidden, conversationHiddenZodSchemas } from '@qiyu-allinai/db/entities/im';
 
 type ConversationHiddenSelect = typeof conversationHidden.$inferSelect;
@@ -14,6 +13,7 @@ export const conversationHiddenHide = defineAction({
     outputSchema: conversationHiddenZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { conversationId } = input;
     const userId = context.currentUserId;
     
@@ -54,7 +54,8 @@ export const conversationHiddenUnhide = defineAction({
     bodySchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { conversationId, userId } = input;
     
     const [result] = await db.update(conversationHidden).set({
@@ -76,6 +77,7 @@ export const conversationHiddenGetList = defineAction({
     outputSchema: z.array(z.string()),
   },
   execute: async (_input, context) => {
+    const { db } = context;
     const userId = context.currentUserId;
     
     const results = await db.select({ conversationId: conversationHidden.conversationId })

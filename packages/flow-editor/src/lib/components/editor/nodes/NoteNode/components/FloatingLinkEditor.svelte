@@ -2,8 +2,8 @@
 	import { onMount, tick } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import { getEditor, LinkNode, sanitizeUrl } from 'svelte-lexical';
-	import { Button } from '@qiyu-allinai/ui/components/button/index.js';
-	import { Input } from '@qiyu-allinai/ui/components/input/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
 
 	interface LinkInfo {
 		url: string;

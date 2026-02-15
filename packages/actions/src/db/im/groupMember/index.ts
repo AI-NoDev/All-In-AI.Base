@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { groupMember, groupMemberZodSchemas, conversation } from '@qiyu-allinai/db/entities/im';
 
 type GroupMemberSelect = typeof groupMember.$inferSelect;
@@ -39,7 +38,8 @@ export const groupMemberGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(groupMemberZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -72,7 +72,8 @@ export const groupMemberGetByPk = defineAction({
     paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: groupMemberZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(groupMember)
       .where(and(eq(groupMember.conversationId, input.conversationId), eq(groupMember.userId, input.userId))).limit(1);
     return (result as GroupMemberSelect) ?? null;
@@ -85,7 +86,8 @@ export const groupMemberAdd = defineAction({
     bodySchema: z.object({ data: groupMemberZodSchemas.insert }),
     outputSchema: groupMemberZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(groupMember).values(input.data as GroupMemberInsert).returning();
     
     // Update conversation memberCount
@@ -104,7 +106,8 @@ export const groupMemberAddMany = defineAction({
     bodySchema: z.object({ data: z.array(groupMemberZodSchemas.insert) }),
     outputSchema: z.array(groupMemberZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(groupMember).values(input.data as GroupMemberInsert[]).returning();
     
     // Update conversation memberCount for each unique conversation
@@ -128,7 +131,8 @@ export const groupMemberUpdate = defineAction({
     bodySchema: z.object({ data: groupMemberZodSchemas.update }),
     outputSchema: groupMemberZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(groupMember).set(input.data as Partial<GroupMemberInsert>)
       .where(and(eq(groupMember.conversationId, input.conversationId), eq(groupMember.userId, input.userId))).returning();
     return result as GroupMemberSelect;
@@ -141,7 +145,8 @@ export const groupMemberRemove = defineAction({
     paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(groupMember)
       .where(and(eq(groupMember.conversationId, input.conversationId), eq(groupMember.userId, input.userId))).returning();
     

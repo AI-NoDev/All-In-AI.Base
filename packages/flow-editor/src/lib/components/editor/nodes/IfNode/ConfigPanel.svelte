@@ -3,11 +3,11 @@
 	import { COMPARISON_OPERATORS, NO_VALUE_OPERATORS, createDefaultCondition, createDefaultCase } from './types.js';
 	import { workflowState } from '$lib/components/editor/contexts/index.js';
 	import { VariableSelect } from '../../components/VariableSelector/index.js';
-	import { Input } from '@qiyu-allinai/ui/components/input';
-	import { Button } from '@qiyu-allinai/ui/components/button';
-	import * as Select from '@qiyu-allinai/ui/components/select';
-	import * as Tabs from '@qiyu-allinai/ui/components/tabs';
-	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+	import { Input } from '$lib/components/ui/input';
+	import { Button } from '$lib/components/ui/button';
+	import * as Select from '$lib/components/ui/select';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Icon from '@iconify/svelte';
 	import RunStatusBadge from '../../components/RunStatusBadge.svelte';
 

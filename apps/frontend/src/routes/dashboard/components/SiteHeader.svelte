@@ -2,11 +2,11 @@
   import CloseIcon from '@iconify-svelte/tdesign/close';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Separator } from '@qiyu-allinai/ui/components/separator';
-  import * as Sidebar from '@qiyu-allinai/ui/components/sidebar';
+  import { Button } from '$lib/components/ui/button';
+  import { Separator } from '$lib/components/ui/separator';
+  import * as Sidebar from '$lib/components/ui/sidebar';
   import { tabsStore } from '@/lib/stores/tabs.svelte';
-  import { cn } from '@/lib/utils';
+  import { cn } from '$lib/utils';
 
   // 同步当前路由到标签页
   $effect(() => {

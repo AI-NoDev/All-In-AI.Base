@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
+import type { DrizzleDB } from '../../../core/types';
 import { role, roleZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type RoleSelect = typeof role.$inferSelect;
@@ -11,7 +11,7 @@ type RoleInsert = typeof role.$inferInsert;
 const ADMIN_ROLE_KEY = 'admin';
 
 // 检查是否为管理员角色
-async function checkIsAdminRole(id: string): Promise<boolean> {
+async function checkIsAdminRole(db: DrizzleDB, id: string): Promise<boolean> {
   const [result] = await db.select({ key: role.key }).from(role).where(eq(role.id, id)).limit(1);
   return result?.key === ADMIN_ROLE_KEY;
 }
@@ -50,7 +50,8 @@ export const roleGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(roleZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -79,7 +80,7 @@ export const roleGetByPagination = defineAction({
     
     const data = await db.select().from(role)
       .where(whereClause)
-      .orderBy(orderFn(sortColumn as any))
+      .orderBy(orderFn(sortColumn as Parameters<typeof orderFn>[0]))
       .limit(limit)
       .offset(offset);
     
@@ -94,7 +95,8 @@ export const roleGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: roleZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(role).where(and(eq(role.id, input.id), isNull(role.deletedAt))).limit(1);
     return (result as RoleSelect) ?? null;
   },
@@ -106,7 +108,8 @@ export const roleCreate = defineAction({
     bodySchema: z.object({ data: roleZodSchemas.insert }),
     outputSchema: roleZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(role).values(input.data as RoleInsert).returning();
     return result as RoleSelect;
   },
@@ -118,7 +121,8 @@ export const roleCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(roleZodSchemas.insert) }),
     outputSchema: z.array(roleZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(role).values(input.data as RoleInsert[]).returning();
     return results as RoleSelect[];
   },
@@ -131,9 +135,10 @@ export const roleUpdate = defineAction({
     bodySchema: z.object({ data: roleZodSchemas.update }),
     outputSchema: roleZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 检查是否为管理员角色
-    if (await checkIsAdminRole(input.id)) {
+    if (await checkIsAdminRole(db, input.id)) {
       throw new Error('error.system.adminRole.cannot.modify');
     }
     const [result] = await db.update(role).set(input.data as Partial<RoleInsert>).where(and(eq(role.id, input.id), isNull(role.deletedAt))).returning();
@@ -147,11 +152,12 @@ export const roleUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: roleZodSchemas.update }),
     outputSchema: z.array(roleZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: RoleSelect[] = [];
     for (const id of input.ids) {
       // 检查是否为管理员角色
-      if (await checkIsAdminRole(id)) {
+      if (await checkIsAdminRole(db, id)) {
         throw new Error('error.system.adminRole.cannot.modify');
       }
       const [result] = await db.update(role).set(input.data as Partial<RoleInsert>).where(and(eq(role.id, id), isNull(role.deletedAt))).returning();
@@ -168,8 +174,9 @@ export const roleDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 检查是否为管理员角色
-    if (await checkIsAdminRole(input.id)) {
+    if (await checkIsAdminRole(db, input.id)) {
       throw new Error('error.system.adminRole.cannot.delete');
     }
     const [result] = await db.update(role).set({ 

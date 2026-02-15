@@ -251,6 +251,7 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
           result = await (action.execute as (input: unknown, context: unknown) => Promise<unknown>)(
             input,
             {
+              db,
               token: bearer,
               currentUserId: currentUser.id,
               currentUserName: currentUser.name || currentUser.loginName,
@@ -378,6 +379,7 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
             result = await (action.execute as (input: unknown, context: unknown) => Promise<unknown>)(
               input,
               {
+                db,
                 token: bearer,
                 currentUserId: currentUser.id,
                 currentUserName: currentUser.name || currentUser.loginName,

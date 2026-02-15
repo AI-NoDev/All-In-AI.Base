@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { job, jobZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type JobSelect = typeof job.$inferSelect;
@@ -43,7 +42,8 @@ export const jobGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(jobZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -83,38 +83,44 @@ export const jobGetByPagination = defineAction({
 export const jobGetByPk = defineAction({
   meta: { name: 'system.job.getByPk', displayName: '根据ID查询定时任务', description: '根据主键ID查询单个定时任务', tags: ['system', 'job'], method: 'GET', path: '/api/system/job/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: jobZodSchemas.select.nullable() },
-  execute: async (input, _context) => { const [result] = await db.select().from(job).where(eq(job.id, input.id)).limit(1); return (result as JobSelect) ?? null; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.select().from(job).where(eq(job.id, input.id)).limit(1); return (result as JobSelect) ?? null; },
 });
 
 export const jobCreate = defineAction({
   meta: { name: 'system.job.create', displayName: '创建定时任务', description: '创建单个定时任务', tags: ['system', 'job'], method: 'POST', path: '/api/system/job' },
   schemas: { bodySchema: z.object({ data: jobZodSchemas.insert }), outputSchema: jobZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.insert(job).values(input.data as JobInsert).returning(); return result as JobSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.insert(job).values(input.data as JobInsert).returning(); return result as JobSelect; },
 });
 
 export const jobCreateMany = defineAction({
   meta: { name: 'system.job.createMany', displayName: '批量创建定时任务', description: '批量创建多个定时任务', tags: ['system', 'job'], method: 'POST', path: '/api/system/job/batch' },
   schemas: { bodySchema: z.object({ data: z.array(jobZodSchemas.insert) }), outputSchema: z.array(jobZodSchemas.select) },
-  execute: async (input, _context) => { const results = await db.insert(job).values(input.data as JobInsert[]).returning(); return results as JobSelect[]; },
+  execute: async (input, context) => {
+    const { db } = context; const results = await db.insert(job).values(input.data as JobInsert[]).returning(); return results as JobSelect[]; },
 });
 
 
 export const jobUpdate = defineAction({
   meta: { name: 'system.job.update', displayName: '更新定时任务', description: '根据ID更新单个定时任务', tags: ['system', 'job'], method: 'PUT', path: '/api/system/job/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: jobZodSchemas.update }), outputSchema: jobZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.update(job).set(input.data as Partial<JobInsert>).where(eq(job.id, input.id)).returning(); return result as JobSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.update(job).set(input.data as Partial<JobInsert>).where(eq(job.id, input.id)).returning(); return result as JobSelect; },
 });
 
 export const jobUpdateMany = defineAction({
   meta: { name: 'system.job.updateMany', displayName: '批量更新定时任务', description: '根据ID列表批量更新定时任务', tags: ['system', 'job'], method: 'PUT', path: '/api/system/job/batch' },
   schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: jobZodSchemas.update }), outputSchema: z.array(jobZodSchemas.select) },
-  execute: async (input, _context) => { const results: JobSelect[] = []; for (const id of input.ids) { const [result] = await db.update(job).set(input.data as Partial<JobInsert>).where(eq(job.id, id)).returning(); if (result) results.push(result as JobSelect); } return results; },
+  execute: async (input, context) => {
+    const { db } = context; const results: JobSelect[] = []; for (const id of input.ids) { const [result] = await db.update(job).set(input.data as Partial<JobInsert>).where(eq(job.id, id)).returning(); if (result) results.push(result as JobSelect); } return results; },
 });
 
 export const jobDeleteByPk = defineAction({
   meta: { name: 'system.job.deleteByPk', displayName: '删除定时任务', description: '根据ID删除定时任务', tags: ['system', 'job'], method: 'DELETE', path: '/api/system/job/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
-  execute: async (input, _context) => { const [result] = await db.delete(job).where(eq(job.id, input.id)).returning(); return !!result; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.delete(job).where(eq(job.id, input.id)).returning(); return !!result; },
 });
 
 

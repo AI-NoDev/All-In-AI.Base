@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
 
 type AgentSelect = typeof agent.$inferSelect;
@@ -42,7 +41,8 @@ export const agentGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(agentZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -77,7 +77,8 @@ export const agentGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: agentZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(agent).where(eq(agent.id, input.id)).limit(1);
     return (result as AgentSelect) ?? null;
   },
@@ -89,7 +90,8 @@ export const agentCreate = defineAction({
     bodySchema: z.object({ data: agentZodSchemas.insert }),
     outputSchema: agentZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(agent).values(input.data as AgentInsert).returning();
     return result as AgentSelect;
   },
@@ -101,7 +103,8 @@ export const agentCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(agentZodSchemas.insert) }),
     outputSchema: z.array(agentZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(agent).values(input.data as AgentInsert[]).returning();
     return results as AgentSelect[];
   },
@@ -114,7 +117,8 @@ export const agentUpdate = defineAction({
     bodySchema: z.object({ data: agentZodSchemas.update }),
     outputSchema: agentZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(agent).set(input.data as Partial<AgentInsert>).where(eq(agent.id, input.id)).returning();
     return result as AgentSelect;
   },
@@ -126,7 +130,8 @@ export const agentUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: agentZodSchemas.update }),
     outputSchema: z.array(agentZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: AgentSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(agent).set(input.data as Partial<AgentInsert>).where(eq(agent.id, id)).returning();
@@ -142,7 +147,8 @@ export const agentDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(agent).where(eq(agent.id, input.id)).returning();
     return !!result;
   },

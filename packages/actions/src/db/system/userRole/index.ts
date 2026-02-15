@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { userRole, userRoleZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type UserRoleSelect = typeof userRole.$inferSelect;
@@ -36,7 +35,8 @@ export const userRoleGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(userRoleZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -72,7 +72,8 @@ export const userRoleGetByPk = defineAction({
     paramsSchema: z.object({ userId: z.string(), roleId: z.string() }),
     outputSchema: userRoleZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(userRole).where(and(eq(userRole.userId, input.userId), eq(userRole.roleId, input.roleId))).limit(1);
     return (result as UserRoleSelect) ?? null;
   },
@@ -84,7 +85,8 @@ export const userRoleCreate = defineAction({
     bodySchema: z.object({ data: userRoleZodSchemas.insert }),
     outputSchema: userRoleZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(userRole).values(input.data as UserRoleInsert).returning();
     return result as UserRoleSelect;
   },
@@ -96,7 +98,8 @@ export const userRoleCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(userRoleZodSchemas.insert) }),
     outputSchema: z.array(userRoleZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(userRole).values(input.data as UserRoleInsert[]).returning();
     return results as UserRoleSelect[];
   },
@@ -109,7 +112,8 @@ export const userRoleDeleteByPk = defineAction({
     paramsSchema: z.object({ userId: z.string(), roleId: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(userRole).where(and(eq(userRole.userId, input.userId), eq(userRole.roleId, input.roleId))).returning();
     return !!result;
   },
@@ -133,7 +137,8 @@ export const userRoleGetByUserId = defineAction({
     paramsSchema: z.object({ userId: z.string() }),
     outputSchema: z.array(z.string()),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const data = await db.select({ roleId: userRole.roleId }).from(userRole).where(eq(userRole.userId, input.userId));
     return data.map(d => d.roleId);
   },
@@ -147,7 +152,8 @@ export const userRoleSetByUserId = defineAction({
     bodySchema: z.object({ roleIds: z.array(z.string()) }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 删除该用户的所有角色关联
     await db.delete(userRole).where(eq(userRole.userId, input.userId));
     

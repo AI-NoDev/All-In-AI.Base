@@ -3,7 +3,7 @@
 	import { onMount, tick } from 'svelte';
 	import BaseNode, { type OutputHandle } from '../BaseNode.svelte';
 	import type { ClassifierNodeData, ClassifierOption } from './types.js';
-	import * as Avatar from "@qiyu-allinai/ui/components/avatar/index.js";
+	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
 

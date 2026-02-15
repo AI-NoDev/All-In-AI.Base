@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { userPost, userPostZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type UserPostSelect = typeof userPost.$inferSelect;
@@ -36,7 +35,8 @@ export const userPostGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(userPostZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -72,7 +72,8 @@ export const userPostGetByPk = defineAction({
     paramsSchema: z.object({ userId: z.string(), postId: z.string() }),
     outputSchema: userPostZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(userPost).where(and(eq(userPost.userId, input.userId), eq(userPost.postId, input.postId))).limit(1);
     return (result as UserPostSelect) ?? null;
   },
@@ -84,7 +85,8 @@ export const userPostCreate = defineAction({
     bodySchema: z.object({ data: userPostZodSchemas.insert }),
     outputSchema: userPostZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(userPost).values(input.data as UserPostInsert).returning();
     return result as UserPostSelect;
   },
@@ -96,7 +98,8 @@ export const userPostCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(userPostZodSchemas.insert) }),
     outputSchema: z.array(userPostZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(userPost).values(input.data as UserPostInsert[]).returning();
     return results as UserPostSelect[];
   },
@@ -109,7 +112,8 @@ export const userPostDeleteByPk = defineAction({
     paramsSchema: z.object({ userId: z.string(), postId: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(userPost).where(and(eq(userPost.userId, input.userId), eq(userPost.postId, input.postId))).returning();
     return !!result;
   },

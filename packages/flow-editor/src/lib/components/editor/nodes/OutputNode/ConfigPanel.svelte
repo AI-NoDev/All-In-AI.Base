@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { OutputNodeData, OutputVariable } from './types.js';
 	import { workflowState } from '$lib/components/editor/contexts/index.js';
-	import { Input } from '@qiyu-allinai/ui/components/input';
-	import { Button } from '@qiyu-allinai/ui/components/button';
+	import { Input } from '$lib/components/ui/input';
+	import { Button } from '$lib/components/ui/button';
 	import VariableSelect from '$lib/components/editor/components/VariableSelector/VariableSelect.svelte';
 	import Icon from '@iconify/svelte';
 

@@ -1,8 +1,8 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Sidebar from '@qiyu-allinai/ui/components/sidebar';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
-  import { Badge } from '@qiyu-allinai/ui/components/badge';
+  import * as Sidebar from '$lib/components/ui/sidebar';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Badge } from '$lib/components/ui/badge';
   import { tabsStore } from '@/lib/stores/tabs.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';

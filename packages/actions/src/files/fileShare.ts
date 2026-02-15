@@ -7,7 +7,6 @@
 import { z } from 'zod';
 import { eq, and, sql, inArray } from 'drizzle-orm';
 import { defineAction } from '../core/define';
-import db from '@qiyu-allinai/db/connect';
 import { file, folder } from '@qiyu-allinai/db/entities/knowledge';
 import { casbinRule, CASBIN_POLICY_TYPES } from '@qiyu-allinai/db/entities/system';
 
@@ -59,6 +58,7 @@ export const fileShareGetMyShared = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { limit, offset } = input;
     
     // Find resources created by current user that have been shared (have permission policies)
@@ -193,6 +193,7 @@ export const fileShareGetSharedWithMe = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { limit, offset } = input;
     const userSubject = `user:${context.currentUserId}`;
     

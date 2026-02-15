@@ -6,7 +6,7 @@
 
 import { z } from 'zod';
 import { defineAction } from '../core/define';
-import db from '@qiyu-allinai/db/connect';
+import type { DrizzleDB } from '../core/types';
 import { 
   FilePermissionAdapter, 
   type FilePermission,
@@ -17,7 +17,7 @@ import {
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // 创建适配器实例
-const getAdapter = () => new FilePermissionAdapter(db as PostgresJsDatabase);
+const getAdapter = (db: DrizzleDB) => new FilePermissionAdapter(db as PostgresJsDatabase);
 
 // ============ Schema 定义 ============
 
@@ -68,8 +68,9 @@ export const filePermissionGetForResource = defineAction({
       effect: effectSchema,
     })),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     return adapter.getPermissionsForResource(
       input.resourceType as ResourceType,
       input.resourceId
@@ -99,8 +100,9 @@ export const filePermissionSetForResource = defineAction({
     }),
     outputSchema: z.object({ success: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     await adapter.setPermissionsForResource(
       input.resourceType as ResourceType,
       input.resourceId,
@@ -138,8 +140,9 @@ export const filePermissionAdd = defineAction({
     }),
     outputSchema: z.object({ success: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     await adapter.addPermission({
       resourceType: input.resourceType as ResourceType,
       resourceId: input.resourceId,
@@ -174,8 +177,9 @@ export const filePermissionRemove = defineAction({
     }),
     outputSchema: z.object({ success: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     await adapter.removePermission({
       resourceType: input.resourceType as ResourceType,
       resourceId: input.resourceId,
@@ -208,8 +212,9 @@ export const filePermissionCheck = defineAction({
     }),
     outputSchema: z.object({ allowed: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     const allowed = await adapter.checkPermission(
       input.userId,
       input.resourceType as ResourceType,
@@ -240,7 +245,8 @@ export const filePermissionGetEffective = defineAction({
     outputSchema: z.array(effectivePermissionSchema),
   },
   execute: async (input, context) => {
-    const adapter = getAdapter();
+    const { db } = context;
+    const adapter = getAdapter(db);
     return adapter.getEffectivePermissions(
       context.currentUserId,
       input.resourceType as ResourceType,
@@ -269,8 +275,9 @@ export const filePermissionSetParent = defineAction({
     }),
     outputSchema: z.object({ success: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     await adapter.setResourceParent(
       input.resourceType as ResourceType,
       input.resourceId,
@@ -301,8 +308,9 @@ export const filePermissionCopy = defineAction({
     }),
     outputSchema: z.object({ success: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     await adapter.copyPermissions(
       input.sourceType as ResourceType,
       input.sourceId,
@@ -332,8 +340,9 @@ export const filePermissionDeleteAll = defineAction({
     }),
     outputSchema: z.object({ success: z.boolean() }),
   },
-  execute: async (input) => {
-    const adapter = getAdapter();
+  execute: async (input, context) => {
+    const { db } = context;
+    const adapter = getAdapter(db);
     await adapter.deleteResourcePermissions(
       input.resourceType as ResourceType,
       input.resourceId

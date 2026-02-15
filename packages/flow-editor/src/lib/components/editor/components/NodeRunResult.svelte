@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { NodeRunData, NodeRunStatus } from '$lib/types/index.js';
-	import { Button } from '@qiyu-allinai/ui/components/button';
+	import { Button } from '$lib/components/ui/button';
 	import { toast } from 'svelte-sonner';
 
 	interface Props {

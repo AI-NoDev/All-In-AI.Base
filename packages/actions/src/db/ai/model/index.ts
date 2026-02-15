@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { model, modelZodSchemas } from '@qiyu-allinai/db/entities/ai';
 
 type ModelSelect = typeof model.$inferSelect;
@@ -40,7 +39,8 @@ export const modelGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(modelZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -73,7 +73,8 @@ export const modelGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: modelZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(model).where(eq(model.id, input.id)).limit(1);
     return (result as ModelSelect) ?? null;
   },
@@ -85,7 +86,8 @@ export const modelCreate = defineAction({
     bodySchema: z.object({ data: modelZodSchemas.insert }),
     outputSchema: modelZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(model).values(input.data as ModelInsert).returning();
     return result as ModelSelect;
   },
@@ -97,7 +99,8 @@ export const modelCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(modelZodSchemas.insert) }),
     outputSchema: z.array(modelZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(model).values(input.data as ModelInsert[]).returning();
     return results as ModelSelect[];
   },
@@ -110,7 +113,8 @@ export const modelUpdate = defineAction({
     bodySchema: z.object({ data: modelZodSchemas.update }),
     outputSchema: modelZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(model).set(input.data as Partial<ModelInsert>).where(eq(model.id, input.id)).returning();
     return result as ModelSelect;
   },
@@ -122,7 +126,8 @@ export const modelUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: modelZodSchemas.update }),
     outputSchema: z.array(modelZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: ModelSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(model).set(input.data as Partial<ModelInsert>).where(eq(model.id, id)).returning();
@@ -138,7 +143,8 @@ export const modelDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(model).where(eq(model.id, input.id)).returning();
     return !!result;
   },

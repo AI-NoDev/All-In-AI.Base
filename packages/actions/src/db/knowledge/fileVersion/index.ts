@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, ilike, and, sql, inArray, gte, lte, asc, desc } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { fileVersion, fileVersionZodSchemas } from '@qiyu-allinai/db/entities/knowledge';
 
 type FileVersionSelect = typeof fileVersion.$inferSelect;
@@ -41,7 +40,8 @@ export const fileVersionGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(fileVersionZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -84,7 +84,8 @@ export const fileVersionGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: fileVersionZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(fileVersion).where(eq(fileVersion.id, input.id)).limit(1);
     return (result as FileVersionSelect) ?? null;
   },
@@ -96,7 +97,8 @@ export const fileVersionCreate = defineAction({
     bodySchema: z.object({ data: fileVersionZodSchemas.insert }),
     outputSchema: fileVersionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(fileVersion).values(input.data as FileVersionInsert).returning();
     return result as FileVersionSelect;
   },
@@ -108,7 +110,8 @@ export const fileVersionCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(fileVersionZodSchemas.insert) }),
     outputSchema: z.array(fileVersionZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(fileVersion).values(input.data as FileVersionInsert[]).returning();
     return results as FileVersionSelect[];
   },
@@ -121,7 +124,8 @@ export const fileVersionUpdate = defineAction({
     bodySchema: z.object({ data: fileVersionZodSchemas.update }),
     outputSchema: fileVersionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(fileVersion).set(input.data as Partial<FileVersionInsert>).where(eq(fileVersion.id, input.id)).returning();
     return result as FileVersionSelect;
   },
@@ -133,7 +137,8 @@ export const fileVersionUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: fileVersionZodSchemas.update }),
     outputSchema: z.array(fileVersionZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: FileVersionSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(fileVersion).set(input.data as Partial<FileVersionInsert>).where(eq(fileVersion.id, id)).returning();
@@ -149,7 +154,8 @@ export const fileVersionDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(fileVersion).where(eq(fileVersion.id, input.id)).returning();
     return !!result;
   },

@@ -4,10 +4,10 @@
   import LogoutIcon from '@iconify-svelte/tdesign/logout';
   import NotificationIcon from '@iconify-svelte/tdesign/notification';
   import UserCircleIcon from '@iconify-svelte/tdesign/user-circle';
-  import * as Avatar from '@qiyu-allinai/ui/components/avatar';
-  import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
-  import * as Sidebar from '@qiyu-allinai/ui/components/sidebar';
+  import * as Avatar from '$lib/components/ui/avatar';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import * as Sidebar from '$lib/components/ui/sidebar';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
 

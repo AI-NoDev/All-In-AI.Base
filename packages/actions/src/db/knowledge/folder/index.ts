@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, ilike, sql, inArray, gte, lte, asc, desc } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { folder, folderZodSchemas } from '@qiyu-allinai/db/entities/knowledge';
 
 type FolderSelect = typeof folder.$inferSelect;
@@ -40,7 +39,8 @@ export const folderGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(folderZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -84,7 +84,8 @@ export const folderGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: folderZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(folder).where(and(eq(folder.id, input.id), isNull(folder.deletedAt))).limit(1);
     return (result as FolderSelect) ?? null;
   },
@@ -97,6 +98,7 @@ export const folderCreate = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 应用层唯一性检查：同一用户、同一父目录下不能有同名文件夹（排除已删除的）
     const existingConditions = [
       isNull(folder.deletedAt),
@@ -139,7 +141,8 @@ export const folderCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(folderZodSchemas.insert) }),
     outputSchema: z.array(folderZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(folder).values(input.data as FolderInsert[]).returning();
     return results as FolderSelect[];
   },
@@ -152,7 +155,8 @@ export const folderUpdate = defineAction({
     bodySchema: z.object({ data: folderZodSchemas.update }),
     outputSchema: folderZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const updateData = { ...input.data } as Partial<FolderInsert>;
     
     // If parentId is being updated, recalculate path
@@ -178,7 +182,8 @@ export const folderUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: folderZodSchemas.update }),
     outputSchema: z.array(folderZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: FolderSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(folder).set(input.data as Partial<FolderInsert>).where(and(eq(folder.id, id), isNull(folder.deletedAt))).returning();
@@ -195,6 +200,7 @@ export const folderDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(folder).set({ 
       deletedAt: new Date().toISOString(), 
       deletedById: context.currentUserId,

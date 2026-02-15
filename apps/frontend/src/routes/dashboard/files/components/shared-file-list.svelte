@@ -1,8 +1,8 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import { Button } from '$lib/components/ui/button';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Skeleton } from '$lib/components/ui/skeleton';
   import { FileIcon } from '@qiyu-allinai/file-icons';
   import type { SharedFolderItem, SharedFileItem, FileViewMode } from '@/lib/stores/knowledge.svelte';
 

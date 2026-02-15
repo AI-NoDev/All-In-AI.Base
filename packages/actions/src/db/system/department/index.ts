@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, ilike, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type DepartmentSelect = typeof department.$inferSelect;
@@ -41,7 +40,8 @@ export const departmentGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(departmentZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -86,7 +86,8 @@ export const departmentGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: departmentZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(department).where(and(eq(department.id, input.id), isNull(department.deletedAt))).limit(1);
     return (result as DepartmentSelect) ?? null;
   },
@@ -98,7 +99,8 @@ export const departmentCreate = defineAction({
     bodySchema: z.object({ data: departmentZodSchemas.insert }),
     outputSchema: departmentZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(department).values(input.data as DepartmentInsert).returning();
     return result as DepartmentSelect;
   },
@@ -110,7 +112,8 @@ export const departmentCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(departmentZodSchemas.insert) }),
     outputSchema: z.array(departmentZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(department).values(input.data as DepartmentInsert[]).returning();
     return results as DepartmentSelect[];
   },
@@ -123,7 +126,8 @@ export const departmentUpdate = defineAction({
     bodySchema: z.object({ data: departmentZodSchemas.update }),
     outputSchema: departmentZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(department).set(input.data as Partial<DepartmentInsert>).where(and(eq(department.id, input.id), isNull(department.deletedAt))).returning();
     return result as DepartmentSelect;
   },
@@ -135,7 +139,8 @@ export const departmentUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: departmentZodSchemas.update }),
     outputSchema: z.array(departmentZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: DepartmentSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(department).set(input.data as Partial<DepartmentInsert>).where(and(eq(department.id, id), isNull(department.deletedAt))).returning();
@@ -152,6 +157,7 @@ export const departmentDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(department).set({ 
       deletedAt: new Date().toISOString(), 
       deletedById: context.currentUserId,

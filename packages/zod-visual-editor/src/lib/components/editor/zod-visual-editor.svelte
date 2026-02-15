@@ -2,10 +2,10 @@
   import type { Snippet } from 'svelte';
   import { Plus, Code, LayoutGrid, FileCode } from '@lucide/svelte';
   import Icon from '@iconify/svelte';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import * as Card from '@qiyu-allinai/ui/components/card';
-  import * as Popover from '@qiyu-allinai/ui/components/popover';
-  import * as ToggleGroup from '@qiyu-allinai/ui/components/toggle-group';
+  import { Button } from '$lib/components/ui/button';
+  import * as Card from '$lib/components/ui/card';
+  import * as Popover from '$lib/components/ui/popover';
+  import * as ToggleGroup from '$lib/components/ui/toggle-group';
   import { DndContext, type DragEndEvent } from '@dnd-kit-svelte/core';
   import { SortableContext, arrayMove } from '@dnd-kit-svelte/sortable';
   import FieldItem from './field-item.svelte';

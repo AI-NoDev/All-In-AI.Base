@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { eq, and, isNull, inArray, like } from 'drizzle-orm';
 import { defineAction } from '../core/define';
-import db from '@qiyu-allinai/db/connect';
 import { file, fileZodSchemas, folder, folderZodSchemas, fileVersion } from '@qiyu-allinai/db/entities/knowledge';
 import {
   uploadFile,
@@ -48,6 +47,7 @@ export const fileCheckExists = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const folderId = input.folderId || null;
     
     // 构建文件夹条件
@@ -112,6 +112,7 @@ export const fileUpload = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const folderId = input.folderId || null;
     
     // 检查文件是否已存在
@@ -196,6 +197,7 @@ export const fileUploadForce = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const folderId = input.folderId || null;
     const buffer = Buffer.from(input.content, 'base64');
     const ext = input.name.split('.').pop() || '';
@@ -419,6 +421,7 @@ export const fileConfirmUpload = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const ext = input.name.split('.').pop() || '';
 
     const [result] = await db.insert(file).values({
@@ -457,7 +460,8 @@ export const fileGetDownloadUrl = defineAction({
       expiresAt: z.string(),
     }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -538,7 +542,8 @@ export const fileGetTextContent = defineAction({
       folderId: z.string().nullable(),
     }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -582,7 +587,8 @@ export const fileGetContent = defineAction({
       mimeType: z.string().nullable(),
     }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -617,6 +623,7 @@ export const fileSaveContent = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -659,6 +666,7 @@ export const fileCopy = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -712,6 +720,7 @@ export const fileCopyAsDuplicate = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -798,6 +807,7 @@ export const fileMove = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [fileRecord] = await db.select().from(file)
       .where(and(eq(file.id, input.id), isNull(file.deletedAt)))
       .limit(1);
@@ -844,6 +854,7 @@ export const fileRename = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const ext = input.name.split('.').pop() || '';
 
     const [result] = await db.update(file)
@@ -879,6 +890,7 @@ export const fileDelete = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(file)
       .set({
         deletedAt: new Date().toISOString(),
@@ -908,6 +920,7 @@ export const fileDeleteMany = defineAction({
     outputSchema: z.number(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const results = await db.update(file)
       .set({
         deletedAt: new Date().toISOString(),
@@ -937,6 +950,7 @@ export const fileUpdateDescription = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(file)
       .set({
         description: input.description,
@@ -974,6 +988,7 @@ export const filesFolderCreate = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 构建路径
     let path = '/';
     if (input.parentId) {
@@ -1017,6 +1032,7 @@ export const filesFolderRename = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(folder)
       .set({
         name: input.name,
@@ -1052,6 +1068,7 @@ export const filesFolderUpdateStyle = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(folder)
       .set({
         icon: input.icon,
@@ -1085,6 +1102,7 @@ export const filesFolderUpdateDescription = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(folder)
       .set({
         description: input.description,
@@ -1117,6 +1135,7 @@ export const filesFolderUpdateOrder = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(folder)
       .set({
         orderNum: input.orderNum,
@@ -1149,6 +1168,7 @@ export const filesFolderDelete = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const now = new Date().toISOString();
 
     // 删除文件夹
@@ -1216,6 +1236,7 @@ export const filesFolderMove = defineAction({
     outputSchema: folderZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 不能移动到自己或子文件夹
     if (input.targetParentId === input.id) {
       throw new Error('error.files.cannotMoveToSelf');
@@ -1266,7 +1287,8 @@ export const fileVersionDownload = defineAction({
       expiresAt: z.string(),
     }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 获取版本记录
     const [versionRecord] = await db.select().from(fileVersion)
       .where(eq(fileVersion.id, input.id))
@@ -1319,6 +1341,7 @@ export const fileVersionRestore = defineAction({
     outputSchema: fileZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 获取版本记录
     const [versionRecord] = await db.select().from(fileVersion)
       .where(eq(fileVersion.id, input.id))

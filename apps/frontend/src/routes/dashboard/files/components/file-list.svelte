@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { FileIcon } from '@qiyu-allinai/file-icons';
-  import * as Table from '@qiyu-allinai/ui/components/table';
-  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
-  import { Badge } from '@qiyu-allinai/ui/components/badge';
+  import * as Table from '$lib/components/ui/table';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Badge } from '$lib/components/ui/badge';
   import FileContextMenu from './file-context-menu.svelte';
   import type { FolderItem, FileItem } from './types';
 

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { agentSession, agentSessionZodSchemas } from '@qiyu-allinai/db/entities/ai';
 
 type AgentSessionSelect = typeof agentSession.$inferSelect;
@@ -43,7 +42,8 @@ export const agentSessionGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(agentSessionZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [isNull(agentSession.deletedAt)];
     
@@ -80,7 +80,8 @@ export const agentSessionGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: agentSessionZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(agentSession).where(and(eq(agentSession.id, input.id), isNull(agentSession.deletedAt))).limit(1);
     return (result as AgentSessionSelect) ?? null;
   },
@@ -92,7 +93,8 @@ export const agentSessionCreate = defineAction({
     bodySchema: z.object({ data: agentSessionZodSchemas.insert }),
     outputSchema: agentSessionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(agentSession).values(input.data as AgentSessionInsert).returning();
     return result as AgentSessionSelect;
   },
@@ -105,7 +107,8 @@ export const agentSessionUpdate = defineAction({
     bodySchema: z.object({ data: agentSessionZodSchemas.update }),
     outputSchema: agentSessionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(agentSession).set(input.data as Partial<AgentSessionInsert>).where(and(eq(agentSession.id, input.id), isNull(agentSession.deletedAt))).returning();
     return result as AgentSessionSelect;
   },
@@ -118,7 +121,8 @@ export const agentSessionArchive = defineAction({
     bodySchema: z.object({ isArchived: z.boolean() }),
     outputSchema: agentSessionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(agentSession).set({ 
       isArchived: input.isArchived,
       updatedAt: new Date().toISOString()
@@ -134,7 +138,8 @@ export const agentSessionPin = defineAction({
     bodySchema: z.object({ isPinned: z.boolean() }),
     outputSchema: agentSessionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(agentSession).set({ 
       isPinned: input.isPinned,
       updatedAt: new Date().toISOString()
@@ -150,6 +155,7 @@ export const agentSessionDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(agentSession).set({ 
       deletedAt: new Date().toISOString(), 
       deletedById: context.currentUserId,

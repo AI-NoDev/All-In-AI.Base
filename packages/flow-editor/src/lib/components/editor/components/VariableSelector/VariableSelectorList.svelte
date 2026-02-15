@@ -2,7 +2,7 @@
 	import { workflowState, START_NODE_ID } from '$lib/components/editor/contexts/index.js';
 	import { FIELD_TYPE_DATA_TYPES, type InputField, type StartNodeData } from '../../nodes/StartNode/types.js';
 	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, type Variable, type VariableGroup } from './types.js';
-	import { Input } from '@qiyu-allinai/ui/components/input';
+	import { Input } from '$lib/components/ui/input';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

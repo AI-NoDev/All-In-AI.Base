@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { dictGroup, dictGroupZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type DictGroupSelect = typeof dictGroup.$inferSelect;
@@ -41,7 +40,8 @@ export const dictGroupGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(dictGroupZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -82,7 +82,8 @@ export const dictGroupGetByPk = defineAction({
     paramsSchema: z.object({ key: z.string().min(1).max(100) }),
     outputSchema: dictGroupZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(dictGroup).where(eq(dictGroup.key, input.key)).limit(1);
     return (result as DictGroupSelect) ?? null;
   },
@@ -94,7 +95,8 @@ export const dictGroupCreate = defineAction({
     bodySchema: z.object({ data: dictGroupZodSchemas.insert }),
     outputSchema: dictGroupZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(dictGroup).values(input.data as DictGroupInsert).returning();
     return result as DictGroupSelect;
   },
@@ -107,7 +109,8 @@ export const dictGroupCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(dictGroupZodSchemas.insert) }),
     outputSchema: z.array(dictGroupZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(dictGroup).values(input.data as DictGroupInsert[]).returning();
     return results as DictGroupSelect[];
   },
@@ -120,7 +123,8 @@ export const dictGroupUpdate = defineAction({
     bodySchema: z.object({ data: dictGroupZodSchemas.update }),
     outputSchema: dictGroupZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(dictGroup).set(input.data as Partial<DictGroupInsert>).where(eq(dictGroup.key, input.key)).returning();
     return result as DictGroupSelect;
   },
@@ -132,7 +136,8 @@ export const dictGroupUpdateMany = defineAction({
     bodySchema: z.object({ keys: z.array(z.string().min(1).max(100)), data: dictGroupZodSchemas.update }),
     outputSchema: z.array(dictGroupZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: DictGroupSelect[] = [];
     for (const key of input.keys) {
       const [result] = await db.update(dictGroup).set(input.data as Partial<DictGroupInsert>).where(eq(dictGroup.key, key)).returning();
@@ -148,7 +153,8 @@ export const dictGroupDeleteByPk = defineAction({
     paramsSchema: z.object({ key: z.string().min(1).max(100) }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(dictGroup).where(eq(dictGroup.key, input.key)).returning();
     return !!result;
   },

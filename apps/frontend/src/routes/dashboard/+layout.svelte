@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { goto } from "$app/navigation";
-  import * as Sidebar from '@qiyu-allinai/ui/components/sidebar';
+  import * as Sidebar from '$lib/components/ui/sidebar';
   import SideHeader from './components/SideHeader.svelte';
   import SideNav from './components/SideNav.svelte';
   import SiteHeader from './components/SiteHeader.svelte';
@@ -11,6 +11,7 @@
 
   let { children } = $props();
   let isChecking = $state(true);
+  let isOpen = $state(true);
 
   onMount(async () => {
     // 检查是否已登录
@@ -53,6 +54,10 @@
 {:else}
   <Sidebar.Provider
     style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
+    open={isOpen}
+    onOpenChange={(newOpen) => {
+      isOpen = newOpen;
+    }}
   >
     <Sidebar.Root collapsible="offcanvas" variant="inset">
       <Sidebar.Header>

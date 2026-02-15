@@ -1,16 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '@qiyu-allinai/ui/components/table';
-  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
-  import * as Select from '@qiyu-allinai/ui/components/select';
-  import * as Alert from '@qiyu-allinai/ui/components/alert';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Input } from '@qiyu-allinai/ui/components/input';
-  import { Label } from '@qiyu-allinai/ui/components/label';
-  import { Badge } from '@qiyu-allinai/ui/components/badge';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
-  import { Switch } from '@qiyu-allinai/ui/components/switch';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import * as Alert from '$lib/components/ui/alert';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Switch } from '$lib/components/ui/switch';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@qiyu-allinai/api';
   import { pages } from '@/lib/generated-pages';

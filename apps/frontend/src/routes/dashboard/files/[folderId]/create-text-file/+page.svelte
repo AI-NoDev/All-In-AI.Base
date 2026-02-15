@@ -2,9 +2,9 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Input } from '@qiyu-allinai/ui/components/input';
-  import { Label } from '@qiyu-allinai/ui/components/label';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
   import { MarkdownEditor } from '@/lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
 

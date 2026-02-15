@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, ilike, sql, inArray, gte, lte, asc, desc } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { file, fileZodSchemas } from '@qiyu-allinai/db/entities/knowledge';
 
 type FileSelect = typeof file.$inferSelect;
@@ -45,7 +44,8 @@ export const fileGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(fileZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -94,7 +94,8 @@ export const fileGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: fileZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(file).where(and(eq(file.id, input.id), isNull(file.deletedAt))).limit(1);
     return (result as FileSelect) ?? null;
   },
@@ -106,7 +107,8 @@ export const fileCreate = defineAction({
     bodySchema: z.object({ data: fileZodSchemas.insert }),
     outputSchema: fileZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(file).values(input.data as FileInsert).returning();
     return result as FileSelect;
   },
@@ -118,7 +120,8 @@ export const fileCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(fileZodSchemas.insert) }),
     outputSchema: z.array(fileZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(file).values(input.data as FileInsert[]).returning();
     return results as FileSelect[];
   },
@@ -131,7 +134,8 @@ export const fileUpdate = defineAction({
     bodySchema: z.object({ data: fileZodSchemas.update }),
     outputSchema: fileZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(file).set(input.data as Partial<FileInsert>).where(and(eq(file.id, input.id), isNull(file.deletedAt))).returning();
     return result as FileSelect;
   },
@@ -143,7 +147,8 @@ export const fileUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: fileZodSchemas.update }),
     outputSchema: z.array(fileZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: FileSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(file).set(input.data as Partial<FileInsert>).where(and(eq(file.id, id), isNull(file.deletedAt))).returning();
@@ -160,6 +165,7 @@ export const fileDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(file).set({ 
       deletedAt: new Date().toISOString(), 
       deletedById: context.currentUserId,

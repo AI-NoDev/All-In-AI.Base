@@ -1,15 +1,15 @@
 <script lang="ts">
-  import * as Card from '@qiyu-allinai/ui/components/card';
+  import * as Card from '$lib/components/ui/card';
   import {
     FieldGroup,
     Field,
     FieldLabel,
     FieldDescription,
     FieldSeparator
-  } from '@qiyu-allinai/ui/components/field';
-  import { Input } from '@qiyu-allinai/ui/components/input';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { cn } from '@/lib/utils';
+  } from '$lib/components/ui/field';
+  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/button';
+  import { cn } from '$lib/utils';
   import type { HTMLAttributes } from 'svelte/elements';
   import loginImg from '@/lib/assets/login-img.png';
   import { goto } from '$app/navigation';

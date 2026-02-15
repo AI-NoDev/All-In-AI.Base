@@ -1,15 +1,15 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
-  import * as Table from '@qiyu-allinai/ui/components/table';
-  import * as Pagination from '@qiyu-allinai/ui/components/pagination';
-  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Badge } from '@qiyu-allinai/ui/components/badge';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
-  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
-  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
-  import { authStore } from '@/lib/storess/auth.svelte';
+  import * as Table from '$lib/components/ui/table';
+  import * as Pagination from '$lib/components/ui/pagination';
+  import * as Tooltip from '$lib/components/ui/tooltip';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { authStore } from '@/lib/stores/auth.svelte';
 
   interface User {
     id: string;

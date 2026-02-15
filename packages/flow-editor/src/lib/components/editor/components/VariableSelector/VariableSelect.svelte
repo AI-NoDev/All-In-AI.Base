@@ -2,7 +2,7 @@
 	import { workflowState, START_NODE_ID } from '$lib/components/editor/contexts/index.js';
 	import { FIELD_TYPE_DATA_TYPES, type InputField, type StartNodeData } from '../../nodes/StartNode/types.js';
 	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, type Variable, type VariableGroup } from './types.js';
-	import * as Select from '@qiyu-allinai/ui/components/select';
+	import * as Select from '$lib/components/ui/select';
 	import Icon from '@iconify/svelte';
 
 	type SingleProps = {

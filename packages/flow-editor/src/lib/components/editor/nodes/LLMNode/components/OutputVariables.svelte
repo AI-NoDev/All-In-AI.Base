@@ -2,9 +2,9 @@
 	import { BUILTIN_OUTPUT_VARIABLES } from '../types.js';
 	import type { RootSchema, Field } from '../schema-types.js';
 	import type { UnionSchema, LiteralSchema, ObjectSchema, ArraySchema } from '@qiyu-allinai/zod-visual-editor';
-	import { Button } from '@qiyu-allinai/ui/components/button';
-	import { Switch } from '@qiyu-allinai/ui/components/switch';
-	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+	import { Button } from '$lib/components/ui/button';
+	import { Switch } from '$lib/components/ui/switch';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

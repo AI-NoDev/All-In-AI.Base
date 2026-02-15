@@ -17,8 +17,8 @@
   import interactive from './interactive';
   import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
   import { useStore, useSvelteFlow } from '@xyflow/svelte';
-  import { Button } from "@qiyu-allinai/ui/components/button";
-  import * as ButtonGroup from "@qiyu-allinai/ui/components/button-group";
+  import { Button } from "$lib/components/ui/button";
+  import * as ButtonGroup from "$lib/components/ui/button-group";
   import Icon from "@iconify/svelte";
 
   let {

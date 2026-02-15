@@ -1,13 +1,13 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Sheet from '@qiyu-allinai/ui/components/sheet';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Input } from '@qiyu-allinai/ui/components/input';
-  import { Label } from '@qiyu-allinai/ui/components/label';
-  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
-  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
-  import { Avatar, AvatarFallback, AvatarImage } from '@qiyu-allinai/ui/components/avatar';
-  import { Badge } from '@qiyu-allinai/ui/components/badge';
+  import * as Sheet from '$lib/components/ui/sheet';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
+  import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
 
   interface DeptNode {

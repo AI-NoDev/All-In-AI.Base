@@ -42,9 +42,9 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
-  import * as Select from '@qiyu-allinai/ui/components/select';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Input } from '@qiyu-allinai/ui/components/input';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { SelectByDictGroup } from '@/lib/components/common';
 

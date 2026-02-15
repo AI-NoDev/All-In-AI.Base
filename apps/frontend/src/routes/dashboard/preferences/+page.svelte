@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Label } from '@qiyu-allinai/ui/components/label';
-  import { Separator } from '@qiyu-allinai/ui/components/separator';
-  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
-  import * as Select from '@qiyu-allinai/ui/components/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Label } from '$lib/components/ui/label';
+  import { Separator } from '$lib/components/ui/separator';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import * as Select from '$lib/components/ui/select';
   import { setMode, mode } from 'mode-watcher';
   import { 
     preferencesStore, 

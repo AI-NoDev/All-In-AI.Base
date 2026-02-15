@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { eq, and, sql, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import db from '@qiyu-allinai/db/connect';
 import { casbinRule, casbinRuleZodSchemas, CASBIN_POLICY_TYPES } from '@qiyu-allinai/db/entities/system';
 
 type CasbinRuleSelect = typeof casbinRule.$inferSelect;
@@ -21,7 +20,8 @@ export const casbinRuleGetRolePermissions = defineAction({
     paramsSchema: z.object({ roleKey: z.string() }),
     outputSchema: z.array(z.string()),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const roleSubject = `role:${input.roleKey}`;
     const rules = await db
       .select({ v1: casbinRule.v1 })
@@ -49,7 +49,8 @@ export const casbinRuleSetRolePermissions = defineAction({
     bodySchema: z.object({ permissionCodes: z.array(z.string()) }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const roleSubject = `role:${input.roleKey}`;
     
     // 删除该角色的所有权限策略
@@ -88,7 +89,8 @@ export const casbinRuleGetUserRoles = defineAction({
     paramsSchema: z.object({ userId: z.string() }),
     outputSchema: z.array(z.string()),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const userSubject = `user:${input.userId}`;
     const rules = await db
       .select({ v1: casbinRule.v1 })
@@ -120,7 +122,8 @@ export const casbinRuleSetUserRoles = defineAction({
     bodySchema: z.object({ roleKeys: z.array(z.string()) }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const userSubject = `user:${input.userId}`;
     
     // 删除该用户的所有角色分配

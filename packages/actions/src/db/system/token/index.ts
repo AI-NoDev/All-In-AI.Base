@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { token, tokenZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type TokenSelect = typeof token.$inferSelect;
@@ -41,7 +40,8 @@ export const tokenGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(tokenZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -82,7 +82,8 @@ export const tokenGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: tokenZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(token).where(eq(token.id, input.id)).limit(1);
     return (result as TokenSelect) ?? null;
   },
@@ -94,7 +95,8 @@ export const tokenCreate = defineAction({
     bodySchema: z.object({ data: tokenZodSchemas.insert }),
     outputSchema: tokenZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(token).values(input.data as TokenInsert).returning();
     return result as TokenSelect;
   },
@@ -108,7 +110,8 @@ export const tokenUpdate = defineAction({
     bodySchema: z.object({ data: tokenZodSchemas.update }),
     outputSchema: tokenZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(token).set(input.data as Partial<TokenInsert>).where(eq(token.id, input.id)).returning();
     return result as TokenSelect;
   },
@@ -120,7 +123,8 @@ export const tokenDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(token).where(eq(token.id, input.id)).returning();
     return !!result;
   },

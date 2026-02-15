@@ -6,6 +6,7 @@ export type {
   ActionDefinition,
   ActionRegistry,
   MergedInput,
+  DrizzleDB,
 } from './types';
 
 // Define

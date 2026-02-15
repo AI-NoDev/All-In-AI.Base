@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { MOCK_MODELS } from '../types.js';
-	import * as Select from '@qiyu-allinai/ui/components/select';
+	import * as Select from '$lib/components/ui/select';
 	import Icon from '@iconify/svelte';
 
 	interface ModelConfig {

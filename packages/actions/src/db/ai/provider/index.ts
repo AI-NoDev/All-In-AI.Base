@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { provider, providerZodSchemas } from '@qiyu-allinai/db/entities/ai';
 
 type ProviderSelect = typeof provider.$inferSelect;
@@ -36,7 +35,8 @@ export const providerGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(providerZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -65,7 +65,8 @@ export const providerGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: providerZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(provider).where(eq(provider.id, input.id)).limit(1);
     return (result as ProviderSelect) ?? null;
   },
@@ -77,7 +78,8 @@ export const providerCreate = defineAction({
     bodySchema: z.object({ data: providerZodSchemas.insert }),
     outputSchema: providerZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(provider).values(input.data as ProviderInsert).returning();
     return result as ProviderSelect;
   },
@@ -89,7 +91,8 @@ export const providerCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(providerZodSchemas.insert) }),
     outputSchema: z.array(providerZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(provider).values(input.data as ProviderInsert[]).returning();
     return results as ProviderSelect[];
   },
@@ -102,7 +105,8 @@ export const providerUpdate = defineAction({
     bodySchema: z.object({ data: providerZodSchemas.update }),
     outputSchema: providerZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(provider).set(input.data as Partial<ProviderInsert>).where(eq(provider.id, input.id)).returning();
     return result as ProviderSelect;
   },
@@ -114,7 +118,8 @@ export const providerUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: providerZodSchemas.update }),
     outputSchema: z.array(providerZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: ProviderSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(provider).set(input.data as Partial<ProviderInsert>).where(eq(provider.id, id)).returning();
@@ -130,7 +135,8 @@ export const providerDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(provider).where(eq(provider.id, input.id)).returning();
     return !!result;
   },

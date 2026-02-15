@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { conversation, conversationZodSchemas } from '@qiyu-allinai/db/entities/im';
 
 type ConversationSelect = typeof conversation.$inferSelect;
@@ -42,7 +41,8 @@ export const conversationGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(conversationZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [isNull(conversation.deletedAt)];
     
@@ -78,7 +78,8 @@ export const conversationGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: conversationZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(conversation).where(and(eq(conversation.id, input.id), isNull(conversation.deletedAt))).limit(1);
     return (result as ConversationSelect) ?? null;
   },
@@ -90,7 +91,8 @@ export const conversationCreate = defineAction({
     bodySchema: z.object({ data: conversationZodSchemas.insert }),
     outputSchema: conversationZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(conversation).values(input.data as ConversationInsert).returning();
     return result as ConversationSelect;
   },
@@ -103,7 +105,8 @@ export const conversationUpdate = defineAction({
     bodySchema: z.object({ data: conversationZodSchemas.update }),
     outputSchema: conversationZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(conversation).set(input.data as Partial<ConversationInsert>).where(and(eq(conversation.id, input.id), isNull(conversation.deletedAt))).returning();
     return result as ConversationSelect;
   },
@@ -116,6 +119,7 @@ export const conversationDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(conversation).set({ 
       deletedAt: new Date().toISOString(), 
       deletedById: context.currentUserId,
@@ -150,6 +154,7 @@ export const conversationFindOrCreatePrivate = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { targetUserId, targetUserName } = input;
     const currentUserId = context.currentUserId;
     
@@ -232,6 +237,7 @@ export const conversationCreateGroup = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { name, memberIds, avatar } = input;
     const currentUserId = context.currentUserId;
     
@@ -301,6 +307,7 @@ export const conversationDissolveGroup = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { id: conversationId } = input;
     const currentUserId = context.currentUserId;
     

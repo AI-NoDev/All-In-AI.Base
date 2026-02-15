@@ -4,7 +4,7 @@
 	import BaseNode from '../BaseNode.svelte';
 	import type { LLMNodeData, ExceptionHandling } from './types.js';
 	import { EXCEPTION_HANDLING_OPTIONS } from './types.js';
-	import * as Avatar from "@qiyu-allinai/ui/components/avatar/index.js";
+	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
 

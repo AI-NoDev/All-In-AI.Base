@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as ContextMenu from '@qiyu-allinai/ui/components/context-menu';
+  import * as ContextMenu from '$lib/components/ui/context-menu';
   import type { Snippet } from 'svelte';
   import type { FolderItem, FileItem } from './types';
 

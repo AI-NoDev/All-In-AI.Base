@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, isNull, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { menu, menuZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type MenuSelect = typeof menu.$inferSelect;
@@ -43,7 +42,8 @@ export const menuGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(menuZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -83,38 +83,44 @@ export const menuGetByPagination = defineAction({
 export const menuGetByPk = defineAction({
   meta: { name: 'system.menu.getByPk', displayName: '根据ID查询菜单', description: '根据主键ID查询单个菜单', tags: ['system', 'menu'], method: 'GET', path: '/api/system/menu/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: menuZodSchemas.select.nullable() },
-  execute: async (input, _context) => { const [result] = await db.select().from(menu).where(eq(menu.id, input.id)).limit(1); return (result as MenuSelect) ?? null; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.select().from(menu).where(eq(menu.id, input.id)).limit(1); return (result as MenuSelect) ?? null; },
 });
 
 export const menuCreate = defineAction({
   meta: { name: 'system.menu.create', displayName: '创建菜单', description: '创建单个菜单', tags: ['system', 'menu'], method: 'POST', path: '/api/system/menu' },
   schemas: { bodySchema: z.object({ data: menuZodSchemas.insert }), outputSchema: menuZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.insert(menu).values(input.data as MenuInsert).returning(); return result as MenuSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.insert(menu).values(input.data as MenuInsert).returning(); return result as MenuSelect; },
 });
 
 export const menuCreateMany = defineAction({
   meta: { name: 'system.menu.createMany', displayName: '批量创建菜单', description: '批量创建多个菜单', tags: ['system', 'menu'], method: 'POST', path: '/api/system/menu/batch' },
   schemas: { bodySchema: z.object({ data: z.array(menuZodSchemas.insert) }), outputSchema: z.array(menuZodSchemas.select) },
-  execute: async (input, _context) => { const results = await db.insert(menu).values(input.data as MenuInsert[]).returning(); return results as MenuSelect[]; },
+  execute: async (input, context) => {
+    const { db } = context; const results = await db.insert(menu).values(input.data as MenuInsert[]).returning(); return results as MenuSelect[]; },
 });
 
 
 export const menuUpdate = defineAction({
   meta: { name: 'system.menu.update', displayName: '更新菜单', description: '根据ID更新单个菜单', tags: ['system', 'menu'], method: 'PUT', path: '/api/system/menu/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: menuZodSchemas.update }), outputSchema: menuZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.update(menu).set(input.data as Partial<MenuInsert>).where(eq(menu.id, input.id)).returning(); return result as MenuSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.update(menu).set(input.data as Partial<MenuInsert>).where(eq(menu.id, input.id)).returning(); return result as MenuSelect; },
 });
 
 export const menuUpdateMany = defineAction({
   meta: { name: 'system.menu.updateMany', displayName: '批量更新菜单', description: '根据ID列表批量更新菜单', tags: ['system', 'menu'], method: 'PUT', path: '/api/system/menu/batch' },
   schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: menuZodSchemas.update }), outputSchema: z.array(menuZodSchemas.select) },
-  execute: async (input, _context) => { const results: MenuSelect[] = []; for (const id of input.ids) { const [result] = await db.update(menu).set(input.data as Partial<MenuInsert>).where(eq(menu.id, id)).returning(); if (result) results.push(result as MenuSelect); } return results; },
+  execute: async (input, context) => {
+    const { db } = context; const results: MenuSelect[] = []; for (const id of input.ids) { const [result] = await db.update(menu).set(input.data as Partial<MenuInsert>).where(eq(menu.id, id)).returning(); if (result) results.push(result as MenuSelect); } return results; },
 });
 
 export const menuDeleteByPk = defineAction({
   meta: { name: 'system.menu.deleteByPk', displayName: '删除菜单', description: '根据ID删除菜单', tags: ['system', 'menu'], method: 'DELETE', path: '/api/system/menu/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
-  execute: async (input, _context) => { const [result] = await db.delete(menu).where(eq(menu.id, input.id)).returning(); return !!result; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.delete(menu).where(eq(menu.id, input.id)).returning(); return !!result; },
 });
 
 

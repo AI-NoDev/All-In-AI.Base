@@ -2,7 +2,6 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import { SvelteKitPageMetaPlugin } from 'vite-plugin-sveltekit-page-meta';
-import { extendsAppPlugin } from 'vite-plugin-sveltekit-extends-app';
 
 export default defineConfig({
     plugins: [
@@ -12,20 +11,19 @@ export default defineConfig({
             output: 'src/lib/generated-pages.ts',
             ignore: [/components/],
         }),
-        // 扩展应用插件 - 自动同步 monorepo 扩展包的路由
-        // 示例配置：
-        // extendsAppPlugin({
-        //     apps: [
-        //         { package: '@qiyu-allinai/app-crm', basePath: '/dashboard/crm' },
-        //         { package: '@qiyu-allinai/app-erp', basePath: '/dashboard/erp' },
-        //     ],
-        // }),
-        extendsAppPlugin({
-            apps: [
-                { package: '@qiyu-allinai/app-server-monitor' }
-            ],
-        })
     ],
+    resolve: {
+        // 确保所有包使用同一个 Svelte 实例
+        dedupe: ['svelte', 'bits-ui', 'mode-watcher', 'svelte-toolbelt'],
+    },
+    ssr: {
+        // 不外部化这些包，确保 SSR 时使用同一实例
+        noExternal: ['bits-ui', 'mode-watcher', 'svelte-toolbelt'],
+    },
+    optimizeDeps: {
+        // 排除 svelte，避免预优化创建重复实例
+        exclude: ['svelte'],
+    },
     server: {
         proxy: {
             '/api': {

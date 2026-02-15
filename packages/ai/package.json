@@ -35,6 +35,6 @@
     "@ai-sdk/provider": "^3.0.6",
     "@ai-sdk/svelte": "^4.0.70",
     "ai": "^6.0.66",
-    "zod": "^4.3.6"
+    "zod": "catalog:"
   }
 }

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { conversationRead, conversationReadZodSchemas } from '@qiyu-allinai/db/entities/im';
 
 type ConversationReadSelect = typeof conversationRead.$inferSelect;
@@ -28,7 +27,8 @@ export const conversationReadGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(conversationReadZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, offset, limit } = input;
     const conditions = [];
     
@@ -53,7 +53,8 @@ export const conversationReadGetByPk = defineAction({
     paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
     outputSchema: conversationReadZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(conversationRead)
       .where(and(eq(conversationRead.conversationId, input.conversationId), eq(conversationRead.userId, input.userId))).limit(1);
     return (result as ConversationReadSelect) ?? null;
@@ -70,7 +71,8 @@ export const conversationReadMarkRead = defineAction({
     }),
     outputSchema: conversationReadZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { conversationId, userId, lastReadSeq } = input;
     
     // Upsert: insert or update
@@ -107,7 +109,8 @@ export const conversationReadIncrementUnread = defineAction({
     }),
     outputSchema: z.number(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { conversationId, userIds, increment } = input;
     
     // Update unread count for all specified users

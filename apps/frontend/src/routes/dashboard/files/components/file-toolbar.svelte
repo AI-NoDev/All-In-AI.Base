@@ -1,8 +1,8 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Separator } from '@qiyu-allinai/ui/components/separator';
-  import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu';
+  import { Button } from '$lib/components/ui/button';
+  import { Separator } from '$lib/components/ui/separator';
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
   interface Props {
     hasSelection: boolean;

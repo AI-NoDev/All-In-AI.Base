@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import type { DrizzleDB } from '../../../core/types';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { user, userZodSchemas, config } from '@qiyu-allinai/db/entities/system';
 
 type UserSelect = typeof user.$inferSelect & {
@@ -77,7 +77,8 @@ export const userGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(userZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -133,7 +134,8 @@ export const userGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: userZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(user).where(and(eq(user.id, input.id), isNull(user.deletedAt))).limit(1);
     return result ? ({
       ...result,
@@ -151,12 +153,13 @@ export const userCreate = defineAction({
     }),
     outputSchema: userZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { data } = input;
     
     // 生成盐值和哈希密码
     const salt = generateSalt();
-    const hashedPassword = await hashPassword(await getInitPassword(data.password), salt);
+    const hashedPassword = await hashPassword(await getInitPassword(db, data.password), salt);
     
     const [result] = await db.insert(user).values({
       ...data,
@@ -183,7 +186,8 @@ export const userCreateMany = defineAction({
     }),
     outputSchema: z.array(userZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const usersToInsert: UserInsert[] = [];
     
     for (const item of input.data) {
@@ -209,7 +213,7 @@ export const userCreateMany = defineAction({
 const SYSTEM_ADMIN_USER_TYPE = '00';
 
 // 检查是否是系统管理员
-async function checkIsSystemAdmin(userId: string): Promise<boolean> {
+async function checkIsSystemAdmin(db: DrizzleDB, userId: string): Promise<boolean> {
   const [result] = await db.select({ userType: user.userType })
     .from(user)
     .where(and(eq(user.id, userId), isNull(user.deletedAt)))
@@ -224,9 +228,10 @@ export const userUpdate = defineAction({
     bodySchema: z.object({ data: userZodSchemas.update }),
     outputSchema: userZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 检查是否是系统管理员
-    if (await checkIsSystemAdmin(input.id)) {
+    if (await checkIsSystemAdmin(db, input.id)) {
       throw new Error('error.system.admin.cannot.modify');
     }
     
@@ -245,10 +250,11 @@ export const userUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: userZodSchemas.update }),
     outputSchema: z.array(userZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 检查是否包含系统管理员
     for (const id of input.ids) {
-      if (await checkIsSystemAdmin(id)) {
+      if (await checkIsSystemAdmin(db, id)) {
         throw new Error('error.system.admin.cannot.modify');
       }
     }
@@ -273,8 +279,9 @@ export const userDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 检查是否是系统管理员
-    if (await checkIsSystemAdmin(input.id)) {
+    if (await checkIsSystemAdmin(db, input.id)) {
       throw new Error('error.system.admin.cannot.delete');
     }
     
@@ -298,7 +305,7 @@ export const userGetSchema = defineAction({
 });
 
 // 获取初始密码配置
-async function getInitPassword(pwd?: string | null): Promise<string> {
+async function getInitPassword(db: DrizzleDB, pwd?: string | null): Promise<string> {
   if(pwd) return pwd
   const [result] = await db.select({ value: config.value })
     .from(config)
@@ -314,13 +321,14 @@ export const userResetPassword = defineAction({
     outputSchema: z.object({ success: z.boolean() }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     // 检查是否是系统管理员
-    if (await checkIsSystemAdmin(input.id)) {
+    if (await checkIsSystemAdmin(db, input.id)) {
       throw new Error('error.system.admin.cannot.modify');
     }
     
     // 获取初始密码
-    const initPassword = await getInitPassword();
+    const initPassword = await getInitPassword(db);
     
     // 生成新的盐值和哈希密码
     const salt = generateSalt();

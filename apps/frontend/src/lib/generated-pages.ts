@@ -75,6 +75,7 @@ export const pages: PageMeta[] = [
     "path": "/dashboard/ai/models",
     "title": "模型管理",
     "icon": "mdi:brain",
+    "group": "智能体",
     "order": 10
   },
   {
@@ -153,16 +154,8 @@ export const pages: PageMeta[] = [
     "path": "/dashboard/ai/agents",
     "title": "智能体管理",
     "icon": "mdi:robot",
-    "group": "智能化",
+    "group": "智能体",
     "order": 30
-  },
-  {
-    "path": "/dashboard/app-server-monitor",
-    "title": "服务器监控",
-    "permission": "app-server-monitor:view",
-    "icon": "tdesign:server",
-    "group": "系统监控",
-    "order": 50
   },
   {
     "path": "/dashboard/preferences",
@@ -186,9 +179,6 @@ export const pages: PageMeta[] = [
     "permission": "dev:project-code:view",
     "icon": "tdesign:code",
     "order": 200
-  },
-  {
-    "path": "/dashboard/app-example"
   },
   {
     "path": "/dashboard/files",
@@ -251,7 +241,6 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
   '/dashboard/ai/agents': "智能体管理",
-  '/dashboard/app-server-monitor': "服务器监控",
   '/dashboard/preferences': "个性化",
   '/dashboard/system-config': "系统参数",
   '/dashboard/dev/project-code': "项目代码",
@@ -317,47 +306,20 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "order": 5
     }
   ],
-  "default": [
+  "智能体": [
     {
       "path": "/dashboard/ai/models",
       "title": "模型管理",
       "icon": "mdi:brain",
+      "group": "智能体",
       "order": 10
     },
     {
-      "path": "/dashboard/dev/project-code",
-      "title": "项目代码",
-      "permission": "dev:project-code:view",
-      "icon": "tdesign:code",
-      "order": 200
-    },
-    {
-      "path": "/dashboard/app-example"
-    },
-    {
-      "path": "/dashboard/files",
-      "title": "文件管理",
-      "permission": "knowledge:view",
-      "icon": "tdesign:folder-open",
-      "order": 999,
-      "hidden": true
-    },
-    {
-      "path": "/dashboard/files/[folderId]/create-text-file",
-      "title": "新建文本文件",
-      "permission": "knowledge:file:create",
-      "icon": "tdesign:file-add",
-      "hidden": true
-    },
-    {
-      "path": "/dashboard/files/[folderId]/edit/[fileId]",
-      "title": "编辑文件",
-      "hidden": true
-    },
-    {
-      "path": "/login",
-      "title": "登录",
-      "hidden": true
+      "path": "/dashboard/ai/agents",
+      "title": "智能体管理",
+      "icon": "mdi:robot",
+      "group": "智能体",
+      "order": 30
     }
   ],
   "系统管理": [
@@ -450,25 +412,6 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "hidden": true
     }
   ],
-  "智能化": [
-    {
-      "path": "/dashboard/ai/agents",
-      "title": "智能体管理",
-      "icon": "mdi:robot",
-      "group": "智能化",
-      "order": 30
-    }
-  ],
-  "系统监控": [
-    {
-      "path": "/dashboard/app-server-monitor",
-      "title": "服务器监控",
-      "permission": "app-server-monitor:view",
-      "icon": "tdesign:server",
-      "group": "系统监控",
-      "order": 50
-    }
-  ],
   "系统设置": [
     {
       "path": "/dashboard/preferences",
@@ -486,6 +429,40 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "group": "系统设置",
       "order": 101
     }
+  ],
+  "default": [
+    {
+      "path": "/dashboard/dev/project-code",
+      "title": "项目代码",
+      "permission": "dev:project-code:view",
+      "icon": "tdesign:code",
+      "order": 200
+    },
+    {
+      "path": "/dashboard/files",
+      "title": "文件管理",
+      "permission": "knowledge:view",
+      "icon": "tdesign:folder-open",
+      "order": 999,
+      "hidden": true
+    },
+    {
+      "path": "/dashboard/files/[folderId]/create-text-file",
+      "title": "新建文本文件",
+      "permission": "knowledge:file:create",
+      "icon": "tdesign:file-add",
+      "hidden": true
+    },
+    {
+      "path": "/dashboard/files/[folderId]/edit/[fileId]",
+      "title": "编辑文件",
+      "hidden": true
+    },
+    {
+      "path": "/login",
+      "title": "登录",
+      "hidden": true
+    }
   ]
 };
 
@@ -502,7 +479,6 @@ export const permissions = [
   "system:dict:view",
   "system:operlog:view",
   "system:loginlog:view",
-  "app-server-monitor:view",
   "settings:preferences:view",
   "system:config:view",
   "dev:project-code:view",
@@ -530,7 +506,6 @@ export const permissionRouteMap: Record<string, { path: string; title?: string }
   "system:dict:view": { path: "/dashboard/system/dicts", title: "字典管理" },
   "system:operlog:view": { path: "/dashboard/system/operation-logs", title: "操作日志" },
   "system:loginlog:view": { path: "/dashboard/system/login-logs", title: "登录日志" },
-  "app-server-monitor:view": { path: "/dashboard/app-server-monitor", title: "服务器监控" },
   "settings:preferences:view": { path: "/dashboard/preferences", title: "个性化" },
   "system:config:view": { path: "/dashboard/system-config", title: "系统参数" },
   "dev:project-code:view": { path: "/dashboard/dev/project-code", title: "项目代码" },
@@ -556,7 +531,6 @@ export const routePermissionMap: Record<string, string> = {
   "/dashboard/system/dicts": "system:dict:view",
   "/dashboard/system/operation-logs": "system:operlog:view",
   "/dashboard/system/login-logs": "system:loginlog:view",
-  "/dashboard/app-server-monitor": "app-server-monitor:view",
   "/dashboard/preferences": "settings:preferences:view",
   "/dashboard/system-config": "system:config:view",
   "/dashboard/dev/project-code": "dev:project-code:view",

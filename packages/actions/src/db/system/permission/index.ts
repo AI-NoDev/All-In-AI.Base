@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { permission, permissionZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type PermissionSelect = typeof permission.$inferSelect;
@@ -45,7 +44,8 @@ export const permissionGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(permissionZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
 
     const conditions = [];
@@ -104,7 +104,8 @@ export const permissionGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: permissionZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db
       .select()
       .from(permission)
@@ -127,7 +128,8 @@ export const permissionCreate = defineAction({
     bodySchema: z.object({ data: permissionZodSchemas.insert }),
     outputSchema: permissionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(permission).values(input.data as PermissionInsert).returning();
     return result as PermissionSelect;
   },
@@ -147,7 +149,8 @@ export const permissionUpdate = defineAction({
     bodySchema: z.object({ data: permissionZodSchemas.update }),
     outputSchema: permissionZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db
       .update(permission)
       .set(input.data as Partial<PermissionInsert>)
@@ -170,7 +173,8 @@ export const permissionDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 递归删除子权限
     const deleteRecursive = async (parentId: string) => {
       const children = await db
@@ -202,7 +206,8 @@ export const permissionGetTree = defineAction({
   schemas: {
     outputSchema: z.array(permissionZodSchemas.select),
   },
-  execute: async (_input, _context) => {
+  execute: async (_input, context) => {
+    const { db } = context;
     const data = await db
       .select()
       .from(permission)

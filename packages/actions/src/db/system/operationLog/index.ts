@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { operationLog, operationLogZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type OperationLogSelect = typeof operationLog.$inferSelect;
@@ -42,7 +41,8 @@ export const operationLogGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(operationLogZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -84,7 +84,8 @@ export const operationLogGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: operationLogZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(operationLog).where(eq(operationLog.id, input.id)).limit(1);
     return (result as OperationLogSelect) ?? null;
   },
@@ -96,7 +97,8 @@ export const operationLogCreate = defineAction({
     bodySchema: z.object({ data: operationLogZodSchemas.insert }),
     outputSchema: operationLogZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(operationLog).values(input.data as OperationLogInsert).returning();
     return result as OperationLogSelect;
   },
@@ -108,7 +110,8 @@ export const operationLogDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(operationLog).where(eq(operationLog.id, input.id)).returning();
     return !!result;
   },

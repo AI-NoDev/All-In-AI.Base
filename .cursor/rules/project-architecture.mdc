@@ -5,42 +5,175 @@
 ```
 ai-drive-system/
 ├── apps/
-│   ├── frontend/    # SvelteKit + shadcn-svelte 前端
-│   └── server/      # Elysia 后端
+│   ├── frontend/          # SvelteKit + shadcn-svelte 前端
+│   │   └── src/routes/    # 所有页面直接在此目录下开发
+│   └── server/            # Elysia 后端
+│       └── src/server/plugins/  # 服务端插件/模块
 ├── packages/
-│   ├── db/          # Drizzle ORM 实体和 Zod Schema
-│   ├── actions/     # 业务逻辑 Actions
-│   └── i18n/        # 国际化翻译
+│   ├── db/                # Drizzle ORM 实体和 Zod Schema
+│   ├── actions/           # 业务逻辑 Actions
+│   └── i18n/              # 国际化翻译
 ```
 
-## 菜单结构
+---
 
-知识库是一个菜单分组（目录），包含 4 个子菜单页面：
+## 功能扩展开发流程
+
+开发新功能时，按以下步骤在对应位置添加代码：
+
+### 1. 数据库层 (packages/db)
+
+新增数据表在 `packages/db/src/entities/` 下创建：
+
+```
+packages/db/src/entities/
+├── system/        # 系统模块实体
+├── ai/            # AI 模块实体
+├── knowledge/     # 知识库实体
+└── [新模块]/      # 新模块实体目录
+    └── myEntity.ts
+```
+
+实体定义规范：
+```typescript
+// packages/db/src/entities/[module]/myEntity.ts
+import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { z } from 'zod';
+import { pkSchema, auditSchema } from '../base';
+
+export const myEntity = pgTable('my_entity', {
+  ...pkSchema,
+  name: varchar('name', { length: 100 }).notNull(),
+  ...auditSchema,
+});
+
+export const myEntityZodSchemas = {
+  select: z.object({ id: z.string(), name: z.string() }),
+  insert: z.object({ name: z.string() }),
+  update: z.object({ name: z.string().optional() }),
+};
+```
+
+### 2. 业务逻辑层 (packages/actions)
+
+新增 Actions 在 `packages/actions/src/db/` 下创建：
+
+```
+packages/actions/src/db/
+├── system/        # 系统模块 Actions
+├── ai/            # AI 模块 Actions
+├── knowledge/     # 知识库 Actions
+└── [新模块]/      # 新模块 Actions 目录
+    └── index.ts
+```
+
+Action 定义规范：
+```typescript
+// packages/actions/src/db/[module]/index.ts
+import { defineAction } from '../../core/define';
+import { z } from 'zod';
+
+export const myEntityGetList = defineAction({
+  meta: {
+    name: 'module.myEntity.getList',
+    displayName: '获取列表',
+    method: 'POST',
+    path: '/api/module/my-entity/query',
+  },
+  schemas: {
+    bodySchema: z.object({ limit: z.number().default(20) }),
+    outputSchema: z.object({ data: z.array(z.object({})), total: z.number() }),
+  },
+  execute: async (input, context) => {
+    // 业务逻辑
+    return { data: [], total: 0 };
+  },
+});
+
+// 导出到 packages/actions/index.ts
+```
+
+### 3. 前端页面 (apps/frontend)
+
+页面类型和路由结构：
+
+```
+apps/frontend/src/routes/
+├── login/                 # 登录页（无 layout）
+├── public/                # 公开页面（无需登录，无 dashboard layout）
+│   └── [功能]/            # 如门户、落地页等
+├── dashboard/             # 后台页面（需登录，有 sidebar layout）
+│   ├── +layout.svelte     # dashboard 布局（sidebar + header）
+│   ├── system/            # 系统管理
+│   ├── ai/                # AI 管理
+│   ├── knowledge/         # 知识库
+│   └── [新模块]/          # 新功能模块
+│       ├── +page.ts       # 页面元数据
+│       └── +page.svelte   # 页面组件
+└── +layout.svelte         # 根布局
+```
+
+页面类型说明：
+- `/dashboard/*` - 需要登录，有侧边栏和顶栏的后台页面
+- `/public/*` - 不需要登录的公开页面（门户、落地页等）
+- `/login` - 登录页
+
+Dashboard 页面示例：
+```typescript
+// +page.ts
+export const _meta = {
+  title: '功能名称',
+  icon: 'tdesign:app',
+  group: '模块分组',
+  order: 10,
+  permission: 'module:entity:view'
+};
+```
+
+```svelte
+<!-- +page.svelte -->
+<script lang="ts">
+  import { authStore } from '$lib/stores/auth.svelte';
+  
+  const api = authStore.createApi(true);
+  // ...
+</script>
+```
+
+公开页面示例（无需登录）：
+```
+apps/frontend/src/routes/public/landing/+page.svelte  -> /public/landing
+apps/frontend/src/routes/public/about/+page.svelte    -> /public/about
+```
+
+---
+
+## 禁止使用的模式
+
+- ❌ 不使用 extendApps 插件分包模式
+- ❌ 不使用 startApp/removeApp 动态加载
+- ❌ 不在独立包中开发前端页面或后端路由
+
+---
+
+## 菜单结构示例
+
+知识库菜单分组：
 
 ```
 知识库 (KNOWLEDGE) - 目录
 ├── 我的知识库 (MY_FILES) - /dashboard/knowledge/my-files
-│   - 完整文件管理：创建、上传、删除、编辑、共享、复制/粘贴
 ├── 收到的共享 (SHARED_WITH_ME) - /dashboard/knowledge/shared-with-me
-│   - 他人共享给当前用户的文件（根据权限只读或可编辑）
 ├── 我的共享 (MY_SHARED) - /dashboard/knowledge/my-shared
-│   - 当前用户共享给他人的文件（可修改共享设置）
 └── 收藏 (FAVORITES) - /dashboard/knowledge/favorites
-    - 收藏的文件和文件夹（可查看和取消收藏）
 ```
 
-菜单种子数据位于 `packages/db/src/seedData/menu.ts`，使用固定 UUID：
-- KNOWLEDGE: `10000000-0000-0000-0000-000000000007`
-- MY_FILES: `20000000-0000-0000-0000-000000000040`
-- SHARED_WITH_ME: `20000000-0000-0000-0000-000000000041`
-- MY_SHARED: `20000000-0000-0000-0000-000000000042`
-- FAVORITES: `20000000-0000-0000-0000-000000000043`
+菜单种子数据：`packages/db/src/seedData/menu.ts`
+角色菜单关联：`packages/db/src/seedData/roleMenu.ts`
 
-角色菜单关联在 `packages/db/src/seedData/roleMenu.ts` 中配置。
+---
 
 ## packages/db
-
-定义数据库实体、关系和 Zod Schema。
 
 导出规范：
 ```typescript
@@ -53,16 +186,6 @@ export const tableNameZodSchemas = {
 ```
 
 ## packages/actions
-
-使用 `defineAction` 创建标准化 CRUD 操作。
-
-```typescript
-export const entityGetByPagination = defineAction({
-  meta: { name, displayName, method, path },
-  schemas: { bodySchema, outputSchema },
-  execute: async (input, context) => { ... },
-});
-```
 
 ActionContext 包含：
 - `currentUserId` - 当前用户 ID（必填）
@@ -77,17 +200,6 @@ ActionContext 包含：
 - `db/*.ts` - 数据库字段翻译
 
 ## apps/frontend
-
-页面元数据（+page.ts）：
-```typescript
-export const _meta = {
-  title: '页面标题',
-  icon: 'tdesign:icon',
-  group: '分组',
-  order: 1,
-  permission: 'module:entity:action'
-};
-```
 
 auth.svelte.ts 功能：
 - Token 管理和自动刷新

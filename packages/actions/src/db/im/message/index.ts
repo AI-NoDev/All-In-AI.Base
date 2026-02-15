@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { message, messageZodSchemas, conversation } from '@qiyu-allinai/db/entities/im';
 
 type MessageSelect = typeof message.$inferSelect;
@@ -42,7 +41,8 @@ export const messageGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(messageZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     
@@ -78,7 +78,8 @@ export const messageGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: messageZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(message).where(eq(message.id, input.id)).limit(1);
     return (result as MessageSelect) ?? null;
   },
@@ -90,7 +91,8 @@ export const messageCreate = defineAction({
     bodySchema: z.object({ data: messageZodSchemas.insert }),
     outputSchema: messageZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // Get next msgSeq for conversation
     const seqResult = await db.select({ maxSeq: sql<number>`COALESCE(MAX(msg_seq), 0)` })
       .from(message).where(eq(message.conversationId, input.data.conversationId));
@@ -118,6 +120,7 @@ export const messageRecall = defineAction({
     outputSchema: messageZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { groupMember } = await import('@qiyu-allinai/db/entities/im');
     const { actionEvents } = await import('../../../core/events');
     

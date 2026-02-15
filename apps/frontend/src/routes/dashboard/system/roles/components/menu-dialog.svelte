@@ -1,8 +1,8 @@
 <script lang="ts">
-  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
-  import { TreeSelector } from '@qiyu-allinai/ui/components/item-selector';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { TreeSelector } from '$lib/components/ui/item-selector';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@qiyu-allinai/api';
 

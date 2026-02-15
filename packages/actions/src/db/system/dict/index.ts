@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { dict, dictZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type DictSelect = typeof dict.$inferSelect;
@@ -43,7 +42,8 @@ export const dictGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(dictZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [isNull(dict.deletedAt)];
 
@@ -86,7 +86,8 @@ export const dictGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: dictZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(dict).where(and(eq(dict.id, input.id), isNull(dict.deletedAt))).limit(1);
     return (result as DictSelect) ?? null;
   },
@@ -98,7 +99,8 @@ export const dictCreate = defineAction({
     bodySchema: z.object({ data: dictZodSchemas.insert }),
     outputSchema: dictZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(dict).values(input.data as DictInsert).returning();
     return result as DictSelect;
   },
@@ -111,7 +113,8 @@ export const dictCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(dictZodSchemas.insert) }),
     outputSchema: z.array(dictZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(dict).values(input.data as DictInsert[]).returning();
     return results as DictSelect[];
   },
@@ -124,7 +127,8 @@ export const dictUpdate = defineAction({
     bodySchema: z.object({ data: dictZodSchemas.update }),
     outputSchema: dictZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(dict).set(input.data as Partial<DictInsert>).where(and(eq(dict.id, input.id), isNull(dict.deletedAt))).returning();
     return result as DictSelect;
   },
@@ -136,7 +140,8 @@ export const dictUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: dictZodSchemas.update }),
     outputSchema: z.array(dictZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: DictSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(dict).set(input.data as Partial<DictInsert>).where(and(eq(dict.id, id), isNull(dict.deletedAt))).returning();
@@ -153,6 +158,7 @@ export const dictDeleteByPk = defineAction({
     outputSchema: z.boolean(),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(dict).set({ 
       deletedAt: new Date().toISOString(), 
       deletedById: context.currentUserId,

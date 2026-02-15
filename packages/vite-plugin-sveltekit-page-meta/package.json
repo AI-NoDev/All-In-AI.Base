@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/node": "^22.15.29",
     "esbuild": "^0.27.2",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "vite": "^5.0.0 || ^6.0.0 || ^7.0.0"

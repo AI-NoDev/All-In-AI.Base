@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as Sidebar from '@qiyu-allinai/ui/components/sidebar';
+  import * as Sidebar from '$lib/components/ui/sidebar';
   import defaultLogo from '@/lib/assets/logo.png';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import { Skeleton } from '$lib/components/ui/skeleton';
   import { systemConfigStore } from '@/lib/stores/system-config.svelte';
 
   let logo = $state<string | null>(null);

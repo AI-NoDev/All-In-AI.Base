@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { InputField, InputFieldType } from './types.js';
 	import { FIELD_TYPE_DATA_TYPES } from './types.js';
-	import { Button } from '@qiyu-allinai/ui/components/button';
+	import { Button } from '$lib/components/ui/button';
 	import Icon from '@iconify/svelte';
 	import { useSortable } from '@dnd-kit-svelte/sortable';
 

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { loginInfo, loginInfoZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type LoginInfoSelect = typeof loginInfo.$inferSelect;
@@ -43,7 +42,8 @@ export const loginInfoGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(loginInfoZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -83,19 +83,22 @@ export const loginInfoGetByPagination = defineAction({
 export const loginInfoGetByPk = defineAction({
   meta: { name: 'system.loginInfo.getByPk', displayName: '根据ID查询登录日志', description: '根据主键ID查询单个登录日志', tags: ['system', 'loginInfo'], method: 'GET', path: '/api/system/login-info/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: loginInfoZodSchemas.select.nullable() },
-  execute: async (input, _context) => { const [result] = await db.select().from(loginInfo).where(eq(loginInfo.id, input.id)).limit(1); return (result as LoginInfoSelect) ?? null; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.select().from(loginInfo).where(eq(loginInfo.id, input.id)).limit(1); return (result as LoginInfoSelect) ?? null; },
 });
 
 export const loginInfoCreate = defineAction({
   meta: { name: 'system.loginInfo.create', displayName: '创建登录日志', description: '创建单个登录日志', tags: ['system', 'loginInfo'], method: 'POST', path: '/api/system/login-info' },
   schemas: { bodySchema: z.object({ data: loginInfoZodSchemas.insert }), outputSchema: loginInfoZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.insert(loginInfo).values(input.data as LoginInfoInsert).returning(); return result as LoginInfoSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.insert(loginInfo).values(input.data as LoginInfoInsert).returning(); return result as LoginInfoSelect; },
 });
 
 export const loginInfoDeleteByPk = defineAction({
   meta: { name: 'system.loginInfo.deleteByPk', displayName: '删除登录日志', description: '根据ID删除登录日志', tags: ['system', 'loginInfo'], method: 'DELETE', path: '/api/system/login-info/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
-  execute: async (input, _context) => { const [result] = await db.delete(loginInfo).where(eq(loginInfo.id, input.id)).returning(); return !!result; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.delete(loginInfo).where(eq(loginInfo.id, input.id)).returning(); return !!result; },
 });
 
 

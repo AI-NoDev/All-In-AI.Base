@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { notice, noticeZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type NoticeSelect = typeof notice.$inferSelect;
@@ -42,7 +41,8 @@ export const noticeGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(noticeZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -84,7 +84,8 @@ export const noticeGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: noticeZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(notice).where(eq(notice.id, input.id)).limit(1);
     return (result as NoticeSelect) ?? null;
   },
@@ -96,7 +97,8 @@ export const noticeCreate = defineAction({
     bodySchema: z.object({ data: noticeZodSchemas.insert }),
     outputSchema: noticeZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(notice).values(input.data as NoticeInsert).returning();
     return result as NoticeSelect;
   },
@@ -109,7 +111,8 @@ export const noticeCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(noticeZodSchemas.insert) }),
     outputSchema: z.array(noticeZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(notice).values(input.data as NoticeInsert[]).returning();
     return results as NoticeSelect[];
   },
@@ -122,7 +125,8 @@ export const noticeUpdate = defineAction({
     bodySchema: z.object({ data: noticeZodSchemas.update }),
     outputSchema: noticeZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(notice).set(input.data as Partial<NoticeInsert>).where(eq(notice.id, input.id)).returning();
     return result as NoticeSelect;
   },
@@ -134,7 +138,8 @@ export const noticeUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: noticeZodSchemas.update }),
     outputSchema: z.array(noticeZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: NoticeSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(notice).set(input.data as Partial<NoticeInsert>).where(eq(notice.id, id)).returning();
@@ -150,7 +155,8 @@ export const noticeDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(notice).where(eq(notice.id, input.id)).returning();
     return !!result;
   },

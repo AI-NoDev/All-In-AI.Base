@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { eq, and, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import db from '@qiyu-allinai/db/connect';
 import { favorite, favoriteZodSchemas, file, folder } from '@qiyu-allinai/db/entities/knowledge';
 
 type FavoriteSelect = typeof favorite.$inferSelect;
@@ -25,6 +24,7 @@ export const favoriteAdd = defineAction({
     outputSchema: favoriteZodSchemas.select,
   },
   execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(favorite).values({
       userId: context.currentUserId,
       resourceType: input.resourceType,
@@ -68,6 +68,7 @@ export const favoriteRemove = defineAction({
     outputSchema: z.object({ success: z.boolean() }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const result = await db.delete(favorite).where(
       and(
         eq(favorite.userId, context.currentUserId),
@@ -97,6 +98,7 @@ export const favoriteCheck = defineAction({
     outputSchema: z.object({ isFavorited: z.boolean() }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const result = await db.select().from(favorite).where(
       and(
         eq(favorite.userId, context.currentUserId),
@@ -147,6 +149,7 @@ export const favoriteList = defineAction({
     }),
   },
   execute: async (input, context) => {
+    const { db } = context;
     const { resourceType, limit, offset } = input;
     
     // Define result types

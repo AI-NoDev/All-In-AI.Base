@@ -6,8 +6,8 @@
 	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, type Variable } from '../../components/VariableSelector/index.js';
 	import { FIELD_TYPE_DATA_TYPES, type InputField, type StartNodeData } from '../../nodes/StartNode/types.js';
 	import { START_NODE_ID } from '$lib/components/editor/contexts/index.js';
-	import * as Tabs from '@qiyu-allinai/ui/components/tabs';
-	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import NodeRunResult from '../../components/NodeRunResult.svelte';
 
 	// Sub-components

@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Table from '@qiyu-allinai/ui/components/table';
-  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Badge } from '@qiyu-allinai/ui/components/badge';
-  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
+  import * as Table from '$lib/components/ui/table';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Checkbox } from '$lib/components/ui/checkbox';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { pages, type PageMeta } from '@/lib/generated-pages';
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Input } from '@qiyu-allinai/ui/components/input';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
 
   interface Props {
     open: boolean;

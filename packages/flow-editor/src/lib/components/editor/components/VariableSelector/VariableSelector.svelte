@@ -2,9 +2,9 @@
 	import { workflowState, START_NODE_ID } from '$lib/components/editor/contexts/index.js';
 	import { FIELD_TYPE_DATA_TYPES, type InputField, type StartNodeData } from '../../nodes/StartNode/types.js';
 	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, type Variable, type VariableGroup } from './types.js';
-	import { Input } from '@qiyu-allinai/ui/components/input';
-	import { Button } from '@qiyu-allinai/ui/components/button';
-	import * as Popover from '@qiyu-allinai/ui/components/popover';
+	import { Input } from '$lib/components/ui/input';
+	import { Button } from '$lib/components/ui/button';
+	import * as Popover from '$lib/components/ui/popover';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

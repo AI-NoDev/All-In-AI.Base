@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { roleMenu, roleMenuZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type RoleMenuSelect = typeof roleMenu.$inferSelect;
@@ -36,7 +35,8 @@ export const roleMenuGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(roleMenuZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -72,7 +72,8 @@ export const roleMenuGetByPk = defineAction({
     paramsSchema: z.object({ roleId: z.string(), menuId: z.string() }),
     outputSchema: roleMenuZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(roleMenu).where(and(eq(roleMenu.roleId, input.roleId), eq(roleMenu.menuId, input.menuId))).limit(1);
     return (result as RoleMenuSelect) ?? null;
   },
@@ -84,7 +85,8 @@ export const roleMenuCreate = defineAction({
     bodySchema: z.object({ data: roleMenuZodSchemas.insert }),
     outputSchema: roleMenuZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(roleMenu).values(input.data as RoleMenuInsert).returning();
     return result as RoleMenuSelect;
   },
@@ -96,7 +98,8 @@ export const roleMenuCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(roleMenuZodSchemas.insert) }),
     outputSchema: z.array(roleMenuZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(roleMenu).values(input.data as RoleMenuInsert[]).returning();
     return results as RoleMenuSelect[];
   },
@@ -109,7 +112,8 @@ export const roleMenuDeleteByPk = defineAction({
     paramsSchema: z.object({ roleId: z.string(), menuId: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(roleMenu).where(and(eq(roleMenu.roleId, input.roleId), eq(roleMenu.menuId, input.menuId))).returning();
     return !!result;
   },
@@ -133,7 +137,8 @@ export const roleMenuGetByRoleId = defineAction({
     paramsSchema: z.object({ roleId: z.string() }),
     outputSchema: z.array(z.string()),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const data = await db.select({ menuId: roleMenu.menuId }).from(roleMenu).where(eq(roleMenu.roleId, input.roleId));
     return data.map(d => d.menuId);
   },
@@ -147,7 +152,8 @@ export const roleMenuSetByRoleId = defineAction({
     bodySchema: z.object({ menuIds: z.array(z.string()) }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     // 删除该角色的所有菜单关联
     await db.delete(roleMenu).where(eq(roleMenu.roleId, input.roleId));
     

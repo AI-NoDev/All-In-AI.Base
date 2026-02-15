@@ -1,9 +1,18 @@
 import type { z, ZodType } from 'zod';
+import type { PgDatabase } from 'drizzle-orm/pg-core';
+
+/**
+ * Drizzle Database 类型 (兼容 postgres-js 和 PGlite)
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DrizzleDB = PgDatabase<any, any, any>;
 
 /**
  * Action 执行上下文
  */
 export interface ActionContext {
+  /** Drizzle 数据库实例 */
+  db: DrizzleDB;
   /** 认证 Token */
   token: string;
   /** 当前用户ID */

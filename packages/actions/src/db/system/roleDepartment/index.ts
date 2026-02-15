@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { roleDepartment, roleDepartmentZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type RoleDepartmentSelect = typeof roleDepartment.$inferSelect;
@@ -36,7 +35,8 @@ export const roleDepartmentGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(roleDepartmentZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -72,7 +72,8 @@ export const roleDepartmentGetByPk = defineAction({
     paramsSchema: z.object({ roleId: z.string(), departmentId: z.string() }),
     outputSchema: roleDepartmentZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(roleDepartment).where(and(eq(roleDepartment.roleId, input.roleId), eq(roleDepartment.departmentId, input.departmentId))).limit(1);
     return (result as RoleDepartmentSelect) ?? null;
   },
@@ -84,7 +85,8 @@ export const roleDepartmentCreate = defineAction({
     bodySchema: z.object({ data: roleDepartmentZodSchemas.insert }),
     outputSchema: roleDepartmentZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(roleDepartment).values(input.data as RoleDepartmentInsert).returning();
     return result as RoleDepartmentSelect;
   },
@@ -96,7 +98,8 @@ export const roleDepartmentCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(roleDepartmentZodSchemas.insert) }),
     outputSchema: z.array(roleDepartmentZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(roleDepartment).values(input.data as RoleDepartmentInsert[]).returning();
     return results as RoleDepartmentSelect[];
   },
@@ -109,7 +112,8 @@ export const roleDepartmentDeleteByPk = defineAction({
     paramsSchema: z.object({ roleId: z.string(), departmentId: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(roleDepartment).where(and(eq(roleDepartment.roleId, input.roleId), eq(roleDepartment.departmentId, input.departmentId))).returning();
     return !!result;
   },

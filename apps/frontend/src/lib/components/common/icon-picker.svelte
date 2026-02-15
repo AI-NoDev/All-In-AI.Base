@@ -1,11 +1,11 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { addCollection, loadIcons } from '@iconify/svelte';
-  import * as Popover from '@qiyu-allinai/ui/components/popover';
-  import { Button } from '@qiyu-allinai/ui/components/button';
-  import { Input } from '@qiyu-allinai/ui/components/input';
-  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
-  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import * as Popover from '$lib/components/ui/popover';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { Skeleton } from '$lib/components/ui/skeleton';
   import mdiIcons from '@iconify-json/mdi/icons.json';
 
   interface Props {

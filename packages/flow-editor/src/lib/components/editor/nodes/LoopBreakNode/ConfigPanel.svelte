@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Label } from '@qiyu-allinai/ui/components/label/index.js';
-	import { Input } from '@qiyu-allinai/ui/components/input/index.js';
-	import { Textarea } from '@qiyu-allinai/ui/components/textarea/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { workflowState } from '$lib/components/editor/contexts/index.js';
 	import type { LoopBreakNodeData } from './types.js';
 

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { jobLog, jobLogZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type JobLogSelect = typeof jobLog.$inferSelect;
@@ -44,7 +43,8 @@ export const jobLogGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(jobLogZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
 
@@ -85,38 +85,44 @@ export const jobLogGetByPagination = defineAction({
 export const jobLogGetByPk = defineAction({
   meta: { name: 'system.jobLog.getByPk', displayName: '根据ID查询任务日志', description: '根据主键ID查询单个任务日志', tags: ['system', 'jobLog'], method: 'GET', path: '/api/system/job-log/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: jobLogZodSchemas.select.nullable() },
-  execute: async (input, _context) => { const [result] = await db.select().from(jobLog).where(eq(jobLog.id, input.id)).limit(1); return (result as JobLogSelect) ?? null; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.select().from(jobLog).where(eq(jobLog.id, input.id)).limit(1); return (result as JobLogSelect) ?? null; },
 });
 
 export const jobLogCreate = defineAction({
   meta: { name: 'system.jobLog.create', displayName: '创建任务日志', description: '创建单个任务日志', tags: ['system', 'jobLog'], method: 'POST', path: '/api/system/job-log' },
   schemas: { bodySchema: z.object({ data: jobLogZodSchemas.insert }), outputSchema: jobLogZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.insert(jobLog).values(input.data as JobLogInsert).returning(); return result as JobLogSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.insert(jobLog).values(input.data as JobLogInsert).returning(); return result as JobLogSelect; },
 });
 
 export const jobLogCreateMany = defineAction({
   meta: { name: 'system.jobLog.createMany', displayName: '批量创建任务日志', description: '批量创建多个任务日志', tags: ['system', 'jobLog'], method: 'POST', path: '/api/system/job-log/batch' },
   schemas: { bodySchema: z.object({ data: z.array(jobLogZodSchemas.insert) }), outputSchema: z.array(jobLogZodSchemas.select) },
-  execute: async (input, _context) => { const results = await db.insert(jobLog).values(input.data as JobLogInsert[]).returning(); return results as JobLogSelect[]; },
+  execute: async (input, context) => {
+    const { db } = context; const results = await db.insert(jobLog).values(input.data as JobLogInsert[]).returning(); return results as JobLogSelect[]; },
 });
 
 
 export const jobLogUpdate = defineAction({
   meta: { name: 'system.jobLog.update', displayName: '更新任务日志', description: '根据ID更新单个任务日志', tags: ['system', 'jobLog'], method: 'PUT', path: '/api/system/job-log/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: jobLogZodSchemas.update }), outputSchema: jobLogZodSchemas.select },
-  execute: async (input, _context) => { const [result] = await db.update(jobLog).set(input.data as Partial<JobLogInsert>).where(eq(jobLog.id, input.id)).returning(); return result as JobLogSelect; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.update(jobLog).set(input.data as Partial<JobLogInsert>).where(eq(jobLog.id, input.id)).returning(); return result as JobLogSelect; },
 });
 
 export const jobLogUpdateMany = defineAction({
   meta: { name: 'system.jobLog.updateMany', displayName: '批量更新任务日志', description: '根据ID列表批量更新任务日志', tags: ['system', 'jobLog'], method: 'PUT', path: '/api/system/job-log/batch' },
   schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: jobLogZodSchemas.update }), outputSchema: z.array(jobLogZodSchemas.select) },
-  execute: async (input, _context) => { const results: JobLogSelect[] = []; for (const id of input.ids) { const [result] = await db.update(jobLog).set(input.data as Partial<JobLogInsert>).where(eq(jobLog.id, id)).returning(); if (result) results.push(result as JobLogSelect); } return results; },
+  execute: async (input, context) => {
+    const { db } = context; const results: JobLogSelect[] = []; for (const id of input.ids) { const [result] = await db.update(jobLog).set(input.data as Partial<JobLogInsert>).where(eq(jobLog.id, id)).returning(); if (result) results.push(result as JobLogSelect); } return results; },
 });
 
 export const jobLogDeleteByPk = defineAction({
   meta: { name: 'system.jobLog.deleteByPk', displayName: '删除任务日志', description: '根据ID删除任务日志', tags: ['system', 'jobLog'], method: 'DELETE', path: '/api/system/job-log/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
-  execute: async (input, _context) => { const [result] = await db.delete(jobLog).where(eq(jobLog.id, input.id)).returning(); return !!result; },
+  execute: async (input, context) => {
+    const { db } = context; const [result] = await db.delete(jobLog).where(eq(jobLog.id, input.id)).returning(); return !!result; },
 });
 
 

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, ilike, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { config, configZodSchemas } from '@qiyu-allinai/db/entities/system';
 
 type ConfigSelect = typeof config.$inferSelect;
@@ -42,7 +41,8 @@ export const configGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(configZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     
     // Build conditions
@@ -86,7 +86,8 @@ export const configGetByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: configZodSchemas.select.nullable(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(config).where(eq(config.id, input.id)).limit(1);
     return (result as ConfigSelect) ?? null;
   },
@@ -98,7 +99,8 @@ export const configCreate = defineAction({
     bodySchema: z.object({ data: configZodSchemas.insert }),
     outputSchema: configZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(config).values(input.data as ConfigInsert).returning();
     return result as ConfigSelect;
   },
@@ -110,7 +112,8 @@ export const configCreateMany = defineAction({
     bodySchema: z.object({ data: z.array(configZodSchemas.insert) }),
     outputSchema: z.array(configZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(config).values(input.data as ConfigInsert[]).returning();
     return results as ConfigSelect[];
   },
@@ -123,7 +126,8 @@ export const configUpdate = defineAction({
     bodySchema: z.object({ data: configZodSchemas.update }),
     outputSchema: configZodSchemas.select,
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(config).set(input.data as Partial<ConfigInsert>).where(eq(config.id, input.id)).returning();
     return result as ConfigSelect;
   },
@@ -135,7 +139,8 @@ export const configUpdateMany = defineAction({
     bodySchema: z.object({ ids: z.array(z.string()), data: configZodSchemas.update }),
     outputSchema: z.array(configZodSchemas.select),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: ConfigSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(config).set(input.data as Partial<ConfigInsert>).where(eq(config.id, id)).returning();
@@ -151,7 +156,8 @@ export const configDeleteByPk = defineAction({
     paramsSchema: z.object({ id: z.string() }),
     outputSchema: z.boolean(),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(config).where(eq(config.id, input.id)).returning();
     return !!result;
   },

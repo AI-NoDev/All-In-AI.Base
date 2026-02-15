@@ -18,6 +18,17 @@
 - 复用基础 Schema（pkSchema, auditSchema, deletedSchema）
 - 使用 `.optional()` 或 `.nullable()` 明确可选字段
 - 使用 `z.preprocess()` 处理空值转换
+- ❌ 不使用 `z.uuid()`，使用 `z.string()` 代替（兼容性更好）
+
+### UUID 字段规范
+
+```typescript
+// ❌ 错误
+id: z.uuid()
+
+// ✅ 正确
+id: z.string()
+```
 
 ## i18n 国际化规范
 
@@ -53,3 +64,75 @@
 
 ### 业务校验
 在 execute 中按顺序：权限校验 → 业务规则校验 → 数据校验 → 执行操作
+
+### Action 单元测试
+
+每个 Action 模块需要编写单元测试，使用 Elysia Eden Treaty 进行测试。
+
+测试文件位置：
+```
+packages/actions/src/db/[module]/[entity]/
+├── index.ts           # Action 定义
+└── index.test.ts      # Action 测试
+```
+
+测试辅助工具位于 `packages/actions/src/test/setup.ts`，提供：
+- `createTestApp(actions)` - 创建测试用 Elysia 实例
+- `mockContext` - Mock 用户上下文
+- `testData` - 测试数据生成辅助函数
+
+测试示例：
+```typescript
+// packages/actions/src/db/system/role/index.test.ts
+import { describe, it, expect } from 'bun:test';
+import { treaty } from '@elysiajs/eden';
+import { createTestApp } from '../../../test/setup';
+import { roleActions, roleGetSchema } from './index';
+
+// 仅测试不需要数据库的 action
+const schemaOnlyApp = createTestApp([roleGetSchema]);
+const schemaApi = treaty(schemaOnlyApp);
+
+describe('Role Actions', () => {
+  describe('roleGetSchema (无需数据库)', () => {
+    it('should return JSON schema', async () => {
+      const { data } = await schemaApi.api.system.role.schema.get();
+      
+      expect(data).toHaveProperty('status', 200);
+      expect(data?.data).toHaveProperty('type');
+      expect(data?.data?.type).toBe('object');
+    });
+  });
+
+  // 需要数据库的测试使用 skipIf
+  describe.skipIf(!process.env.DATABASE_URL)('需要数据库的测试', () => {
+    const app = createTestApp(roleActions);
+    const api = treaty(app);
+
+    describe('roleGetByPagination', () => {
+      it('should return paginated role list', async () => {
+        const { data } = await api.api.system.role.query.post({
+          limit: 10,
+          offset: 0,
+        });
+        
+        expect(data).toHaveProperty('status', 200);
+        expect(data?.data).toHaveProperty('data');
+        expect(data?.data).toHaveProperty('total');
+      });
+    });
+  });
+});
+```
+
+运行测试：
+```bash
+# 在 packages/actions 目录下
+bun test
+
+# 运行单个测试文件
+bun test src/db/system/role/index.test.ts
+
+# 监听模式
+bun test --watch
+```

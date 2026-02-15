@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import db from '@qiyu-allinai/db/connect';
 import { toolGroup, toolGroupZodSchemas } from '@qiyu-allinai/db/entities/ai';
 
 type ToolGroupSelect = typeof toolGroup.$inferSelect;
@@ -36,7 +35,8 @@ export const toolGroupGetByPagination = defineAction({
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(toolGroupZodSchemas.select), total: z.number() }),
   },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const { filter, sort, offset, limit } = input;
     const conditions = [];
     if (filter) {
@@ -59,7 +59,8 @@ export const toolGroupGetByPagination = defineAction({
 export const toolGroupGetByPk = defineAction({
   meta: { name: 'ai.toolGroup.getByPk', displayName: '根据ID查询工具组', description: '根据主键ID查询单个工具组', tags: ['ai', 'toolGroup'], method: 'GET', path: '/api/ai/tool-group/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: toolGroupZodSchemas.select.nullable() },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.select().from(toolGroup).where(eq(toolGroup.id, input.id)).limit(1);
     return (result as ToolGroupSelect) ?? null;
   },
@@ -68,7 +69,8 @@ export const toolGroupGetByPk = defineAction({
 export const toolGroupCreate = defineAction({
   meta: { name: 'ai.toolGroup.create', displayName: '创建工具组', description: '创建单个工具组', tags: ['ai', 'toolGroup'], method: 'POST', path: '/api/ai/tool-group' },
   schemas: { bodySchema: z.object({ data: toolGroupZodSchemas.insert }), outputSchema: toolGroupZodSchemas.select },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.insert(toolGroup).values(input.data as ToolGroupInsert).returning();
     return result as ToolGroupSelect;
   },
@@ -77,7 +79,8 @@ export const toolGroupCreate = defineAction({
 export const toolGroupCreateMany = defineAction({
   meta: { name: 'ai.toolGroup.createMany', displayName: '批量创建工具组', description: '批量创建多个工具组', tags: ['ai', 'toolGroup'], method: 'POST', path: '/api/ai/tool-group/batch' },
   schemas: { bodySchema: z.object({ data: z.array(toolGroupZodSchemas.insert) }), outputSchema: z.array(toolGroupZodSchemas.select) },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results = await db.insert(toolGroup).values(input.data as ToolGroupInsert[]).returning();
     return results as ToolGroupSelect[];
   },
@@ -86,7 +89,8 @@ export const toolGroupCreateMany = defineAction({
 export const toolGroupUpdate = defineAction({
   meta: { name: 'ai.toolGroup.update', displayName: '更新工具组', description: '根据ID更新单个工具组', tags: ['ai', 'toolGroup'], method: 'PUT', path: '/api/ai/tool-group/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), bodySchema: z.object({ data: toolGroupZodSchemas.update }), outputSchema: toolGroupZodSchemas.select },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.update(toolGroup).set(input.data as Partial<ToolGroupInsert>).where(eq(toolGroup.id, input.id)).returning();
     return result as ToolGroupSelect;
   },
@@ -95,7 +99,8 @@ export const toolGroupUpdate = defineAction({
 export const toolGroupUpdateMany = defineAction({
   meta: { name: 'ai.toolGroup.updateMany', displayName: '批量更新工具组', description: '根据ID列表批量更新工具组', tags: ['ai', 'toolGroup'], method: 'PUT', path: '/api/ai/tool-group/batch' },
   schemas: { bodySchema: z.object({ ids: z.array(z.string()), data: toolGroupZodSchemas.update }), outputSchema: z.array(toolGroupZodSchemas.select) },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const results: ToolGroupSelect[] = [];
     for (const id of input.ids) {
       const [result] = await db.update(toolGroup).set(input.data as Partial<ToolGroupInsert>).where(eq(toolGroup.id, id)).returning();
@@ -108,7 +113,8 @@ export const toolGroupUpdateMany = defineAction({
 export const toolGroupDeleteByPk = defineAction({
   meta: { name: 'ai.toolGroup.deleteByPk', displayName: '删除工具组', description: '根据ID删除工具组', tags: ['ai', 'toolGroup'], method: 'DELETE', path: '/api/ai/tool-group/:id' },
   schemas: { paramsSchema: z.object({ id: z.string() }), outputSchema: z.boolean() },
-  execute: async (input, _context) => {
+  execute: async (input, context) => {
+    const { db } = context;
     const [result] = await db.delete(toolGroup).where(eq(toolGroup.id, input.id)).returning();
     return !!result;
   },

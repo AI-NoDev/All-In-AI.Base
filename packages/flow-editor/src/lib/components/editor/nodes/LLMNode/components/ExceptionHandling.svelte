@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { ExceptionHandling } from '../types.js';
 	import { EXCEPTION_HANDLING_OPTIONS } from '../types.js';
-	import { Input } from '@qiyu-allinai/ui/components/input';
-	import * as Select from '@qiyu-allinai/ui/components/select';
-	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+	import { Input } from '$lib/components/ui/input';
+	import * as Select from '$lib/components/ui/select';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Icon from '@iconify/svelte';
 
 	interface Props {
