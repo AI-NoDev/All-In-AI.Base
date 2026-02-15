@@ -4,7 +4,7 @@
   import IconChevronRight from '@iconify-svelte/tdesign/chevron-right';
   import IconChevronDown from '@iconify-svelte/tdesign/chevron-down';
   import IconPlay from '@iconify-svelte/tdesign/play';
-  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
   import type { StartNodeData, JsonSchemaProperty, EdgesGetter } from '../../types.js';
   import { EDGES_CONTEXT_KEY } from '../../types.js';
   import { getHandleColor, getTypeColor } from '../../edgeTypeRule.js';

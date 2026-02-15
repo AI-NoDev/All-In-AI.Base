@@ -1,19 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Sheet from '$lib/components/ui/sheet';
-  import * as Table from '$lib/components/ui/table';
-  import * as Select from '$lib/components/ui/select';
-  import { Button } from '$lib/components/ui/button';
-  import { Checkbox } from '$lib/components/ui/checkbox';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { Badge } from '$lib/components/ui/badge';
+  import * as Sheet from '@qiyu-allinai/ui/components/sheet';
+  import * as Table from '@qiyu-allinai/ui/components/table';
+  import * as Select from '@qiyu-allinai/ui/components/select';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
+  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
+  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import { Badge } from '@qiyu-allinai/ui/components/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
   import {
     PostApiSystemDepartmentQueryFieldEnum,
     PostApiSystemDepartmentQueryOrderEnum,
-  } from '@/lib/api/Api';
+  } from '@qiyu-allinai/api';
   import type { FilePermission, PermissionEffect, SubjectType, ResourceType, PermissionGrantee } from './types';
 
   interface DeptNode {

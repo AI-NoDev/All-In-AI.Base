@@ -1,6 +1,6 @@
 <script lang="ts">
   import { toast } from 'svelte-sonner';
-  import { Toaster } from "$lib/components/ui/sonner/index.js";
+  import { Toaster } from "@qiyu-allinai/ui/components/sonner/index.js";
   import ActionsFlowEditor from "$lib/components/ActionsFlowEditor/index.svelte";
   import type { ActionSummary, ActionDetail, JsonSchemaProperty } from "$lib/types.js";
 

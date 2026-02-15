@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
+	import { Button } from '@qiyu-allinai/ui/components/button/index.js';
+	import * as Popover from '@qiyu-allinai/ui/components/popover/index.js';
 	import { onMount } from 'svelte';
 
 	let primaryColor = $state('#1a1a2e');

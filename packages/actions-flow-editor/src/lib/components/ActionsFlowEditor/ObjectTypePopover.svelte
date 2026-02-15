@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconChevronRight from '@iconify-svelte/tdesign/chevron-right';
-  import * as Popover from '$lib/components/ui/popover/index.js';
-  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+  import * as Popover from '@qiyu-allinai/ui/components/popover/index.js';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
   import type { SchemaProperty } from '../../typeEngine.js';
   import { getDisplayType, getArrayItemSchema, isArrayType, isObjectType, parseArrayType, parseTypeUnion } from '../../typeEngine.js';
   import { getTypeColor } from '../../edgeTypeRule.js';

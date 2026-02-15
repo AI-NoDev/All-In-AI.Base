@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { Input } from '$lib/components/ui/input';
-	import * as Tabs from '$lib/components/ui/tabs';
+	import { Input } from '@qiyu-allinai/ui/components/input';
+	import * as Tabs from '@qiyu-allinai/ui/components/tabs';
 
 	/** 节点分组 */
 	type NodeGroup = 'basic' | 'logic' | 'tool';

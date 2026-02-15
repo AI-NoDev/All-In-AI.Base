@@ -2,10 +2,10 @@
 // 基础类型从 store 导出，组件特定类型在此定义
 
 // Re-export from store
-export type { FolderItem, FileItem, PathItem, ClipboardItem as KnowledgeClipboardItem } from '@/lib/stores/knowledge';
+export type { FolderItem, FileItem, PathItem, ClipboardItem as KnowledgeClipboardItem } from '@/lib/stores/knowledge.svelte';
 
 // Alias for clarity
-export type ClipboardItemType = import('@/lib/stores/knowledge').ClipboardItem;
+export type ClipboardItemType = import('@/lib/stores/knowledge.svelte').ClipboardItem;
 
 // File permission types (Casbin-based)
 export type FilePermission = 'read' | 'write' | 'delete' | 'manage';
@@ -55,8 +55,8 @@ export interface UploadItem {
 }
 
 export type ContextMenuTarget = 
-  | { type: 'folder'; item: import('@/lib/stores/knowledge').FolderItem }
-  | { type: 'file'; item: import('@/lib/stores/knowledge').FileItem }
+  | { type: 'folder'; item: import('@/lib/stores/knowledge.svelte').FolderItem }
+  | { type: 'file'; item: import('@/lib/stores/knowledge.svelte').FileItem }
   | null;
 
 // Paste conflict item for paste operations

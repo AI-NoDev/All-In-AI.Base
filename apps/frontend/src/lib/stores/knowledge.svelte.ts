@@ -9,7 +9,7 @@ import {
   PostApiKnowledgeFolderQueryOrderEnum,
   PostApiKnowledgeFileQueryFieldEnum,
   PostApiKnowledgeFileQueryOrderEnum,
-} from '@/lib/api/Api';
+} from '@qiyu-allinai/api';
 
 // ============ Types ============
 export type FileViewMode = 'all' | 'my-shared' | 'shared-with-me' | 'favorites';

@@ -288,7 +288,7 @@ bun run dev
 bun run --filter=frontend dev
 
 # 仅启动后端
-bun run --filter=@qiyu-aiinall/server dev
+bun run --filter=@qiyu-allinai/server dev
 
 # 构建所有项目
 bun run build

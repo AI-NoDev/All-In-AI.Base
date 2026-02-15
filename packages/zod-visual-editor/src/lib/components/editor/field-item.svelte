@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Trash2, Copy, GripVertical, Pencil, ChevronRight } from '@lucide/svelte';
   import Icon from '@iconify/svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Switch } from '$lib/components/ui/switch';
-  import { Label } from '$lib/components/ui/label';
-  import { Badge } from '$lib/components/ui/badge';
-  import * as Select from '$lib/components/ui/select';
-  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Input } from '@qiyu-allinai/ui/components/input';
+  import { Switch } from '@qiyu-allinai/ui/components/switch';
+  import { Label } from '@qiyu-allinai/ui/components/label';
+  import { Badge } from '@qiyu-allinai/ui/components/badge';
+  import * as Select from '@qiyu-allinai/ui/components/select';
+  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
   import { useSortable } from '@dnd-kit-svelte/sortable';
   import { DndContext, type DragEndEvent } from '@dnd-kit-svelte/core';
   import { SortableContext, arrayMove } from '@dnd-kit-svelte/sortable';

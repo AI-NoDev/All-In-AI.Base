@@ -53,7 +53,7 @@
     PostApiSystemDepartmentQueryOrderEnum,
     PostApiSystemRoleQueryFieldEnum,
     PostApiSystemRoleQueryOrderEnum
-  } from '@/lib/api/Api';
+  } from '@qiyu-allinai/api';
   import DeptTree from './components/dept-tree.svelte';
   import SearchFilter from './components/search-filter.svelte';
   import UserTable from './components/user-table.svelte';

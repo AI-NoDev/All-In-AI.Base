@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import BaseNode from '../BaseNode.svelte';
 	import type { AgentNodeData } from './types.js';
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
+	import * as Avatar from "@qiyu-allinai/ui/components/avatar/index.js";
 	import { configPanelRegistry } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
 

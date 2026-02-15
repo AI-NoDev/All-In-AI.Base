@@ -4,7 +4,7 @@
 	import BaseNode, { type OutputHandle } from '../BaseNode.svelte';
 	import type { IfNodeData, ConditionCase, ComparisonOperator } from './types.js';
 	import { COMPARISON_OPERATORS, NO_VALUE_OPERATORS } from './types.js';
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
+	import * as Avatar from "@qiyu-allinai/ui/components/avatar/index.js";
 	import { configPanelRegistry, workflowState } from '$lib/components/editor/contexts/index.js';
 	import ConfigPanel from './ConfigPanel.svelte';
 

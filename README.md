@@ -290,7 +290,7 @@ bun run dev
 bun run --filter=frontend dev
 
 # Start backend only
-bun run --filter=@qiyu-aiinall/server dev
+bun run --filter=@qiyu-allinai/server dev
 
 # Build all projects
 bun run build

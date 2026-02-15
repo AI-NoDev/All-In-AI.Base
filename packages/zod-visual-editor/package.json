@@ -92,6 +92,7 @@
 		"@dnd-kit-svelte/svelte": "^0.1.6",
 		"@iconify/svelte": "^5.2.1",
 		"@qiyu-allinai/i18n": "workspace:*",
+		"@qiyu-allinai/ui": "workspace:*",
 		"bits-ui": "^2.15.4"
 	}
 }

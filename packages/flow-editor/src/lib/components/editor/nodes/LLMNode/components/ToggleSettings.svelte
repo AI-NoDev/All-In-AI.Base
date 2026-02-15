@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Switch } from '$lib/components/ui/switch';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { Switch } from '@qiyu-allinai/ui/components/switch';
+	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

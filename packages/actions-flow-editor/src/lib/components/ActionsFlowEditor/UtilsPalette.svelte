@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Popover from '$lib/components/ui/popover/index.js';
+  import * as Popover from '@qiyu-allinai/ui/components/popover/index.js';
   import { UTIL_DEFINITIONS, type UtilType } from '../../types.js';
 
   interface Props {

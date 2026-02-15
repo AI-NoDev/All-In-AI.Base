@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import * as Avatar from '$lib/components/ui/avatar';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Badge } from '@qiyu-allinai/ui/components/badge';
+  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
+  import * as Avatar from '@qiyu-allinai/ui/components/avatar';
 
   interface Agent {
     id: string;

@@ -2,9 +2,9 @@
 	import type { NoteNodeData, NoteColor } from './types.js';
 	import { NOTE_COLORS, getNoteColorConfig } from './types.js';
 	import { workflowState } from '$lib/components/editor/contexts/index.js';
-	import { Textarea } from '$lib/components/ui/textarea';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Label } from '$lib/components/ui/label';
+	import { Textarea } from '@qiyu-allinai/ui/components/textarea';
+	import { Switch } from '@qiyu-allinai/ui/components/switch';
+	import { Label } from '@qiyu-allinai/ui/components/label';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

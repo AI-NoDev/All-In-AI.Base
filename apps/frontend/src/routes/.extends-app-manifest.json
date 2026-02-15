@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updatedAt": "2026-02-14T19:24:46.584Z",
+  "updatedAt": "2026-02-15T04:54:22.843Z",
   "records": [
     {
       "source": "D:/code/AllInAiBase/node_modules/@qiyu-allinai/app-example/client/routes/dashboard/+page.svelte",
@@ -18,13 +18,13 @@
       "source": "D:/code/AllInAiBase/node_modules/@qiyu-allinai/app-server-monitor/client/routes/dashboard/+page.svelte",
       "target": "D:/code/AllInAiBase/apps/frontend/src/routes/dashboard/app-server-monitor/+page.svelte",
       "package": "@qiyu-allinai/app-server-monitor",
-      "syncedAt": "2026-02-14T19:24:46.581Z"
+      "syncedAt": "2026-02-15T04:54:22.842Z"
     },
     {
       "source": "D:/code/AllInAiBase/node_modules/@qiyu-allinai/app-server-monitor/client/routes/dashboard/+page.ts",
       "target": "D:/code/AllInAiBase/apps/frontend/src/routes/dashboard/app-server-monitor/+page.ts",
       "package": "@qiyu-allinai/app-server-monitor",
-      "syncedAt": "2026-02-14T19:24:46.584Z"
+      "syncedAt": "2026-02-15T04:54:22.843Z"
     }
   ]
 }

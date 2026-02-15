@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { Button } from '@/lib/components/ui/button';
+  import { Button } from '@qiyu-allinai/ui/components/button';
   import { goto } from '$app/navigation';
 </script>
 

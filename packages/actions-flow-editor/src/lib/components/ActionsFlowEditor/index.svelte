@@ -3,8 +3,8 @@
   import '@xyflow/svelte/dist/style.css';
   import { setContext } from 'svelte';
 
-  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-  import * as ContextMenu from '$lib/components/ui/context-menu/index.js';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
+  import * as ContextMenu from '@qiyu-allinai/ui/components/context-menu/index.js';
   import IconTransform from '@iconify-svelte/tdesign/transform';
   import IconHelpCircle from '@iconify-svelte/tdesign/help-circle';
   import IconCalculator from '@iconify-svelte/tdesign/calculator';

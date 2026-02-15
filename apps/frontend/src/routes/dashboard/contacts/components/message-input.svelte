@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Popover from '$lib/components/ui/popover';
-  import * as Tooltip from '$lib/components/ui/tooltip';
-  import { Button } from '$lib/components/ui/button';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import { Kbd } from '$lib/components/ui/kbd';
+  import * as Popover from '@qiyu-allinai/ui/components/popover';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Textarea } from '@qiyu-allinai/ui/components/textarea';
+  import { Kbd } from '@qiyu-allinai/ui/components/kbd';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { imStore } from '@/lib/stores/im';
   import { wsStore } from '@/lib/stores/websocket';

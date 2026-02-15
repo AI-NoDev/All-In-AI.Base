@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Popover from '$lib/components/ui/popover';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as Kbd from '$lib/components/ui/kbd';
-	import { Separator } from '$lib/components/ui/separator';
+	import { Button } from '@qiyu-allinai/ui/components/button';
+	import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu';
+	import * as Popover from '@qiyu-allinai/ui/components/popover';
+	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+	import * as Kbd from '@qiyu-allinai/ui/components/kbd';
+	import { Separator } from '@qiyu-allinai/ui/components/separator';
 	import Icon from '@iconify/svelte';
 	import { workflowState } from '$lib/components/editor/contexts/index.js';
 	import { useStore } from '@xyflow/svelte';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ClassifierOption } from '../types.js';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
+	import { Button } from '@qiyu-allinai/ui/components/button';
+	import { Input } from '@qiyu-allinai/ui/components/input';
+	import { Textarea } from '@qiyu-allinai/ui/components/textarea';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

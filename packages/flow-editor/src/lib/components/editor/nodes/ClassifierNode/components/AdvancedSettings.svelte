@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Textarea } from '$lib/components/ui/textarea';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { Textarea } from '@qiyu-allinai/ui/components/textarea';
+	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
 	import Icon from '@iconify/svelte';
 
 	interface Props {

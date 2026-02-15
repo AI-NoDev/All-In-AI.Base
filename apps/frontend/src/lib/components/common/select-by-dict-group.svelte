@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import * as Select from '$lib/components/ui/select';
+  import * as Select from '@qiyu-allinai/ui/components/select';
   import { authStore } from '@/lib/stores/auth.svelte';
 
   interface DictItem {

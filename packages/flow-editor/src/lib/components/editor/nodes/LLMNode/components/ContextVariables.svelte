@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { VariableSelect, type Variable } from '../../../components/VariableSelector/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
 	import Icon from '@iconify/svelte';
 
 	interface ContextItem {

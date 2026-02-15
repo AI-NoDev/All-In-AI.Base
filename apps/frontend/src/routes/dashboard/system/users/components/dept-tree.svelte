@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { ScrollArea } from '@/lib/components/ui/scroll-area';
+  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
 
   interface DeptNode {
     id: string;

@@ -2,8 +2,8 @@
 	import type { Snippet } from 'svelte';
 	import type { BaseNodeData, NodeRunStatus } from '$lib/types/index.js';
 	import { Position } from '@xyflow/svelte';
-	import { Button } from '$lib/components/ui/button';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { Button } from '@qiyu-allinai/ui/components/button';
+	import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu';
 	import Icon from '@iconify/svelte';
 	import { configPanelRegistry, workflowState, runningState } from '$lib/components/editor/contexts/index.js';
 	import NodeHandler from '../handler/NodeHandler.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { goto } from "$app/navigation";
-  import * as Sidebar from '@/lib/components/ui/sidebar';
+  import * as Sidebar from '@qiyu-allinai/ui/components/sidebar';
   import SideHeader from './components/SideHeader.svelte';
   import SideNav from './components/SideNav.svelte';
   import SiteHeader from './components/SiteHeader.svelte';

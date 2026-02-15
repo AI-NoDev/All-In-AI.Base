@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-  import * as Select from '$lib/components/ui/select/index.js';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
+  import * as Select from '@qiyu-allinai/ui/components/select/index.js';
   import type { ActionSummary } from '../../types.js';
 
   interface Props {

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Slider } from '$lib/components/ui/slider';
+	import { Input } from '@qiyu-allinai/ui/components/input';
+	import { Switch } from '@qiyu-allinai/ui/components/switch';
+	import { Slider } from '@qiyu-allinai/ui/components/slider';
 
 	interface Props {
 		retryOnFailure: boolean;

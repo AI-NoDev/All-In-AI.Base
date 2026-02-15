@@ -1,4 +1,4 @@
-import { Api, HttpClient } from "@/lib/api/Api";
+import { Api, HttpClient } from "@qiyu-allinai/api";
 import { goto } from "$app/navigation";
 import { t } from "@/lib/stores/i18n.svelte";
 

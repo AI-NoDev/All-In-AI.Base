@@ -1,9 +1,9 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
+  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Input } from '@qiyu-allinai/ui/components/input';
+  import { Label } from '@qiyu-allinai/ui/components/label';
 
   interface Props {
     open: boolean;

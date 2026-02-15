@@ -13,12 +13,12 @@
 		$createTextNode as createTextNode,
 		$getSelection as getSelection
 	} from 'svelte-lexical';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Popover from '$lib/components/ui/popover';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Label } from '$lib/components/ui/label';
+	import { Button } from '@qiyu-allinai/ui/components/button/index.js';
+	import { Input } from '@qiyu-allinai/ui/components/input/index.js';
+	import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu';
+	import * as Popover from '@qiyu-allinai/ui/components/popover';
+	import { Switch } from '@qiyu-allinai/ui/components/switch';
+	import { Label } from '@qiyu-allinai/ui/components/label';
 	import type { NoteColor, NoteColorConfig } from '../types.js';
 	import { NOTE_COLORS } from '../types.js';
 	import { isRangeSelection, type LexicalNode, type AppendableNode } from './lexical-utils.js';

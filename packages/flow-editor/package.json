@@ -74,6 +74,7 @@
 		"@dnd-kit-svelte/sortable": "^0.0.11",
 		"@dnd-kit-svelte/svelte": "^0.1.6",
 		"@qiyu-allinai/zod-visual-editor": "workspace:*",
+		"@qiyu-allinai/ui": "workspace:*",
 		"@xyflow/svelte": "^1.5.0",
 		"d3-drag": "^3.0.0",
 		"d3-interpolate": "^3.0.1",

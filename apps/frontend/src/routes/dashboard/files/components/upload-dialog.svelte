@@ -1,7 +1,7 @@
 <script lang="ts">
-  import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
+  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Badge } from '@qiyu-allinai/ui/components/badge';
   import Icon from '@iconify/svelte';
   import type { ConflictMode } from './types';
 

@@ -3,13 +3,13 @@
 	import { BUILTIN_OUTPUT_VARIABLES, METADATA_FILTER_OPTIONS, MOCK_KNOWLEDGE_BASES } from './types.js';
 	import { workflowState } from '$lib/components/editor/contexts/index.js';
 	import { VariableSelect } from '../../components/VariableSelector/index.js';
-	import { Input } from '$lib/components/ui/input';
-	import { Button } from '$lib/components/ui/button';
-	import { Slider } from '$lib/components/ui/slider';
-	import * as Select from '$lib/components/ui/select';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as Popover from '$lib/components/ui/popover';
+	import { Input } from '@qiyu-allinai/ui/components/input';
+	import { Button } from '@qiyu-allinai/ui/components/button';
+	import { Slider } from '@qiyu-allinai/ui/components/slider';
+	import * as Select from '@qiyu-allinai/ui/components/select';
+	import * as Tabs from '@qiyu-allinai/ui/components/tabs';
+	import * as Tooltip from '@qiyu-allinai/ui/components/tooltip';
+	import * as Popover from '@qiyu-allinai/ui/components/popover';
 	import Icon from '@iconify/svelte';
 	import RunStatusBadge from '../../components/RunStatusBadge.svelte';
 

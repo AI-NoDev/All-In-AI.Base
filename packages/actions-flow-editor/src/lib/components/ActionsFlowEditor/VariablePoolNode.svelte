@@ -2,7 +2,7 @@
   import { Handle, Position } from '@xyflow/svelte';
   import IconAdd from '@iconify-svelte/tdesign/add';
   import IconClose from '@iconify-svelte/tdesign/close';
-  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
   import type { VariablePoolNodeData, VariableDefinition, VariableType } from '../../types.js';
   import { getHandleColor } from '../../edgeTypeRule.js';
 

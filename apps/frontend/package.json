@@ -11,8 +11,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
-		"generate:api": "bun run ./scripts/generateSwaggerApi.ts"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -39,7 +38,6 @@
 		"svelte": "^5.45.6",
 		"svelte-check": "^4.3.4",
 		"svelte-sonner": "^1.0.7",
-		"swagger-typescript-api": "^13.2.16",
 		"tailwind-merge": "^3.4.0",
 		"tailwind-variants": "^3.2.2",
 		"tailwindcss": "^4.1.17",
@@ -57,6 +55,8 @@
 		"@iconify/svelte": "^5.2.1",
 		"@qiyu-allinai/actions-flow-editor": "workspace:*",
 		"@qiyu-allinai/ai": "workspace:*",
+		"@qiyu-allinai/api": "workspace:*",
+		"@qiyu-allinai/ui": "workspace:*",
 		"@qiyu-allinai/file-icons": "workspace:*",
 		"@qiyu-allinai/i18n": "workspace:*",
 		"@qiyu-allinai/zod-visual-editor": "workspace:*",

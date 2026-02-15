@@ -2,8 +2,8 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge';
-  import { PostApiFilesUploadForceConflictModeEnum } from '@/lib/api/Api';
+  import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge.svelte';
+  import { PostApiFilesUploadForceConflictModeEnum } from '@qiyu-allinai/api';
   import {
     FileBreadcrumb,
     FileToolbar,

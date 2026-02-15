@@ -2,7 +2,7 @@
   import { ModeWatcher } from 'mode-watcher';
   import { onMount } from 'svelte';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
-  import { Toaster } from '@/lib/components/ui/sonner';
+  import { Toaster } from '@qiyu-allinai/ui/components/sonner';
 
   let { children } = $props();
 

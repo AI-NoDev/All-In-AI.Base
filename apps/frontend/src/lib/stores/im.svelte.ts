@@ -5,7 +5,7 @@ import {
   PostApiImConversationQueryOrderEnum,
   PostApiImMessageQueryFieldEnum,
   PostApiImMessageQueryOrderEnum
-} from '@/lib/api/Api';
+} from '@qiyu-allinai/api';
 
 // ============ Types ============
 interface Conversation {

@@ -1,10 +1,10 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Input } from '@qiyu-allinai/ui/components/input';
+  import { Avatar, AvatarFallback, AvatarImage } from '@qiyu-allinai/ui/components/avatar';
+  import { ScrollArea } from '@qiyu-allinai/ui/components/scroll-area';
+  import { Badge } from '@qiyu-allinai/ui/components/badge';
   import { imStore } from '@/lib/stores/im';
   import { wsStore } from '@/lib/stores/websocket';
 

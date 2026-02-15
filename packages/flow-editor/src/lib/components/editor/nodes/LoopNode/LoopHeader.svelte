@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
+	import * as Avatar from "@qiyu-allinai/ui/components/avatar/index.js";
 	import { LOOP_ICON } from './constants.js';
 
 	interface Props {

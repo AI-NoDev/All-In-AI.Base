@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Empty from '$lib/components/ui/empty';
-  import { Button } from '$lib/components/ui/button';
+  import * as Empty from '@qiyu-allinai/ui/components/empty';
+  import { Button } from '@qiyu-allinai/ui/components/button';
   import { imStore } from '@/lib/stores/im';
   import {
     ConversationList,

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { workflowState, configPanelRegistry } from '$lib/components/editor/contexts/index.js';
-	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
-	import * as Card from '$lib/components/ui/card';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Resizable from '$lib/components/ui/resizable';
+	import { Button } from '@qiyu-allinai/ui/components/button';
+	import { Separator } from '@qiyu-allinai/ui/components/separator';
+	import * as Card from '@qiyu-allinai/ui/components/card';
+	import * as DropdownMenu from '@qiyu-allinai/ui/components/dropdown-menu';
+	import * as Resizable from '@qiyu-allinai/ui/components/resizable';
 	import Icon from '@iconify/svelte';
 	import MiniMapPanel from './MiniMap/MiniMapPanel.svelte';
 

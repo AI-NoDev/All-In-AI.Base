@@ -1,11 +1,11 @@
 <script lang="ts">
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/select';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
-  import { Checkbox } from '$lib/components/ui/checkbox';
+  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
+  import * as Select from '@qiyu-allinai/ui/components/select';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Input } from '@qiyu-allinai/ui/components/input';
+  import { Label } from '@qiyu-allinai/ui/components/label';
+  import { Textarea } from '@qiyu-allinai/ui/components/textarea';
+  import { Checkbox } from '@qiyu-allinai/ui/components/checkbox';
 
   interface Model {
     id: string;

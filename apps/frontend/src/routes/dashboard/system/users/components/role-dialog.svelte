@@ -1,10 +1,10 @@
 <script lang="ts">
-  import * as Dialog from '@/lib/components/ui/dialog';
-  import { Button } from '@/lib/components/ui/button';
-  import { Skeleton } from '@/lib/components/ui/skeleton';
-  import { ItemSelector } from '@/lib/components/ui/item-selector';
+  import * as Dialog from '@qiyu-allinai/ui/components/dialog';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
+  import { ItemSelector } from '@qiyu-allinai/ui/components/item-selector';
   import { authStore } from '@/lib/storess/auth.svelte';
-  import { PostApiSystemRoleQueryFieldEnum, PostApiSystemRoleQueryOrderEnum } from '@/lib/api/Api';
+  import { PostApiSystemRoleQueryFieldEnum, PostApiSystemRoleQueryOrderEnum } from '@qiyu-allinai/api';
 
   interface Role {
     id: string;

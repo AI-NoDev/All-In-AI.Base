@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as AlertDialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
+  import * as AlertDialog from '@qiyu-allinai/ui/components/dialog';
+  import { Button } from '@qiyu-allinai/ui/components/button';
   import { imStore } from '@/lib/stores/im';
 
   interface Props {

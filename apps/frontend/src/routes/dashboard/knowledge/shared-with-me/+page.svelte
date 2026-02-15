@@ -3,8 +3,8 @@
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Button } from '@qiyu-allinai/ui/components/button';
+  import { Skeleton } from '@qiyu-allinai/ui/components/skeleton';
   import { FileIcon } from '@qiyu-allinai/file-icons';
 
   interface SharedFolder {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import * as Dialog from '@qiyu-allinai/ui/components/dialog/index.js';
   import IconPlay from '@iconify-svelte/tdesign/play';
   import IconLoading from '@iconify-svelte/tdesign/loading';
   import IconRefresh from '@iconify-svelte/tdesign/refresh';

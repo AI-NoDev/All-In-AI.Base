@@ -7,7 +7,7 @@
   import IconCheck from '@iconify-svelte/tdesign/check';
   import IconClose from '@iconify-svelte/tdesign/close';
   import IconBrowse from '@iconify-svelte/tdesign/browse';
-  import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+  import * as Tooltip from '@qiyu-allinai/ui/components/tooltip/index.js';
   import type { UtilNodeData, BaseType, DebugStateGetter, OpenDebugDialogFn } from '../../types.js';
   import { UTIL_DEFINITIONS, DEBUG_STATE_CONTEXT_KEY, OPEN_DEBUG_DIALOG_CONTEXT_KEY } from '../../types.js';
   import { getHandleColor } from '../../edgeTypeRule.js';

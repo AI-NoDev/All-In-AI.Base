@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { workflowState, configPanelRegistry } from '$lib/components/editor/contexts/index.js';
-	import { Button } from '$lib/components/ui/button';
+	import { Button } from '@qiyu-allinai/ui/components/button';
 	import Icon from '@iconify/svelte';
 
 	// 获取选中节点的数据
