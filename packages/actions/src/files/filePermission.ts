@@ -5,7 +5,9 @@
  */
 
 import { z } from 'zod';
+import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../core/define';
+import { ActionError } from '../core/errors';
 import type { DrizzleDB } from '../core/types';
 import { 
   FilePermissionAdapter, 
@@ -14,10 +16,41 @@ import {
   type SubjectType,
   type ResourceType,
 } from '@qiyu-allinai/db/casbin';
+import { file, folder } from '@qiyu-allinai/db/entities/knowledge';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // 创建适配器实例
 const getAdapter = (db: DrizzleDB) => new FilePermissionAdapter(db as PostgresJsDatabase);
+
+// 检查用户是否有权限管理资源（创建人或有 manage 权限）
+async function assertCanManagePermission(
+  db: DrizzleDB,
+  adapter: FilePermissionAdapter,
+  userId: string,
+  resourceType: ResourceType,
+  resourceId: string
+): Promise<void> {
+  // 检查是否是资源创建人
+  if (resourceType === 'file') {
+    const [fileRecord] = await db.select({ createdById: file.createdById })
+      .from(file)
+      .where(and(eq(file.id, resourceId), isNull(file.deletedAt)))
+      .limit(1);
+    if (fileRecord?.createdById === userId) return;
+  } else {
+    const [folderRecord] = await db.select({ createdById: folder.createdById })
+      .from(folder)
+      .where(and(eq(folder.id, resourceId), isNull(folder.deletedAt)))
+      .limit(1);
+    if (folderRecord?.createdById === userId) return;
+  }
+  
+  // 检查是否有 manage 权限
+  const hasManage = await adapter.checkPermission(userId, resourceType, resourceId, 'manage');
+  if (!hasManage) {
+    throw ActionError.forbidden('error.files.permissionDenied');
+  }
+}
 
 // ============ Schema 定义 ============
 
@@ -103,6 +136,10 @@ export const filePermissionSetForResource = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const adapter = getAdapter(db);
+    
+    // 权限检查：只有创建人或有 manage 权限的用户可以设置权限
+    await assertCanManagePermission(db, adapter, context.currentUserId, input.resourceType as ResourceType, input.resourceId);
+    
     await adapter.setPermissionsForResource(
       input.resourceType as ResourceType,
       input.resourceId,
@@ -143,6 +180,10 @@ export const filePermissionAdd = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const adapter = getAdapter(db);
+    
+    // 权限检查：只有创建人或有 manage 权限的用户可以添加权限
+    await assertCanManagePermission(db, adapter, context.currentUserId, input.resourceType as ResourceType, input.resourceId);
+    
     await adapter.addPermission({
       resourceType: input.resourceType as ResourceType,
       resourceId: input.resourceId,
@@ -180,6 +221,10 @@ export const filePermissionRemove = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const adapter = getAdapter(db);
+    
+    // 权限检查：只有创建人或有 manage 权限的用户可以移除权限
+    await assertCanManagePermission(db, adapter, context.currentUserId, input.resourceType as ResourceType, input.resourceId);
+    
     await adapter.removePermission({
       resourceType: input.resourceType as ResourceType,
       resourceId: input.resourceId,
@@ -278,6 +323,10 @@ export const filePermissionSetParent = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const adapter = getAdapter(db);
+    
+    // 权限检查：只有创建人或有 manage 权限的用户可以设置父级
+    await assertCanManagePermission(db, adapter, context.currentUserId, input.resourceType as ResourceType, input.resourceId);
+    
     await adapter.setResourceParent(
       input.resourceType as ResourceType,
       input.resourceId,
@@ -311,6 +360,10 @@ export const filePermissionCopy = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const adapter = getAdapter(db);
+    
+    // 权限检查：需要对目标资源有 manage 权限
+    await assertCanManagePermission(db, adapter, context.currentUserId, input.targetType as ResourceType, input.targetId);
+    
     await adapter.copyPermissions(
       input.sourceType as ResourceType,
       input.sourceId,
@@ -343,6 +396,10 @@ export const filePermissionDeleteAll = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const adapter = getAdapter(db);
+    
+    // 权限检查：只有创建人或有 manage 权限的用户可以删除所有权限
+    await assertCanManagePermission(db, adapter, context.currentUserId, input.resourceType as ResourceType, input.resourceId);
+    
     await adapter.deleteResourcePermissions(
       input.resourceType as ResourceType,
       input.resourceId

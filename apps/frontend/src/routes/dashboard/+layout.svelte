@@ -1,13 +1,19 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { goto } from "$app/navigation";
+  import Icon from '@iconify/svelte';
   import * as Sidebar from '$lib/components/ui/sidebar';
+  import { PaneGroup, Pane, Handle } from '$lib/components/ui/resizable';
+  import { Button } from '$lib/components/ui/button';
   import SideHeader from './components/SideHeader.svelte';
   import SideNav from './components/SideNav.svelte';
   import SiteHeader from './components/SiteHeader.svelte';
   import UserFooter from './components/UserFooter.svelte';
+  import ChatPanel from './components/ai-chat/chat-panel.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { aiChatStore } from '@/lib/stores/ai-chat.svelte';
+  import { actionsStore } from '@/lib/stores/actions.svelte';
 
   let { children } = $props();
   let isChecking = $state(true);
@@ -32,6 +38,10 @@
     
     // 初始化 IM store
     imStore.init();
+    // 初始化 AI Chat store
+    aiChatStore.init();
+    // 预加载 Actions 列表（用于 MCP 配置等）
+    actionsStore.load();
     
     isChecking = false;
   });
@@ -39,6 +49,12 @@
   onDestroy(() => {
     imStore.cleanup();
   });
+
+  function handlePanelResize(sizes: number[]) {
+    if (sizes.length >= 2) {
+      aiChatStore.setPanelSize(sizes[1]);
+    }
+  }
 </script>
 
 {#if isChecking}
@@ -70,11 +86,43 @@
         <UserFooter />
       </Sidebar.Footer>
     </Sidebar.Root>
-    <Sidebar.Inset>
-        <SiteHeader />
-        <div class="@container/main pt-2 flex flex-1 flex-col min-h-0">
-            {@render children()}
-        </div>
+    <Sidebar.Inset class="flex flex-col overflow-hidden">
+      <SiteHeader />
+      <div class="@container/main flex flex-1 overflow-hidden relative">
+        <PaneGroup 
+          direction="horizontal" 
+          class="h-full w-full"
+          onLayoutChange={handlePanelResize}
+        >
+          <!-- 主内容区域 -->
+          <Pane defaultSize={aiChatStore.isPanelOpen ? 100 - aiChatStore.panelSize : 100} minSize={50}>
+            <div class="flex flex-col h-full overflow-hidden">
+              {@render children()}
+            </div>
+          </Pane>
+
+          {#if aiChatStore.isPanelOpen}
+            <Handle withHandle />
+            <!-- AI 聊天面板 -->
+            <Pane defaultSize={aiChatStore.panelSize} minSize={20} maxSize={50}>
+              <ChatPanel />
+            </Pane>
+          {/if}
+        </PaneGroup>
+
+        <!-- AI 聊天按钮（面板关闭时显示） -->
+        {#if !aiChatStore.isPanelOpen}
+          <div class="fixed right-4 bottom-4 z-50">
+            <Button 
+              size="lg" 
+              class="rounded-full size-12 shadow-lg"
+              onclick={() => aiChatStore.togglePanel()}
+            >
+              <Icon icon="mdi:robot-outline" class="size-6" />
+            </Button>
+          </div>
+        {/if}
+      </div>
     </Sidebar.Inset>
   </Sidebar.Provider>
 {/if}

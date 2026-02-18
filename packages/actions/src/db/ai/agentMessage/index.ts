@@ -16,7 +16,6 @@ const agentMessageFilterSchema = z.object({
   roles: z.array(z.string()).optional(),
   contentType: z.string().optional(),
   contentTypes: z.array(z.string()).optional(),
-  modelId: z.string().optional(),
   finishReason: z.string().optional(),
   msgSeqStart: z.number().optional(),
   msgSeqEnd: z.number().optional(),
@@ -55,7 +54,6 @@ export const agentMessageGetByPagination = defineAction({
       if (filter.roles?.length) conditions.push(inArray(agentMessage.role, filter.roles));
       if (filter.contentType) conditions.push(eq(agentMessage.contentType, filter.contentType));
       if (filter.contentTypes?.length) conditions.push(inArray(agentMessage.contentType, filter.contentTypes));
-      if (filter.modelId) conditions.push(eq(agentMessage.modelId, filter.modelId));
       if (filter.finishReason) conditions.push(eq(agentMessage.finishReason, filter.finishReason));
       if (filter.msgSeqStart !== undefined) conditions.push(gte(agentMessage.msgSeq, filter.msgSeqStart));
       if (filter.msgSeqEnd !== undefined) conditions.push(lte(agentMessage.msgSeq, filter.msgSeqEnd));
@@ -90,7 +88,7 @@ export const agentMessageGetByPk = defineAction({
 export const agentMessageCreate = defineAction({
   meta: { name: 'ai.agentMessage.create', displayName: '创建Agent消息', description: '创建单条Agent消息', tags: ['ai', 'agentMessage'], method: 'POST', path: '/api/ai/agent-message' },
   schemas: {
-    bodySchema: z.object({ data: agentMessageZodSchemas.insert }),
+    bodySchema: z.object({ data: agentMessageZodSchemas.insert.omit({ msgSeq: true }) }),
     outputSchema: agentMessageZodSchemas.select,
   },
   execute: async (input, context) => {
@@ -104,18 +102,26 @@ export const agentMessageCreate = defineAction({
     
     // Update session stats
     if (result) {
-      const tokenCount = input.data.tokenCount ?? 0;
+      const usage = input.data.tokenUsage;
+      const totalTokens = usage?.totalTokens ?? 0;
+      const inputTokens = usage?.inputTokens ?? 0;
+      const outputTokens = usage?.outputTokens ?? 0;
+      
       await db.update(agentSession).set({ 
         messageCount: sql`message_count + 1`,
         lastMessageAt: result.createdAt,
         tokenUsage: sql`jsonb_set(
           jsonb_set(
-            token_usage,
-            '{totalTokens}',
-            to_jsonb((token_usage->>'totalTokens')::int + ${tokenCount})
+            jsonb_set(
+              token_usage,
+              '{totalTokens}',
+              to_jsonb((token_usage->>'totalTokens')::int + ${totalTokens})
+            ),
+            '{promptTokens}',
+            to_jsonb((token_usage->>'promptTokens')::int + ${inputTokens})
           ),
-          '{${input.data.role === 'user' ? 'promptTokens' : 'completionTokens'}}',
-          to_jsonb((token_usage->>'${input.data.role === 'user' ? 'promptTokens' : 'completionTokens'}')::int + ${tokenCount})
+          '{completionTokens}',
+          to_jsonb((token_usage->>'completionTokens')::int + ${outputTokens})
         )`,
         updatedAt: new Date().toISOString()
       }).where(eq(agentSession.id, input.data.sessionId));
@@ -153,9 +159,9 @@ export const agentMessageCreateMany = defineAction({
     const results = await db.insert(agentMessage).values(messagesToInsert).returning();
     
     // Update session stats
-    const totalTokens = messages.reduce((sum, m) => sum + (m.tokenCount ?? 0), 0);
-    const promptTokens = messages.filter(m => m.role === 'user').reduce((sum, m) => sum + (m.tokenCount ?? 0), 0);
-    const completionTokens = totalTokens - promptTokens;
+    const totalTokens = messages.reduce((sum, m) => sum + (m.tokenUsage?.totalTokens ?? 0), 0);
+    const promptTokens = messages.reduce((sum, m) => sum + (m.tokenUsage?.inputTokens ?? 0), 0);
+    const completionTokens = messages.reduce((sum, m) => sum + (m.tokenUsage?.outputTokens ?? 0), 0);
     const lastMessage = results[results.length - 1];
     
     if (lastMessage) {
@@ -210,6 +216,84 @@ export const agentMessageGetHistory = defineAction({
   },
 });
 
+export const agentMessageDeleteByPk = defineAction({
+  meta: { name: 'ai.agentMessage.deleteByPk', displayName: '删除Agent消息', description: '根据ID删除单条Agent消息', tags: ['ai', 'agentMessage'], method: 'DELETE', path: '/api/ai/agent-message/:id' },
+  schemas: {
+    paramsSchema: z.object({ id: z.string() }),
+    outputSchema: z.object({ success: z.boolean() }),
+  },
+  execute: async (input, context) => {
+    const { db } = context;
+    
+    // 先获取消息信息
+    const [msg] = await db.select().from(agentMessage).where(eq(agentMessage.id, input.id)).limit(1);
+    if (!msg) {
+      return { success: false };
+    }
+    
+    // 删除消息
+    await db.delete(agentMessage).where(eq(agentMessage.id, input.id));
+    
+    // 更新会话统计
+    await db.update(agentSession).set({
+      messageCount: sql`GREATEST(message_count - 1, 0)`,
+      updatedAt: new Date().toISOString()
+    }).where(eq(agentSession.id, msg.sessionId));
+    
+    return { success: true };
+  },
+});
+
+export const agentMessageDeleteFromSeq = defineAction({
+  meta: { name: 'ai.agentMessage.deleteFromSeq', displayName: '删除指定序号及之后的消息', description: '删除会话中指定msgSeq及之后的所有消息', tags: ['ai', 'agentMessage'], method: 'DELETE', path: '/api/ai/agent-message/from-seq/:sessionId/:msgSeq' },
+  schemas: {
+    paramsSchema: z.object({ 
+      sessionId: z.string(),
+      msgSeq: z.coerce.number().int()
+    }),
+    outputSchema: z.object({ deletedCount: z.number() }),
+  },
+  execute: async (input, context) => {
+    const { db } = context;
+    const { sessionId, msgSeq } = input;
+    
+    // 统计要删除的消息数量
+    const countResult = await db.select({ count: sql<number>`count(*)` })
+      .from(agentMessage)
+      .where(and(
+        eq(agentMessage.sessionId, sessionId),
+        gte(agentMessage.msgSeq, msgSeq)
+      ));
+    const deletedCount = Number(countResult[0]?.count ?? 0);
+    
+    if (deletedCount === 0) {
+      return { deletedCount: 0 };
+    }
+    
+    // 删除消息
+    await db.delete(agentMessage).where(and(
+      eq(agentMessage.sessionId, sessionId),
+      gte(agentMessage.msgSeq, msgSeq)
+    ));
+    
+    // 更新会话统计
+    // 获取剩余消息的最后一条
+    const [lastMsg] = await db.select()
+      .from(agentMessage)
+      .where(eq(agentMessage.sessionId, sessionId))
+      .orderBy(desc(agentMessage.msgSeq))
+      .limit(1);
+    
+    await db.update(agentSession).set({
+      messageCount: sql`GREATEST(message_count - ${deletedCount}, 0)`,
+      lastMessageAt: lastMsg?.createdAt || null,
+      updatedAt: new Date().toISOString()
+    }).where(eq(agentSession.id, sessionId));
+    
+    return { deletedCount };
+  },
+});
+
 
 export const agentMessageGetSchema = defineAction({
   meta: { name: 'ai.agentMessage.getSchema', ignoreTools: true, displayName: '获取Agent消息Schema', description: '获取Agent消息表的JSON Schema', tags: ['ai', 'agentMessage'], method: 'GET', path: '/api/ai/agent-message/schema' },
@@ -221,4 +305,4 @@ export const agentMessageGetSchema = defineAction({
   },
 });
 
-export const agentMessageActions = [agentMessageGetByPagination, agentMessageGetByPk, agentMessageCreate, agentMessageCreateMany, agentMessageGetHistory, agentMessageGetSchema];
+export const agentMessageActions = [agentMessageGetByPagination, agentMessageGetByPk, agentMessageCreate, agentMessageCreateMany, agentMessageGetHistory, agentMessageDeleteByPk, agentMessageDeleteFromSeq, agentMessageGetSchema];

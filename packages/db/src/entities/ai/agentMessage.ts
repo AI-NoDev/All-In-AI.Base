@@ -17,7 +17,6 @@ import {
   "db_ai_agentMessage_toolCalls" as f_toolCalls,
   "db_ai_agentMessage_toolResults" as f_toolResults,
   "db_ai_agentMessage_tokenCount" as f_tokenCount,
-  "db_ai_agentMessage_modelId" as f_modelId,
   "db_ai_agentMessage_latencyMs" as f_latencyMs,
   "db_ai_agentMessage_finishReason" as f_finishReason,
   "db_ai_agentMessage_extra" as f_extra,
@@ -40,10 +39,26 @@ export type ToolResult = {
 };
 
 // Message content types
-export type TextMessageContent = { type: 'text'; text: string };
+export type TextMessageContent = { type: 'text'; text: string; reasoning?: string };
 export type ImageMessageContent = { type: 'image'; url: string; alt?: string };
 export type FileMessageContent = { type: 'file'; fileId: string; name: string; mimeType?: string };
 export type AgentMessageContent = TextMessageContent | ImageMessageContent | FileMessageContent | Array<TextMessageContent | ImageMessageContent | FileMessageContent>;
+
+// Token usage type (matches AI SDK LanguageModelUsage)
+export type TokenUsage = {
+  totalTokens?: number;
+  inputTokens?: number;
+  outputTokens?: number;
+  inputTokenDetails?: {
+    noCacheTokens?: number;
+    cacheReadTokens?: number;
+    cacheWriteTokens?: number;
+  };
+  outputTokenDetails?: {
+    textTokens?: number;
+    reasoningTokens?: number;
+  };
+};
 
 // ============ Fields ============
 // Agent message table is append-only
@@ -88,14 +103,9 @@ const agentMessageFields = {
     comment: f_toolResults,
     config: { canExport: false, canImport: false }
   },
-  tokenCount: {
-    field: integer("token_count").default(0),
+  tokenUsage: {
+    field: jsonb("token_usage").$type<TokenUsage>(),
     comment: f_tokenCount,
-    config: { canExport: true, canImport: false, exportExcelColumnName: f_tokenCount, cellType: "NUMERIC" as const }
-  },
-  modelId: {
-    field: uuid("model_id"),
-    comment: f_modelId,
     config: { canExport: false, canImport: false }
   },
   latencyMs: {

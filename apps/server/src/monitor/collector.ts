@@ -1,5 +1,8 @@
 import os from 'os';
 
+// 检测是否在极简容器环境（没有 shell 命令）
+let isMinimalContainer = false;
+
 export interface MetricsSnapshot {
   cpu: number;
   memory: number;
@@ -44,6 +47,7 @@ export interface DiskPartition {
   used: number;
   free: number;
   usedPercent: number;
+  unavailable?: string;
 }
 
 export interface NetworkInterface {
@@ -80,6 +84,7 @@ export interface SystemInfo {
     interfaces: NetworkInterface[];
     publicIp: string;
   };
+  unavailable?: string;
 }
 
 let lastCpuInfo: { idle: number; total: number } | null = null;
@@ -108,7 +113,60 @@ function getCpuUsage(): number {
   return Math.round((1 - idleDiff / totalDiff) * 100 * 10) / 10;
 }
 
+// Windows 内存缓存
+let cachedWinMemory: { total: number; used: number; free: number; usedPercent: number } | null = null;
+let lastWinMemoryTime = 0;
+
+async function getMemoryInfoAsync(): Promise<{ total: number; used: number; free: number; usedPercent: number }> {
+  const platform = os.platform();
+  
+  if (platform === 'win32' && !isMinimalContainer) {
+    const now = Date.now();
+    // 缓存 2 秒，避免频繁调用 PowerShell
+    if (cachedWinMemory && now - lastWinMemoryTime < 2000) {
+      return cachedWinMemory;
+    }
+    
+    try {
+      // 使用 WMI 获取准确的内存信息
+      const result = await Bun.$`powershell -Command "Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory | ConvertTo-Json"`.quiet();
+      const data = JSON.parse(result.stdout.toString());
+      // WMI 返回的是 KB
+      const total = (Number(data.TotalVisibleMemorySize) || 0) * 1024;
+      const free = (Number(data.FreePhysicalMemory) || 0) * 1024;
+      const used = total - free;
+      
+      cachedWinMemory = {
+        total,
+        used,
+        free,
+        usedPercent: total > 0 ? Math.round((used / total) * 100 * 10) / 10 : 0,
+      };
+      lastWinMemoryTime = now;
+      return cachedWinMemory;
+    } catch {
+      // 失败时回退到 Node.js API
+    }
+  }
+  
+  // 非 Windows 或失败时使用 Node.js API
+  const total = os.totalmem();
+  const free = os.freemem();
+  const used = total - free;
+  return {
+    total,
+    used,
+    free,
+    usedPercent: Math.round((used / total) * 100 * 10) / 10,
+  };
+}
+
+// 同步版本，用于不需要精确值的场景
 function getMemoryInfo(): { total: number; used: number; free: number; usedPercent: number } {
+  // 如果有缓存，返回缓存
+  if (cachedWinMemory && Date.now() - lastWinMemoryTime < 5000) {
+    return cachedWinMemory;
+  }
   const total = os.totalmem();
   const free = os.freemem();
   const used = total - free;
@@ -121,6 +179,10 @@ function getMemoryInfo(): { total: number; used: number; free: number; usedPerce
 }
 
 async function getDiskInfo(): Promise<{ total: number; used: number; free: number; usedPercent: number }> {
+  if (isMinimalContainer) {
+    return { total: 0, used: 0, free: 0, usedPercent: 0 };
+  }
+  
   const platform = os.platform();
   
   try {
@@ -147,11 +209,16 @@ async function getDiskInfo(): Promise<{ total: number; used: number; free: numbe
       };
     }
   } catch {
+    isMinimalContainer = true;
     return { total: 0, used: 0, free: 0, usedPercent: 0 };
   }
 }
 
 async function getNetworkStats(): Promise<{ rx: number; tx: number }> {
+  if (isMinimalContainer) {
+    return { rx: 0, tx: 0 };
+  }
+  
   const platform = os.platform();
   const now = Date.now();
   
@@ -191,16 +258,17 @@ async function getNetworkStats(): Promise<{ rx: number; tx: number }> {
 
     return { rx: Math.max(0, rxRate), tx: Math.max(0, txRate) };
   } catch {
+    isMinimalContainer = true;
     return { rx: 0, tx: 0 };
   }
 }
 
 export async function collectMetrics(): Promise<MetricsSnapshot> {
-  const [diskInfo, network] = await Promise.all([
+  const [diskInfo, network, memInfo] = await Promise.all([
     getDiskInfo(),
     getNetworkStats(),
+    getMemoryInfoAsync(),
   ]);
-  const memInfo = getMemoryInfo();
 
   return {
     cpu: getCpuUsage(),
@@ -220,11 +288,13 @@ export async function collectMetrics(): Promise<MetricsSnapshot> {
 
 export async function getSystemInfo(): Promise<SystemInfo> {
   const cpus = os.cpus();
-  const memInfo = getMemoryInfo();
-  const interfaces = await getNetworkInterfaces();
-  const swapInfo = await getSwapInfo();
+  const [memInfo, swapInfo] = await Promise.all([
+    getMemoryInfoAsync(),
+    getSwapInfo(),
+  ]);
+  const interfaces = getNetworkInterfaces();
   
-  return {
+  const info: SystemInfo = {
     hostname: os.hostname(),
     platform: os.platform(),
     release: os.release(),
@@ -249,9 +319,19 @@ export async function getSystemInfo(): Promise<SystemInfo> {
       publicIp: '',
     },
   };
+  
+  if (isMinimalContainer) {
+    info.unavailable = '部分信息在极简容器环境中不可用';
+  }
+  
+  return info;
 }
 
 async function getSwapInfo(): Promise<{ swapTotal: number; swapUsed: number; swapFree: number }> {
+  if (isMinimalContainer) {
+    return { swapTotal: 0, swapUsed: 0, swapFree: 0 };
+  }
+  
   const platform = os.platform();
   
   try {
@@ -274,19 +354,24 @@ async function getSwapInfo(): Promise<{ swapTotal: number; swapUsed: number; swa
         };
       }
     } else {
-      const result = await Bun.$`free -b | grep Swap`.quiet();
-      const parts = result.stdout.toString().trim().split(/\s+/);
-      return {
-        swapTotal: parseInt(parts[1]) || 0,
-        swapUsed: parseInt(parts[2]) || 0,
-        swapFree: parseInt(parts[3]) || 0,
-      };
+      const result = await Bun.$`cat /proc/meminfo | grep -E "^Swap"`.quiet();
+      const lines = result.stdout.toString().trim().split('\n');
+      let swapTotal = 0, swapFree = 0;
+      for (const line of lines) {
+        const [key, value] = line.split(':').map(s => s.trim());
+        const kb = parseInt(value) || 0;
+        if (key === 'SwapTotal') swapTotal = kb * 1024;
+        if (key === 'SwapFree') swapFree = kb * 1024;
+      }
+      return { swapTotal, swapUsed: swapTotal - swapFree, swapFree };
     }
-  } catch {}
+  } catch {
+    isMinimalContainer = true;
+  }
   return { swapTotal: 0, swapUsed: 0, swapFree: 0 };
 }
 
-async function getNetworkInterfaces(): Promise<NetworkInterface[]> {
+function getNetworkInterfaces(): NetworkInterface[] {
   const interfaces = os.networkInterfaces();
   const result: NetworkInterface[] = [];
   
@@ -317,6 +402,10 @@ async function getNetworkInterfaces(): Promise<NetworkInterface[]> {
 }
 
 export async function getDiskPartitions(): Promise<DiskPartition[]> {
+  if (isMinimalContainer) {
+    return [{ name: '-', mountPoint: '-', fsType: '-', total: 0, used: 0, free: 0, usedPercent: 0, unavailable: '极简容器环境不支持磁盘分区查询' }];
+  }
+  
   const platform = os.platform();
   
   try {
@@ -339,41 +428,46 @@ export async function getDiskPartitions(): Promise<DiskPartition[]> {
         };
       }).filter(d => d.total > 0);
     } else {
-      const result = await Bun.$`df -BT | grep -vE "^Filesystem|tmpfs|devtmpfs|overlay"`.quiet();
-      const lines = result.stdout.toString().trim().split('\n');
+      const result = await Bun.$`df -BT 2>/dev/null | grep -vE "^Filesystem|tmpfs|devtmpfs|overlay" || df -B1 2>/dev/null | grep -vE "^Filesystem|tmpfs|devtmpfs|overlay"`.quiet();
+      const lines = result.stdout.toString().trim().split('\n').filter(l => l);
       return lines.map(line => {
         const parts = line.split(/\s+/);
-        const total = parseInt(parts[2]) || 0;
-        const used = parseInt(parts[3]) || 0;
-        const free = parseInt(parts[4]) || 0;
+        const hasType = parts.length >= 7;
+        const total = parseInt(parts[hasType ? 2 : 1]) || 0;
+        const used = parseInt(parts[hasType ? 3 : 2]) || 0;
+        const free = parseInt(parts[hasType ? 4 : 3]) || 0;
         return {
           name: parts[0],
-          mountPoint: parts[6],
-          fsType: parts[1],
+          mountPoint: parts[hasType ? 6 : 5] || '/',
+          fsType: hasType ? parts[1] : 'unknown',
           total,
           used,
           free,
           usedPercent: total > 0 ? Math.round((used / total) * 100 * 10) / 10 : 0,
         };
-      });
+      }).filter(p => p.total > 0);
     }
   } catch {
-    return [];
+    isMinimalContainer = true;
+    return [{ name: '-', mountPoint: '-', fsType: '-', total: 0, used: 0, free: 0, usedPercent: 0, unavailable: '极简容器环境不支持磁盘分区查询' }];
   }
 }
 
-export async function getProcessList(sortBy: 'cpu' | 'memory' = 'cpu', limit = 20): Promise<ProcessInfo[]> {
+// Windows 进程 CPU 缓存，用于计算 CPU 使用率差值
+let lastWinProcessCpu: Map<number, { kernelTime: number; userTime: number; time: number }> = new Map();
+
+export async function getProcessList(sortBy: 'cpu' | 'memory' = 'cpu', limit = 20): Promise<ProcessInfo[] | { unavailable: string }> {
+  if (isMinimalContainer) {
+    return { unavailable: '极简容器环境不支持进程列表查询（无 ps 命令）' };
+  }
+  
   const platform = os.platform();
   
   try {
     if (platform === 'win32') {
-      // Use WMI to get CPU percentage (PerfFormattedData_PerfProc_Process)
-      // Note: PercentProcessorTime can exceed 100% on multi-core systems, so we divide by core count if needed, 
-      // or just cap it. Windows Task Manager shows per-process CPU usage relative to total capacity (0-100%).
-      // We also get WorkingSetPrivate for memory to match Task Manager better.
-      const cmd = `Get-CimInstance Win32_PerfFormattedData_PerfProc_Process | Sort-Object -Property PercentProcessorTime -Descending | Select-Object -First ${limit} IDProcess, Name, PercentProcessorTime, WorkingSetPrivate | ConvertTo-Json -Depth 2`;
-      
-      const result = await Bun.$`powershell -Command "${cmd}"`.quiet();
+      // 使用 Get-Process 获取更准确的 CPU 时间
+      const cmd = `Get-Process | Where-Object { $_.Id -ne 0 } | Select-Object Id, ProcessName, @{N='CPU';E={$_.CPU}}, WorkingSet64 | ConvertTo-Json -Depth 2`;
+      const result = await Bun.$`powershell -Command ${cmd}`.quiet();
       const stdout = result.stdout.toString().trim();
       if (!stdout) return [];
       
@@ -381,57 +475,76 @@ export async function getProcessList(sortBy: 'cpu' | 'memory' = 'cpu', limit = 2
       const processes = Array.isArray(data) ? data : [data];
       const totalMem = os.totalmem();
       const cpuCount = os.cpus().length;
+      const now = Date.now();
 
-      return processes
-        .filter((p: any) => p.Name !== '_Total' && p.Name !== 'Idle')
-        .map((p: any) => {
-          // WMI PercentProcessorTime is already a percentage of total CPU capacity across all cores
-          // But sometimes it can spike.
-          const cpu = Number(p.PercentProcessorTime) || 0;
-          // Scale down by cores if it seems to be per-core (WMI usually returns total system usage though)
-          // Actually Win32_PerfFormattedData_PerfProc_Process.PercentProcessorTime is 0-100 * Cores in some versions?
-          // No, usually it's 0-100 total. Let's assume standard behavior.
-          // Wait, Task Manager shows 0-100%. If we have 16 cores and a process uses 1 core fully, it shows 6.25%.
-          // If WMI returns 100 for 1 core usage, we need to divide by cpuCount.
-          // Let's safe guard:
-          const finalCpu = Math.round((cpu / cpuCount) * 10) / 10;
-          
-          const memBytes = Number(p.WorkingSetPrivate) || 0;
-          const memPercent = totalMem > 0 ? Math.round((memBytes / totalMem) * 100 * 10) / 10 : 0;
+      // 计算每个进程的 CPU 使用率（基于 CPU 时间差）
+      const processInfos: ProcessInfo[] = [];
+      const newCache = new Map<number, { kernelTime: number; userTime: number; time: number }>();
 
-          return {
-            pid: p.IDProcess,
-            name: p.Name,
-            cpu: finalCpu,
-            memory: memPercent,
-            memoryBytes: memBytes,
-            user: '',
-            status: 'running',
-          };
+      for (const p of processes) {
+        const pid = p.Id as number;
+        const cpuTime = (Number(p.CPU) || 0) * 1000; // CPU 属性是秒，转为毫秒
+        const memBytes = Number(p.WorkingSet64) || 0;
+        const memPercent = totalMem > 0 ? Math.round((memBytes / totalMem) * 100 * 10) / 10 : 0;
+
+        let cpuPercent = 0;
+        const lastInfo = lastWinProcessCpu.get(pid);
+        if (lastInfo) {
+          const timeDiff = now - lastInfo.time;
+          if (timeDiff > 0) {
+            const cpuDiff = cpuTime - lastInfo.userTime;
+            // CPU 使用率 = CPU时间差 / (实际时间差 * CPU核心数) * 100
+            cpuPercent = Math.round((cpuDiff / (timeDiff * cpuCount)) * 100 * 10) / 10;
+            cpuPercent = Math.max(0, Math.min(100, cpuPercent)); // 限制在 0-100
+          }
+        }
+
+        newCache.set(pid, { kernelTime: 0, userTime: cpuTime, time: now });
+
+        processInfos.push({
+          pid,
+          name: p.ProcessName as string,
+          cpu: cpuPercent,
+          memory: memPercent,
+          memoryBytes: memBytes,
+          user: '',
+          status: 'running',
         });
+      }
+
+      lastWinProcessCpu = newCache;
+
+      // 按 CPU 或内存排序
+      processInfos.sort((a, b) => sortBy === 'cpu' ? b.cpu - a.cpu : b.memory - a.memory);
+      return processInfos.slice(0, limit);
     } else {
       const sortFlag = sortBy === 'cpu' ? '-pcpu' : '-pmem';
       const result = await Bun.$`ps aux --sort=${sortFlag} | head -${limit + 1} | tail -${limit}`.quiet();
-      const lines = result.stdout.toString().trim().split('\n');
+      const lines = result.stdout.toString().trim().split('\n').filter(l => l);
       return lines.map(line => {
         const parts = line.split(/\s+/);
         return {
           pid: parseInt(parts[1]) || 0,
-          name: parts[10] || '',
+          name: parts.slice(10).join(' ') || parts[10] || '',
           cpu: parseFloat(parts[2]) || 0,
           memory: parseFloat(parts[3]) || 0,
-          memoryBytes: parseInt(parts[5]) * 1024 || 0,
+          memoryBytes: (parseInt(parts[5]) || 0) * 1024,
           user: parts[0],
           status: parts[7] || '',
         };
       });
     }
   } catch {
-    return [];
+    isMinimalContainer = true;
+    return { unavailable: '极简容器环境不支持进程列表查询（无 ps 命令）' };
   }
 }
 
-export async function getPortList(): Promise<PortInfo[]> {
+export async function getPortList(): Promise<PortInfo[] | { unavailable: string }> {
+  if (isMinimalContainer) {
+    return { unavailable: '极简容器环境不支持端口列表查询（无 ss/netstat 命令）' };
+  }
+  
   const platform = os.platform();
   
   try {
@@ -450,8 +563,8 @@ export async function getPortList(): Promise<PortInfo[]> {
         processName: '',
       }));
     } else {
-      const result = await Bun.$`ss -tuln | tail -n +2 | head -100`.quiet();
-      const lines = result.stdout.toString().trim().split('\n');
+      const result = await Bun.$`ss -tuln 2>/dev/null | tail -n +2 | head -100 || netstat -tuln 2>/dev/null | tail -n +3 | head -100`.quiet();
+      const lines = result.stdout.toString().trim().split('\n').filter(l => l);
       return lines.map(line => {
         const parts = line.split(/\s+/);
         const local = parts[4]?.split(':') || [];
@@ -469,11 +582,16 @@ export async function getPortList(): Promise<PortInfo[]> {
       });
     }
   } catch {
-    return [];
+    isMinimalContainer = true;
+    return { unavailable: '极简容器环境不支持端口列表查询（无 ss/netstat 命令）' };
   }
 }
 
 export async function killProcess(pid: number): Promise<boolean> {
+  if (isMinimalContainer) {
+    return false;
+  }
+  
   const platform = os.platform();
   
   try {

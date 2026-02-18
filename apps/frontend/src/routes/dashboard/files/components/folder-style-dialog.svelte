@@ -119,7 +119,8 @@
               class="size-8 rounded-full border-2 transition-all {color === presetColor ? 'border-foreground scale-110' : 'border-transparent'}"
               style="background-color: {presetColor}"
               onclick={() => color = presetColor}
-            />
+              aria-label="选择颜色 {presetColor}"
+            ></button>
           {/each}
         </div>
         <div class="flex items-center gap-2 mt-2">

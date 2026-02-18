@@ -109,8 +109,8 @@
   }
 </script>
 
-<div class="flex-1 flex flex-col min-h-0 p-4 lg:p-6 space-y-4 overflow-auto">
-  <Tabs.Root value={activeTab} onValueChange={handleTabChange}>
+<div class="flex-1 flex flex-col min-h-0 p-4 lg:p-6 space-y-4 overflow-hidden">
+  <Tabs.Root value={activeTab} onValueChange={handleTabChange} class="flex flex-col flex-1 min-h-0">
     <Tabs.List>
       <Tabs.Trigger value="overview">概览</Tabs.Trigger>
       <Tabs.Trigger value="charts">图表</Tabs.Trigger>
@@ -118,7 +118,7 @@
       <Tabs.Trigger value="ports">端口</Tabs.Trigger>
     </Tabs.List>
 
-    <div class="mt-4">
+    <div class="mt-4 flex-1 flex flex-col min-h-0 overflow-hidden">
       {@render children()}
     </div>
   </Tabs.Root>

@@ -5,6 +5,7 @@
 
 import { z } from 'zod';
 import { defineAction } from '../core/define';
+import { ActionError } from '../core/errors';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -149,16 +150,16 @@ export const readDirectory = defineAction({
     // 安全检查：确保路径在项目根目录内
     const resolvedPath = path.resolve(targetPath);
     if (!resolvedPath.startsWith(root)) {
-      throw new Error('error.dev.invalidPath');
+      throw ActionError.badRequest('error.dev.invalidPath');
     }
     
     if (!fs.existsSync(resolvedPath)) {
-      throw new Error('error.dev.pathNotFound');
+      throw ActionError.notFound('error.dev.pathNotFound');
     }
     
     const stats = fs.statSync(resolvedPath);
     if (!stats.isDirectory()) {
-      throw new Error('error.dev.notDirectory');
+      throw ActionError.badRequest('error.dev.notDirectory');
     }
     
     const entries = fs.readdirSync(resolvedPath, { withFileTypes: true });
@@ -236,21 +237,21 @@ export const readFileContent = defineAction({
     // 安全检查
     const resolvedPath = path.resolve(targetPath);
     if (!resolvedPath.startsWith(root)) {
-      throw new Error('error.dev.invalidPath');
+      throw ActionError.badRequest('error.dev.invalidPath');
     }
     
     if (!fs.existsSync(resolvedPath)) {
-      throw new Error('error.dev.fileNotFound');
+      throw ActionError.notFound('error.dev.fileNotFound');
     }
     
     const stats = fs.statSync(resolvedPath);
     if (!stats.isFile()) {
-      throw new Error('error.dev.notFile');
+      throw ActionError.badRequest('error.dev.notFile');
     }
     
     // 文件大小限制 (1MB)
     if (stats.size > 1024 * 1024) {
-      throw new Error('error.dev.fileTooLarge');
+      throw ActionError.badRequest('error.dev.fileTooLarge');
     }
     
     const content = fs.readFileSync(resolvedPath, 'utf-8');

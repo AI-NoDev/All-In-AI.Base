@@ -110,6 +110,67 @@ export const favoriteCheck = defineAction({
   },
 });
 
+// ============ 批量检查收藏状态 ============
+export const favoriteCheckBatch = defineAction({
+  meta: {
+    name: 'knowledge.favorite.checkBatch',
+    displayName: '批量检查收藏状态',
+    description: '批量检查多个资源是否已被收藏',
+    tags: ['knowledge', 'favorite'],
+    method: 'POST',
+    path: '/api/knowledge/favorite/check-batch',
+  },
+  schemas: {
+    bodySchema: z.object({
+      folderIds: z.array(z.string()).optional().default([]),
+      fileIds: z.array(z.string()).optional().default([]),
+    }),
+    outputSchema: z.object({
+      favoritedFolderIds: z.array(z.string()),
+      favoritedFileIds: z.array(z.string()),
+    }),
+  },
+  execute: async (input, context) => {
+    const { db } = context;
+    const { folderIds, fileIds } = input;
+    
+    const favoritedFolderIds: string[] = [];
+    const favoritedFileIds: string[] = [];
+    
+    if (folderIds.length > 0) {
+      const folderFavorites = await db.select({ resourceId: favorite.resourceId })
+        .from(favorite)
+        .where(
+          and(
+            eq(favorite.userId, context.currentUserId),
+            eq(favorite.resourceType, 'folder')
+          )
+        );
+      const favoritedSet = new Set(folderFavorites.map(f => f.resourceId));
+      for (const id of folderIds) {
+        if (favoritedSet.has(id)) favoritedFolderIds.push(id);
+      }
+    }
+    
+    if (fileIds.length > 0) {
+      const fileFavorites = await db.select({ resourceId: favorite.resourceId })
+        .from(favorite)
+        .where(
+          and(
+            eq(favorite.userId, context.currentUserId),
+            eq(favorite.resourceType, 'file')
+          )
+        );
+      const favoritedSet = new Set(fileFavorites.map(f => f.resourceId));
+      for (const id of fileIds) {
+        if (favoritedSet.has(id)) favoritedFileIds.push(id);
+      }
+    }
+    
+    return { favoritedFolderIds, favoritedFileIds };
+  },
+});
+
 // ============ 获取收藏列表 ============
 export const favoriteList = defineAction({
   meta: {
@@ -135,15 +196,22 @@ export const favoriteList = defineAction({
         color: z.string().nullable(),
         isPublic: z.boolean(),
         createdAt: z.string(),
+        createdById: z.string().nullable(),
+        isOwner: z.boolean(),
+        permission: z.enum(['read', 'write', 'manage', 'none']),
       })),
       files: z.array(z.object({
         id: z.string(),
         name: z.string(),
         folderId: z.string().nullable(),
+        extension: z.string().nullable(),
         mimeType: z.string().nullable(),
         size: z.number(),
         isPublic: z.boolean(),
         createdAt: z.string(),
+        createdById: z.string().nullable(),
+        isOwner: z.boolean(),
+        permission: z.enum(['read', 'write', 'manage', 'none']),
       })),
       total: z.number(),
     }),
@@ -151,6 +219,59 @@ export const favoriteList = defineAction({
   execute: async (input, context) => {
     const { db } = context;
     const { resourceType, limit, offset } = input;
+    const { FilePermissionAdapter } = await import('@qiyu-allinai/db/casbin');
+    const adapter = new FilePermissionAdapter(db as ConstructorParameters<typeof FilePermissionAdapter>[0]);
+    
+    type PermissionLevel = 'read' | 'write' | 'manage' | 'none';
+    
+    // 检查用户对资源的权限级别（包括继承权限）
+    async function getPermissionLevel(
+      resourceType: 'folder' | 'file',
+      resourceId: string,
+      createdById: string | null,
+      isPublic: boolean,
+      parentFolderId?: string | null
+    ): Promise<PermissionLevel> {
+      // 创建人拥有管理权限
+      if (createdById === context.currentUserId) {
+        return 'manage';
+      }
+      // 公开资源有只读权限
+      if (isPublic) {
+        return 'read';
+      }
+      
+      // 获取资源的直接权限列表
+      const permissions = await adapter.getPermissionsForResource(resourceType, resourceId);
+      
+      // 筛选当前用户的权限（只检查 user 类型的直接权限）
+      const userPermissions = permissions.filter(
+        p => p.subjectType === 'user' && p.subjectId === context.currentUserId && p.effect === 'allow'
+      );
+      
+      // 检查权限级别（从高到低）
+      if (userPermissions.some(p => p.permission === 'manage')) return 'manage';
+      if (userPermissions.some(p => p.permission === 'write')) return 'write';
+      if (userPermissions.some(p => p.permission === 'read')) return 'read';
+      
+      // 检查父文件夹的继承权限
+      if (parentFolderId) {
+        // 递归检查父文件夹权限
+        const parentFolder = await db.select({
+          id: folder.id,
+          parentId: folder.parentId,
+          createdById: folder.createdById,
+          isPublic: folder.isPublic,
+        }).from(folder).where(eq(folder.id, parentFolderId)).limit(1);
+        
+        if (parentFolder.length > 0 && parentFolder[0]) {
+          const parent = parentFolder[0];
+          return getPermissionLevel('folder', parent.id, parent.createdById ?? null, parent.isPublic ?? false, parent.parentId ?? null);
+        }
+      }
+      
+      return 'none';
+    }
     
     // Define result types
     interface FolderResult {
@@ -161,16 +282,23 @@ export const favoriteList = defineAction({
       color: string | null;
       isPublic: boolean;
       createdAt: string;
+      createdById: string | null;
+      isOwner: boolean;
+      permission: PermissionLevel;
     }
     
     interface FileResult {
       id: string;
       name: string;
       folderId: string | null;
+      extension: string | null;
       mimeType: string | null;
       size: number;
       isPublic: boolean;
       createdAt: string;
+      createdById: string | null;
+      isOwner: boolean;
+      permission: PermissionLevel;
     }
     
     // Get favorited folders
@@ -186,6 +314,7 @@ export const favoriteList = defineAction({
           color: folder.color,
           isPublic: folder.isPublic,
           createdAt: folder.createdAt,
+          createdById: folder.createdById,
         })
         .from(favorite)
         .innerJoin(folder, eq(favorite.resourceId, folder.id))
@@ -198,14 +327,21 @@ export const favoriteList = defineAction({
         .limit(limit)
         .offset(offset);
       
-      folders = folderResults.map(f => ({
-        id: f.id,
-        name: f.name,
-        parentId: f.parentId,
-        icon: f.icon,
-        color: f.color,
-        isPublic: f.isPublic,
-        createdAt: String(f.createdAt),
+      folders = await Promise.all(folderResults.map(async f => {
+        const isOwner = f.createdById === context.currentUserId;
+        const permission = await getPermissionLevel('folder', f.id, f.createdById, f.isPublic, f.parentId);
+        return {
+          id: f.id,
+          name: f.name,
+          parentId: f.parentId,
+          icon: f.icon,
+          color: f.color,
+          isPublic: f.isPublic,
+          createdAt: String(f.createdAt),
+          createdById: f.createdById,
+          isOwner,
+          permission,
+        };
       }));
     }
     
@@ -218,10 +354,12 @@ export const favoriteList = defineAction({
           id: file.id,
           name: file.name,
           folderId: file.folderId,
+          extension: file.extension,
           mimeType: file.mimeType,
           size: file.size,
           isPublic: file.isPublic,
           createdAt: file.createdAt,
+          createdById: file.createdById,
         })
         .from(favorite)
         .innerJoin(file, eq(favorite.resourceId, file.id))
@@ -234,14 +372,22 @@ export const favoriteList = defineAction({
         .limit(limit)
         .offset(offset);
       
-      files = fileResults.map(f => ({
-        id: f.id,
-        name: f.name,
-        folderId: f.folderId,
-        mimeType: f.mimeType,
-        size: f.size,
-        isPublic: f.isPublic,
-        createdAt: String(f.createdAt),
+      files = await Promise.all(fileResults.map(async f => {
+        const isOwner = f.createdById === context.currentUserId;
+        const permission = await getPermissionLevel('file', f.id, f.createdById, f.isPublic, f.folderId);
+        return {
+          id: f.id,
+          name: f.name,
+          folderId: f.folderId,
+          extension: f.extension,
+          mimeType: f.mimeType,
+          size: f.size,
+          isPublic: f.isPublic,
+          createdAt: String(f.createdAt),
+          createdById: f.createdById,
+          isOwner,
+          permission,
+        };
       }));
     }
     
@@ -263,5 +409,6 @@ export const favoriteActions = [
   favoriteAdd,
   favoriteRemove,
   favoriteCheck,
+  favoriteCheckBatch,
   favoriteList,
 ];

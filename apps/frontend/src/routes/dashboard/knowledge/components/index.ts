@@ -4,6 +4,7 @@ export { default as FileBreadcrumb } from '../../files/components/file-breadcrum
 export { default as FileToolbar } from '../../files/components/file-toolbar.svelte';
 export { default as FileList } from '../../files/components/file-list.svelte';
 export { default as SharedFileList } from '../../files/components/shared-file-list.svelte';
+export { default as KnowledgeFileList } from '../../files/components/knowledge-file-list.svelte';
 export { default as NewFolderDialog } from '../../files/components/new-folder-dialog.svelte';
 export { default as SearchDialog } from '../../files/components/search-dialog.svelte';
 export { default as FileContextMenu } from '../../files/components/file-context-menu.svelte';
@@ -16,6 +17,7 @@ export { default as PermissionSheet } from '../../files/components/permission-sh
 export { default as VersionSheet } from '../../files/components/version-sheet.svelte';
 export { default as PasteConflictDialog } from '../../files/components/paste-conflict-dialog.svelte';
 export * from '../../files/components/types';
+export type { ViewMode, GenericFolder, GenericFile, ViewPermissions } from '../../files/components/knowledge-file-list.svelte';
 
 // Knowledge page view mode type
 export type KnowledgeViewMode = 'my-files' | 'shared-with-me' | 'my-shared' | 'favorites';

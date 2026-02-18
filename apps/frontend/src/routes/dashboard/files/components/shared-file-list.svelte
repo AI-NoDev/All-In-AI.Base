@@ -1,8 +1,9 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { Button } from '$lib/components/ui/button';
-  import { Checkbox } from '$lib/components/ui/checkbox';
   import { Skeleton } from '$lib/components/ui/skeleton';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import * as Table from '$lib/components/ui/table';
   import { FileIcon } from '@qiyu-allinai/file-icons';
   import type { SharedFolderItem, SharedFileItem, FileViewMode } from '@/lib/stores/knowledge.svelte';
 
@@ -52,7 +53,7 @@
   }
 </script>
 
-<div class="flex-1 overflow-auto">
+<div class="flex flex-col flex-1 min-h-0">
   {#if loading}
     <div class="space-y-2 p-4">
       {#each Array(5) as _}
@@ -74,107 +75,109 @@
       </p>
     </div>
   {:else}
-    <table class="w-full">
-      <thead class="sticky top-0 bg-background border-b">
-        <tr class="text-left text-sm text-muted-foreground">
-          <th class="p-2 font-medium">名称</th>
-          {#if viewMode === 'my-shared'}
-            <th class="p-2 font-medium">共享给</th>
-          {:else if viewMode === 'shared-with-me'}
-            <th class="p-2 font-medium">共享者</th>
-            <th class="p-2 font-medium">权限</th>
-          {/if}
-          <th class="p-2 font-medium">大小</th>
-          <th class="p-2 font-medium">创建时间</th>
-          {#if viewMode === 'favorites'}
-            <th class="p-2 font-medium w-20">操作</th>
-          {/if}
-        </tr>
-      </thead>
-      <tbody>
-        {#each folders as folder}
-          <tr
-            class="border-b hover:bg-muted/50 cursor-pointer"
-            onclick={() => onFolderClick?.(folder)}
-          >
-            <td class="p-2">
-              <div class="flex items-center gap-2">
-                <Icon
-                  icon={folder.icon || 'tdesign:folder'}
-                  class="size-5"
-                  style={folder.color ? `color: ${folder.color}` : ''}
-                />
-                <span class="truncate">{folder.name}</span>
-                {#if folder.isPublic}
-                  <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
-                {/if}
-              </div>
-            </td>
+    <ScrollArea class="flex-1 min-h-0">
+      <Table.Root>
+        <Table.Header class="sticky top-0 bg-muted/50 z-10">
+          <Table.Row>
+            <Table.Head>名称</Table.Head>
             {#if viewMode === 'my-shared'}
-              <td class="p-2 text-sm text-muted-foreground">
-                {folder.sharedTo?.length || 0} 人/角色
-              </td>
+              <Table.Head>共享给</Table.Head>
             {:else if viewMode === 'shared-with-me'}
-              <td class="p-2 text-sm text-muted-foreground">{folder.sharedBy || '-'}</td>
-              <td class="p-2 text-sm">
-                <span class="px-2 py-0.5 rounded bg-muted text-xs">{folder.permission || 'read'}</span>
-              </td>
+              <Table.Head>共享者</Table.Head>
+              <Table.Head>权限</Table.Head>
             {/if}
-            <td class="p-2 text-sm text-muted-foreground">-</td>
-            <td class="p-2 text-sm text-muted-foreground">{formatDate(folder.createdAt)}</td>
+            <Table.Head>大小</Table.Head>
+            <Table.Head>创建时间</Table.Head>
             {#if viewMode === 'favorites'}
-              <td class="p-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onclick={(e: MouseEvent) => { e.stopPropagation(); onRemoveFavorite?.('folder', folder.id); }}
-                >
-                  <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
-                </Button>
-              </td>
+              <Table.Head class="w-20">操作</Table.Head>
             {/if}
-          </tr>
-        {/each}
-        {#each files as file}
-          <tr
-            class="border-b hover:bg-muted/50 cursor-pointer"
-            onclick={() => onFileClick?.(file)}
-          >
-            <td class="p-2">
-              <div class="flex items-center gap-2">
-                <FileIcon filename={file.name} class="size-5" />
-                <span class="truncate">{file.name}</span>
-                {#if file.isPublic}
-                  <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
-                {/if}
-              </div>
-            </td>
-            {#if viewMode === 'my-shared'}
-              <td class="p-2 text-sm text-muted-foreground">
-                {file.sharedTo?.length || 0} 人/角色
-              </td>
-            {:else if viewMode === 'shared-with-me'}
-              <td class="p-2 text-sm text-muted-foreground">{file.sharedBy || '-'}</td>
-              <td class="p-2 text-sm">
-                <span class="px-2 py-0.5 rounded bg-muted text-xs">{file.permission || 'read'}</span>
-              </td>
-            {/if}
-            <td class="p-2 text-sm text-muted-foreground">{formatSize(file.size)}</td>
-            <td class="p-2 text-sm text-muted-foreground">{formatDate(file.createdAt)}</td>
-            {#if viewMode === 'favorites'}
-              <td class="p-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onclick={(e: MouseEvent) => { e.stopPropagation(); onRemoveFavorite?.('file', file.id); }}
-                >
-                  <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
-                </Button>
-              </td>
-            {/if}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {#each folders as folder}
+            <Table.Row
+              class="cursor-pointer hover:bg-muted/50"
+              onclick={() => onFolderClick?.(folder)}
+            >
+              <Table.Cell>
+                <div class="flex items-center gap-2">
+                  <Icon
+                    icon={folder.icon || 'tdesign:folder'}
+                    class="size-5"
+                    style={folder.color ? `color: ${folder.color}` : ''}
+                  />
+                  <span class="truncate">{folder.name}</span>
+                  {#if folder.isPublic}
+                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
+                  {/if}
+                </div>
+              </Table.Cell>
+              {#if viewMode === 'my-shared'}
+                <Table.Cell class="text-muted-foreground">
+                  {folder.sharedTo?.length || 0} 人/角色
+                </Table.Cell>
+              {:else if viewMode === 'shared-with-me'}
+                <Table.Cell class="text-muted-foreground">{folder.sharedBy || '-'}</Table.Cell>
+                <Table.Cell>
+                  <span class="px-2 py-0.5 rounded bg-muted text-xs">{folder.permission || 'read'}</span>
+                </Table.Cell>
+              {/if}
+              <Table.Cell class="text-muted-foreground">-</Table.Cell>
+              <Table.Cell class="text-muted-foreground">{formatDate(folder.createdAt)}</Table.Cell>
+              {#if viewMode === 'favorites'}
+                <Table.Cell>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onclick={(e: MouseEvent) => { e.stopPropagation(); onRemoveFavorite?.('folder', folder.id); }}
+                  >
+                    <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
+                  </Button>
+                </Table.Cell>
+              {/if}
+            </Table.Row>
+          {/each}
+          {#each files as file}
+            <Table.Row
+              class="cursor-pointer hover:bg-muted/50"
+              onclick={() => onFileClick?.(file)}
+            >
+              <Table.Cell>
+                <div class="flex items-center gap-2">
+                  <FileIcon filename={file.name} class="size-5" />
+                  <span class="truncate">{file.name}</span>
+                  {#if file.isPublic}
+                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
+                  {/if}
+                </div>
+              </Table.Cell>
+              {#if viewMode === 'my-shared'}
+                <Table.Cell class="text-muted-foreground">
+                  {file.sharedTo?.length || 0} 人/角色
+                </Table.Cell>
+              {:else if viewMode === 'shared-with-me'}
+                <Table.Cell class="text-muted-foreground">{file.sharedBy || '-'}</Table.Cell>
+                <Table.Cell>
+                  <span class="px-2 py-0.5 rounded bg-muted text-xs">{file.permission || 'read'}</span>
+                </Table.Cell>
+              {/if}
+              <Table.Cell class="text-muted-foreground">{formatSize(file.size)}</Table.Cell>
+              <Table.Cell class="text-muted-foreground">{formatDate(file.createdAt)}</Table.Cell>
+              {#if viewMode === 'favorites'}
+                <Table.Cell>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onclick={(e: MouseEvent) => { e.stopPropagation(); onRemoveFavorite?.('file', file.id); }}
+                  >
+                    <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
+                  </Button>
+                </Table.Cell>
+              {/if}
+            </Table.Row>
+          {/each}
+        </Table.Body>
+      </Table.Root>
+    </ScrollArea>
   {/if}
 </div>

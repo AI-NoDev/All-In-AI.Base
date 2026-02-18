@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 import { Box } from "@sinclair/typebox-adapter";
-import { toJSONSchema } from "@qiyu-allinai/actions";
+import { toJSONSchema, ActionError } from "@qiyu-allinai/actions";
 import db from "@qiyu-allinai/db/connect";
 import { user, operationLog } from "@qiyu-allinai/db/entities/system";
 import { eq } from "drizzle-orm";
@@ -100,6 +100,8 @@ function zodToJsonSchema(schema: unknown): Record<string, unknown> | undefined {
   }
 }
 
+
+
 /**
  * Actions Plugin - 注册所有 actions 路由 + 元数据查询接口
  */
@@ -138,6 +140,20 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
           description: "获取系统中所有已注册的Actions的名称和描述",
           tags: ["actions"],
         },
+        response: {
+          200: t.Object({
+            data: t.Array(t.Object({
+              name: t.String(),
+              displayName: t.String(),
+              description: t.String(),
+              tags: t.Array(t.String()),
+              method: t.String(),
+              path: t.String(),
+            })),
+            status: t.Number({ default: 200 }),
+            message: t.String({ default: "ok" }),
+          }),
+        },
       }
     )
     // GET /api/actions/:name - 获取单个 action 详情（含 JSON Schema）
@@ -173,6 +189,13 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
           tags: ["actions"],
         },
         params: t.Object({ name: t.String() }),
+        response: {
+          200: t.Object({
+            data: t.Any(),
+            status: t.Number({ default: 200 }),
+            message: t.String({ default: "ok" }),
+          }),
+        },
       }
     )
     // 注册所有 action 路由（包括 execute 路由）
@@ -261,8 +284,9 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
         } catch (err) {
           logStatus = "1";
           errorMsg = err instanceof Error ? err.message : "Unknown error";
-          set.status = 500;
-          return { data: null, status: 500, message: errorMsg };
+          const status = err instanceof ActionError ? err.status : 500;
+          set.status = status;
+          return { data: null, status, message: errorMsg };
         } finally {
           // 沙盒模式不记录操作日志
           if (!isSandbox && action) {
@@ -389,8 +413,9 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
           } catch (err) {
             logStatus = "1";
             errorMsg = err instanceof Error ? err.message : "Unknown error";
-            set.status = 500;
-            return { data: null, status: 500, message: errorMsg };
+            const status = err instanceof ActionError ? err.status : 500;
+            set.status = status;
+            return { data: null, status, message: errorMsg };
           } finally {
             const costTime = Date.now() - startTime;
             const businessType = getBusinessType(action.meta.name);

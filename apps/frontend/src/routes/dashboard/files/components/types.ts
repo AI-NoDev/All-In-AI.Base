@@ -8,7 +8,7 @@ export type { FolderItem, FileItem, PathItem, ClipboardItem as KnowledgeClipboar
 export type ClipboardItemType = import('@/lib/stores/knowledge.svelte').ClipboardItem;
 
 // File permission types (Casbin-based)
-export type FilePermission = 'read' | 'write' | 'delete' | 'manage';
+export type FilePermission = 'read' | 'write' | 'manage';
 export type PermissionEffect = 'allow' | 'deny';
 export type SubjectType = 'user' | 'role' | 'dept';
 export type ResourceType = 'folder' | 'file';

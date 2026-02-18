@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import { ActionError } from '../../../core/errors';
 import { toJSONSchema } from '../../../core/schema';
 import { conversation, conversationZodSchemas } from '@qiyu-allinai/db/entities/im';
 
@@ -217,11 +218,13 @@ export const conversationFindOrCreatePrivate = defineAction({
       ownerId: currentUserId,
       memberCount: 2,
       createdBy: context.currentUserName,
+      createdById: context.currentUserId,
       updatedBy: context.currentUserName,
+      updatedById: context.currentUserId,
     } as ConversationInsert).returning();
     
     if (!newConversation) {
-      throw new Error('error.im.conversation.createFailed');
+      throw ActionError.badRequest('error.im.conversation.createFailed');
     }
     
     // 添加两个成员
@@ -268,11 +271,13 @@ export const conversationCreateGroup = defineAction({
       ownerId: currentUserId,
       memberCount: allMemberIds.length,
       createdBy: context.currentUserName,
+      createdById: context.currentUserId,
       updatedBy: context.currentUserName,
+      updatedById: context.currentUserId,
     } as ConversationInsert).returning();
     
     if (!newConversation) {
-      throw new Error('error.im.conversation.createFailed');
+      throw ActionError.badRequest('error.im.conversation.createFailed');
     }
     
     // 添加成员，当前用户为群主
@@ -333,16 +338,16 @@ export const conversationDissolveGroup = defineAction({
       .limit(1);
     
     if (!conv) {
-      throw new Error('error.im.conversation.notFound');
+      throw ActionError.notFound('error.im.conversation.notFound');
     }
     
     if (conv.type !== '2') {
-      throw new Error('error.im.conversation.notGroup');
+      throw ActionError.badRequest('error.im.conversation.notGroup');
     }
     
     // 检查是否为群主
     if (conv.ownerId !== currentUserId) {
-      throw new Error('error.im.conversation.notOwner');
+      throw ActionError.forbidden('error.im.conversation.notOwner');
     }
     
     // 获取所有成员ID
@@ -356,6 +361,7 @@ export const conversationDissolveGroup = defineAction({
       status: CONVERSATION_STATUS.DISSOLVED,
       updatedAt: new Date().toISOString(),
       updatedBy: context.currentUserName,
+      updatedById: context.currentUserId,
     }).where(eq(conversation.id, conversationId));
     
     // 发送群聊解散事件

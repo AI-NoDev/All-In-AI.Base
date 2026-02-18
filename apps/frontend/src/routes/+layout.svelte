@@ -3,6 +3,8 @@
   import { onMount } from 'svelte';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
   import { Toaster } from '$lib/components/ui/sonner';
+  // highlight.js 代码高亮样式
+  import 'highlight.js/styles/github-dark.css';
 
   let { children } = $props();
 

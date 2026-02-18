@@ -25,7 +25,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
@@ -35,6 +34,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { Checkbox } from '$lib/components/ui/checkbox';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemDictQueryFieldEnum, PostApiSystemDictQueryOrderEnum, PostApiSystemDictGroupQueryFieldEnum, PostApiSystemDictGroupQueryOrderEnum } from '@qiyu-allinai/api';
 
@@ -91,10 +91,16 @@
 
   const statusOptions = [{ value: '0', label: '正常' }, { value: '1', label: '停用' }];
 
-  let allSelected = $derived(dicts.length > 0 && dicts.every(d => selectedIds.has(d.id)));
-  let someSelected = $derived(selectedIds.size > 0 && !allSelected);
+  const columns = [
+    { key: 'label', title: '字典标签', width: 160, render: labelRender },
+    { key: 'value', title: '字典键值', width: 160, render: valueRender },
+    { key: 'sort', title: '排序', width: 80 },
+    { key: 'isDefault', title: '默认', width: 80, render: defaultRender },
+    { key: 'status', title: '状态', width: 80, render: statusRender },
+    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ];
 
-  function toggleSelectAll() { selectedIds = allSelected ? new Set() : new Set(dicts.map(d => d.id)); }
+  function toggleSelectAll() { selectedIds = selectedIds.size === dicts.length ? new Set() : new Set(dicts.map(d => d.id)); }
   function toggleSelect(id: string) { const s = new Set(selectedIds); s.has(id) ? s.delete(id) : s.add(id); selectedIds = s; }
 
   async function loadGroups() {
@@ -204,6 +210,29 @@
   onMount(async () => { await loadGroups(); loading = false; });
 </script>
 
+{#snippet labelRender({ value })}
+  <span class="font-medium">{value}</span>
+{/snippet}
+
+{#snippet valueRender({ value })}
+  <span class="text-muted-foreground">{value}</span>
+{/snippet}
+
+{#snippet defaultRender({ row })}
+  <Badge variant={row.isDefault ? 'default' : 'outline'}>{row.isDefault ? '是' : '否'}</Badge>
+{/snippet}
+
+{#snippet statusRender({ value })}
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? '正常' : '停用'}</Badge>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-end gap-1">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEditDict(row)}><Icon icon="tdesign:edit" class="size-4" /></Button>
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDeleteDict(row.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
+  </div>
+{/snippet}
+
 <div class="flex flex-1 min-h-0 px-4 lg:px-6 pb-4">
   <!-- 左侧字典分组 -->
   <div class="w-64 shrink-0 flex flex-col pr-4 border-r border-border">
@@ -253,46 +282,16 @@
     <div class="flex-1 min-h-0 flex flex-col pt-4">
       {#if !selectedGroup}
         <div class="h-48 flex items-center justify-center text-muted-foreground">请选择左侧字典分组</div>
-      {:else if dictLoading}
-        <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
       {:else}
-        <div class="flex-1 min-h-0">
-          <ScrollArea class="h-full" orientation="both">
-          <Table.Root>
-            <Table.Header class="sticky top-0 bg-background z-10">
-              <Table.Row>
-                <Table.Head class="w-12"><Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} /></Table.Head>
-                <Table.Head>字典标签</Table.Head>
-                <Table.Head>字典键值</Table.Head>
-                <Table.Head class="w-20">排序</Table.Head>
-                <Table.Head class="w-20">默认</Table.Head>
-                <Table.Head class="w-20">状态</Table.Head>
-                <Table.Head class="w-28 text-right">操作</Table.Head>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {#each dicts as dict}
-                <Table.Row class={selectedIds.has(dict.id) ? 'bg-muted/50' : ''}>
-                  <Table.Cell><Checkbox checked={selectedIds.has(dict.id)} onCheckedChange={() => toggleSelect(dict.id)} /></Table.Cell>
-                  <Table.Cell class="font-medium">{dict.label}</Table.Cell>
-                  <Table.Cell class="text-muted-foreground">{dict.value}</Table.Cell>
-                  <Table.Cell>{dict.sort}</Table.Cell>
-                  <Table.Cell><Badge variant={dict.isDefault ? 'default' : 'outline'}>{dict.isDefault ? '是' : '否'}</Badge></Table.Cell>
-                  <Table.Cell><Badge variant={dict.status === '0' ? 'default' : 'secondary'}>{dict.status === '0' ? '正常' : '停用'}</Badge></Table.Cell>
-                  <Table.Cell class="text-right">
-                    <div class="flex justify-end gap-1">
-                      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEditDict(dict)}><Icon icon="tdesign:edit" class="size-4" /></Button>
-                      <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDeleteDict(dict.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
-              {:else}
-                <Table.Row><Table.Cell colspan={7} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
-              {/each}
-            </Table.Body>
-          </Table.Root>
-        </ScrollArea>
-        </div>
+        <DataTable 
+          {columns} 
+          data={dicts} 
+          loading={dictLoading}
+          selectable
+          {selectedIds}
+          onToggleSelect={toggleSelect}
+          onToggleSelectAll={toggleSelectAll}
+        />
       {/if}
     </div>
   </div>

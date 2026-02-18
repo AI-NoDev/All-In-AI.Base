@@ -1,14 +1,11 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Pagination from '$lib/components/ui/pagination';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
 
   interface User {
@@ -45,40 +42,97 @@
   }
 
   let { 
-    users, 
-    loading, 
-    total, 
-    currentPage = $bindable(), 
-    pageSize, 
-    selectedIds,
-    showFilter,
-    deleting,
-    onPageChange,
-    onToggleFilter,
-    onRefresh,
-    onBatchDelete,
-    onDelete,
-    onContact,
-    onResetPassword,
-    onToggleSelect,
-    onToggleSelectAll,
-    onAssignRoles
+    users, loading, total, currentPage = $bindable(), pageSize, selectedIds,
+    showFilter, deleting, onPageChange, onToggleFilter, onRefresh, onBatchDelete,
+    onDelete, onContact, onResetPassword, onToggleSelect, onToggleSelectAll, onAssignRoles
   }: Props = $props();
 
   function isSystemAdmin(user: User): boolean {
     return user.userType === '00';
   }
 
-  let selectableUsers = $derived(users.filter(u => !isSystemAdmin(u)));
-  let allSelected = $derived(selectableUsers.length > 0 && selectableUsers.every(u => selectedIds.has(u.id)));
-  let someSelected = $derived(selectedIds.size > 0 && !allSelected);
-
-  function getStatusBadge(status: string) {
-    return status === '0' 
-      ? { variant: 'default' as const, text: '正常' }
-      : { variant: 'secondary' as const, text: '停用' };
-  }
+  const columns = [
+    { key: 'loginName', title: '用户名', width: 128, fixed: 'left' as const, render: loginNameRender },
+    { key: 'name', title: '姓名', width: 96 },
+    { key: 'email', title: '邮箱', width: 180, render: mutedRender },
+    { key: 'phonenumber', title: '手机号', width: 128 },
+    { key: 'status', title: '状态', width: 80, render: statusRender },
+    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
+    { key: 'id', title: '操作', width: 192, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ];
 </script>
+
+{#snippet loginNameRender({ row })}
+  <span class="font-medium">{row.loginName}</span>
+  {#if isSystemAdmin(row)}
+    <Badge variant="outline" class="ml-1 text-xs">管理员</Badge>
+  {/if}
+{/snippet}
+
+{#snippet mutedRender({ value })}
+  <span class="text-muted-foreground">{value || '-'}</span>
+{/snippet}
+
+{#snippet statusRender({ value })}
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>
+    {value === '0' ? '正常' : '停用'}
+  </Badge>
+{/snippet}
+
+{#snippet dateRender({ value })}
+  <span class="text-muted-foreground">{new Date(String(value)).toLocaleString('zh-CN')}</span>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  {@const isSysAdmin = isSystemAdmin(row)}
+  <div class="flex justify-end gap-1">
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 {row.id === authStore.user?.id ? 'opacity-50 cursor-not-allowed' : ''}" 
+          onclick={() => row.id !== authStore.user?.id && onContact(row)} disabled={row.id === authStore.user?.id}>
+          <Icon icon="tdesign:chat" class="size-4" />
+        </Button>
+      </Tooltip.Trigger>
+      <Tooltip.Content>{row.id === authStore.user?.id ? '不能和自己聊天' : '联系'}</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 {isSysAdmin ? 'opacity-50 cursor-not-allowed' : ''}" 
+          onclick={() => !isSysAdmin && onResetPassword(row)} disabled={isSysAdmin}>
+          <Icon icon="tdesign:lock-on" class="size-4" />
+        </Button>
+      </Tooltip.Trigger>
+      <Tooltip.Content>{isSysAdmin ? '系统管理员不允许重置密码' : '重置密码'}</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 {isSysAdmin ? 'opacity-50 cursor-not-allowed' : ''}" 
+          onclick={() => !isSysAdmin && onAssignRoles(row)} disabled={isSysAdmin}>
+          <Icon icon="tdesign:usergroup" class="size-4" />
+        </Button>
+      </Tooltip.Trigger>
+      <Tooltip.Content>{isSysAdmin ? '系统管理员拥有所有角色' : '分配角色'}</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 {isSysAdmin ? 'opacity-50 cursor-not-allowed' : ''}" 
+          onclick={() => !isSysAdmin && goto(`/dashboard/system/users/${row.id}`)} disabled={isSysAdmin}>
+          <Icon icon="tdesign:edit" class="size-4" />
+        </Button>
+      </Tooltip.Trigger>
+      <Tooltip.Content>{isSysAdmin ? '系统管理员不允许编辑' : '编辑'}</Tooltip.Content>
+    </Tooltip.Root>
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive {isSysAdmin ? 'opacity-50 cursor-not-allowed' : ''}" 
+          onclick={() => !isSysAdmin && onDelete(row.id)} disabled={isSysAdmin}>
+          <Icon icon="tdesign:delete" class="size-4" />
+        </Button>
+      </Tooltip.Trigger>
+      <Tooltip.Content>{isSysAdmin ? '系统管理员不允许删除' : '删除'}</Tooltip.Content>
+    </Tooltip.Root>
+  </div>
+{/snippet}
 
 <div class="flex-1 flex flex-col min-h-0 pt-4">
   <div class="pb-1">
@@ -115,178 +169,38 @@
     </div>
   </div>
   <div class="flex-1 min-h-0 flex flex-col pt-2">
-    {#if loading}
-      <div class="space-y-3">
-        {#each [1, 2, 3, 4, 5] as _}
-          <Skeleton class="h-12 w-full" />
-        {/each}
-      </div>
-    {:else}
-      <div class="flex-1 min-h-0">
-        <ScrollArea class="h-full" orientation="both">
-        <Table.Root>
-          <Table.Header class="sticky top-0 bg-background z-10">
-            <Table.Row>
-              <Table.Head class="w-12">
-                <Checkbox 
-                  checked={allSelected}
-                  indeterminate={someSelected}
-                  onCheckedChange={onToggleSelectAll}
-                />
-              </Table.Head>
-              <Table.Head class="w-32">用户名</Table.Head>
-              <Table.Head class="w-24">姓名</Table.Head>
-              <Table.Head class="w-40">邮箱</Table.Head>
-              <Table.Head class="w-32">手机号</Table.Head>
-              <Table.Head class="w-20">状态</Table.Head>
-              <Table.Head class="w-40">创建时间</Table.Head>
-              <Table.Head class="w-48 text-right">操作</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-          {#each users as user}
-            {@const status = getStatusBadge(user.status)}
-            {@const isSysAdmin = isSystemAdmin(user)}
-            <Table.Row class={selectedIds.has(user.id) ? 'bg-muted/50' : ''}>
-              <Table.Cell>
-                <Checkbox 
-                  checked={selectedIds.has(user.id)}
-                  onCheckedChange={() => onToggleSelect(user.id)}
-                  disabled={isSysAdmin}
-                />
-              </Table.Cell>
-              <Table.Cell class="font-medium">
-                {user.loginName}
-                {#if isSysAdmin}
-                  <Badge variant="outline" class="ml-1 text-xs">管理员</Badge>
-                {/if}
-              </Table.Cell>
-              <Table.Cell>{user.name || '-'}</Table.Cell>
-              <Table.Cell class="text-muted-foreground">{user.email || '-'}</Table.Cell>
-              <Table.Cell>{user.phonenumber || '-'}</Table.Cell>
-              <Table.Cell>
-                <Badge variant={status.variant}>{status.text}</Badge>
-              </Table.Cell>
-              <Table.Cell class="text-muted-foreground">
-                {new Date(user.createdAt).toLocaleString('zh-CN')}
-              </Table.Cell>
-              <Table.Cell class="text-right">
-                <div class="flex justify-end gap-1">
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      {#if user.id === authStore.user?.id}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 opacity-50 cursor-not-allowed">
-                          <Icon icon="tdesign:chat" class="size-4" />
-                        </Button>
-                      {:else}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onContact(user)}>
-                          <Icon icon="tdesign:chat" class="size-4" />
-                        </Button>
-                      {/if}
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      {user.id === authStore.user?.id ? '不能和自己聊天' : '联系'}
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      {#if isSysAdmin}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 opacity-50 cursor-not-allowed">
-                          <Icon icon="tdesign:lock-on" class="size-4" />
-                        </Button>
-                      {:else}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onResetPassword(user)}>
-                          <Icon icon="tdesign:lock-on" class="size-4" />
-                        </Button>
-                      {/if}
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      {isSysAdmin ? '系统管理员不允许重置密码' : '重置密码'}
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      {#if isSysAdmin}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 opacity-50 cursor-not-allowed">
-                          <Icon icon="tdesign:usergroup" class="size-4" />
-                        </Button>
-                      {:else}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onAssignRoles(user)}>
-                          <Icon icon="tdesign:usergroup" class="size-4" />
-                        </Button>
-                      {/if}
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      {isSysAdmin ? '系统管理员拥有所有角色' : '分配角色'}
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      {#if isSysAdmin}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 opacity-50 cursor-not-allowed">
-                          <Icon icon="tdesign:edit" class="size-4" />
-                        </Button>
-                      {:else}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => goto(`/dashboard/system/users/${user.id}`)}>
-                          <Icon icon="tdesign:edit" class="size-4" />
-                        </Button>
-                      {/if}
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      {isSysAdmin ? '系统管理员不允许编辑' : '编辑'}
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      {#if isSysAdmin}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive opacity-50 cursor-not-allowed">
-                          <Icon icon="tdesign:delete" class="size-4" />
-                        </Button>
-                      {:else}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => onDelete(user.id)}>
-                          <Icon icon="tdesign:delete" class="size-4" />
-                        </Button>
-                      {/if}
-                    </Tooltip.Trigger>
-                    <Tooltip.Content>
-                      {isSysAdmin ? '系统管理员不允许删除' : '删除'}
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                </div>
-              </Table.Cell>
-            </Table.Row>
-          {:else}
-            <Table.Row>
-              <Table.Cell colspan={8} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell>
-            </Table.Row>
-          {/each}
-          </Table.Body>
-        </Table.Root>
-      </ScrollArea>
-      </div>
+    <DataTable 
+      {columns} 
+      data={users} 
+      {loading}
+      selectable
+      {selectedIds}
+      {onToggleSelect}
+      {onToggleSelectAll}
+      disableSelect={isSystemAdmin}
+    />
 
-      {#if total > 0}
-        <div class="mt-4 flex items-center justify-between">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
-          <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => onPageChange(currentPage)}>
-            {#snippet children({ pages, currentPage: cp })}
-              <Pagination.Content>
-                <Pagination.Item><Pagination.PrevButton /></Pagination.Item>
-                {#each pages as page (page.key)}
-                  {#if page.type === "ellipsis"}
-                    <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
-                  {:else}
-                    <Pagination.Item>
-                      <Pagination.Link {page} isActive={cp === page.value}>{page.value}</Pagination.Link>
-                    </Pagination.Item>
-                  {/if}
-                {/each}
-                <Pagination.Item><Pagination.NextButton /></Pagination.Item>
-              </Pagination.Content>
-            {/snippet}
-          </Pagination.Root>
-        </div>
-      {/if}
+    {#if total > 0 && !loading}
+      <div class="mt-4 flex items-center justify-between">
+        <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+        <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => onPageChange(currentPage)}>
+          {#snippet children({ pages, currentPage: cp })}
+            <Pagination.Content>
+              <Pagination.Item><Pagination.PrevButton /></Pagination.Item>
+              {#each pages as page (page.key)}
+                {#if page.type === "ellipsis"}
+                  <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
+                {:else}
+                  <Pagination.Item>
+                    <Pagination.Link {page} isActive={cp === page.value}>{page.value}</Pagination.Link>
+                  </Pagination.Item>
+                {/if}
+              {/each}
+              <Pagination.Item><Pagination.NextButton /></Pagination.Item>
+            </Pagination.Content>
+          {/snippet}
+        </Pagination.Root>
+      </div>
     {/if}
   </div>
 </div>

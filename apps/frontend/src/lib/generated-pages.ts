@@ -183,6 +183,21 @@ export const pages: PageMeta[] = [
     "order": 30
   },
   {
+    "path": "/dashboard/ai/api-keys",
+    "title": "API 密钥",
+    "permission": "ai:apiKey:view",
+    "icon": "mdi:key-variant",
+    "group": "AI 管理",
+    "order": 32
+  },
+  {
+    "path": "/dashboard/ai/mcp-servers",
+    "title": "MCP发布",
+    "icon": "mdi:api",
+    "group": "智能体",
+    "order": 60
+  },
+  {
     "path": "/dashboard/preferences",
     "title": "个性化",
     "permission": "settings:preferences:view",
@@ -210,6 +225,7 @@ export const pages: PageMeta[] = [
     "title": "项目代码",
     "permission": "dev:project-code:view",
     "icon": "tdesign:code",
+    "group": "开发模式",
     "order": 200
   },
   {
@@ -300,6 +316,8 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
   '/dashboard/ai/agents': "智能体管理",
+  '/dashboard/ai/api-keys': "API 密钥",
+  '/dashboard/ai/mcp-servers': "MCP发布",
   '/dashboard/preferences': "个性化",
   '/dashboard/server-monitor/overview': "服务器监控",
   '/dashboard/system-config': "系统参数",
@@ -415,6 +433,13 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "mdi:robot",
       "group": "智能体",
       "order": 30
+    },
+    {
+      "path": "/dashboard/ai/mcp-servers",
+      "title": "MCP发布",
+      "icon": "mdi:api",
+      "group": "智能体",
+      "order": 60
     }
   ],
   "系统管理": [
@@ -507,6 +532,16 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "hidden": true
     }
   ],
+  "AI 管理": [
+    {
+      "path": "/dashboard/ai/api-keys",
+      "title": "API 密钥",
+      "permission": "ai:apiKey:view",
+      "icon": "mdi:key-variant",
+      "group": "AI 管理",
+      "order": 32
+    }
+  ],
   "系统设置": [
     {
       "path": "/dashboard/preferences",
@@ -525,14 +560,17 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "order": 101
     }
   ],
-  "default": [
+  "开发模式": [
     {
       "path": "/dashboard/dev/project-code",
       "title": "项目代码",
       "permission": "dev:project-code:view",
       "icon": "tdesign:code",
+      "group": "开发模式",
       "order": 200
-    },
+    }
+  ],
+  "default": [
     {
       "path": "/dashboard/contacts"
     },
@@ -600,6 +638,7 @@ export const permissions = [
   "system:dict:view",
   "system:operlog:view",
   "system:loginlog:view",
+  "ai:apiKey:view",
   "settings:preferences:view",
   "system:config:view",
   "dev:project-code:view",
@@ -629,6 +668,7 @@ export const permissionRouteMap: Record<string, { path: string; title?: string }
   "system:dict:view": { path: "/dashboard/system/dicts", title: "字典管理" },
   "system:operlog:view": { path: "/dashboard/system/operation-logs", title: "操作日志" },
   "system:loginlog:view": { path: "/dashboard/system/login-logs", title: "登录日志" },
+  "ai:apiKey:view": { path: "/dashboard/ai/api-keys", title: "API 密钥" },
   "settings:preferences:view": { path: "/dashboard/preferences", title: "个性化" },
   "system:config:view": { path: "/dashboard/system-config", title: "系统参数" },
   "dev:project-code:view": { path: "/dashboard/dev/project-code", title: "项目代码" },
@@ -656,6 +696,7 @@ export const routePermissionMap: Record<string, string> = {
   "/dashboard/system/dicts": "system:dict:view",
   "/dashboard/system/operation-logs": "system:operlog:view",
   "/dashboard/system/login-logs": "system:loginlog:view",
+  "/dashboard/ai/api-keys": "ai:apiKey:view",
   "/dashboard/preferences": "settings:preferences:view",
   "/dashboard/system-config": "system:config:view",
   "/dashboard/dev/project-code": "dev:project-code:view",

@@ -87,6 +87,10 @@ function createKnowledgeStore() {
   let clipboard = $state<ClipboardItem[]>([]);
   let viewMode = $state<FileViewMode>('all');
   
+  // Favorites state
+  let favoritedFolderIds = $state<Set<string>>(new Set());
+  let favoritedFileIds = $state<Set<string>>(new Set());
+  
   // Shared/Favorites data
   let sharedFolders = $state<SharedFolderItem[]>([]);
   let sharedFiles = $state<SharedFileItem[]>([]);
@@ -145,12 +149,36 @@ function createKnowledgeStore() {
       ]);
       folders = (folderRes.data?.data || []) as FolderItem[];
       files = (fileRes.data?.data || []) as FileItem[];
+      
+      // Load favorite status
+      await loadFavoriteStatus();
     } catch (err) {
       console.error('加载失败:', err);
       folders = [];
       files = [];
     } finally {
       loading = false;
+    }
+  }
+  
+  async function loadFavoriteStatus(): Promise<void> {
+    const folderIds = folders.map(f => f.id);
+    const fileIds = files.map(f => f.id);
+    
+    if (folderIds.length === 0 && fileIds.length === 0) {
+      favoritedFolderIds = new Set();
+      favoritedFileIds = new Set();
+      return;
+    }
+    
+    try {
+      const res = await api.knowledge.postApiKnowledgeFavoriteCheckBatch({ folderIds, fileIds });
+      favoritedFolderIds = new Set(res.data?.favoritedFolderIds || []);
+      favoritedFileIds = new Set(res.data?.favoritedFileIds || []);
+    } catch (err) {
+      console.error('加载收藏状态失败:', err);
+      favoritedFolderIds = new Set();
+      favoritedFileIds = new Set();
     }
   }
 
@@ -214,21 +242,36 @@ function createKnowledgeStore() {
   // ============ Favorites ============
   async function toggleFavorite(resourceType: 'folder' | 'file', resourceId: string): Promise<boolean> {
     try {
-      const checkRes = await api.knowledge.getApiKnowledgeFavoriteCheckByResourceTypeByResourceId({
-        resourceType,
-        resourceId,
-      });
+      const isFavorited = resourceType === 'folder' 
+        ? favoritedFolderIds.has(resourceId)
+        : favoritedFileIds.has(resourceId);
       
-      if (checkRes.data?.isFavorited) {
+      if (isFavorited) {
         await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({
           resourceType,
           resourceId,
         });
+        // Update local state
+        if (resourceType === 'folder') {
+          const newSet = new Set(favoritedFolderIds);
+          newSet.delete(resourceId);
+          favoritedFolderIds = newSet;
+        } else {
+          const newSet = new Set(favoritedFileIds);
+          newSet.delete(resourceId);
+          favoritedFileIds = newSet;
+        }
       } else {
         await api.knowledge.postApiKnowledgeFavorite({
           resourceType,
           resourceId,
         });
+        // Update local state
+        if (resourceType === 'folder') {
+          favoritedFolderIds = new Set([...favoritedFolderIds, resourceId]);
+        } else {
+          favoritedFileIds = new Set([...favoritedFileIds, resourceId]);
+        }
       }
       
       // Refresh if in favorites view
@@ -236,11 +279,19 @@ function createKnowledgeStore() {
         await loadViewModeData();
       }
       
-      return !checkRes.data?.isFavorited;
+      return !isFavorited;
     } catch (err) {
       console.error('切换收藏失败:', err);
       return false;
     }
+  }
+  
+  function isFolderFavorited(folderId: string): boolean {
+    return favoritedFolderIds.has(folderId);
+  }
+  
+  function isFileFavorited(fileId: string): boolean {
+    return favoritedFileIds.has(fileId);
   }
 
   // ============ Navigation ============
@@ -433,6 +484,8 @@ function createKnowledgeStore() {
     get viewMode() { return viewMode; },
     get sharedFolders() { return sharedFolders; },
     get sharedFiles() { return sharedFiles; },
+    get favoritedFolderIds() { return favoritedFolderIds; },
+    get favoritedFileIds() { return favoritedFileIds; },
     
     // Derived
     get hasSelection() { return hasSelection(); },
@@ -473,6 +526,8 @@ function createKnowledgeStore() {
     
     // Favorites
     toggleFavorite,
+    isFolderFavorited,
+    isFileFavorited,
 
     // Data
     loadContents,

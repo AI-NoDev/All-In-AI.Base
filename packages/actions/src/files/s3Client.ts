@@ -168,7 +168,26 @@ export async function getPresignedDownloadUrl(
   const command = new GetObjectCommand({
     Bucket: bucket,
     Key: key,
-    ResponseContentDisposition: filename ? `attachment; filename="${encodeURIComponent(filename)}"` : undefined,
+    ResponseContentDisposition: filename ? `inline; filename="${encodeURIComponent(filename)}"` : undefined,
+  });
+
+  const url = await getSignedUrl(s3Client, command, { expiresIn });
+  const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
+  return { url, expiresAt };
+}
+
+// 获取预签名下载 URL（强制下载，设置 Content-Disposition: attachment）
+export async function getPresignedDownloadUrlForDownload(
+  key: string,
+  bucket: string = DEFAULT_BUCKET,
+  expiresIn: number = 3600,
+  filename?: string
+): Promise<PresignedUrlResult> {
+  const command = new GetObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    ResponseContentDisposition: filename ? `attachment; filename="${encodeURIComponent(filename)}"` : 'attachment',
   });
 
   const url = await getSignedUrl(s3Client, command, { expiresIn });

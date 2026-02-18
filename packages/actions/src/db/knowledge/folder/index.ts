@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { eq, and, isNull, ilike, sql, inArray, gte, lte, asc, desc } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import { ActionError } from '../../../core/errors';
 import { toJSONSchema } from '../../../core/schema';
 import { folder, folderZodSchemas } from '@qiyu-allinai/db/entities/knowledge';
 
@@ -34,7 +35,7 @@ const paginationBodySchema = z.object({
 });
 
 export const folderGetByPagination = defineAction({
-  meta: { name: 'knowledge.folder.getByPagination', displayName: '分页查询文件夹', description: '分页查询文件夹列表，自动排除已删除数据', tags: ['knowledge', 'folder'], method: 'POST', path: '/api/knowledge/folder/query' },
+  meta: { name: 'knowledge.folder.getByPagination', displayName: '分页查询文件夹', description: '分页查询文件夹列表，自动排除已删除数据，自动筛选当前用户的文件夹', tags: ['knowledge', 'folder'], method: 'POST', path: '/api/knowledge/folder/query' },
   schemas: {
     bodySchema: paginationBodySchema,
     outputSchema: z.object({ data: z.array(folderZodSchemas.select), total: z.number() }),
@@ -43,8 +44,11 @@ export const folderGetByPagination = defineAction({
     const { db } = context;
     const { filter, sort, offset, limit } = input;
     
-    // Build conditions
-    const conditions = [isNull(folder.deletedAt)];
+    // Build conditions - 自动筛选当前用户的文件夹
+    const conditions = [
+      isNull(folder.deletedAt),
+      eq(folder.createdById, context.currentUserId),
+    ];
     
     if (filter) {
       // IN 查询
@@ -69,7 +73,7 @@ export const folderGetByPagination = defineAction({
     
     const data = await db.select().from(folder)
       .where(whereClause)
-      .orderBy(orderFn(sortColumn as any))
+      .orderBy(orderFn(sortColumn as ReturnType<typeof asc>))
       .limit(limit)
       .offset(offset);
     
@@ -119,7 +123,7 @@ export const folderCreate = defineAction({
       .limit(1);
     
     if (existing) {
-      throw new Error('error.knowledge.folder.nameExists');
+      throw ActionError.conflict('error.knowledge.folder.nameExists');
     }
     
     // Auto-fill path based on parentId

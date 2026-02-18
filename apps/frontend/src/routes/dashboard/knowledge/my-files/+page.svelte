@@ -457,6 +457,8 @@
           currentFolderId={knowledgeStore.currentFolderId}
           selectedFolderIds={knowledgeStore.selectedFolderIds}
           selectedFileIds={knowledgeStore.selectedFileIds}
+          favoritedFolderIds={knowledgeStore.favoritedFolderIds}
+          favoritedFileIds={knowledgeStore.favoritedFileIds}
           onNavigateUp={knowledgeStore.navigateUp}
           onNavigateToFolder={knowledgeStore.navigateToFolder}
           onToggleSelectAll={knowledgeStore.toggleSelectAll}
@@ -471,6 +473,7 @@
           onEditFolderDescription={handleEditFolderDescription}
           onEditFolderStyle={handleEditFolderStyle}
           onEditFolderPermission={handleEditFolderPermission}
+          onToggleFolderFavorite={(f) => knowledgeStore.toggleFavorite('folder', f.id)}
           onCopyFile={knowledgeStore.copyFile}
           onCutFile={knowledgeStore.cutFile}
           onRenameFile={handleRenameFile}
@@ -481,6 +484,7 @@
           onEditFile={handleEditFile}
           onEditFilePermission={handleEditFilePermission}
           onViewFileVersions={handleViewFileVersions}
+          onToggleFileFavorite={(f) => knowledgeStore.toggleFavorite('file', f.id)}
           onFileDoubleClick={handleFileDoubleClick}
         />
       {/if}

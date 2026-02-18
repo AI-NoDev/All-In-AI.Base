@@ -4,41 +4,63 @@
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { Button } from '$lib/components/ui/button';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { FileIcon } from '@qiyu-allinai/file-icons';
+  import { Badge } from '$lib/components/ui/badge';
+  import * as Table from '$lib/components/ui/table';
+  import {
+    FileBreadcrumb,
+    KnowledgeFileList,
+    type GenericFolder,
+    type GenericFile,
+  } from '../components';
 
-  interface FavoriteFolder {
-    id: string;
+  interface PathItem {
+    id: string | null;
     name: string;
-    icon: string | null;
-    color: string | null;
-    isPublic: boolean;
-    createdAt: string;
   }
 
-  interface FavoriteFile {
-    id: string;
-    name: string;
-    folderId: string | null;
-    extension: string | null;
-    mimeType: string | null;
-    size: number;
-    isPublic: boolean;
-    createdAt: string;
+  interface FavoriteFolder extends GenericFolder {
+    isOwner?: boolean;
+    permission?: 'read' | 'write' | 'manage' | 'none';
+  }
+
+  interface FavoriteFile extends GenericFile {
+    isOwner?: boolean;
+    permission?: 'read' | 'write' | 'manage' | 'none';
   }
 
   let loading = $state(true);
   let folders = $state<FavoriteFolder[]>([]);
   let files = $state<FavoriteFile[]>([]);
+  let pathStack = $state<PathItem[]>([{ id: null, name: '收藏' }]);
+  let currentFolderId = $state<string | null>(null);
+  // 收藏页面所有显示的都是已收藏的
+  let favoritedFolderIds = $state<Set<string>>(new Set());
+  let favoritedFileIds = $state<Set<string>>(new Set());
 
   const api = authStore.createApi(true);
 
   async function loadData() {
     loading = true;
     try {
-      const res = await api.knowledge.postApiKnowledgeFavoriteList({ resourceType: 'all', limit: 100, offset: 0 });
-      folders = (res.data?.folders || []) as FavoriteFolder[];
-      files = (res.data?.files || []) as FavoriteFile[];
+      if (currentFolderId === null) {
+        const res = await api.knowledge.postApiKnowledgeFavoriteList({ resourceType: 'all', limit: 100, offset: 0 });
+        folders = (res.data?.folders || []) as FavoriteFolder[];
+        files = (res.data?.files || []) as FavoriteFile[];
+        // 收藏列表中的所有项目都是已收藏的
+        favoritedFolderIds = new Set(folders.map(f => f.id));
+        favoritedFileIds = new Set(files.map(f => f.id));
+      } else {
+        const res = await api.files.postApiFilesShareFolderContents({
+          folderId: currentFolderId,
+          viewMode: 'favorites',
+          limit: 100,
+          offset: 0,
+        });
+        folders = (res.data?.folders || []) as FavoriteFolder[];
+        files = (res.data?.files || []) as FavoriteFile[];
+        // 加载子文件夹的收藏状态
+        await loadFavoriteStatus();
+      }
     } catch (err) {
       console.error('加载收藏数据失败:', err);
       folders = [];
@@ -48,32 +70,127 @@
     }
   }
 
-  function formatSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-    return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+  async function loadFavoriteStatus() {
+    const folderIds = folders.map(f => f.id);
+    const fileIds = files.map(f => f.id);
+    if (folderIds.length === 0 && fileIds.length === 0) {
+      favoritedFolderIds = new Set();
+      favoritedFileIds = new Set();
+      return;
+    }
+    try {
+      const res = await api.knowledge.postApiKnowledgeFavoriteCheckBatch({ folderIds, fileIds });
+      favoritedFolderIds = new Set(res.data?.favoritedFolderIds || []);
+      favoritedFileIds = new Set(res.data?.favoritedFileIds || []);
+    } catch (err) {
+      console.error('加载收藏状态失败:', err);
+    }
   }
 
-  function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  function navigateToFolder(folder: FavoriteFolder) {
+    // 无权限的文件夹不能进入
+    if (folder.permission === 'none') return;
+    currentFolderId = folder.id;
+    pathStack = [...pathStack, { id: folder.id, name: folder.name }];
+    loadData();
   }
 
-  function handleFolderClick(folder: FavoriteFolder) {
-    // 导航到文件夹（在我的知识库中打开）
-    goto(`/dashboard/knowledge/my-files?folderId=${folder.id}`);
+  function navigateUp() {
+    if (pathStack.length <= 1) return;
+    pathStack = pathStack.slice(0, -1);
+    currentFolderId = pathStack[pathStack.length - 1].id;
+    loadData();
+  }
+
+  function navigateToPath(index: number) {
+    if (index >= pathStack.length - 1) return;
+    pathStack = pathStack.slice(0, index + 1);
+    currentFolderId = pathStack[index].id;
+    loadData();
   }
 
   function handleFileClick(file: FavoriteFile) {
-    goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}`);
+    // 无权限的文件不能打开
+    if (file.permission === 'none') return;
+    
+    if (file.permission === 'write' || file.permission === 'manage' || file.isOwner) {
+      goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}`);
+    } else {
+      // 只读模式查看
+      goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}?readonly=true`);
+    }
   }
 
-  async function handleRemoveFavorite(type: 'folder' | 'file', id: string) {
+  async function handleDownloadFile(file: FavoriteFile) {
+    // 无权限的文件不能下载
+    if (file.permission === 'none') return;
     try {
-      await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({ resourceType: type, resourceId: id });
-      await loadData();
+      const res = await api.files.getApiFilesByIdDownloadUrl({ id: file.id });
+      if (res.data?.url) {
+        window.open(res.data.url, '_blank');
+      }
     } catch (err) {
-      console.error('取消收藏失败:', err);
+      console.error('获取下载链接失败:', err);
+    }
+  }
+
+  async function handleToggleFolderFavorite(folder: FavoriteFolder) {
+    try {
+      const isFavorited = favoritedFolderIds.has(folder.id);
+      if (isFavorited) {
+        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({ resourceType: 'folder', resourceId: folder.id });
+        const newSet = new Set(favoritedFolderIds);
+        newSet.delete(folder.id);
+        favoritedFolderIds = newSet;
+        // 如果在根目录，从列表中移除
+        if (currentFolderId === null) {
+          folders = folders.filter(f => f.id !== folder.id);
+        }
+      } else {
+        await api.knowledge.postApiKnowledgeFavorite({ resourceType: 'folder', resourceId: folder.id });
+        favoritedFolderIds = new Set([...favoritedFolderIds, folder.id]);
+      }
+    } catch (err) {
+      console.error('切换收藏失败:', err);
+    }
+  }
+
+  async function handleToggleFileFavorite(file: FavoriteFile) {
+    try {
+      const isFavorited = favoritedFileIds.has(file.id);
+      if (isFavorited) {
+        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({ resourceType: 'file', resourceId: file.id });
+        const newSet = new Set(favoritedFileIds);
+        newSet.delete(file.id);
+        favoritedFileIds = newSet;
+        // 如果在根目录，从列表中移除
+        if (currentFolderId === null) {
+          files = files.filter(f => f.id !== file.id);
+        }
+      } else {
+        await api.knowledge.postApiKnowledgeFavorite({ resourceType: 'file', resourceId: file.id });
+        favoritedFileIds = new Set([...favoritedFileIds, file.id]);
+      }
+    } catch (err) {
+      console.error('切换收藏失败:', err);
+    }
+  }
+
+  function getPermissionLabel(permission: string | undefined): string {
+    switch (permission) {
+      case 'manage': return '管理';
+      case 'write': return '编辑';
+      case 'read': return '只读';
+      case 'none': return '无权限';
+      default: return '-';
+    }
+  }
+
+  function getPermissionVariant(permission: string | undefined): 'default' | 'secondary' | 'destructive' | 'outline' {
+    switch (permission) {
+      case 'none': return 'destructive';
+      case 'read': return 'secondary';
+      default: return 'outline';
     }
   }
 
@@ -82,78 +199,80 @@
 
 <div class="px-4 lg:px-6 flex-1 flex flex-col min-h-0">
   <div class="flex items-center justify-between py-2 border-b mb-2">
-    <h2 class="text-lg font-medium">收藏</h2>
+    <FileBreadcrumb {pathStack} onNavigate={navigateToPath} />
     <Button variant="ghost" size="sm" onclick={loadData}>
       <Icon icon="tdesign:refresh" class="size-4" />
     </Button>
   </div>
 
-  <div class="flex-1 overflow-auto">
-    {#if loading}
-      <div class="space-y-2 p-4">
-        {#each Array(5) as _}
-          <Skeleton class="h-12 w-full" />
-        {/each}
-      </div>
-    {:else if folders.length === 0 && files.length === 0}
+  <div class="flex-1 flex flex-col min-h-0">
+    {#if !loading && folders.length === 0 && files.length === 0 && currentFolderId === null}
       <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
         <Icon icon="tdesign:star" class="size-16 mb-4 opacity-50" />
         <p class="text-lg">您还没有收藏任何文件</p>
         <p class="text-sm">在文件列表中点击星标即可收藏</p>
       </div>
     {:else}
-      <table class="w-full">
-        <thead class="sticky top-0 bg-background border-b">
-          <tr class="text-left text-sm text-muted-foreground">
-            <th class="p-2 font-medium">名称</th>
-            <th class="p-2 font-medium">大小</th>
-            <th class="p-2 font-medium">创建时间</th>
-            <th class="p-2 font-medium w-20">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each folders as folder}
-            <tr class="border-b hover:bg-muted/50 cursor-pointer" onclick={() => handleFolderClick(folder)}>
-              <td class="p-2">
-                <div class="flex items-center gap-2">
-                  <Icon icon={folder.icon || 'tdesign:folder'} class="size-5" style={folder.color ? `color: ${folder.color}` : ''} />
-                  <span class="truncate">{folder.name}</span>
-                  {#if folder.isPublic}
-                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
-                  {/if}
-                </div>
-              </td>
-              <td class="p-2 text-sm text-muted-foreground">-</td>
-              <td class="p-2 text-sm text-muted-foreground">{formatDate(folder.createdAt)}</td>
-              <td class="p-2">
-                <Button variant="ghost" size="sm" onclick={(e: MouseEvent) => { e.stopPropagation(); handleRemoveFavorite('folder', folder.id); }}>
-                  <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
-                </Button>
-              </td>
-            </tr>
-          {/each}
-          {#each files as file}
-            <tr class="border-b hover:bg-muted/50 cursor-pointer" onclick={() => handleFileClick(file)}>
-              <td class="p-2">
-                <div class="flex items-center gap-2">
-                  <FileIcon filename={file.name} class="size-5" />
-                  <span class="truncate">{file.name}</span>
-                  {#if file.isPublic}
-                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
-                  {/if}
-                </div>
-              </td>
-              <td class="p-2 text-sm text-muted-foreground">{formatSize(file.size)}</td>
-              <td class="p-2 text-sm text-muted-foreground">{formatDate(file.createdAt)}</td>
-              <td class="p-2">
-                <Button variant="ghost" size="sm" onclick={(e: MouseEvent) => { e.stopPropagation(); handleRemoveFavorite('file', file.id); }}>
-                  <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
-                </Button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+      <KnowledgeFileList
+        viewMode="favorites"
+        {loading}
+        {folders}
+        {files}
+        {currentFolderId}
+        {favoritedFolderIds}
+        {favoritedFileIds}
+        onNavigateUp={navigateUp}
+        onNavigateToFolder={navigateToFolder}
+        onToggleFolderFavorite={handleToggleFolderFavorite}
+        onToggleFileFavorite={handleToggleFileFavorite}
+        onDownloadFile={handleDownloadFile}
+        onFileDoubleClick={handleFileClick}
+      >
+        {#snippet extraHeaderColumns()}
+          {#if currentFolderId === null}
+            <Table.Head class="text-left w-20">来源</Table.Head>
+            <Table.Head class="text-left w-20">权限</Table.Head>
+          {/if}
+        {/snippet}
+        {#snippet extraFolderColumns(folder)}
+          {#if currentFolderId === null}
+            <Table.Cell class="text-sm">
+              {#if folder.isOwner}
+                <Badge variant="outline">我的</Badge>
+              {:else}
+                <Badge variant="secondary">共享</Badge>
+              {/if}
+            </Table.Cell>
+            <Table.Cell class="text-sm">
+              <Badge variant={getPermissionVariant(folder.permission)}>{getPermissionLabel(folder.permission)}</Badge>
+            </Table.Cell>
+          {/if}
+        {/snippet}
+        {#snippet extraFileColumns(file)}
+          {#if currentFolderId === null}
+            <Table.Cell class="text-sm">
+              {#if file.isOwner}
+                <Badge variant="outline">我的</Badge>
+              {:else}
+                <Badge variant="secondary">共享</Badge>
+              {/if}
+            </Table.Cell>
+            <Table.Cell class="text-sm">
+              <Badge variant={getPermissionVariant(file.permission)}>{getPermissionLabel(file.permission)}</Badge>
+            </Table.Cell>
+          {/if}
+        {/snippet}
+        {#snippet folderActions(folder)}
+          <Button variant="ghost" size="sm" onclick={() => handleToggleFolderFavorite(folder)}>
+            <Icon icon={favoritedFolderIds.has(folder.id) ? 'tdesign:star-filled' : 'tdesign:star'} class="size-4 {favoritedFolderIds.has(folder.id) ? 'text-yellow-500' : ''}" />
+          </Button>
+        {/snippet}
+        {#snippet fileActions(file)}
+          <Button variant="ghost" size="sm" onclick={() => handleToggleFileFavorite(file)}>
+            <Icon icon={favoritedFileIds.has(file.id) ? 'tdesign:star-filled' : 'tdesign:star'} class="size-4 {favoritedFileIds.has(file.id) ? 'text-yellow-500' : ''}" />
+          </Button>
+        {/snippet}
+      </KnowledgeFileList>
     {/if}
   </div>
 </div>

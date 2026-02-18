@@ -9,6 +9,7 @@ import {
   "db_ai_provider_meta_verboseName" as meta_verboseName,
   "db_ai_provider_meta_verboseNamePlural" as meta_verboseNamePlural,
   "db_ai_provider_name" as f_name,
+  "db_ai_provider_providerType" as f_providerType,
   "db_ai_provider_baseUrl" as f_baseUrl,
   "db_ai_provider_token" as f_token,
   "db_ai_provider_remark" as f_remark,
@@ -23,6 +24,11 @@ const providerOwnFields = {
     field: varchar("name", { length: 64 }).notNull(),
     comment: f_name,
     config: { canExport: true, canImport: true, exportExcelColumnName: f_name, importExcelColumnName: f_name, cellType: "STRING" as const }
+  },
+  providerType: {
+    field: varchar("provider_type", { length: 32 }).notNull().default('openai-compatible'),
+    comment: f_providerType,
+    config: { canExport: true, canImport: true, exportExcelColumnName: f_providerType, importExcelColumnName: f_providerType, cellType: "STRING" as const }
   },
   baseUrl: {
     field: varchar("base_url", { length: 512 }).notNull(),

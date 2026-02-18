@@ -2,23 +2,29 @@ FROM oven/bun AS build
 
 WORKDIR /app
 
-# Cache packages installation
+# Copy root package files for workspace
 COPY package.json package.json
 COPY bun.lock bun.lock
 
+# Copy packages that server depends on
+COPY packages/ packages/
+
+# Copy server app
+COPY apps/server/ apps/server/
+
 RUN bun install
 
-COPY ./src ./src
+WORKDIR /app/apps/server
 
 ENV NODE_ENV=production
 
-RUN bun run build
+RUN bun build src/index.ts --compile --outfile server
 
 FROM gcr.io/distroless/base
 
 WORKDIR /app
 
-COPY --from=build /app/server server
+COPY --from=build /app/apps/server/server server
 
 ENV NODE_ENV=production
 

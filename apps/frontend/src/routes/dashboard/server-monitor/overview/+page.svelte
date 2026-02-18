@@ -6,6 +6,7 @@
   import { Progress } from '$lib/components/ui/progress';
   import { Badge } from '$lib/components/ui/badge';
   import { getContext } from 'svelte';
+  import * as Alert from '$lib/components/ui/alert';
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030';
   const monitorData = getContext('monitor-data');
@@ -105,6 +106,14 @@
 
 <!-- 磁盘和网络 -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+  {#if monitorData.systemInfo?.unavailable}
+    <Alert.Root variant="default" class="col-span-full">
+      <Icon icon="tdesign:info-circle" class="size-4" />
+      <Alert.Title>提示</Alert.Title>
+      <Alert.Description>{monitorData.systemInfo.unavailable}</Alert.Description>
+    </Alert.Root>
+  {/if}
+
   <Card.Root>
     <Card.Header>
       <Card.Title class="text-sm font-medium flex items-center gap-2">
@@ -115,17 +124,21 @@
     <Card.Content>
       <div class="space-y-3">
         {#each monitorData.diskPartitions as partition}
-          <div class="space-y-1">
-            <div class="flex justify-between text-sm">
-              <span class="font-medium">{partition.name}</span>
-              <span class="text-muted-foreground {getStatusColor(partition.usedPercent)}">{partition.usedPercent}%</span>
+          {#if partition.unavailable}
+            <p class="text-sm text-muted-foreground text-center py-4">{partition.unavailable}</p>
+          {:else}
+            <div class="space-y-1">
+              <div class="flex justify-between text-sm">
+                <span class="font-medium">{partition.name}</span>
+                <span class="text-muted-foreground {getStatusColor(partition.usedPercent)}">{partition.usedPercent}%</span>
+              </div>
+              <Progress value={partition.usedPercent} class="h-1.5" />
+              <div class="flex justify-between text-xs text-muted-foreground">
+                <span>{formatBytes(partition.used)} 已用</span>
+                <span>{formatBytes(partition.free)} 可用</span>
+              </div>
             </div>
-            <Progress value={partition.usedPercent} class="h-1.5" />
-            <div class="flex justify-between text-xs text-muted-foreground">
-              <span>{formatBytes(partition.used)} 已用</span>
-              <span>{formatBytes(partition.free)} 可用</span>
-            </div>
-          </div>
+          {/if}
         {/each}
         {#if monitorData.diskPartitions.length === 0}
           <p class="text-sm text-muted-foreground text-center py-4">暂无数据</p>

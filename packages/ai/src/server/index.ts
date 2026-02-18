@@ -2,6 +2,8 @@ import { createOpenAICompatible, type OpenAICompatibleProviderSettings } from '@
 import { generateText, streamText, Output, convertToModelMessages, type ModelMessage, type StopCondition, type ToolSet, type StepResult, type UIMessage } from 'ai';
 import { type LanguageModelV3 } from '@ai-sdk/provider';
 import z from 'zod/v4';
+import { createProvider, type ProviderConfig } from '../providers/factory';
+import type { ProviderType } from '../providers/types';
 
 type ZodObjectShape = Record<string, z.ZodType>;
 
@@ -10,8 +12,19 @@ interface PrepareStepResult<TOOLS extends ToolSet> {
   tools?: TOOLS;
 }
 
+/** 旧版 provider 配置（兼容 OpenAI Compatible） */
+interface LegacyProviderConfig extends OpenAICompatibleProviderSettings {}
+
+/** 新版 provider 配置（使用 providerType） */
+interface TypedProviderConfig {
+  providerType: ProviderType;
+  apiKey: string;
+  baseURL?: string;
+}
+
 interface BaseRequestOptions<TOOLS extends ToolSet> {
-  provider: OpenAICompatibleProviderSettings;
+  /** Provider 配置 - 支持旧版（OpenAI Compatible）和新版（typed provider） */
+  provider: LegacyProviderConfig | TypedProviderConfig;
   model: string;
   toolChoice?: 'auto' | 'none' | 'required';
   tools?: TOOLS;
@@ -44,10 +57,32 @@ interface StreamCallbacks {
 type StreamRequestOptions<TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape> = 
   RequestOptions<TOOLS, O> & StreamCallbacks;
 
+/** 判断是否为新版 typed provider 配置 */
+function isTypedProviderConfig(config: LegacyProviderConfig | TypedProviderConfig): config is TypedProviderConfig {
+  return 'providerType' in config;
+}
+
+/** 根据配置创建 provider 实例 */
+function getProviderInstance(config: LegacyProviderConfig | TypedProviderConfig, modelId: string) {
+  if (isTypedProviderConfig(config)) {
+    // 新版：使用 typed provider factory
+    const provider = createProvider({
+      providerType: config.providerType,
+      apiKey: config.apiKey,
+      baseURL: config.baseURL,
+    });
+    return provider(modelId);
+  } else {
+    // 旧版：使用 OpenAI Compatible
+    const provider = createOpenAICompatible(config);
+    return provider(modelId);
+  }
+}
+
 export const generate = async <TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape>(
   options: RequestOptions<TOOLS, O>
 ) => {
-  const provider = createOpenAICompatible(options.provider);
+  const model = getProviderInstance(options.provider, options.model);
   const modelMessages = await convertToModelMessages(options.messages);
 
   const outputConfig = options.output === 'object' && 'schema' in options
@@ -55,7 +90,7 @@ export const generate = async <TOOLS extends ToolSet, O extends ZodObjectShape =
     : Output.text();
 
   return await generateText({
-    model: provider(options.model) as LanguageModelV3,
+    model: model as LanguageModelV3,
     tools: options.tools ?? {} as TOOLS,
     toolChoice: options.toolChoice ?? 'auto',
     messages: modelMessages,
@@ -71,7 +106,7 @@ export const generate = async <TOOLS extends ToolSet, O extends ZodObjectShape =
 export const stream = async <TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape>(
   options: StreamRequestOptions<TOOLS, O>
 ) => {
-  const provider = createOpenAICompatible(options.provider);
+  const model = getProviderInstance(options.provider, options.model);
   const modelMessages = await convertToModelMessages(options.messages);
 
   const outputConfig = options.output === 'object' && 'schema' in options
@@ -79,7 +114,7 @@ export const stream = async <TOOLS extends ToolSet, O extends ZodObjectShape = Z
     : Output.text();
 
   return streamText({
-    model: provider(options.model) as LanguageModelV3,
+    model: model as LanguageModelV3,
     tools: options.tools ?? {} as TOOLS,
     toolChoice: options.toolChoice ?? 'auto',
     messages: modelMessages,
@@ -110,8 +145,16 @@ export type {
   StreamRequestOptions,
   PrepareStepResult,
   UIMessage,
+  TypedProviderConfig,
+  LegacyProviderConfig,
 };
 
 export { tool, stepCountIs, convertToModelMessages, streamText, generateText, jsonSchema } from 'ai';
 export { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 export type { OpenAICompatibleProviderSettings } from '@ai-sdk/openai-compatible';
+
+// Re-export provider types and factory
+export { createProvider, getModel } from '../providers/factory';
+export type { ProviderConfig } from '../providers/factory';
+export type { ProviderType, ProviderInfo } from '../providers/types';
+export { providerRegistry, getProviderTypes, getProviderInfo, getAllProviders } from '../providers/registry';

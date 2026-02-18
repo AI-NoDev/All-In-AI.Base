@@ -15,6 +15,10 @@
       "types": "./src/client/index.ts",
       "svelte": "./src/client/index.ts",
       "default": "./src/client/index.ts"
+    },
+    "./providers": {
+      "types": "./src/providers/index.ts",
+      "default": "./src/providers/index.ts"
     }
   },
   "svelte": "./src/client/index.ts",
@@ -31,9 +35,14 @@
     }
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^1.2.12",
+    "@ai-sdk/azure": "^1.3.22",
+    "@ai-sdk/google": "^1.2.18",
+    "@ai-sdk/openai": "^1.3.22",
     "@ai-sdk/openai-compatible": "^2.0.25",
     "@ai-sdk/provider": "^3.0.6",
     "@ai-sdk/svelte": "^4.0.70",
+    "@ai-sdk/xai": "^3.0.57",
     "ai": "^6.0.66",
     "zod": "catalog:"
   }

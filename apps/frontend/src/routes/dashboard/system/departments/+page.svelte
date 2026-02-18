@@ -30,15 +30,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
   import { Switch } from '$lib/components/ui/switch';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemDepartmentQueryFieldEnum, PostApiSystemDepartmentQueryOrderEnum } from '@qiyu-allinai/api';
 
@@ -129,6 +128,16 @@
   }
 
   let visibleDepts = $derived(flattenTree(deptTree));
+
+  const columns = [
+    { key: 'name', title: '部门名称', width: 256, render: nameRender },
+    { key: 'orderNum', title: '排序', width: 80 },
+    { key: 'leader', title: '负责人', width: 128, render: leaderRender },
+    { key: 'phone', title: '联系电话', width: 128, render: phoneRender },
+    { key: 'status', title: '状态', width: 80, render: statusRender },
+    { key: 'createdAt', title: '创建时间', width: 170, render: createdAtRender },
+    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ];
 
   function toggleExpand(node: DeptNode) {
     node.expanded = !node.expanded;
@@ -225,6 +234,44 @@
   onMount(() => loadDepts());
 </script>
 
+{#snippet nameRender({ row })}
+  <div class="flex items-center" style="padding-left: {(row.level || 0) * 20}px">
+    {#if row.children && row.children.length > 0}
+      <button class="p-0.5 hover:bg-muted rounded mr-1" onclick={() => toggleExpand(row)}>
+        <Icon icon={row.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
+      </button>
+    {:else}
+      <span class="w-5 mr-1"></span>
+    {/if}
+    <Icon icon="tdesign:folder" class="size-4 mr-2 text-muted-foreground" />
+    <span class="font-medium">{row.name}</span>
+  </div>
+{/snippet}
+
+{#snippet leaderRender({ value })}
+  {value || '-'}
+{/snippet}
+
+{#snippet phoneRender({ value })}
+  <span class="text-muted-foreground">{value || '-'}</span>
+{/snippet}
+
+{#snippet statusRender({ row })}
+  <Badge variant={row.status ? 'default' : 'secondary'}>{row.status ? '正常' : '停用'}</Badge>
+{/snippet}
+
+{#snippet createdAtRender({ value })}
+  <span class="text-muted-foreground">{new Date(value).toLocaleString('zh-CN')}</span>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-end gap-1">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(row.id)} title="新增子部门"><Icon icon="tdesign:add" class="size-4" /></Button>
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}><Icon icon="tdesign:edit" class="size-4" /></Button>
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
+  </div>
+{/snippet}
+
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 搜索表单 -->
   {#if showFilter}
@@ -278,56 +325,11 @@
       </div>
     </div>
     <div class="flex-1 min-h-0">
-      {#if loading}
-        <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
-      {:else}
-        <Table.Root>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head class="w-64">部门名称</Table.Head>
-              <Table.Head class="w-20">排序</Table.Head>
-              <Table.Head>负责人</Table.Head>
-              <Table.Head>联系电话</Table.Head>
-              <Table.Head class="w-20">状态</Table.Head>
-              <Table.Head class="w-40">创建时间</Table.Head>
-              <Table.Head class="w-28 text-right">操作</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {#each visibleDepts as dept}
-              <Table.Row>
-                <Table.Cell>
-                  <div class="flex items-center" style="padding-left: {(dept.level || 0) * 20}px">
-                    {#if dept.children && dept.children.length > 0}
-                      <button class="p-0.5 hover:bg-muted rounded mr-1" onclick={() => toggleExpand(dept)}>
-                        <Icon icon={dept.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
-                      </button>
-                    {:else}
-                      <span class="w-5 mr-1"></span>
-                    {/if}
-                    <Icon icon="tdesign:folder" class="size-4 mr-2 text-muted-foreground" />
-                    <span class="font-medium">{dept.name}</span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>{dept.orderNum}</Table.Cell>
-                <Table.Cell>{dept.leader || '-'}</Table.Cell>
-                <Table.Cell class="text-muted-foreground">{dept.phone || '-'}</Table.Cell>
-                <Table.Cell><Badge variant={dept.status ? 'default' : 'secondary'}>{dept.status ? '正常' : '停用'}</Badge></Table.Cell>
-                <Table.Cell class="text-muted-foreground">{new Date(dept.createdAt).toLocaleString('zh-CN')}</Table.Cell>
-                <Table.Cell class="text-right">
-                  <div class="flex justify-end gap-1">
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(dept.id)} title="新增子部门"><Icon icon="tdesign:add" class="size-4" /></Button>
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(dept)}><Icon icon="tdesign:edit" class="size-4" /></Button>
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(dept.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            {:else}
-              <Table.Row><Table.Cell colspan={7} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
-      {/if}
+      <DataTable 
+        {columns} 
+        data={visibleDepts} 
+        {loading}
+      />
     </div>
   </div>
 </div>

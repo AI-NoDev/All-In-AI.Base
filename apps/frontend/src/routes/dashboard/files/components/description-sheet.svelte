@@ -5,6 +5,7 @@
   import * as Sheet from '$lib/components/ui/sheet';
   import { Button } from '$lib/components/ui/button';
   import * as Tooltip from '$lib/components/ui/tooltip';
+  import MarkdownEditor from '$lib/components/common/markdown-editor.svelte';
 
   interface Props {
     open: boolean;
@@ -24,67 +25,12 @@
     onSave 
   }: Props = $props();
 
-  let editorRef: HTMLDivElement | undefined = $state();
   let previewRef: HTMLDivElement | undefined = $state();
-  let vditor: InstanceType<typeof import('vditor').default> | null = null;
+  let editor: MarkdownEditor | undefined = $state();
   let saving = $state(false);
   let editorReady = $state(false);
 
   let isDark = $derived(mode.current === 'dark');
-
-  async function initEditor() {
-    if (!browser || !editorRef) return;
-    
-    if (vditor) {
-      vditor.destroy();
-      vditor = null;
-    }
-
-    const Vditor = (await import('vditor')).default;
-    await import('vditor/dist/index.css');
-
-    const currentTheme = isDark ? 'dark' : 'classic';
-
-    vditor = new Vditor(editorRef, {
-      height: 350,
-      mode: 'ir',
-      placeholder: '使用 Markdown 格式编写描述...',
-      value: currentDescription || '',
-      cache: { enable: false },
-      theme: currentTheme,
-      toolbar: [
-        'headings',
-        'bold',
-        'italic',
-        'strike',
-        'link',
-        '|',
-        'list',
-        'ordered-list',
-        'check',
-        '|',
-        'quote',
-        'code',
-        'inline-code',
-        '|',
-        'table',
-        '|',
-        'undo',
-        'redo',
-      ],
-      preview: {
-        theme: {
-          current: isDark ? 'dark' : 'light',
-        },
-      },
-      after: () => {
-        editorReady = true;
-        if (currentDescription && vditor) {
-          vditor.setValue(currentDescription);
-        }
-      },
-    });
-  }
 
   async function renderPreview() {
     if (!browser || !previewRef) return;
@@ -104,29 +50,23 @@
   }
 
   $effect(() => {
-    if (open) {
-      if (readOnly) {
-        setTimeout(() => renderPreview(), 100);
-      } else if (editorRef) {
-        setTimeout(() => initEditor(), 100);
-      }
+    if (open && readOnly) {
+      setTimeout(() => renderPreview(), 100);
     }
   });
 
-  $effect(() => {
-    return () => {
-      if (vditor) {
-        vditor.destroy();
-        vditor = null;
-      }
-    };
-  });
+  function handleEditorReady() {
+    editorReady = true;
+    if (currentDescription && editor) {
+      editor.setValue(currentDescription);
+    }
+  }
 
   async function handleSave() {
-    if (onSave && vditor) {
+    if (onSave && editor) {
       saving = true;
       try {
-        const value = vditor.getValue().trim();
+        const value = editor.getValue().trim();
         await onSave(value || null);
         handleClose();
       } finally {
@@ -136,9 +76,8 @@
   }
 
   function handleClose() {
-    if (vditor) {
-      vditor.destroy();
-      vditor = null;
+    if (editor) {
+      editor.cleanup();
     }
     editorReady = false;
     open = false;
@@ -186,8 +125,14 @@
             暂无描述
           </div>
         {/if}
-      {:else}
-        <div bind:this={editorRef} class="vditor-container flex-1"></div>
+      {:else if open}
+        <MarkdownEditor
+          bind:this={editor}
+          value={currentDescription || ''}
+          placeholder="使用 Markdown 格式编写描述..."
+          height={350}
+          onReady={handleEditorReady}
+        />
         {#if editorReady}
           <p class="text-xs text-muted-foreground mt-2">
             支持 Markdown 格式，描述有助于 AI 理解文件内容
@@ -213,15 +158,6 @@
 </Sheet.Root>
 
 <style>
-  :global(.vditor-container .vditor) {
-    border-radius: 0.5rem;
-  }
-  :global(.vditor-container .vditor-toolbar) {
-    border-radius: 0.5rem 0.5rem 0 0;
-  }
-  :global(.vditor-container .vditor-content) {
-    border-radius: 0 0 0.5rem 0.5rem;
-  }
   :global(.vditor-preview) {
     font-size: 14px;
   }

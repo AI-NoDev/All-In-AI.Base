@@ -32,7 +32,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import * as Pagination from '$lib/components/ui/pagination';
@@ -40,9 +39,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { Checkbox } from '$lib/components/ui/checkbox';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemPostQueryFieldEnum, PostApiSystemPostQueryOrderEnum } from '@qiyu-allinai/api';
 
@@ -95,7 +92,6 @@
   ];
 
   let allSelected = $derived(posts.length > 0 && posts.every(p => selectedIds.has(p.id)));
-  let someSelected = $derived(selectedIds.size > 0 && !allSelected);
 
   function toggleSelectAll() {
     selectedIds = allSelected ? new Set() : new Set(posts.map(p => p.id));
@@ -106,6 +102,15 @@
     newSet.has(id) ? newSet.delete(id) : newSet.add(id);
     selectedIds = newSet;
   }
+
+  const columns = [
+    { key: 'code', title: '岗位编码', width: 160, render: codeRender },
+    { key: 'name', title: '岗位名称', width: 160 },
+    { key: 'sort', title: '排序', width: 80 },
+    { key: 'status', title: '状态', width: 80, render: statusRender },
+    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
+    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ];
 
   async function loadPosts() {
     loading = true;
@@ -209,6 +214,25 @@
   onMount(() => loadPosts());
 </script>
 
+{#snippet codeRender({ value })}
+  <span class="font-medium">{value}</span>
+{/snippet}
+
+{#snippet statusRender({ value })}
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? '正常' : '停用'}</Badge>
+{/snippet}
+
+{#snippet dateRender({ value })}
+  <span class="text-muted-foreground">{new Date(String(value)).toLocaleString('zh-CN')}</span>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-end gap-1">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}><Icon icon="tdesign:edit" class="size-4" /></Button>
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
+  </div>
+{/snippet}
+
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 搜索表单 -->
   {#if showFilter}
@@ -254,69 +278,37 @@
       </div>
     </div>
     <div class="flex-1 min-h-0 flex flex-col">
-      {#if loading}
-        <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
-      {:else}
-        <div class="flex-1 min-h-0">
-          <ScrollArea class="h-full" orientation="both">
-          <Table.Root>
-            <Table.Header class="sticky top-0 bg-background z-10">
-              <Table.Row>
-                <Table.Head class="w-12"><Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} /></Table.Head>
-                <Table.Head>岗位编码</Table.Head>
-                <Table.Head>岗位名称</Table.Head>
-                <Table.Head class="w-20">排序</Table.Head>
-                <Table.Head class="w-20">状态</Table.Head>
-                <Table.Head class="w-40">创建时间</Table.Head>
-                <Table.Head class="w-28 text-right">操作</Table.Head>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-            {#each posts as post}
-              <Table.Row class={selectedIds.has(post.id) ? 'bg-muted/50' : ''}>
-                <Table.Cell><Checkbox checked={selectedIds.has(post.id)} onCheckedChange={() => toggleSelect(post.id)} /></Table.Cell>
-                <Table.Cell class="font-medium">{post.code}</Table.Cell>
-                <Table.Cell>{post.name}</Table.Cell>
-                <Table.Cell>{post.sort}</Table.Cell>
-                <Table.Cell><Badge variant={post.status === '0' ? 'default' : 'secondary'}>{post.status === '0' ? '正常' : '停用'}</Badge></Table.Cell>
-                <Table.Cell class="text-muted-foreground">{new Date(post.createdAt).toLocaleString('zh-CN')}</Table.Cell>
-                <Table.Cell class="text-right">
-                  <div class="flex justify-end gap-1">
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(post)}><Icon icon="tdesign:edit" class="size-4" /></Button>
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(post.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            {:else}
-              <Table.Row><Table.Cell colspan={7} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
-        </ScrollArea>
-        </div>
+      <DataTable 
+        {columns} 
+        data={posts} 
+        {loading}
+        selectable
+        {selectedIds}
+        onToggleSelect={toggleSelect}
+        onToggleSelectAll={toggleSelectAll}
+      />
 
-        {#if total > 0}
-          <div class="mt-4 flex items-center justify-between">
-            <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
-            <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadPosts()}>
-              {#snippet children({ pages, currentPage: cp })}
-                <Pagination.Content>
-                  <Pagination.Item><Pagination.PrevButton /></Pagination.Item>
-                  {#each pages as page (page.key)}
-                    {#if page.type === "ellipsis"}
-                      <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
-                    {:else}
-                      <Pagination.Item>
-                        <Pagination.Link {page} isActive={cp === page.value}>{page.value}</Pagination.Link>
-                      </Pagination.Item>
-                    {/if}
-                  {/each}
-                  <Pagination.Item><Pagination.NextButton /></Pagination.Item>
-                </Pagination.Content>
-              {/snippet}
-            </Pagination.Root>
-          </div>
-        {/if}
+      {#if total > 0 && !loading}
+        <div class="mt-4 flex items-center justify-between">
+          <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+          <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadPosts()}>
+            {#snippet children({ pages, currentPage: cp })}
+              <Pagination.Content>
+                <Pagination.Item><Pagination.PrevButton /></Pagination.Item>
+                {#each pages as page (page.key)}
+                  {#if page.type === "ellipsis"}
+                    <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
+                  {:else}
+                    <Pagination.Item>
+                      <Pagination.Link {page} isActive={cp === page.value}>{page.value}</Pagination.Link>
+                    </Pagination.Item>
+                  {/if}
+                {/each}
+                <Pagination.Item><Pagination.NextButton /></Pagination.Item>
+              </Pagination.Content>
+            {/snippet}
+          </Pagination.Root>
+        </div>
       {/if}
     </div>
   </div>

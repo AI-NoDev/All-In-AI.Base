@@ -9,6 +9,8 @@ import {
   "db_ai_agentSession_meta_verboseName" as meta_verboseName,
   "db_ai_agentSession_meta_verboseNamePlural" as meta_verboseNamePlural,
   "db_ai_agentSession_agentId" as f_agentId,
+  "db_ai_agentSession_providerId" as f_providerId,
+  "db_ai_agentSession_modelId" as f_modelId,
   "db_ai_agentSession_userId" as f_userId,
   "db_ai_agentSession_title" as f_title,
   "db_ai_agentSession_summary" as f_summary,
@@ -34,9 +36,19 @@ export type TokenUsage = {
 // ============ Fields ============
 const agentSessionOwnFields = {
   agentId: {
-    field: uuid("agent_id").notNull(),
+    field: uuid("agent_id"),
     comment: f_agentId,
     config: { canExport: true, canImport: false, exportExcelColumnName: f_agentId, cellType: "STRING" as const }
+  },
+  providerId: {
+    field: uuid("provider_id"),
+    comment: f_providerId,
+    config: { canExport: false, canImport: false }
+  },
+  modelId: {
+    field: uuid("model_id"),
+    comment: f_modelId,
+    config: { canExport: false, canImport: false }
   },
   userId: {
     field: uuid("user_id").notNull(),

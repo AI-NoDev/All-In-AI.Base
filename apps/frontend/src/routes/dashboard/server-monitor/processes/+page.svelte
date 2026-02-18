@@ -1,14 +1,13 @@
-
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
   import * as Card from '$lib/components/ui/card';
-  import * as Table from '$lib/components/ui/table';
   import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { DataTable } from '$lib/components/common';
   import { toast } from 'svelte-sonner';
   import { getContext } from 'svelte';
+  import * as Alert from '$lib/components/ui/alert';
 
   const monitorData = getContext('monitor-data');
   const API_BASE = monitorData.API_BASE;
@@ -25,6 +24,7 @@
 
   let processes = $state<ProcessInfo[]>([]);
   let processSortBy = $state<'cpu' | 'memory'>('cpu');
+  let unavailableMessage = $state<string | null>(null);
 
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -43,7 +43,14 @@
   async function loadProcesses() {
     try {
       const res = await fetch(`${API_BASE}/api/monitor/processes?sortBy=${processSortBy}&limit=30`);
-      processes = await res.json();
+      const data = await res.json();
+      if (data && typeof data === 'object' && 'unavailable' in data) {
+        unavailableMessage = data.unavailable;
+        processes = [];
+      } else {
+        unavailableMessage = null;
+        processes = Array.isArray(data) ? data : [];
+      }
     } catch (e) {
       console.error('Failed to load processes:', e);
     }
@@ -74,55 +81,68 @@
     const interval = setInterval(loadProcesses, 5000);
     return () => clearInterval(interval);
   });
+
   const sortOptions = [
     { value: 'cpu', label: '按 CPU' },
     { value: 'memory', label: '按内存' }
   ];
+
+  const columns = [
+    { key: 'pid', title: 'PID', width: 80, render: pidRender },
+    { key: 'name', title: '进程名', width: 200, render: nameRender },
+    { key: 'cpu', title: 'CPU %', width: 96, align: 'right' as const, render: cpuRender },
+    { key: 'memory', title: '内存 %', width: 96, align: 'right' as const, render: memoryRender },
+    { key: 'memoryBytes', title: '内存', width: 112, align: 'right' as const, render: memoryBytesRender },
+    { key: 'pid', title: '操作', width: 80, fixed: 'right' as const, render: actionsRender },
+  ];
 </script>
 
-<div class="flex justify-between items-center mb-4">
-  <p class="text-sm text-muted-foreground">共 {processes.length} 个进程</p>
-  <Select.Root type="single" bind:value={processSortBy}>
-    <Select.Trigger class="w-32">
-      {sortOptions.find(o => o.value === processSortBy)?.label}
-    </Select.Trigger>
-    <Select.Content>
-      {#each sortOptions as option}
-        <Select.Item value={option.value}>{option.label}</Select.Item>
-      {/each}
-    </Select.Content>
-  </Select.Root>
-</div>
+{#snippet pidRender({ value })}
+  <span class="font-mono text-xs">{value}</span>
+{/snippet}
 
-<Card.Root>
-  <ScrollArea class="h-[500px]">
-    <Table.Root>
-      <Table.Header>
-        <Table.Row>
-          <Table.Head class="w-20">PID</Table.Head>
-          <Table.Head>进程名</Table.Head>
-          <Table.Head class="w-24 text-right">CPU %</Table.Head>
-          <Table.Head class="w-24 text-right">内存 %</Table.Head>
-          <Table.Head class="w-28 text-right">内存</Table.Head>
-          <Table.Head class="w-20">操作</Table.Head>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {#each processes as proc}
-          <Table.Row>
-            <Table.Cell class="font-mono text-xs">{proc.pid}</Table.Cell>
-            <Table.Cell class="truncate max-w-[200px]" title={proc.name}>{proc.name}</Table.Cell>
-            <Table.Cell class="text-right {getStatusColor(proc.cpu)}">{proc.cpu.toFixed(1)}</Table.Cell>
-            <Table.Cell class="text-right {getStatusColor(proc.memory)}">{proc.memory.toFixed(1)}</Table.Cell>
-            <Table.Cell class="text-right text-muted-foreground">{formatBytes(proc.memoryBytes)}</Table.Cell>
-            <Table.Cell>
-              <Button size="sm" variant="ghost" class="h-7 w-7 p-0 text-red-500 hover:text-red-600" onclick={() => killProcessById(proc.pid)}>
-                <Icon icon="tdesign:close" class="size-4" />
-              </Button>
-            </Table.Cell>
-          </Table.Row>
+{#snippet nameRender({ value })}
+  <span class="truncate max-w-[200px] block" title={String(value)}>{value}</span>
+{/snippet}
+
+{#snippet cpuRender({ row })}
+  <span class={getStatusColor(row.cpu)}>{row.cpu.toFixed(1)}</span>
+{/snippet}
+
+{#snippet memoryRender({ row })}
+  <span class={getStatusColor(row.memory)}>{row.memory.toFixed(1)}</span>
+{/snippet}
+
+{#snippet memoryBytesRender({ value })}
+  <span class="text-muted-foreground">{formatBytes(Number(value))}</span>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <Button size="sm" variant="ghost" class="h-7 w-7 p-0 text-red-500 hover:text-red-600" onclick={() => killProcessById(row.pid)}>
+    <Icon icon="tdesign:close" class="size-4" />
+  </Button>
+{/snippet}
+
+{#if unavailableMessage}
+  <Alert.Root variant="default" class="mb-4">
+    <Icon icon="tdesign:info-circle" class="size-4" />
+    <Alert.Title>功能不可用</Alert.Title>
+    <Alert.Description>{unavailableMessage}</Alert.Description>
+  </Alert.Root>
+{:else}
+  <div class="flex justify-between items-center mb-4">
+    <p class="text-sm text-muted-foreground">共 {processes.length} 个进程</p>
+    <Select.Root type="single" bind:value={processSortBy}>
+      <Select.Trigger class="w-32">
+        {sortOptions.find(o => o.value === processSortBy)?.label}
+      </Select.Trigger>
+      <Select.Content>
+        {#each sortOptions as option}
+          <Select.Item value={option.value}>{option.label}</Select.Item>
         {/each}
-      </Table.Body>
-    </Table.Root>
-  </ScrollArea>
-</Card.Root>
+      </Select.Content>
+    </Select.Root>
+  </div>
+{/if}
+
+<DataTable {columns} data={processes} rowKey="pid" class="h-[500px]" />

@@ -1,13 +1,14 @@
 import { logger } from "@bogeychan/elysia-logger";
-import { Elysia } from "elysia";
+import pretty from "pino-pretty";
 
-export const loggerPlugin = new Elysia({ name: "plugin/logger" })
-  .use(logger({
-    level: Bun.env.LOG_LEVEL || "info",
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-      },
-    },
-  }));
+const isDev = process.env.NODE_ENV !== "production";
+
+export const loggerPlugin = logger({
+  autoLogging: true,
+  level: Bun.env.LOG_LEVEL || "info",
+  ...(isDev && {
+    stream: pretty({
+      colorize: true,
+    }),
+  }),
+});

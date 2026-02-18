@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { FileIcon } from '@qiyu-allinai/file-icons';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { mode } from 'mode-watcher';
   import hljs from 'highlight.js/lib/core';
   // 注册常用语言
@@ -196,16 +197,20 @@
       <span class="truncate">{projectName || '项目代码'}</span>
     </div>
     
-    <div class="flex-1 overflow-auto p-2">
-      {#if loading}
-        <div class="flex items-center justify-center py-8 text-muted-foreground">
-          加载中...
+    <div class="flex-1 min-h-0">
+      <ScrollArea class="h-full">
+        <div class="p-2">
+          {#if loading}
+            <div class="flex items-center justify-center py-8 text-muted-foreground">
+              加载中...
+            </div>
+          {:else}
+            {#each rootItems as node}
+              {@render treeNode(node, 0)}
+            {/each}
+          {/if}
         </div>
-      {:else}
-        {#each rootItems as node}
-          {@render treeNode(node, 0)}
-        {/each}
-      {/if}
+      </ScrollArea>
     </div>
   </div>
 
@@ -221,23 +226,25 @@
       </div>
       
       <!-- 代码区域 -->
-      <div class="flex-1 overflow-auto">
-        {#if fileLoading}
-          <div class="flex items-center justify-center py-8 text-muted-foreground">
-            加载中...
-          </div>
-        {:else}
-          <div class="code-container flex text-sm">
-            <!-- 行号 -->
-            <div class="line-numbers select-none text-right pr-4 py-4 text-muted-foreground border-r border-border {isDark ? 'bg-[#0d1117]' : 'bg-[#f6f8fa]'}">
-              {#each getLineNumbers(selectedFile.content) as lineNum}
-                <div class="px-2 leading-6">{lineNum}</div>
-              {/each}
+      <div class="flex-1 min-h-0">
+        <ScrollArea class="h-full" orientation="both">
+          {#if fileLoading}
+            <div class="flex items-center justify-center py-8 text-muted-foreground">
+              加载中...
             </div>
-            <!-- 代码 -->
-            <pre class="flex-1 p-4 m-0 overflow-x-auto {isDark ? 'bg-[#0d1117]' : 'bg-[#f6f8fa]'}"><code class="hljs leading-6">{@html highlightedCode}</code></pre>
-          </div>
-        {/if}
+          {:else}
+            <div class="code-container flex text-sm">
+              <!-- 行号 -->
+              <div class="line-numbers select-none text-right pr-4 py-4 text-muted-foreground border-r border-border {isDark ? 'bg-[#0d1117]' : 'bg-[#f6f8fa]'}">
+                {#each getLineNumbers(selectedFile.content) as lineNum}
+                  <div class="px-2 leading-6">{lineNum}</div>
+                {/each}
+              </div>
+              <!-- 代码 -->
+              <pre class="flex-1 p-4 m-0 overflow-x-auto {isDark ? 'bg-[#0d1117]' : 'bg-[#f6f8fa]'}"><code class="hljs leading-6">{@html highlightedCode}</code></pre>
+            </div>
+          {/if}
+        </ScrollArea>
       </div>
     {:else}
       <div class="flex-1 flex items-center justify-center text-muted-foreground">

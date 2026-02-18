@@ -2,11 +2,10 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
   import { FileIcon } from '@qiyu-allinai/file-icons';
-  import * as Table from '$lib/components/ui/table';
   import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
-  import { Skeleton } from '$lib/components/ui/skeleton';
   import * as Empty from '$lib/components/ui/empty';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '$lib/stores/auth.svelte';
 
   interface ConversationFile {
@@ -56,6 +55,16 @@
   }
 
   let filteredFiles = $derived(getFilteredFiles());
+
+  const columns = [
+    { key: 'fileName', title: '文件名', width: 250, minWidth: 200, render: fileNameRender },
+    { key: 'msgType', title: '类型', width: 80, render: typeRender },
+    { key: 'fileSize', title: '大小', width: 96, render: sizeRender },
+    { key: 'conversationName', title: '会话', width: 160, render: conversationRender },
+    { key: 'senderName', title: '发送者', width: 128, render: senderRender },
+    { key: 'createdAt', title: '时间', width: 170, render: timeRender },
+    { key: 'fileId', title: '操作', width: 80, align: 'center' as const, fixed: 'right' as const, render: actionsRender },
+  ];
 
   async function loadConversationFiles() {
     loading = true;
@@ -121,6 +130,42 @@
   });
 </script>
 
+{#snippet fileNameRender({ row })}
+  <span class="flex items-center gap-2">
+    <FileIcon type={getFileExtension(row.fileName)} size={20} />
+    <span class="truncate max-w-[300px]" title={row.fileName}>{row.fileName}</span>
+  </span>
+{/snippet}
+
+{#snippet typeRender({ row })}
+  <span class="text-muted-foreground">{getFileTypeLabel(row.msgType)}</span>
+{/snippet}
+
+{#snippet sizeRender({ row })}
+  <span class="text-muted-foreground">{formatSize(row.fileSize)}</span>
+{/snippet}
+
+{#snippet conversationRender({ row })}
+  <span class="flex items-center gap-1">
+    <Icon icon={row.conversationType === 'group' ? 'tdesign:usergroup' : 'tdesign:user'} class="size-4 text-muted-foreground" />
+    <span class="truncate max-w-[100px]" title={row.conversationName}>{row.conversationName}</span>
+  </span>
+{/snippet}
+
+{#snippet senderRender({ row })}
+  <span class="text-muted-foreground truncate max-w-[100px]" title={row.senderName}>{row.senderName}</span>
+{/snippet}
+
+{#snippet timeRender({ row })}
+  <span class="text-muted-foreground">{new Date(row.createdAt).toLocaleString('zh-CN')}</span>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <Button variant="ghost" size="icon" class="size-8" onclick={() => handleDownload(row)}>
+    <Icon icon="tdesign:download" class="size-4" />
+  </Button>
+{/snippet}
+
 <div class="flex-1 flex flex-col min-h-0 p-4">
   <!-- 筛选栏 -->
   <div class="flex items-center gap-4 mb-4">
@@ -177,13 +222,7 @@
   </div>
 
   <!-- 文件列表 -->
-  {#if loading}
-    <div class="space-y-3">
-      {#each [1, 2, 3, 4, 5] as _}
-        <Skeleton class="h-12 w-full" />
-      {/each}
-    </div>
-  {:else if filteredFiles.length === 0}
+  {#if filteredFiles.length === 0 && !loading}
     <div class="flex-1 flex items-center justify-center">
       <Empty.Root>
         <Empty.Media>
@@ -198,47 +237,13 @@
       </Empty.Root>
     </div>
   {:else}
-    <div class="flex-1 min-h-0 overflow-auto border rounded-lg">
-      <Table.Root>
-        <Table.Header class="bg-muted/50 sticky top-0">
-          <Table.Row>
-            <Table.Head class="text-left">文件名</Table.Head>
-            <Table.Head class="w-20 text-left">类型</Table.Head>
-            <Table.Head class="w-24 text-left">大小</Table.Head>
-            <Table.Head class="w-40 text-left">会话</Table.Head>
-            <Table.Head class="w-32 text-left">发送者</Table.Head>
-            <Table.Head class="w-40 text-left">时间</Table.Head>
-            <Table.Head class="w-20 text-center">操作</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {#each filteredFiles as file}
-            <Table.Row class="hover:bg-muted/50">
-              <Table.Cell class="font-medium text-left">
-                <span class="flex items-center gap-2">
-                  <FileIcon type={getFileExtension(file.fileName)} size={20} />
-                  <span class="truncate max-w-[300px]" title={file.fileName}>{file.fileName}</span>
-                </span>
-              </Table.Cell>
-              <Table.Cell class="text-muted-foreground text-left">{getFileTypeLabel(file.msgType)}</Table.Cell>
-              <Table.Cell class="text-muted-foreground text-left">{formatSize(file.fileSize)}</Table.Cell>
-              <Table.Cell class="text-left">
-                <span class="flex items-center gap-1">
-                  <Icon icon={file.conversationType === 'group' ? 'tdesign:usergroup' : 'tdesign:user'} class="size-4 text-muted-foreground" />
-                  <span class="truncate max-w-[100px]" title={file.conversationName}>{file.conversationName}</span>
-                </span>
-              </Table.Cell>
-              <Table.Cell class="text-muted-foreground text-left truncate max-w-[100px]" title={file.senderName}>{file.senderName}</Table.Cell>
-              <Table.Cell class="text-muted-foreground text-left">{new Date(file.createdAt).toLocaleString('zh-CN')}</Table.Cell>
-              <Table.Cell class="text-center">
-                <Button variant="ghost" size="icon" class="size-8" onclick={() => handleDownload(file)}>
-                  <Icon icon="tdesign:download" class="size-4" />
-                </Button>
-              </Table.Cell>
-            </Table.Row>
-          {/each}
-        </Table.Body>
-      </Table.Root>
+    <div class="flex-1 min-h-0 overflow-hidden border rounded-lg">
+      <DataTable 
+        {columns} 
+        data={filteredFiles} 
+        {loading}
+        rowKey="messageId"
+      />
     </div>
   {/if}
 </div>

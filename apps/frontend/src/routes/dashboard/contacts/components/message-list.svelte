@@ -26,7 +26,7 @@
   });
 </script>
 
-<div class="flex-1 min-h-0 relative">
+<div class="flex-1 overflow-hidden relative">
   <ScrollArea class="h-full" bind:ref={scrollAreaRef} bind:viewportRef={viewportRef}>
     <div class="p-4 space-y-4">
       {#if imStore.isLoadingMoreMessages}

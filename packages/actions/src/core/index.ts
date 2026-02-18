@@ -9,6 +9,9 @@ export type {
   DrizzleDB,
 } from './types';
 
+// Errors
+export { ActionError } from './errors';
+
 // Define
 export { defineAction } from './define';
 export type { DefineActionOptions } from './define';

@@ -6,9 +6,7 @@ import {
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-import { permissionSchema } from '../base/permissionSchema';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
-import { z } from "zod/v4";
+import { createZodSchemas } from "../../types";
 
 // ============ Fields ============
 const schemaOwnFields = {
@@ -40,7 +38,7 @@ const schemaOwnFields = {
   },
 } satisfies FieldMap;
 
-export const schemaFields = mergeFields(pkSchema, auditSchema, permissionSchema, schemaOwnFields);
+export const schemaFields = mergeFields(pkSchema, auditSchema, schemaOwnFields);
 
 // ============ Meta ============
 export const schemaMeta: EntityMeta = {
@@ -58,29 +56,4 @@ export const schema = pgTable(schemaMeta.name, getTableFields(schemaFields));
 export const schemaConfig = getFieldConfigs(schemaFields);
 
 // ============ Schemas ============
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const describeRefinements = createDescribeRefinements(schemaFields) as any;
-
-export const schemaZodSchemas = {
-  insert: createInsertZodSchema(schema, {
-    ...describeRefinements,
-    schema: z.record(z.string(), z.unknown()).describe(schemaFields.schema.comment()),
-    allowedUserIds: z.array(z.string()).describe(schemaFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.string()).describe(schemaFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.string()).describe(schemaFields.allowedDeptIds.comment()),
-  }),
-  select: createSelectZodSchema(schema, {
-    ...describeRefinements,
-    schema: z.record(z.string(), z.unknown()).describe(schemaFields.schema.comment()),
-    allowedUserIds: z.array(z.string()).nullable().describe(schemaFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.string()).nullable().describe(schemaFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.string()).nullable().describe(schemaFields.allowedDeptIds.comment()),
-  }),
-  update: createUpdateZodSchema(schema, {
-    ...describeRefinements,
-    schema: z.record(z.string(), z.unknown()).optional().describe(schemaFields.schema.comment()),
-    allowedUserIds: z.array(z.string()).optional().describe(schemaFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.string()).optional().describe(schemaFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.string()).optional().describe(schemaFields.allowedDeptIds.comment()),
-  }),
-};
+export const schemaZodSchemas = createZodSchemas(schema, schemaFields);

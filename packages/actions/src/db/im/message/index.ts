@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import { ActionError } from '../../../core/errors';
 import { toJSONSchema } from '../../../core/schema';
 import { message, messageZodSchemas, conversation } from '@qiyu-allinai/db/entities/im';
 
@@ -127,12 +128,12 @@ export const messageRecall = defineAction({
     // 获取消息信息
     const [msg] = await db.select().from(message).where(eq(message.id, input.id)).limit(1);
     if (!msg) {
-      throw new Error('error.im.message.notFound');
+      throw ActionError.notFound('error.im.message.notFound');
     }
     
     // 只有发送者可以撤回消息
     if (msg.senderId !== context.currentUserId) {
-      throw new Error('error.im.message.notSender');
+      throw ActionError.forbidden('error.im.message.notSender');
     }
     
     // 更新消息为已撤回

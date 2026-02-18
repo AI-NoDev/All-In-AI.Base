@@ -62,11 +62,11 @@
   let permissionMap = $state<Map<string, Map<FilePermission, PermissionEffect>>>(new Map());
 
   const api = authStore.createApi(true);
+  const currentUserId = authStore.user?.id;
 
   const permissionOptions: { value: FilePermission; label: string }[] = [
-    { value: 'read', label: '读取' },
-    { value: 'write', label: '写入' },
-    { value: 'delete', label: '删除' },
+    { value: 'read', label: '只读' },
+    { value: 'write', label: '编辑' },
     { value: 'manage', label: '管理' },
   ];
 
@@ -74,31 +74,44 @@
     return `${subjectType}:${subjectId}`;
   }
 
-  function hasPermission(subjectType: SubjectType, subjectId: string, permission: FilePermission): boolean {
+  function getPermission(subjectType: SubjectType, subjectId: string): FilePermission | null {
     const key = getPermissionKey(subjectType, subjectId);
     const perms = permissionMap.get(key);
-    return perms?.has(permission) ?? false;
+    if (!perms || perms.size === 0) return null;
+    // 返回第一个权限（单选模式）
+    return Array.from(perms.keys())[0];
   }
 
-  function togglePermission(subjectType: SubjectType, subjectId: string, permission: FilePermission) {
+  function hasPermission(subjectType: SubjectType, subjectId: string, permission: FilePermission): boolean {
+    return getPermission(subjectType, subjectId) === permission;
+  }
+
+  function setPermission(subjectType: SubjectType, subjectId: string, permission: FilePermission | null) {
     const key = getPermissionKey(subjectType, subjectId);
     const newMap = new Map(permissionMap);
     
-    if (!newMap.has(key)) {
-      newMap.set(key, new Map());
-    }
-    
-    const perms = newMap.get(key)!;
-    if (perms.has(permission)) {
-      perms.delete(permission);
-      if (perms.size === 0) {
-        newMap.delete(key);
-      }
+    if (permission === null) {
+      // 移除权限
+      newMap.delete(key);
     } else {
+      // 设置单一权限（替换之前的）
+      const perms = new Map<FilePermission, PermissionEffect>();
       perms.set(permission, 'allow');
+      newMap.set(key, perms);
     }
     
     permissionMap = newMap;
+  }
+
+  function togglePermission(subjectType: SubjectType, subjectId: string, permission: FilePermission) {
+    const currentPerm = getPermission(subjectType, subjectId);
+    if (currentPerm === permission) {
+      // 取消选择
+      setPermission(subjectType, subjectId, null);
+    } else {
+      // 选择新权限
+      setPermission(subjectType, subjectId, permission);
+    }
   }
 
   function buildDeptTree(flatDepts: DeptNode[]): DeptNode[] {
@@ -373,21 +386,31 @@
                     </Table.Header>
                     <Table.Body>
                       {#each users as user}
-                        <Table.Row>
-                          <Table.Cell class="font-medium">{user.loginName}</Table.Cell>
+                        {@const isCurrentUser = user.id === currentUserId}
+                        <Table.Row class={isCurrentUser ? 'opacity-60' : ''}>
+                          <Table.Cell class="font-medium">
+                            {user.loginName}
+                            {#if isCurrentUser}
+                              <Badge variant="outline" class="ml-2 text-xs">自己</Badge>
+                            {/if}
+                          </Table.Cell>
                           <Table.Cell>{user.name || '-'}</Table.Cell>
                           <Table.Cell>
-                            <div class="flex gap-2 flex-wrap">
-                              {#each permissionOptions as opt}
-                                <button
-                                  type="button"
-                                  class="px-2 py-1 text-xs rounded border transition-colors {hasPermission('user', user.id, opt.value) ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted border-transparent'}"
-                                  onclick={() => togglePermission('user', user.id, opt.value)}
-                                >
-                                  {opt.label}
-                                </button>
-                              {/each}
-                            </div>
+                            {#if isCurrentUser}
+                              <span class="text-xs text-muted-foreground">不能给自己分配权限</span>
+                            {:else}
+                              <div class="flex gap-2 flex-wrap">
+                                {#each permissionOptions as opt}
+                                  <button
+                                    type="button"
+                                    class="px-2 py-1 text-xs rounded border transition-colors {hasPermission('user', user.id, opt.value) ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted border-transparent'}"
+                                    onclick={() => togglePermission('user', user.id, opt.value)}
+                                  >
+                                    {opt.label}
+                                  </button>
+                                {/each}
+                              </div>
+                            {/if}
                           </Table.Cell>
                         </Table.Row>
                       {/each}

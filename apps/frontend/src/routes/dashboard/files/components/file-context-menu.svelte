@@ -1,18 +1,25 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import * as ContextMenu from '$lib/components/ui/context-menu';
-  import * as Tooltip from '$lib/components/ui/tooltip';
   import type { Snippet } from 'svelte';
-  import type { FolderItem, FileItem } from './types';
+
+  // Generic item interface that works with both FolderItem/FileItem and GenericFolder/GenericFile
+  interface GenericItem {
+    id: string;
+    name: string;
+    extension?: string | null;
+    versionCount?: number;
+  }
 
   interface Props {
     type: 'folder' | 'file';
-    item: FolderItem | FileItem;
+    item: GenericItem;
     children: Snippet;
-    onEditDescription: () => void;
-    onDelete: () => void;
-    onDownload: () => void;
-    // Optional actions
+    isFavorited?: boolean;
+    // All actions are optional - only show menu items for provided callbacks
+    onEditDescription?: () => void;
+    onDelete?: () => void;
+    onDownload?: () => void;
     onCopy?: () => void;
     onCut?: () => void;
     onRename?: () => void;
@@ -21,12 +28,14 @@
     onEditStyle?: () => void;
     onEditPermission?: () => void;
     onViewVersions?: () => void;
+    onToggleFavorite?: () => void;
   }
 
   let {
     type,
     item,
     children,
+    isFavorited = false,
     onEditDescription,
     onDelete,
     onDownload,
@@ -38,17 +47,18 @@
     onEditStyle,
     onEditPermission,
     onViewVersions,
+    onToggleFavorite,
   }: Props = $props();
 
   let isTextFile = $derived(
     type === 'file' && 
     ['txt', 'md', 'json', 'js', 'ts', 'html', 'css', 'xml', 'yaml', 'yml'].includes(
-      ((item as FileItem).extension || '').toLowerCase()
+      (item.extension || '').toLowerCase()
     )
   );
 
   let hasVersions = $derived(
-    type === 'file' && (item as FileItem).versionCount > 0
+    type === 'file' && (item.versionCount || 0) > 0
   );
 </script>
 
@@ -57,22 +67,37 @@
     {@render children()}
   </ContextMenu.Trigger>
   <ContextMenu.Content class="w-56">
+    <!-- Favorite action -->
+    {#if onToggleFavorite}
+      <ContextMenu.Item onclick={onToggleFavorite}>
+        <Icon icon={isFavorited ? 'tdesign:star-filled' : 'tdesign:star'} class="mr-2 size-4 {isFavorited ? 'text-yellow-500' : ''}" />
+        {isFavorited ? '取消收藏' : '收藏'}
+      </ContextMenu.Item>
+      <ContextMenu.Separator />
+    {/if}
+
     <!-- Primary actions: Edit Description, Delete, Download -->
-    <ContextMenu.Item onclick={onEditDescription}>
-      <Icon icon="tdesign:file-setting" class="mr-2 size-4" />
-      <span class="flex-1">编辑描述</span>
-      <span class="text-xs text-muted-foreground ml-2">AI</span>
-    </ContextMenu.Item>
+    {#if onEditDescription}
+      <ContextMenu.Item onclick={onEditDescription}>
+        <Icon icon="tdesign:file-setting" class="mr-2 size-4" />
+        <span class="flex-1">编辑描述</span>
+        <span class="text-xs text-muted-foreground ml-2">AI</span>
+      </ContextMenu.Item>
+    {/if}
 
-    <ContextMenu.Item onclick={onDownload}>
-      <Icon icon="tdesign:download" class="mr-2 size-4" />
-      下载
-    </ContextMenu.Item>
+    {#if onDownload}
+      <ContextMenu.Item onclick={onDownload}>
+        <Icon icon="tdesign:download" class="mr-2 size-4" />
+        下载
+      </ContextMenu.Item>
+    {/if}
 
-    <ContextMenu.Item onclick={onDelete} class="text-destructive focus:text-destructive">
-      <Icon icon="tdesign:delete" class="mr-2 size-4" />
-      删除
-    </ContextMenu.Item>
+    {#if onDelete}
+      <ContextMenu.Item onclick={onDelete} class="text-destructive focus:text-destructive">
+        <Icon icon="tdesign:delete" class="mr-2 size-4" />
+        删除
+      </ContextMenu.Item>
+    {/if}
 
     <!-- Secondary actions -->
     {#if onCopy || onCut || onRename || onEdit || onEditStyle || onEditPermission || onViewVersions || onShowInfo}

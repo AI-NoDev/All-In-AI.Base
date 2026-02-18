@@ -1,15 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
 
   interface Permission {
@@ -54,6 +52,15 @@
     { value: 'module', label: '模块', variant: 'default' as const },
     { value: 'resource', label: '资源', variant: 'secondary' as const },
     { value: 'action', label: '操作', variant: 'outline' as const },
+  ];
+
+  const columns = [
+    { key: 'name', title: '权限名称', width: 320, render: nameRender },
+    { key: 'code', title: '权限标识', width: 192, render: codeRender },
+    { key: 'type', title: '类型', width: 96, render: typeRender },
+    { key: 'orderNum', title: '排序', width: 80 },
+    { key: 'status', title: '状态', width: 80, render: statusRender },
+    { key: 'id', title: '操作', width: 128, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
   ];
 
   const actionLabels: Record<string, string> = {
@@ -221,6 +228,52 @@
   onMount(() => loadPermissions());
 </script>
 
+{#snippet nameRender({ row })}
+  <div class="flex items-center" style="padding-left: {(row.level || 0) * 24}px">
+    {#if row.children && row.children.length > 0}
+      <button class="mr-1 p-0.5 hover:bg-muted rounded" onclick={() => toggleExpand(row.id)}>
+        <Icon icon={row.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
+      </button>
+    {:else}
+      <span class="w-5"></span>
+    {/if}
+    <Icon
+      icon={row.type === 'module' ? 'tdesign:folder' : row.type === 'resource' ? 'tdesign:file' : 'tdesign:control-platform'}
+      class="mr-2 size-4 text-muted-foreground"
+    />
+    <span class="font-medium">{row.name}</span>
+  </div>
+{/snippet}
+
+{#snippet codeRender({ value })}
+  <span class="text-muted-foreground font-mono text-sm">{value}</span>
+{/snippet}
+
+{#snippet typeRender({ row })}
+  {@const typeOpt = typeOptions.find(t => t.value === row.type)}
+  <Badge variant={typeOpt?.variant || 'outline'}>{typeOpt?.label || row.type}</Badge>
+{/snippet}
+
+{#snippet statusRender({ row })}
+  <Badge variant={row.status ? 'default' : 'secondary'}>{row.status ? '启用' : '禁用'}</Badge>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-end gap-1">
+    {#if row.type !== 'action'}
+      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(row.id)}>
+        <Icon icon="tdesign:add" class="size-4" />
+      </Button>
+    {/if}
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}>
+      <Icon icon="tdesign:edit" class="size-4" />
+    </Button>
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}>
+      <Icon icon="tdesign:delete" class="size-4" />
+    </Button>
+  </div>
+{/snippet}
+
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <div class="flex-1 flex flex-col min-h-0 pt-4">
     <div class="pb-3">
@@ -239,109 +292,11 @@
     </div>
 
     <div class="flex-1 min-h-0 flex flex-col">
-      {#if loading}
-        <div class="space-y-3">
-          {#each [1, 2, 3, 4, 5] as _}
-            <Skeleton class="h-12 w-full" />
-          {/each}
-        </div>
-      {:else}
-        <div class="flex-1 min-h-0">
-          <ScrollArea class="h-full" orientation="both">
-            <Table.Root>
-              <Table.Header class="sticky top-0 bg-background z-10">
-                <Table.Row>
-                  <Table.Head class="w-80">权限名称</Table.Head>
-                  <Table.Head class="w-48">权限标识</Table.Head>
-                  <Table.Head class="w-24">类型</Table.Head>
-                  <Table.Head class="w-20">排序</Table.Head>
-                  <Table.Head class="w-20">状态</Table.Head>
-                  <Table.Head class="w-32 text-right">操作</Table.Head>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {#each flatPermissions as perm}
-                  <Table.Row>
-                    <Table.Cell>
-                      <div class="flex items-center" style="padding-left: {(perm.level || 0) * 24}px">
-                        {#if perm.children && perm.children.length > 0}
-                          <button
-                            class="mr-1 p-0.5 hover:bg-muted rounded"
-                            onclick={() => toggleExpand(perm.id)}
-                          >
-                            <Icon
-                              icon={perm.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'}
-                              class="size-4"
-                            />
-                          </button>
-                        {:else}
-                          <span class="w-5"></span>
-                        {/if}
-                        <Icon
-                          icon={perm.type === 'module' ? 'tdesign:folder' : perm.type === 'resource' ? 'tdesign:file' : 'tdesign:control-platform'}
-                          class="mr-2 size-4 text-muted-foreground"
-                        />
-                        <span class="font-medium">{perm.name}</span>
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell class="text-muted-foreground font-mono text-sm">
-                      {perm.code}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {@const typeOpt = typeOptions.find(t => t.value === perm.type)}
-                      <Badge variant={typeOpt?.variant || 'outline'}>
-                        {typeOpt?.label || perm.type}
-                      </Badge>
-                    </Table.Cell>
-                    <Table.Cell>{perm.orderNum}</Table.Cell>
-                    <Table.Cell>
-                      <Badge variant={perm.status ? 'default' : 'secondary'}>
-                        {perm.status ? '启用' : '禁用'}
-                      </Badge>
-                    </Table.Cell>
-                    <Table.Cell class="text-right">
-                      <div class="flex justify-end gap-1">
-                        {#if perm.type !== 'action'}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            class="h-8 w-8 p-0"
-                            onclick={() => openCreate(perm.id)}
-                          >
-                            <Icon icon="tdesign:add" class="size-4" />
-                          </Button>
-                        {/if}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          class="h-8 w-8 p-0"
-                          onclick={() => openEdit(perm)}
-                        >
-                          <Icon icon="tdesign:edit" class="size-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          class="h-8 w-8 p-0 text-destructive"
-                          onclick={() => handleDelete(perm.id)}
-                        >
-                          <Icon icon="tdesign:delete" class="size-4" />
-                        </Button>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                {:else}
-                  <Table.Row>
-                    <Table.Cell colspan={6} class="h-24 text-center text-muted-foreground">
-                      暂无数据
-                    </Table.Cell>
-                  </Table.Row>
-                {/each}
-              </Table.Body>
-            </Table.Root>
-          </ScrollArea>
-        </div>
-      {/if}
+      <DataTable 
+        {columns} 
+        data={flatPermissions} 
+        {loading}
+      />
     </div>
   </div>
 </div>

@@ -4,7 +4,6 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import * as Avatar from '$lib/components/ui/avatar';
 
   interface Agent {
     id: string;
@@ -79,14 +78,15 @@
           {#each agents as agent}
             <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div class="flex items-start gap-3">
-                <Avatar.Root class="size-12 shrink-0" style={agent.color ? `background-color: ${agent.color}` : ''}>
+                <div class="size-12 shrink-0 rounded-full border-2 flex items-center justify-center bg-muted overflow-hidden" style={agent.color ? `border-color: ${agent.color}` : ''}>
                   {#if agent.avatar}
-                    <Avatar.Image src={agent.avatar} alt={agent.name} />
+                    <img src={agent.avatar} alt={agent.name} class="size-full object-cover" />
+                  {:else}
+                    <span class="text-lg text-muted-foreground">
+                      {agent.name ? agent.name.charAt(0).toUpperCase() : 'A'}
+                    </span>
                   {/if}
-                  <Avatar.Fallback>
-                    <Icon icon="mdi:robot" class="size-6" />
-                  </Avatar.Fallback>
-                </Avatar.Root>
+                </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <h3 class="font-medium truncate">{agent.name}</h3>

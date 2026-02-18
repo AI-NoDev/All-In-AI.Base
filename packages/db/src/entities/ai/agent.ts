@@ -23,8 +23,8 @@ import {
   "db_ai_agent_remark" as f_remark,
   "db_ai_agent_status" as f_status,
 } from '@qiyu-allinai/i18n';
-import { pkSchema,auditSchema,permissionSchema } from '../base';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
+import { pkSchema, auditSchema } from '../base';
+import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema, createDescribeRefinements } from "../../types";
 import { z } from "zod/v4";
 
 // ============ Fields ============
@@ -125,7 +125,7 @@ const agentOwnFields = {
   },
 } satisfies FieldMap;
 
-export const agentFields = mergeFields(pkSchema, auditSchema, permissionSchema, agentOwnFields);
+export const agentFields = mergeFields(pkSchema, auditSchema, agentOwnFields);
 
 // ============ Meta ============
 export const agentMeta: EntityMeta = {
@@ -149,13 +149,10 @@ const describeRefinements = createDescribeRefinements(agentFields) as any;
 export const agentZodSchemas = {
   insert: createInsertZodSchema(agent, {
     ...describeRefinements,
-    toolIds: z.array(z.string()).describe(agentFields.toolIds.comment()),
-    nativeTools: z.array(z.string()).describe(agentFields.nativeTools.comment()),
+    toolIds: z.array(z.string()).optional().describe(agentFields.toolIds.comment()),
+    nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
     inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
     outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
-    allowedUserIds: z.array(z.string()).describe(agentFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.string()).describe(agentFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.string()).describe(agentFields.allowedDeptIds.comment()),
   }),
   select: createSelectZodSchema(agent, {
     ...describeRefinements,
@@ -163,9 +160,6 @@ export const agentZodSchemas = {
     nativeTools: z.array(z.string()).nullable().describe(agentFields.nativeTools.comment()),
     inputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.inputSchema.comment()),
     outputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.outputSchema.comment()),
-    allowedUserIds: z.array(z.string()).nullable().describe(agentFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.string()).nullable().describe(agentFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.string()).nullable().describe(agentFields.allowedDeptIds.comment()),
   }),
   update: createUpdateZodSchema(agent, {
     ...describeRefinements,
@@ -173,8 +167,6 @@ export const agentZodSchemas = {
     nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
     inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
     outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
-    allowedUserIds: z.array(z.string()).optional().describe(agentFields.allowedUserIds.comment()),
-    allowedRoleIds: z.array(z.string()).optional().describe(agentFields.allowedRoleIds.comment()),
-    allowedDeptIds: z.array(z.string()).optional().describe(agentFields.allowedDeptIds.comment()),
   }),
 };
+

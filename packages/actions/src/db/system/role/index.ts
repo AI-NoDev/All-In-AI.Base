@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import { ActionError } from '../../../core/errors';
 import { toJSONSchema } from '../../../core/schema';
 import type { DrizzleDB } from '../../../core/types';
 import { role, roleZodSchemas } from '@qiyu-allinai/db/entities/system';
@@ -139,7 +140,7 @@ export const roleUpdate = defineAction({
     const { db } = context;
     // 检查是否为管理员角色
     if (await checkIsAdminRole(db, input.id)) {
-      throw new Error('error.system.adminRole.cannot.modify');
+      throw ActionError.forbidden('error.system.adminRole.cannot.modify');
     }
     const [result] = await db.update(role).set(input.data as Partial<RoleInsert>).where(and(eq(role.id, input.id), isNull(role.deletedAt))).returning();
     return result as RoleSelect;
@@ -158,7 +159,7 @@ export const roleUpdateMany = defineAction({
     for (const id of input.ids) {
       // 检查是否为管理员角色
       if (await checkIsAdminRole(db, id)) {
-        throw new Error('error.system.adminRole.cannot.modify');
+        throw ActionError.forbidden('error.system.adminRole.cannot.modify');
       }
       const [result] = await db.update(role).set(input.data as Partial<RoleInsert>).where(and(eq(role.id, id), isNull(role.deletedAt))).returning();
       if (result) results.push(result as RoleSelect);
@@ -177,7 +178,7 @@ export const roleDeleteByPk = defineAction({
     const { db } = context;
     // 检查是否为管理员角色
     if (await checkIsAdminRole(db, input.id)) {
-      throw new Error('error.system.adminRole.cannot.delete');
+      throw ActionError.forbidden('error.system.adminRole.cannot.delete');
     }
     const [result] = await db.update(role).set({ 
       deletedAt: new Date().toISOString(), 

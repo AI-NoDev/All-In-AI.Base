@@ -1,43 +1,29 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { Button } from '$lib/components/ui/button';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { FileIcon } from '@qiyu-allinai/file-icons';
-  import { PermissionSheet, type PermissionGrantee } from '../components';
+  import * as Table from '$lib/components/ui/table';
+  import {
+    FileBreadcrumb,
+    KnowledgeFileList,
+    PermissionSheet,
+    type GenericFolder,
+    type GenericFile,
+    type PermissionGrantee,
+  } from '../components';
 
-  interface SharedToInfo {
-    subjectType: string;
-    subjectId: string;
-    permission: string;
-  }
-
-  interface MySharedFolder {
-    id: string;
+  interface PathItem {
+    id: string | null;
     name: string;
-    icon: string | null;
-    color: string | null;
-    isPublic: boolean;
-    createdAt: string;
-    sharedTo: SharedToInfo[];
-  }
-
-  interface MySharedFile {
-    id: string;
-    name: string;
-    folderId: string | null;
-    extension: string | null;
-    mimeType: string | null;
-    size: number;
-    isPublic: boolean;
-    createdAt: string;
-    sharedTo: SharedToInfo[];
   }
 
   let loading = $state(true);
-  let folders = $state<MySharedFolder[]>([]);
-  let files = $state<MySharedFile[]>([]);
+  let folders = $state<GenericFolder[]>([]);
+  let files = $state<GenericFile[]>([]);
+  let pathStack = $state<PathItem[]>([{ id: null, name: '我的共享' }]);
+  let currentFolderId = $state<string | null>(null);
   let permissionSheetOpen = $state(false);
 
   interface PermissionTarget {
@@ -53,9 +39,20 @@
   async function loadData() {
     loading = true;
     try {
-      const res = await api.files.postApiFilesShareMyShared({ limit: 100, offset: 0 });
-      folders = (res.data?.folders || []) as MySharedFolder[];
-      files = (res.data?.files || []) as MySharedFile[];
+      if (currentFolderId === null) {
+        const res = await api.files.postApiFilesShareMyShared({ limit: 100, offset: 0 });
+        folders = (res.data?.folders || []) as GenericFolder[];
+        files = (res.data?.files || []) as GenericFile[];
+      } else {
+        const res = await api.files.postApiFilesShareFolderContents({
+          folderId: currentFolderId,
+          viewMode: 'my-shared',
+          limit: 100,
+          offset: 0,
+        });
+        folders = (res.data?.folders || []) as GenericFolder[];
+        files = (res.data?.files || []) as GenericFile[];
+      }
     } catch (err) {
       console.error('加载我的共享数据失败:', err);
       folders = [];
@@ -65,30 +62,44 @@
     }
   }
 
-  function formatSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-    return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+  function navigateToFolder(folder: GenericFolder) {
+    currentFolderId = folder.id;
+    pathStack = [...pathStack, { id: folder.id, name: folder.name }];
+    loadData();
   }
 
-  function formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  function navigateUp() {
+    if (pathStack.length <= 1) return;
+    pathStack = pathStack.slice(0, -1);
+    currentFolderId = pathStack[pathStack.length - 1].id;
+    loadData();
   }
 
-  function getSharedCount(sharedTo: SharedToInfo[]): string {
+  function navigateToPath(index: number) {
+    if (index >= pathStack.length - 1) return;
+    pathStack = pathStack.slice(0, index + 1);
+    currentFolderId = pathStack[index].id;
+    loadData();
+  }
+
+  function getSharedCount(sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>): string {
     const count = sharedTo?.length || 0;
     return count > 0 ? `${count} 人/角色` : '未共享';
   }
 
-  function handleEditFolderPermission(folder: MySharedFolder) {
-    permissionTarget = { type: 'folder', id: folder.id, name: folder.name, isPublic: folder.isPublic };
+  function handleEditFolderPermission(folder: GenericFolder) {
+    permissionTarget = { type: 'folder', id: folder.id, name: folder.name, isPublic: folder.isPublic || false };
     permissionSheetOpen = true;
   }
 
-  function handleEditFilePermission(file: MySharedFile) {
-    permissionTarget = { type: 'file', id: file.id, name: file.name, isPublic: file.isPublic };
+  function handleEditFilePermission(file: GenericFile) {
+    permissionTarget = { type: 'file', id: file.id, name: file.name, isPublic: file.isPublic || false };
     permissionSheetOpen = true;
+  }
+
+  function handleFileClick(file: GenericFile) {
+    // 我的共享文件，自己是所有者，可以编辑
+    goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}`);
   }
 
   async function handleSavePermission(isPublic: boolean, permissions: PermissionGrantee[]) {
@@ -116,81 +127,58 @@
 
 <div class="px-4 lg:px-6 flex-1 flex flex-col min-h-0">
   <div class="flex items-center justify-between py-2 border-b mb-2">
-    <h2 class="text-lg font-medium">我的共享</h2>
+    <FileBreadcrumb {pathStack} onNavigate={navigateToPath} />
     <Button variant="ghost" size="sm" onclick={loadData}>
       <Icon icon="tdesign:refresh" class="size-4" />
     </Button>
   </div>
 
-  <div class="flex-1 overflow-auto">
-    {#if loading}
-      <div class="space-y-2 p-4">
-        {#each Array(5) as _}
-          <Skeleton class="h-12 w-full" />
-        {/each}
-      </div>
-    {:else if folders.length === 0 && files.length === 0}
+  <div class="flex-1 flex flex-col min-h-0">
+    {#if !loading && folders.length === 0 && files.length === 0 && currentFolderId === null}
       <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
         <Icon icon="tdesign:share" class="size-16 mb-4 opacity-50" />
         <p class="text-lg">您还没有共享任何文件</p>
         <p class="text-sm">在"我的知识库"中选择文件，点击共享按钮即可共享</p>
       </div>
     {:else}
-      <table class="w-full">
-        <thead class="sticky top-0 bg-background border-b">
-          <tr class="text-left text-sm text-muted-foreground">
-            <th class="p-2 font-medium">名称</th>
-            <th class="p-2 font-medium">共享给</th>
-            <th class="p-2 font-medium">大小</th>
-            <th class="p-2 font-medium">创建时间</th>
-            <th class="p-2 font-medium w-20">操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each folders as folder}
-            <tr class="border-b hover:bg-muted/50">
-              <td class="p-2">
-                <div class="flex items-center gap-2">
-                  <Icon icon={folder.icon || 'tdesign:folder'} class="size-5" style={folder.color ? `color: ${folder.color}` : ''} />
-                  <span class="truncate">{folder.name}</span>
-                  {#if folder.isPublic}
-                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
-                  {/if}
-                </div>
-              </td>
-              <td class="p-2 text-sm text-muted-foreground">{getSharedCount(folder.sharedTo)}</td>
-              <td class="p-2 text-sm text-muted-foreground">-</td>
-              <td class="p-2 text-sm text-muted-foreground">{formatDate(folder.createdAt)}</td>
-              <td class="p-2">
-                <Button variant="ghost" size="sm" onclick={() => handleEditFolderPermission(folder)}>
-                  <Icon icon="tdesign:setting" class="size-4" />
-                </Button>
-              </td>
-            </tr>
-          {/each}
-          {#each files as file}
-            <tr class="border-b hover:bg-muted/50">
-              <td class="p-2">
-                <div class="flex items-center gap-2">
-                  <FileIcon filename={file.name} class="size-5" />
-                  <span class="truncate">{file.name}</span>
-                  {#if file.isPublic}
-                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
-                  {/if}
-                </div>
-              </td>
-              <td class="p-2 text-sm text-muted-foreground">{getSharedCount(file.sharedTo)}</td>
-              <td class="p-2 text-sm text-muted-foreground">{formatSize(file.size)}</td>
-              <td class="p-2 text-sm text-muted-foreground">{formatDate(file.createdAt)}</td>
-              <td class="p-2">
-                <Button variant="ghost" size="sm" onclick={() => handleEditFilePermission(file)}>
-                  <Icon icon="tdesign:setting" class="size-4" />
-                </Button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+      <KnowledgeFileList
+        viewMode="my-shared"
+        {loading}
+        {folders}
+        {files}
+        {currentFolderId}
+        onNavigateUp={navigateUp}
+        onNavigateToFolder={navigateToFolder}
+        onEditFolderPermission={handleEditFolderPermission}
+        onEditFilePermission={handleEditFilePermission}
+        onFileDoubleClick={handleFileClick}
+      >
+        {#snippet extraHeaderColumns()}
+          {#if currentFolderId === null}
+            <Table.Head class="text-left">共享给</Table.Head>
+          {/if}
+        {/snippet}
+        {#snippet extraFolderColumns(folder)}
+          {#if currentFolderId === null}
+            <Table.Cell class="text-sm text-muted-foreground">{getSharedCount(folder.sharedTo)}</Table.Cell>
+          {/if}
+        {/snippet}
+        {#snippet extraFileColumns(file)}
+          {#if currentFolderId === null}
+            <Table.Cell class="text-sm text-muted-foreground">{getSharedCount(file.sharedTo)}</Table.Cell>
+          {/if}
+        {/snippet}
+        {#snippet folderActions(folder)}
+          <Button variant="ghost" size="sm" onclick={() => handleEditFolderPermission(folder)}>
+            <Icon icon="tdesign:setting" class="size-4" />
+          </Button>
+        {/snippet}
+        {#snippet fileActions(file)}
+          <Button variant="ghost" size="sm" onclick={() => handleEditFilePermission(file)}>
+            <Icon icon="tdesign:setting" class="size-4" />
+          </Button>
+        {/snippet}
+      </KnowledgeFileList>
     {/if}
   </div>
 </div>

@@ -1,15 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { Checkbox } from '$lib/components/ui/checkbox';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemConfigQueryFieldEnum, PostApiSystemConfigQueryOrderEnum } from '@qiyu-allinai/api';
 
@@ -38,12 +35,23 @@
 
   let form = $state({ name: '', key: '', value: '' });
 
-  let allSelected = $derived(configs.length > 0 && configs.filter(c => !c.isSystem).every(c => selectedIds.has(c.id)));
-  let someSelected = $derived(selectedIds.size > 0 && !allSelected);
+  const columns = [
+    { key: 'name', title: '参数名称', width: 160, render: nameRender },
+    { key: 'key', title: '参数键名', width: 200, render: keyRender },
+    { key: 'value', title: '参数值', width: 200, render: valueRender },
+    { key: 'isSystem', title: '类型', width: 96, render: typeRender },
+    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
+    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ];
+
   let deletableConfigs = $derived(configs.filter(c => !c.isSystem));
 
+  function isSystemConfig(config: ConfigItem): boolean {
+    return config.isSystem;
+  }
+
   function toggleSelectAll() {
-    if (allSelected) {
+    if (deletableConfigs.length > 0 && deletableConfigs.every(c => selectedIds.has(c.id))) {
       selectedIds = new Set();
     } else {
       selectedIds = new Set(deletableConfigs.map(c => c.id));
@@ -170,6 +178,41 @@
   onMount(() => loadConfigs());
 </script>
 
+{#snippet nameRender({ value })}
+  <span class="font-medium">{value}</span>
+{/snippet}
+
+{#snippet keyRender({ value })}
+  <code class="text-xs bg-muted px-1 py-0.5 rounded">{value}</code>
+{/snippet}
+
+{#snippet valueRender({ value })}
+  <span class="max-w-xs truncate block" title={String(value)}>{value}</span>
+{/snippet}
+
+{#snippet typeRender({ row })}
+  <Badge variant={row.isSystem ? 'default' : 'secondary'}>
+    {row.isSystem ? '系统' : '自定义'}
+  </Badge>
+{/snippet}
+
+{#snippet dateRender({ value })}
+  <span class="text-muted-foreground">{new Date(String(value)).toLocaleString('zh-CN')}</span>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-end gap-1">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}>
+      <Icon icon="tdesign:edit" class="size-4" />
+    </Button>
+    {#if !row.isSystem}
+      <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}>
+        <Icon icon="tdesign:delete" class="size-4" />
+      </Button>
+    {/if}
+  </div>
+{/snippet}
+
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 搜索表单 -->
   {#if showFilter}
@@ -215,63 +258,16 @@
       </div>
     </div>
     <div class="flex-1 min-h-0 flex flex-col">
-      {#if loading}
-        <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
-      {:else}
-        <div class="flex-1 min-h-0">
-          <ScrollArea class="h-full" orientation="both">
-          <Table.Root>
-          <Table.Header class="sticky top-0 bg-background z-10">
-            <Table.Row>
-              <Table.Head class="w-12"><Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} /></Table.Head>
-              <Table.Head>参数名称</Table.Head>
-              <Table.Head>参数键名</Table.Head>
-              <Table.Head>参数值</Table.Head>
-              <Table.Head class="w-24">类型</Table.Head>
-              <Table.Head class="w-40">创建时间</Table.Head>
-              <Table.Head class="w-28 text-right">操作</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {#each configs as config}
-              <Table.Row class={selectedIds.has(config.id) ? 'bg-muted/50' : ''}>
-                <Table.Cell>
-                  {#if config.isSystem}
-                    <Checkbox checked={false} disabled />
-                  {:else}
-                    <Checkbox checked={selectedIds.has(config.id)} onCheckedChange={() => toggleSelect(config.id)} />
-                  {/if}
-                </Table.Cell>
-                <Table.Cell class="font-medium">{config.name}</Table.Cell>
-                <Table.Cell><code class="text-xs bg-muted px-1 py-0.5 rounded">{config.key}</code></Table.Cell>
-                <Table.Cell class="max-w-xs truncate" title={config.value}>{config.value}</Table.Cell>
-                <Table.Cell>
-                  <Badge variant={config.isSystem ? 'default' : 'secondary'}>
-                    {config.isSystem ? '系统' : '自定义'}
-                  </Badge>
-                </Table.Cell>
-                <Table.Cell class="text-muted-foreground">{new Date(config.createdAt).toLocaleString('zh-CN')}</Table.Cell>
-                <Table.Cell class="text-right">
-                  <div class="flex justify-end gap-1">
-                    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(config)}>
-                      <Icon icon="tdesign:edit" class="size-4" />
-                    </Button>
-                    {#if !config.isSystem}
-                      <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(config.id)}>
-                        <Icon icon="tdesign:delete" class="size-4" />
-                      </Button>
-                    {/if}
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            {:else}
-              <Table.Row><Table.Cell colspan={7} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
-        </ScrollArea>
-        </div>
-      {/if}
+      <DataTable 
+        {columns} 
+        data={configs} 
+        {loading}
+        selectable
+        {selectedIds}
+        onToggleSelect={toggleSelect}
+        onToggleSelectAll={toggleSelectAll}
+        disableSelect={isSystemConfig}
+      />
     </div>
   </div>
 </div>

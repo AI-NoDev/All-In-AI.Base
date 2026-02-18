@@ -33,16 +33,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Pagination from '$lib/components/ui/pagination';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
-  import { Checkbox } from '$lib/components/ui/checkbox';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
 
   interface OperationLog {
@@ -117,11 +114,20 @@
     9: '清空数据',
   };
 
-  let allSelected = $derived(logs.length > 0 && logs.every(l => selectedIds.has(l.id)));
-  let someSelected = $derived(selectedIds.size > 0 && !allSelected);
+  const columns = [
+    { key: 'title', title: '系统模块', width: 128, render: titleRender },
+    { key: 'businessType', title: '操作类型', width: 96, render: businessTypeRender },
+    { key: 'name', title: '操作人员', width: 96 },
+    { key: 'ip', title: 'IP地址', width: 128 },
+    { key: 'location', title: '操作地点', width: 128, render: mutedRender },
+    { key: 'status', title: '状态', width: 80, render: statusRender },
+    { key: 'time', title: '操作时间', width: 170, render: timeRender },
+    { key: 'costTime', title: '耗时', width: 96, render: costTimeRender },
+    { key: 'id', title: '操作', width: 80, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ];
 
   function toggleSelectAll() {
-    if (allSelected) {
+    if (logs.length > 0 && logs.every(l => selectedIds.has(l.id))) {
       selectedIds = new Set();
     } else {
       selectedIds = new Set(logs.map(l => l.id));
@@ -225,6 +231,39 @@
   onMount(() => { loadLogs(); });
 </script>
 
+{#snippet titleRender({ value })}
+  <span class="font-medium">{value}</span>
+{/snippet}
+
+{#snippet businessTypeRender({ row })}
+  <Badge variant="outline">{getBusinessType(row.businessType)}</Badge>
+{/snippet}
+
+{#snippet mutedRender({ value })}
+  <span class="text-muted-foreground">{value || '-'}</span>
+{/snippet}
+
+{#snippet statusRender({ row })}
+  {@const status = getStatusBadge(row.status)}
+  <Badge variant={status.variant}>{status.text}</Badge>
+{/snippet}
+
+{#snippet timeRender({ value })}
+  <span class="text-muted-foreground">{formatTime(String(value))}</span>
+{/snippet}
+
+{#snippet costTimeRender({ value })}
+  {value ? `${value}ms` : '-'}
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-end">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => showDetail(row)}>
+      <Icon icon="tdesign:browse" class="size-4" />
+    </Button>
+  </div>
+{/snippet}
+
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 搜索表单 -->
   {#if showFilter}
@@ -293,89 +332,37 @@
       </div>
     </div>
     <div class="flex-1 min-h-0 flex flex-col pt-2">
-      {#if loading}
-        <div class="space-y-3">
-          {#each [1, 2, 3, 4, 5] as _}
-            <Skeleton class="h-12 w-full" />
-          {/each}
-        </div>
-      {:else}
-        <div class="flex-1 min-h-0">
-          <ScrollArea class="h-full" orientation="both">
-          <Table.Root>
-            <Table.Header class="sticky top-0 bg-background z-10">
-              <Table.Row>
-                <Table.Head class="w-12">
-                  <Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={toggleSelectAll} />
-                </Table.Head>
-                <Table.Head class="w-32">系统模块</Table.Head>
-                <Table.Head class="w-24">操作类型</Table.Head>
-                <Table.Head class="w-24">操作人员</Table.Head>
-                <Table.Head class="w-32">IP地址</Table.Head>
-                <Table.Head class="w-32">操作地点</Table.Head>
-                <Table.Head class="w-20">状态</Table.Head>
-                <Table.Head class="w-40">操作时间</Table.Head>
-                <Table.Head class="w-24">耗时</Table.Head>
-                <Table.Head class="w-20 text-right">操作</Table.Head>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-            {#each logs as log}
-              {@const status = getStatusBadge(log.status)}
-              <Table.Row class={selectedIds.has(log.id) ? 'bg-muted/50' : ''}>
-                <Table.Cell>
-                  <Checkbox checked={selectedIds.has(log.id)} onCheckedChange={() => toggleSelect(log.id)} />
-                </Table.Cell>
-                <Table.Cell class="font-medium">{log.title}</Table.Cell>
-                <Table.Cell>
-                  <Badge variant="outline">{getBusinessType(log.businessType)}</Badge>
-                </Table.Cell>
-                <Table.Cell>{log.name || '-'}</Table.Cell>
-                <Table.Cell>{log.ip || '-'}</Table.Cell>
-                <Table.Cell class="text-muted-foreground">{log.location || '-'}</Table.Cell>
-                <Table.Cell>
-                  <Badge variant={status.variant}>{status.text}</Badge>
-                </Table.Cell>
-                <Table.Cell class="text-muted-foreground">{formatTime(log.time)}</Table.Cell>
-                <Table.Cell>{log.costTime ? `${log.costTime}ms` : '-'}</Table.Cell>
-                <Table.Cell class="text-right">
-                  <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => showDetail(log)}>
-                    <Icon icon="tdesign:browse" class="size-4" />
-                  </Button>
-                </Table.Cell>
-              </Table.Row>
-            {:else}
-              <Table.Row>
-                <Table.Cell colspan={10} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell>
-              </Table.Row>
-            {/each}
-          </Table.Body>
-        </Table.Root>
-        </ScrollArea>
-        </div>
+      <DataTable 
+        {columns} 
+        data={logs} 
+        {loading}
+        selectable
+        {selectedIds}
+        onToggleSelect={toggleSelect}
+        onToggleSelectAll={toggleSelectAll}
+      />
 
-        {#if total > 0}
-          <div class="mt-4 flex items-center justify-between">
-            <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
-            <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadLogs()}>
-              {#snippet children({ pages, currentPage: cp })}
-                <Pagination.Content>
-                  <Pagination.Item><Pagination.PrevButton /></Pagination.Item>
-                  {#each pages as page (page.key)}
-                    {#if page.type === "ellipsis"}
-                      <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
-                    {:else}
-                      <Pagination.Item>
-                        <Pagination.Link {page} isActive={cp === page.value}>{page.value}</Pagination.Link>
-                      </Pagination.Item>
-                    {/if}
-                  {/each}
-                  <Pagination.Item><Pagination.NextButton /></Pagination.Item>
-                </Pagination.Content>
-              {/snippet}
-            </Pagination.Root>
-          </div>
-        {/if}
+      {#if total > 0 && !loading}
+        <div class="mt-4 flex items-center justify-between">
+          <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+          <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadLogs()}>
+            {#snippet children({ pages, currentPage: cp })}
+              <Pagination.Content>
+                <Pagination.Item><Pagination.PrevButton /></Pagination.Item>
+                {#each pages as page (page.key)}
+                  {#if page.type === "ellipsis"}
+                    <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
+                  {:else}
+                    <Pagination.Item>
+                      <Pagination.Link {page} isActive={cp === page.value}>{page.value}</Pagination.Link>
+                    </Pagination.Item>
+                  {/if}
+                {/each}
+                <Pagination.Item><Pagination.NextButton /></Pagination.Item>
+              </Pagination.Content>
+            {/snippet}
+          </Pagination.Root>
+        </div>
       {/if}
     </div>
   </div>

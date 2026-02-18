@@ -15,6 +15,27 @@
       "when": 1771050740415,
       "tag": "0001_regular_wallop",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771263790764,
+      "tag": "0002_tricky_next_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1771323618650,
+      "tag": "0003_thick_microchip",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1771338481581,
+      "tag": "0004_violet_tusk",
+      "breakpoints": true
     }
   ]
 }

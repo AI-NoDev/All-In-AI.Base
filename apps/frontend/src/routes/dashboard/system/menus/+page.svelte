@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import * as Alert from '$lib/components/ui/alert';
@@ -9,8 +8,8 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
-  import { Skeleton } from '$lib/components/ui/skeleton';
   import { Switch } from '$lib/components/ui/switch';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@qiyu-allinai/api';
   import { pages } from '@/lib/generated-pages';
@@ -243,6 +242,17 @@
     return typeOptions.find(o => o.value === type)?.label || type;
   }
 
+  const columns = [
+    { key: 'name', title: '菜单名称', width: 240, render: nameRender },
+    { key: 'icon', title: '图标', width: 60, render: iconRender },
+    { key: 'orderNum', title: '排序', width: 60 },
+    { key: 'perms', title: '权限标识', width: 140, render: permsRender },
+    { key: 'path', title: '路由地址', width: 180, render: pathRender },
+    { key: 'type', title: '类型', width: 70, render: typeRender },
+    { key: 'visible', title: '可见', width: 60, render: visibleRender },
+    { key: 'id', title: '操作', width: 100, align: 'center' as const, fixed: 'right' as const, render: actionsRender },
+  ];
+
   function detectMissingMenus() {
     const existingPaths = new Set(flatMenus.map(m => m.path).filter(Boolean));
     const visiblePages = pages.filter(p => 
@@ -260,6 +270,51 @@
 
   onMount(() => loadMenus().then(() => detectMissingMenus()));
 </script>
+
+{#snippet nameRender({ row })}
+  <div class="flex items-center" style="padding-left: {(row.level || 0) * 20}px">
+    {#if row.children && row.children.length > 0}
+      <button class="p-0.5 hover:bg-muted rounded mr-1" onclick={() => toggleExpand(row)}>
+        <Icon icon={row.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
+      </button>
+    {:else}
+      <span class="w-5 mr-1"></span>
+    {/if}
+    <span class="font-medium truncate">{row.name}</span>
+  </div>
+{/snippet}
+
+{#snippet iconRender({ row })}
+  {#if row.icon}<Icon icon={row.icon} class="size-4" />{:else}-{/if}
+{/snippet}
+
+{#snippet permsRender({ value })}
+  <span class="text-muted-foreground truncate">{value || '-'}</span>
+{/snippet}
+
+{#snippet pathRender({ value })}
+  <span class="text-muted-foreground truncate">{value || '-'}</span>
+{/snippet}
+
+{#snippet typeRender({ row })}
+  <Badge variant={row.type === 'M' ? 'default' : row.type === 'C' ? 'secondary' : 'outline'}>{getTypeLabel(row.type)}</Badge>
+{/snippet}
+
+{#snippet visibleRender({ row })}
+  <Badge variant={row.visible ? 'default' : 'secondary'}>{row.visible ? '是' : '否'}</Badge>
+{/snippet}
+
+{#snippet actionsRender({ row })}
+  <div class="flex justify-center gap-1">
+    {#if row.type === 'M'}
+      <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(row.id)} title="新增子菜单"><Icon icon="tdesign:add" class="size-4" /></Button>
+    {/if}
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}><Icon icon="tdesign:edit" class="size-4" /></Button>
+    {#if !row.isSystem || row.type === 'M'}
+      <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
+    {/if}
+  </div>
+{/snippet}
 
 <div class="flex flex-1 min-h-0 flex-col px-4 lg:px-6 pb-4">
   <!-- 缺失菜单警告 -->
@@ -328,69 +383,11 @@
       </div>
     </div>
     <div class="flex-1 min-h-0 flex flex-col">
-      {#if loading}
-        <div class="space-y-3">{#each [1,2,3,4,5] as _}<Skeleton class="h-12 w-full" />{/each}</div>
-      {:else}
-        <div class="border rounded-md flex flex-col min-h-0 flex-1 overflow-hidden">
-          <div class="overflow-x-auto overflow-y-hidden">
-            <Table.Root class="table-fixed w-full" style="min-width: 910px">
-              <Table.Header>
-                <Table.Row>
-                  <Table.Head style="width: 240px">菜单名称</Table.Head>
-                  <Table.Head style="width: 60px">图标</Table.Head>
-                  <Table.Head style="width: 60px">排序</Table.Head>
-                  <Table.Head style="width: 140px">权限标识</Table.Head>
-                  <Table.Head style="width: 180px">路由地址</Table.Head>
-                  <Table.Head style="width: 70px">类型</Table.Head>
-                  <Table.Head style="width: 60px">可见</Table.Head>
-                  <Table.Head style="width: 100px" class="text-center">操作</Table.Head>
-                </Table.Row>
-              </Table.Header>
-            </Table.Root>
-          </div>
-          <div class="flex-1 overflow-auto">
-            <Table.Root class="table-fixed w-full" style="min-width: 910px">
-              <Table.Body>
-                {#each visibleMenus as menu}
-                  <Table.Row>
-                    <Table.Cell style="width: 240px">
-                      <div class="flex items-center" style="padding-left: {(menu.level || 0) * 20}px">
-                        {#if menu.children && menu.children.length > 0}
-                          <button class="p-0.5 hover:bg-muted rounded mr-1" onclick={() => toggleExpand(menu)}>
-                            <Icon icon={menu.expanded ? 'tdesign:chevron-down' : 'tdesign:chevron-right'} class="size-4" />
-                          </button>
-                        {:else}
-                          <span class="w-5 mr-1"></span>
-                        {/if}
-                        <span class="font-medium truncate">{menu.name}</span>
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell style="width: 60px">{#if menu.icon}<Icon icon={menu.icon} class="size-4" />{:else}-{/if}</Table.Cell>
-                    <Table.Cell style="width: 60px">{menu.orderNum}</Table.Cell>
-                    <Table.Cell style="width: 140px" class="text-muted-foreground truncate">{menu.perms || '-'}</Table.Cell>
-                    <Table.Cell style="width: 180px" class="text-muted-foreground truncate">{menu.path || '-'}</Table.Cell>
-                    <Table.Cell style="width: 70px"><Badge variant={menu.type === 'M' ? 'default' : menu.type === 'C' ? 'secondary' : 'outline'}>{getTypeLabel(menu.type)}</Badge></Table.Cell>
-                    <Table.Cell style="width: 60px"><Badge variant={menu.visible ? 'default' : 'secondary'}>{menu.visible ? '是' : '否'}</Badge></Table.Cell>
-                    <Table.Cell style="width: 100px">
-                      <div class="flex justify-center gap-1">
-                        {#if menu.type === 'M'}
-                          <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openCreate(menu.id)} title="新增子菜单"><Icon icon="tdesign:add" class="size-4" /></Button>
-                        {/if}
-                        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(menu)}><Icon icon="tdesign:edit" class="size-4" /></Button>
-                        {#if !menu.isSystem || menu.type === 'M'}
-                          <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(menu.id)}><Icon icon="tdesign:delete" class="size-4" /></Button>
-                        {/if}
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                {:else}
-                  <Table.Row><Table.Cell colspan={8} class="h-24 text-center text-muted-foreground">暂无数据</Table.Cell></Table.Row>
-                {/each}
-              </Table.Body>
-            </Table.Root>
-          </div>
-        </div>
-      {/if}
+      <DataTable 
+        {columns} 
+        data={visibleMenus} 
+        {loading}
+      />
     </div>
   </div>
 </div>

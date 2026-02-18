@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import { ActionError } from '../../../core/errors';
 import type { DrizzleDB } from '../../../core/types';
 import { toJSONSchema } from '../../../core/schema';
 import { user, userZodSchemas, config, userRole, userPost } from '@qiyu-allinai/db/entities/system';
@@ -167,7 +168,7 @@ export const userCreate = defineAction({
     } as UserInsert).returning();
     
     if (!result) {
-      throw new Error('error.business.createFailed');
+      throw ActionError.badRequest('error.business.createFailed');
     }
     
     // 处理角色关联
@@ -260,13 +261,13 @@ export const userUpdate = defineAction({
     
     // 检查是否是系统管理员
     if (await checkIsSystemAdmin(db, input.id)) {
-      throw new Error('error.system.admin.cannot.modify');
+      throw ActionError.forbidden('error.system.admin.cannot.modify');
     }
     
     const [result] = await db.update(user).set(userData as Partial<UserInsert>).where(and(eq(user.id, input.id), isNull(user.deletedAt))).returning();
     
     if (!result) {
-      throw new Error('error.business.dataNotFound');
+      throw ActionError.notFound('error.business.dataNotFound');
     }
     
     // 处理角色关联（如果传入了 roleIds）
@@ -316,7 +317,7 @@ export const userUpdateMany = defineAction({
     // 检查是否包含系统管理员
     for (const id of input.ids) {
       if (await checkIsSystemAdmin(db, id)) {
-        throw new Error('error.system.admin.cannot.modify');
+        throw ActionError.forbidden('error.system.admin.cannot.modify');
       }
     }
     
@@ -343,7 +344,7 @@ export const userDeleteByPk = defineAction({
     const { db } = context;
     // 检查是否是系统管理员
     if (await checkIsSystemAdmin(db, input.id)) {
-      throw new Error('error.system.admin.cannot.delete');
+      throw ActionError.forbidden('error.system.admin.cannot.delete');
     }
     
     const [result] = await db.update(user).set({ 
@@ -385,7 +386,7 @@ export const userResetPassword = defineAction({
     const { db } = context;
     // 检查是否是系统管理员
     if (await checkIsSystemAdmin(db, input.id)) {
-      throw new Error('error.system.admin.cannot.modify');
+      throw ActionError.forbidden('error.system.admin.cannot.modify');
     }
     
     // 获取初始密码
@@ -400,6 +401,7 @@ export const userResetPassword = defineAction({
       salt,
       password: hashedPassword,
       updatedBy: context.currentUserName,
+      updatedById: context.currentUserId,
     }).where(and(eq(user.id, input.id), isNull(user.deletedAt))).returning();
     
     return { success: !!result };

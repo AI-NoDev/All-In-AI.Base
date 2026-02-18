@@ -8,6 +8,7 @@
   interface Provider {
     id: string;
     name: string;
+    providerType: string;
     baseUrl: string;
     status: string;
     remark: string | null;
@@ -24,6 +25,23 @@
   }
 
   let { providers, loading, selectedId, onSelect, onCreate, onEdit, onDelete }: Props = $props();
+
+  const providerTypeIcons: Record<string, string> = {
+    'openai': 'simple-icons:openai',
+    'anthropic': 'simple-icons:anthropic',
+    'google': 'simple-icons:google',
+    'azure': 'simple-icons:microsoftazure',
+    'deepseek': 'mdi:brain',
+    'alibaba': 'simple-icons:alibabadotcom',
+    'volcengine': 'mdi:fire',
+    'xai': 'simple-icons:x',
+    'gateway': 'mdi:gate',
+    'openai-compatible': 'mdi:api',
+  };
+
+  function getProviderIcon(providerType: string): string {
+    return providerTypeIcons[providerType] || 'mdi:api';
+  }
 </script>
 
 <div class="w-72 shrink-0 flex flex-col pr-4 border-r border-border">
@@ -60,12 +78,13 @@
             >
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
+                  <Icon icon={getProviderIcon(provider.providerType)} class="size-4 shrink-0" />
                   <span class="font-medium truncate">{provider.name}</span>
                   <Badge variant={provider.status === '0' ? 'default' : 'secondary'} class="text-xs">
                     {provider.status === '0' ? '正常' : '停用'}
                   </Badge>
                 </div>
-                <div class="text-xs text-muted-foreground truncate mt-0.5">{provider.baseUrl}</div>
+                <div class="text-xs text-muted-foreground truncate mt-0.5 ml-6">{provider.baseUrl || '使用默认地址'}</div>
               </div>
               <div class="flex gap-1 ml-2 shrink-0">
                 <button

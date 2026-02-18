@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { eq, and, asc, desc, inArray, gte, lte, lt, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
+import { ActionError } from '../../../core/errors';
 import { toJSONSchema } from '../../../core/schema';
 import { tempFile, tempFileZodSchemas } from '@qiyu-allinai/db/entities/im';
-import { uploadFile, getPresignedDownloadUrl, DEFAULT_BUCKET } from '../../../files/s3Client';
+import { uploadFile, getPresignedDownloadUrl, getPresignedDownloadUrlForDownload, DEFAULT_BUCKET } from '../../../files/s3Client';
 
 type TempFileSelect = typeof tempFile.$inferSelect;
 type TempFileInsert = typeof tempFile.$inferInsert;
@@ -17,9 +18,9 @@ const tempFileFilterSchema = z.object({
   messageIds: z.array(z.string()).optional(),
   mimeType: z.string().optional(),
   status: z.string().optional(),
-  expiresAtBefore: z.iso.datetime().optional(),
-  createdAtStart: z.iso.datetime().optional(),
-  createdAtEnd: z.iso.datetime().optional(),
+  expiresAtBefore: z.string().optional(),
+  createdAtStart: z.string().optional(),
+  createdAtEnd: z.string().optional(),
 }).optional();
 
 const sortSchema = z.object({
@@ -205,11 +206,13 @@ export const tempFileUpload = defineAction({
       expiresAt,
       status: '0',
       createdBy: context.currentUserName,
+      createdById: context.currentUserId,
       updatedBy: context.currentUserName,
+      updatedById: context.currentUserId,
     } as TempFileInsert).returning();
     
     if (!result) {
-      throw new Error('error.business.createFailed');
+      throw ActionError.badRequest('error.business.createFailed');
     }
     
     // Get download URL
@@ -233,6 +236,7 @@ export const tempFileGetDownloadUrl = defineAction({
   meta: { name: 'im.tempFile.getDownloadUrl', displayName: '获取临时文件下载链接', description: '获取临时文件的预签名下载链接', tags: ['im', 'tempFile'], method: 'GET', path: '/api/im/temp-file/:id/download-url' },
   schemas: {
     paramsSchema: z.object({ id: z.string() }),
+    querySchema: z.object({ download: z.string().optional() }).optional(),
     outputSchema: z.object({
       url: z.string(),
       expiresAt: z.string(),
@@ -242,10 +246,15 @@ export const tempFileGetDownloadUrl = defineAction({
     const { db } = context;
     const [file] = await db.select().from(tempFile).where(eq(tempFile.id, input.id)).limit(1);
     if (!file) {
-      throw new Error('error.business.dataNotFound');
+      throw ActionError.notFound('error.business.dataNotFound');
     }
     
-    const { url, expiresAt } = await getPresignedDownloadUrl(file.storageKey, file.bucket, 3600, file.originalName);
+    // 如果是下载请求，使用强制下载的 URL
+    const isDownload = input.download === 'true' || input.download === '1';
+    const { url, expiresAt } = isDownload
+      ? await getPresignedDownloadUrlForDownload(file.storageKey, file.bucket, 3600, file.originalName)
+      : await getPresignedDownloadUrl(file.storageKey, file.bucket, 3600, file.originalName);
+    
     return { url, expiresAt: expiresAt.toISOString() };
   },
 });

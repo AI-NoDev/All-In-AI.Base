@@ -1,0 +1,1 @@
+ALTER TABLE "ai_model" ADD COLUMN "reasoning_effort" varchar(16);

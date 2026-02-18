@@ -1,10 +1,9 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import * as Table from '$lib/components/ui/table';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
-  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { pages, type PageMeta } from '@/lib/generated-pages';
 
@@ -98,13 +97,26 @@
     }
   }
 
-  function toggleSelectAll(checked: boolean) {
-    missingPages = missingPages.map(p => ({ ...p, selected: checked }));
-  }
-
   let allSelected = $derived(missingPages.length > 0 && missingPages.every(p => p.selected));
   let someSelected = $derived(missingPages.some(p => p.selected) && !allSelected);
   let selectedCount = $derived(missingPages.filter(p => p.selected).length);
+  let selectedIds = $derived(new Set(missingPages.filter(p => p.selected).map(p => p.path)));
+
+  function toggleSelect(path: string) {
+    missingPages = missingPages.map(p => p.path === path ? { ...p, selected: !p.selected } : p);
+  }
+
+  function toggleSelectAll() {
+    const newVal = !allSelected;
+    missingPages = missingPages.map(p => ({ ...p, selected: newVal }));
+  }
+
+  const columns = [
+    { key: 'title', title: '页面标题', width: 160, render: titleRender },
+    { key: 'path', title: '路由路径', width: 250, render: pathRender },
+    { key: 'group', title: '所属分组', width: 128, render: groupRender },
+    { key: 'icon', title: '图标', width: 60, render: iconRender },
+  ];
 
   // 当对话框打开时检测缺失菜单
   $effect(() => {
@@ -119,6 +131,26 @@
   }
 </script>
 
+{#snippet titleRender({ value })}
+  <span class="font-medium">{value || '-'}</span>
+{/snippet}
+
+{#snippet pathRender({ value })}
+  <span class="text-muted-foreground text-sm">{value}</span>
+{/snippet}
+
+{#snippet groupRender({ row })}
+  <Badge variant="outline">{row.parentName || row.group || '-'}</Badge>
+{/snippet}
+
+{#snippet iconRender({ row })}
+  {#if row.icon}
+    <Icon icon={row.icon} class="size-4" />
+  {:else}
+    -
+  {/if}
+{/snippet}
+
 <Dialog.Root bind:open>
   <Dialog.Content class="sm:max-w-2xl">
     <Dialog.Header>
@@ -128,50 +160,16 @@
       </Dialog.Description>
     </Dialog.Header>
     <div class="max-h-[50vh] overflow-y-auto">
-      <Table.Root>
-        <Table.Header>
-          <Table.Row>
-            <Table.Head class="w-10">
-              <Checkbox 
-                checked={allSelected} 
-                indeterminate={someSelected}
-                onCheckedChange={(checked) => toggleSelectAll(!!checked)} 
-              />
-            </Table.Head>
-            <Table.Head>页面标题</Table.Head>
-            <Table.Head>路由路径</Table.Head>
-            <Table.Head>所属分组</Table.Head>
-            <Table.Head>图标</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {#each missingPages as page, i}
-            <Table.Row>
-              <Table.Cell>
-                <Checkbox bind:checked={missingPages[i].selected} />
-              </Table.Cell>
-              <Table.Cell class="font-medium">{page.title || '-'}</Table.Cell>
-              <Table.Cell class="text-muted-foreground text-sm">{page.path}</Table.Cell>
-              <Table.Cell>
-                <Badge variant="outline">{page.parentName || page.group || '-'}</Badge>
-              </Table.Cell>
-              <Table.Cell>
-                {#if page.icon}
-                  <Icon icon={page.icon} class="size-4" />
-                {:else}
-                  -
-                {/if}
-              </Table.Cell>
-            </Table.Row>
-          {:else}
-            <Table.Row>
-              <Table.Cell colspan={5} class="h-24 text-center text-muted-foreground">
-                没有缺失的菜单
-              </Table.Cell>
-            </Table.Row>
-          {/each}
-        </Table.Body>
-      </Table.Root>
+      <DataTable 
+        {columns} 
+        data={missingPages} 
+        rowKey="path"
+        selectable
+        {selectedIds}
+        onToggleSelect={toggleSelect}
+        onToggleSelectAll={toggleSelectAll}
+        emptyText="没有缺失的菜单"
+      />
     </div>
     <Dialog.Footer>
       <Button variant="outline" onclick={() => open = false}>取消</Button>

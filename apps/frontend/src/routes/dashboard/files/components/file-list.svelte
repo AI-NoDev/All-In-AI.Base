@@ -7,6 +7,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/button';
   import * as Tooltip from '$lib/components/ui/tooltip';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
   import FileContextMenu from './file-context-menu.svelte';
   import type { FolderItem, FileItem } from './types';
 
@@ -17,6 +18,8 @@
     currentFolderId: string | null;
     selectedFolderIds: Set<string>;
     selectedFileIds: Set<string>;
+    favoritedFolderIds?: Set<string>;
+    favoritedFileIds?: Set<string>;
     onNavigateUp: () => void;
     onNavigateToFolder: (folder: FolderItem) => void;
     onToggleSelectAll: () => void;
@@ -31,6 +34,7 @@
     onEditFolderDescription: (folder: FolderItem) => void;
     onEditFolderStyle: (folder: FolderItem) => void;
     onEditFolderPermission: (folder: FolderItem) => void;
+    onToggleFolderFavorite?: (folder: FolderItem) => void;
     onCopyFile: (file: FileItem) => void;
     onCutFile: (file: FileItem) => void;
     onRenameFile: (file: FileItem) => void;
@@ -41,16 +45,18 @@
     onEditFile: (file: FileItem) => void;
     onEditFilePermission: (file: FileItem) => void;
     onViewFileVersions: (file: FileItem) => void;
+    onToggleFileFavorite?: (file: FileItem) => void;
     onFileDoubleClick?: (file: FileItem) => void;
   }
 
   let {
     loading, folders, files, currentFolderId, selectedFolderIds, selectedFileIds,
+    favoritedFolderIds = new Set(), favoritedFileIds = new Set(),
     onNavigateUp, onNavigateToFolder, onToggleSelectAll, onToggleFolderSelect, onToggleFileSelect,
     onCopyFolder, onCutFolder, onRenameFolder, onDeleteFolder, onDownloadFolder,
-    onShowFolderInfo, onEditFolderDescription, onEditFolderStyle, onEditFolderPermission,
+    onShowFolderInfo, onEditFolderDescription, onEditFolderStyle, onEditFolderPermission, onToggleFolderFavorite,
     onCopyFile, onCutFile, onRenameFile, onDeleteFile, onDownloadFile,
-    onShowFileInfo, onEditFileDescription, onEditFile, onEditFilePermission, onViewFileVersions,
+    onShowFileInfo, onEditFileDescription, onEditFile, onEditFilePermission, onViewFileVersions, onToggleFileFavorite,
     onFileDoubleClick,
   }: Props = $props();
 
@@ -81,9 +87,9 @@
   </div>
 {:else}
   <div class="flex flex-col flex-1 min-h-0">
-    <div class="shrink-0">
+    <ScrollArea class="h-full">
       <Table.Root>
-        <Table.Header class="bg-background">
+        <Table.Header class="sticky top-0 bg-muted/50 z-10">
           <Table.Row>
             <Table.Head class="w-8">
               <Checkbox checked={allSelected} indeterminate={hasSelection && !allSelected} onCheckedChange={onToggleSelectAll} />
@@ -94,11 +100,7 @@
             <Table.Head class="w-20 text-center">操作</Table.Head>
           </Table.Row>
         </Table.Header>
-      </Table.Root>
-    </div>
-    <div class="flex-1 min-h-0 overflow-auto">
-        <Table.Root>
-          <Table.Body>
+        <Table.Body>
           {#if currentFolderId !== null}
             <Table.Row class="cursor-pointer hover:bg-muted/50" onclick={onNavigateUp}>
               <Table.Cell></Table.Cell>
@@ -116,11 +118,13 @@
 
           {#each folders as folder}
             <FileContextMenu type="folder" item={folder}
+              isFavorited={favoritedFolderIds.has(folder.id)}
               onCopy={() => onCopyFolder(folder)} onCut={() => onCutFolder(folder)}
               onRename={() => onRenameFolder(folder)} onDelete={() => onDeleteFolder(folder)}
               onDownload={() => onDownloadFolder(folder)} onShowInfo={() => onShowFolderInfo(folder)}
               onEditDescription={() => onEditFolderDescription(folder)} onEditStyle={() => onEditFolderStyle(folder)}
-              onEditPermission={() => onEditFolderPermission(folder)}>
+              onEditPermission={() => onEditFolderPermission(folder)}
+              onToggleFavorite={onToggleFolderFavorite ? () => onToggleFolderFavorite(folder) : undefined}>
               <Table.Row class="cursor-pointer hover:bg-muted/50 {selectedFolderIds.has(folder.id) ? 'bg-muted/50' : ''}">
                 <Table.Cell class="w-8" onclick={(e: MouseEvent) => e.stopPropagation()}>
                   <Checkbox checked={selectedFolderIds.has(folder.id)} onCheckedChange={() => onToggleFolderSelect(folder.id)} />
@@ -129,6 +133,9 @@
                   <span class="flex items-center gap-2">
                     <Icon icon={getFolderIcon(folder)} class="size-5 shrink-0" style="color: {getFolderColor(folder)}" />
                     {folder.name}
+                    {#if favoritedFolderIds.has(folder.id)}
+                      <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
+                    {/if}
                     {#if folder.isPublic}
                       <Badge variant="destructive" class="text-xs px-1.5 py-0">公开</Badge>
                     {/if}
@@ -154,12 +161,14 @@
 
           {#each files as file}
             <FileContextMenu type="file" item={file}
+              isFavorited={favoritedFileIds.has(file.id)}
               onCopy={() => onCopyFile(file)} onCut={() => onCutFile(file)}
               onRename={() => onRenameFile(file)} onDelete={() => onDeleteFile(file)}
               onDownload={() => onDownloadFile(file)} onShowInfo={() => onShowFileInfo(file)}
               onEditDescription={() => onEditFileDescription(file)} onEdit={() => onEditFile(file)}
               onEditPermission={() => onEditFilePermission(file)}
-              onViewVersions={() => onViewFileVersions(file)}>
+              onViewVersions={() => onViewFileVersions(file)}
+              onToggleFavorite={onToggleFileFavorite ? () => onToggleFileFavorite(file) : undefined}>
               <Table.Row 
                 class="hover:bg-muted/50 cursor-pointer {selectedFileIds.has(file.id) ? 'bg-muted/50' : ''}"
                 ondblclick={() => onFileDoubleClick?.(file)}
@@ -171,6 +180,9 @@
                   <span class="flex items-center gap-2">
                     <FileIcon type={file.extension || 'unknown'} size={20} />
                     {file.name}
+                    {#if favoritedFileIds.has(file.id)}
+                      <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
+                    {/if}
                     {#if file.versionCount > 0}
                       <span title="具备 {file.versionCount} 个版本">
                         <Icon icon="mdi:source-branch" class="size-4 text-blue-500" />
@@ -203,7 +215,7 @@
             </Table.Row>
           {/if}
         </Table.Body>
-        </Table.Root>
-    </div>
+      </Table.Root>
+    </ScrollArea>
   </div>
 {/if}

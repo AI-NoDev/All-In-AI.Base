@@ -4,11 +4,19 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
   import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import * as AlertDialog from '$lib/components/ui/alert-dialog';
   import { authStore } from '$lib/stores/auth.svelte';
+
+  interface ApiError {
+    message?: string;
+    status?: number;
+  }
 
   interface FileData {
     id: string;
     name: string;
+    extension: string | null;
     mimeType: string;
     folderId: string | null;
     size: number;
@@ -18,13 +26,19 @@
 
   let fileId = $derived($page.params.fileId);
   let folderId = $derived($page.params.folderId);
+  let isReadonly = $derived($page.url.searchParams.get('readonly') === 'true');
   
   let loading = $state(true);
   let saving = $state(false);
+  let uploading = $state(false);
   let fileData = $state<FileData | null>(null);
   let content = $state('');
   let downloadUrl = $state<string | null>(null);
   let error = $state<string | null>(null);
+  let uploadError = $state<string | null>(null);
+  let fileInputRef = $state<HTMLInputElement | null>(null);
+  let confirmDialogOpen = $state(false);
+  let pendingFile = $state<File | null>(null);
 
   const api = authStore.createApi(true);
 
@@ -38,88 +52,138 @@
     return 'other';
   }
 
-  let fileType = $derived(getFileType(fileData?.mimeType));
+  function getFileExtension(filename: string): string {
+    const lastDot = filename.lastIndexOf('.');
+    return lastDot > 0 ? filename.substring(lastDot + 1).toLowerCase() : '';
+  }
 
-  let isEditable = $derived(fileType === 'text');
+  let fileType = $derived(getFileType(fileData?.mimeType));
+  let isTextEditable = $derived(fileType === 'text' && !isReadonly);
+  let canReplace = $derived(!isReadonly);
+  let currentExtension = $derived(fileData?.extension?.toLowerCase() || getFileExtension(fileData?.name || ''));
+
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+  }
 
   async function loadFile() {
     loading = true;
     error = null;
     try {
+      // 先获取文件基本信息
       const res = await api.knowledge.getApiKnowledgeFileById({ id: fileId });
-      if (res.data) {
-        fileData = {
-          id: res.data.id,
-          name: res.data.name,
-          mimeType: res.data.mimeType ?? 'application/octet-stream',
-          folderId: res.data.folderId,
-          size: res.data.size ?? 0,
-        };
-        
-        // 获取下载链接
-        const urlRes = await api.files.getApiFilesByIdDownloadUrl({ id: fileId });
-        if (urlRes.data?.url) {
-          downloadUrl = urlRes.data.url;
-          
-          // 文本文件加载内容
-          const mime = fileData.mimeType.toLowerCase();
-          if (mime.startsWith('text/') || mime === 'application/json' || mime === 'application/xml' || mime === 'application/javascript') {
-            const response = await fetch(urlRes.data.url);
-            if (response.ok) {
-              content = await response.text();
-            }
-          }
+      const fileInfo = res.data;
+      fileData = {
+        id: fileInfo.id,
+        name: fileInfo.name,
+        extension: fileInfo.extension,
+        mimeType: fileInfo.mimeType || 'application/octet-stream',
+        folderId: fileInfo.folderId,
+        size: fileInfo.size,
+      };
+      
+      // 如果是文本文件，获取内容
+      const type = getFileType(fileInfo.mimeType || undefined);
+      if (type === 'text') {
+        try {
+          const textRes = await api.files.getApiFilesByIdTextContent({ id: fileId });
+          content = textRes.data.content;
+        } catch {
+          // 获取文本内容失败，可能不是真正的文本文件
         }
       }
-    } catch (err) {
-      error = err instanceof Error ? err.message : '加载文件失败';
+      
+      // 获取下载URL用于预览
+      const urlRes = await api.files.getApiFilesByIdDownloadUrl({ id: fileId });
+      downloadUrl = urlRes.data.url;
+    } catch (err: unknown) {
+      const e = err as ApiError;
+      // 检查是否是 403 权限错误
+      if (e?.status === 403 || e?.message?.includes('permissionDenied') || e?.message?.includes('permission')) {
+        error = '您没有权限访问此文件';
+      } else {
+        error = e?.message || '加载文件失败';
+      }
     } finally {
       loading = false;
     }
   }
 
   async function handleSave() {
-    if (!fileData || !isEditable) return;
+    if (!fileData || saving) return;
     saving = true;
     try {
-      const base64Content = btoa(unescape(encodeURIComponent(content)));
-      await api.files.postApiFilesUploadForce({
-        folderId: fileData.folderId,
-        name: fileData.name,
-        content: base64Content,
-        mimeType: fileData.mimeType,
-        conflictMode: 'overwrite',
-        existingFileId: fileData.id,
-      });
+      await api.files.putApiFilesByIdContent({ id: fileId }, { content });
       goBack();
-    } catch (err) {
-      error = err instanceof Error ? err.message : '保存失败';
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      error = e?.message || '保存失败';
     } finally {
       saving = false;
     }
   }
 
+  function handleFileSelect(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    
+    uploadError = null;
+    const uploadExt = getFileExtension(file.name);
+    
+    if (uploadExt !== currentExtension) {
+      uploadError = `文件后缀名不匹配，需要 .${currentExtension} 格式的文件`;
+      input.value = '';
+      return;
+    }
+    
+    pendingFile = file;
+    confirmDialogOpen = true;
+    input.value = '';
+  }
+
+  async function handleUploadReplace() {
+    if (!pendingFile || !fileData || uploading) return;
+    
+    uploading = true;
+    confirmDialogOpen = false;
+    uploadError = null;
+    
+    try {
+      const buffer = await pendingFile.arrayBuffer();
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+      
+      await api.files.postApiFilesUploadForce({
+        folderId: fileData.folderId,
+        name: fileData.name,
+        content: base64,
+        mimeType: pendingFile.type || fileData.mimeType,
+        conflictMode: 'overwrite',
+        existingFileId: fileData.id,
+      });
+      
+      // 重新加载文件
+      await loadFile();
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      uploadError = e?.message || '上传替换失败';
+    } finally {
+      uploading = false;
+      pendingFile = null;
+    }
+  }
+
   function handleDownload() {
-    if (!downloadUrl || !fileData) return;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = fileData.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank');
+    }
   }
 
   function goBack() {
-    const targetFolder = folderId === 'root' ? '' : folderId;
-    goto(`/dashboard/knowledge/my-files${targetFolder ? `?folder=${targetFolder}` : ''}`);
-  }
-
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    history.back();
   }
 
   onMount(() => {
@@ -127,114 +191,148 @@
   });
 </script>
 
-<div class="flex flex-col h-full">
-  <!-- Header -->
-  <div class="flex items-center justify-between px-4 py-3 border-b">
-    <div class="flex items-center gap-3">
-      <Button variant="ghost" size="icon" onclick={goBack}>
-        <Icon icon="tdesign:chevron-left" class="size-5" />
-      </Button>
-      <div>
-        <h1 class="text-lg font-medium">{fileData?.name ?? '加载中...'}</h1>
-        <p class="text-sm text-muted-foreground">
-          {#if fileData}
+<script lang="ts" module>
+  export const _meta = {
+    title: '编辑文件',
+    icon: 'tdesign:edit',
+    group: '知识库',
+    order: 100,
+    hidden: true,
+  };
+</script>
+
+{#if loading}
+  <div class="flex items-center justify-center h-64">
+    <Icon icon="svg-spinners:ring-resize" class="w-8 h-8 text-primary" />
+  </div>
+{:else if error}
+  <div class="flex flex-col items-center justify-center h-64 gap-4">
+    <Icon icon="tdesign:error-circle" class="w-12 h-12 text-destructive" />
+    <p class="text-destructive">{error}</p>
+    <Button variant="outline" onclick={goBack}>返回</Button>
+  </div>
+{:else if fileData}
+  <div class="flex flex-col h-full">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b">
+      <div class="flex items-center gap-3">
+        <Button variant="ghost" size="icon" onclick={goBack}>
+          <Icon icon="tdesign:chevron-left" class="w-5 h-5" />
+        </Button>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-medium">{fileData.name}</h1>
+            {#if isReadonly}
+              <Badge variant="secondary">只读</Badge>
+            {/if}
+          </div>
+          <p class="text-sm text-muted-foreground">
             {fileData.mimeType} · {formatFileSize(fileData.size)}
-          {:else}
-            加载文件信息...
-          {/if}
-        </p>
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <Button variant="outline" onclick={handleDownload}>
+          <Icon icon="tdesign:download" class="w-4 h-4 mr-2" />
+          下载
+        </Button>
+        {#if isTextEditable}
+          <Button onclick={handleSave} disabled={saving}>
+            {#if saving}
+              <Icon icon="svg-spinners:ring-resize" class="w-4 h-4 mr-2" />
+            {:else}
+              <Icon icon="tdesign:save" class="w-4 h-4 mr-2" />
+            {/if}
+            保存
+          </Button>
+        {:else if canReplace}
+          <Button variant="outline" onclick={() => fileInputRef?.click()} disabled={uploading}>
+            {#if uploading}
+              <Icon icon="svg-spinners:ring-resize" class="w-4 h-4 mr-2" />
+            {:else}
+              <Icon icon="tdesign:upload" class="w-4 h-4 mr-2" />
+            {/if}
+            上传替换
+          </Button>
+        {/if}
+        {#if isReadonly}
+          <Button variant="outline" onclick={goBack}>返回</Button>
+        {/if}
       </div>
     </div>
-    <div class="flex items-center gap-2">
-      <Button variant="outline" onclick={handleDownload} disabled={!downloadUrl}>
-        <Icon icon="tdesign:download" class="size-4 mr-2" />
-        下载
-      </Button>
-      {#if isEditable}
-        <Button variant="outline" onclick={goBack} disabled={saving}>
-          取消
-        </Button>
-        <Button onclick={handleSave} disabled={loading || saving}>
-          {#if saving}
-            <Icon icon="tdesign:loading" class="size-4 mr-2 animate-spin" />
+
+    <!-- Hidden file input -->
+    <input
+      type="file"
+      class="hidden"
+      bind:this={fileInputRef}
+      onchange={handleFileSelect}
+      accept={currentExtension ? `.${currentExtension}` : undefined}
+    />
+
+    <!-- Upload error -->
+    {#if uploadError}
+      <div class="mx-4 mt-4 p-3 bg-destructive/10 text-destructive rounded-md flex items-center gap-2">
+        <Icon icon="tdesign:error-circle" class="w-4 h-4" />
+        {uploadError}
+      </div>
+    {/if}
+
+    <!-- Content area -->
+    <div class="flex-1 overflow-auto p-4">
+      {#if fileType === 'text'}
+        {#if isReadonly}
+          <pre class="w-full h-full p-4 bg-muted rounded-md overflow-auto whitespace-pre-wrap font-mono text-sm">{content}</pre>
+        {:else}
+          <textarea
+            class="w-full h-full min-h-[400px] p-4 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+            bind:value={content}
+            placeholder="输入文件内容..."
+          ></textarea>
+        {/if}
+      {:else if fileType === 'image' && downloadUrl}
+        <div class="flex items-center justify-center h-full">
+          <img src={downloadUrl} alt={fileData.name} class="max-w-full max-h-[600px] object-contain rounded-md" />
+        </div>
+      {:else if fileType === 'video' && downloadUrl}
+        <div class="flex items-center justify-center h-full">
+          <video src={downloadUrl} controls class="max-w-full max-h-[600px] rounded-md">
+            <track kind="captions" />
+          </video>
+        </div>
+      {:else if fileType === 'audio' && downloadUrl}
+        <div class="flex items-center justify-center h-full">
+          <audio src={downloadUrl} controls class="w-full max-w-md">
+            <track kind="captions" />
+          </audio>
+        </div>
+      {:else}
+        <div class="flex flex-col items-center justify-center h-64 gap-4">
+          <Icon icon="tdesign:file" class="w-16 h-16 text-muted-foreground" />
+          <p class="text-muted-foreground">此文件类型不支持预览</p>
+          {#if canReplace}
+            <p class="text-sm text-muted-foreground">可以上传相同后缀名的文件进行替换</p>
           {/if}
-          保存
-        </Button>
+        </div>
       {/if}
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="flex-1 p-4 min-h-0 overflow-auto">
-    {#if loading}
-      <div class="flex items-center justify-center h-full">
-        <Icon icon="tdesign:loading" class="size-8 animate-spin text-muted-foreground" />
-      </div>
-    {:else if error}
-      <div class="flex flex-col items-center justify-center h-full gap-4">
-        <Icon icon="tdesign:error-circle" class="size-12 text-destructive" />
-        <p class="text-destructive">{error}</p>
-        <Button variant="outline" onclick={loadFile}>重试</Button>
-      </div>
-    {:else if fileType === 'text'}
-      <!-- 文本编辑器 -->
-      <textarea
-        bind:value={content}
-        class="w-full h-full p-4 font-mono text-sm border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-        placeholder="输入文件内容..."
-      ></textarea>
-    {:else if fileType === 'image'}
-      <!-- 图片预览 -->
-      <div class="flex items-center justify-center h-full">
-        <img
-          src={downloadUrl}
-          alt={fileData?.name}
-          class="max-w-full max-h-full object-contain rounded-lg shadow-lg"
-        />
-      </div>
-    {:else if fileType === 'video'}
-      <!-- 视频预览 -->
-      <div class="flex items-center justify-center h-full">
-        <video
-          src={downloadUrl}
-          controls
-          class="max-w-full max-h-full rounded-lg shadow-lg"
-        >
-          <track kind="captions" />
-          您的浏览器不支持视频播放
-        </video>
-      </div>
-    {:else if fileType === 'audio'}
-      <!-- 音频预览 -->
-      <div class="flex flex-col items-center justify-center h-full gap-6">
-        <div class="p-8 bg-muted rounded-full">
-          <Icon icon="tdesign:sound" class="size-16 text-muted-foreground" />
-        </div>
-        <p class="text-lg font-medium">{fileData?.name}</p>
-        <audio src={downloadUrl} controls class="w-full max-w-md">
-          您的浏览器不支持音频播放
-        </audio>
-      </div>
-    {:else}
-      <!-- 不支持预览 -->
-      <div class="flex flex-col items-center justify-center h-full gap-6">
-        <div class="p-8 bg-muted rounded-full">
-          <Icon icon="tdesign:file" class="size-16 text-muted-foreground" />
-        </div>
-        <div class="text-center">
-          <p class="text-lg font-medium">{fileData?.name}</p>
-          <p class="text-sm text-muted-foreground mt-1">
-            此文件类型不支持在线预览
-          </p>
-          <p class="text-sm text-muted-foreground">
-            {fileData?.mimeType} · {formatFileSize(fileData?.size ?? 0)}
-          </p>
-        </div>
-        <Button onclick={handleDownload} size="lg">
-          <Icon icon="tdesign:download" class="size-5 mr-2" />
-          下载文件
-        </Button>
-      </div>
-    {/if}
-  </div>
-</div>
+  <!-- Confirm replace dialog -->
+  <AlertDialog.Root bind:open={confirmDialogOpen}>
+    <AlertDialog.Content>
+      <AlertDialog.Header>
+        <AlertDialog.Title>确认替换文件</AlertDialog.Title>
+        <AlertDialog.Description>
+          {#if pendingFile}
+            确定要用 "{pendingFile.name}" 替换当前文件吗？此操作不可撤销。
+          {/if}
+        </AlertDialog.Description>
+      </AlertDialog.Header>
+      <AlertDialog.Footer>
+        <AlertDialog.Cancel onclick={() => { pendingFile = null; }}>取消</AlertDialog.Cancel>
+        <AlertDialog.Action onclick={handleUploadReplace}>确认替换</AlertDialog.Action>
+      </AlertDialog.Footer>
+    </AlertDialog.Content>
+  </AlertDialog.Root>
+{/if}
