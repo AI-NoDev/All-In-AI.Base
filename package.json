@@ -4,10 +4,20 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "turbo build"
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "db:generate": "bun run --filter=@qiyu-allinai/db generate",
+    "db:migrate": "bun run --filter=@qiyu-allinai/db migrate",
+    "db:push": "bun run --filter=@qiyu-allinai/db push",
+    "db:seed": "bun run --filter=@qiyu-allinai/db seed",
+    "db:reset": "bun run --filter=@qiyu-allinai/db resetSeedData",
+    "db:init": "bun run db:push && bun run db:reset",
+    "prod:db:push": "dotenv -e .env.production -- bun run db:push",
+    "prod:db:init": "dotenv -e .env.production -- bun run db:init"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "dotenv-cli": "^8.0.0",
     "svelte": "catalog:",
     "turbo": "^2.7.5",
     "vite": "^7.3.1",
