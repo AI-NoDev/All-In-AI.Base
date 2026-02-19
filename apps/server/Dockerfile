@@ -14,7 +14,7 @@ COPY packages/ packages/
 COPY apps/server/ apps/server/
 
 # Install dependencies with workspace resolution
-RUN bun install --frozen-lockfile
+RUN bun install
 
 WORKDIR /app/apps/server
 
