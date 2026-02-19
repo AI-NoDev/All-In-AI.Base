@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge.svelte';
-  import { PostApiFilesUploadForceConflictModeEnum } from '@qiyu-allinai/api';
+  import { PostApiKnowledgeUploadForceConflictModeEnum } from '@qiyu-allinai/api';
   import {
     FileBreadcrumb,
     FileToolbar,
@@ -522,13 +522,13 @@
   }
 
   // Map local types to API enum types
-  function mapConflictMode(mode: ConflictMode): PostApiFilesUploadForceConflictModeEnum {
+  function mapConflictMode(mode: ConflictMode): PostApiKnowledgeUploadForceConflictModeEnum {
     // Only 'overwrite' and 'newVersion' are supported by the API
     // 'skip' is handled client-side, 'copy' falls back to 'newVersion'
     if (mode === 'overwrite') {
-      return PostApiFilesUploadForceConflictModeEnum.Overwrite;
+      return PostApiKnowledgeUploadForceConflictModeEnum.Overwrite;
     }
-    return PostApiFilesUploadForceConflictModeEnum.NewVersion;
+    return PostApiKnowledgeUploadForceConflictModeEnum.NewVersion;
   }
 
   async function handleSavePermission(isPublic: boolean, permissions: PermissionGrantee[]) {

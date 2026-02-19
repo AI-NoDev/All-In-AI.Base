@@ -12,7 +12,11 @@
   let audioRef = $state<HTMLAudioElement | null>(null);
   let isPlaying = $state(false);
   let currentTime = $state(0);
-  let audioDuration = $state(duration);
+  let audioDuration = $state(0);
+
+  $effect(() => {
+    audioDuration = duration;
+  });
 
   function togglePlay() {
     if (!audioRef) return;
