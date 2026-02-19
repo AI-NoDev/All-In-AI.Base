@@ -20,14 +20,19 @@ ENV NODE_ENV=production
 
 RUN bun build src/index.ts --compile --outfile server
 
-FROM gcr.io/distroless/base
+FROM debian:bookworm-slim
 
 WORKDIR /app
+
+# Install minimal runtime dependencies for Bun compiled binary
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/apps/server/server server
 
 ENV NODE_ENV=production
 
-CMD ["./server"]
-
 EXPOSE 3000
+
+CMD ["./server"]
