@@ -3,16 +3,15 @@ FROM oven/bun AS build
 WORKDIR /app
 
 # Copy workspace files
-COPY package.json bun.lock ./
+COPY package.json bun.lock turbo.json ./
 COPY packages/ packages/
 COPY apps/frontend/ apps/frontend/
 
 # Install dependencies
 RUN bun install
 
-# Build frontend
-WORKDIR /app/apps/frontend
-RUN bun run build
+# Build all packages and frontend with turbo
+RUN bun run build --filter=frontend
 
 FROM nginx:alpine
 
