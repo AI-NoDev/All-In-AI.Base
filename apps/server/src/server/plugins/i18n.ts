@@ -1,13 +1,13 @@
 /**
  * i18n Plugin
  * 
- * 基于 Paraglide JS 的国际化中间件
+ * 简化的国际化中间件
  * 从请求头 Accept-Language 解析语言，设置到上下文中
  */
 
 import { Elysia } from 'elysia';
-import { paraglideMiddleware } from '@qiyu-allinai/i18n/server';
-import { getLocale, setLocale, type Locale } from '@qiyu-allinai/i18n/runtime';
+
+type Locale = 'zh-Hans' | 'en';
 
 const SUPPORTED_LOCALES: Locale[] = ['zh-Hans', 'en'];
 const DEFAULT_LOCALE: Locale = 'zh-Hans';
@@ -49,20 +49,5 @@ export const i18nPlugin = new Elysia({ name: 'plugin/i18n' })
       locale = parseAcceptLanguage(request.headers.get('Accept-Language'));
     }
 
-    // 使用 paraglide middleware 设置 locale 上下文
-    await paraglideMiddleware(request, async ({ locale: l }) => {
-      locale = l as Locale;
-      return new Response();
-    });
-
-    // 设置全局 locale
-    setLocale(locale, { reload: false });
-
     return { locale };
-  })
-  .onBeforeHandle(({ locale }) => {
-    // 确保每个请求都设置正确的 locale
-    if (locale) {
-      setLocale(locale, { reload: false });
-    }
   });

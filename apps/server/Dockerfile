@@ -1,34 +1,45 @@
-FROM oven/bun AS build
+FROM oven/bun:1 AS build
 
 WORKDIR /app
 
 # Copy root package files for workspace
-COPY package.json package.json
-COPY bun.lock bun.lock
-COPY turbo.json turbo.json
+COPY package.json bun.lock turbo.json ./
 
-# Copy all packages (including i18n with paraglide)
-COPY packages/ packages/
+# Copy all workspace packages
+COPY packages/db/ packages/db/
+COPY packages/actions/ packages/actions/
+COPY packages/ai/ packages/ai/
+COPY packages/actions-flow-editor/ packages/actions-flow-editor/
+COPY packages/config/ packages/config/
+COPY packages/i18n/package.json packages/i18n/package.json
+COPY packages/i18n/paraglide/ packages/i18n/paraglide/
 
 # Copy server app
 COPY apps/server/ apps/server/
 
-# Install dependencies with workspace resolution
+# Install dependencies
 RUN bun install
 
-# Use oven/bun:slim as runtime (not compile to binary)
-FROM oven/bun:slim
+# Build to single executable
+ENV NODE_ENV=production
+RUN bun build \
+    --compile \
+    --minify-whitespace \
+    --minify-syntax \
+    --target bun \
+    --outfile server \
+    apps/server/src/index.ts
+
+# Use slim debian as runtime (distroless has China network issues)
+FROM debian:bookworm-slim
 
 WORKDIR /app
 
-# Copy installed node_modules and source
-COPY --from=build /app/node_modules node_modules
-COPY --from=build /app/packages packages
-COPY --from=build /app/apps/server apps/server
-COPY --from=build /app/package.json package.json
+# Copy the compiled binary
+COPY --from=build /app/server server
 
 ENV NODE_ENV=production
 
-EXPOSE 3000
+CMD ["./server"]
 
-CMD ["bun", "run", "apps/server/src/index.ts"]
+EXPOSE 3000
