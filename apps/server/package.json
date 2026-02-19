@@ -19,7 +19,6 @@
     "@modelcontextprotocol/sdk": "^1.26.0",
     "@opuu/elysia-llms-txt": "^1.1.0",
     "@qiyu-allinai/actions": "workspace:*",
-    "@qiyu-allinai/actions-flow-editor": "workspace:*",
     "@qiyu-allinai/ai": "workspace:*",
     "@qiyu-allinai/db": "workspace:*",
     "@qiyu-allinai/i18n": "workspace:*",

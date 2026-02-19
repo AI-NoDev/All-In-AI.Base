@@ -262,21 +262,6 @@ import { t } from '@qiyu-allinai/i18n';
 const message = t('error.system.admin.cannot.modify');
 ```
 
-### @qiyu-allinai/actions-flow-editor
-
-AI workflow visual editor built on @xyflow/svelte.
-
-```svelte
-<script>
-  import { ActionsFlowEditor } from '@qiyu-allinai/actions-flow-editor';
-</script>
-
-<ActionsFlowEditor
-  actions={availableActions}
-  colorMode="dark"
-  onSave={(flow) => console.log(flow)}
-/>
-```
 
 ---
 
@@ -306,8 +291,6 @@ bun run --filter=@qiyu-allinai/db seed      # Seed data
 # Generate API client
 bun run --filter=frontend generate:api
 
-# Build actions-flow-editor package
-bun run --filter=@qiyu-allinai/actions-flow-editor build
 ```
 
 ---

@@ -264,17 +264,7 @@ const message = t('error.system.admin.cannot.modify');
 
 AI 工作流可视化编辑器，基于 @xyflow/svelte 构建。
 
-```svelte
-<script>
-  import { ActionsFlowEditor } from '@qiyu-allinai/actions-flow-editor';
-</script>
 
-<ActionsFlowEditor
-  actions={availableActions}
-  colorMode="dark"
-  onSave={(flow) => console.log(flow)}
-/>
-```
 
 ---
 
@@ -304,8 +294,6 @@ bun run --filter=@qiyu-allinai/db seed      # 初始化数据
 # 生成 API 客户端
 bun run --filter=frontend generate:api
 
-# 构建 actions-flow-editor 包
-bun run --filter=@qiyu-allinai/actions-flow-editor build
 ```
 
 ---
