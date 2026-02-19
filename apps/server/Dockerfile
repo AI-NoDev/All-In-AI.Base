@@ -5,19 +5,22 @@ WORKDIR /app
 # Copy root package files for workspace
 COPY package.json package.json
 COPY bun.lock bun.lock
+COPY turbo.json turbo.json
 
-# Copy packages that server depends on
+# Copy all packages (including i18n with paraglide)
 COPY packages/ packages/
 
 # Copy server app
 COPY apps/server/ apps/server/
 
-RUN bun install
+# Install dependencies with workspace resolution
+RUN bun install --frozen-lockfile
 
 WORKDIR /app/apps/server
 
 ENV NODE_ENV=production
 
+# Build with explicit module resolution
 RUN bun build src/index.ts --compile --outfile server
 
 FROM debian:bookworm-slim
