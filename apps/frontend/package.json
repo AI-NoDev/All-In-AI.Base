@@ -53,7 +53,6 @@
 		"@iconify-json/mdi": "^1.2.3",
 		"@iconify-svelte/tdesign": "^1.0.1",
 		"@iconify/svelte": "^5.2.1",
-		"@qiyu-allinai/actions-flow-editor": "workspace:*",
 		"@qiyu-allinai/ai": "workspace:*",
 		"@qiyu-allinai/api": "workspace:*",
 		"@qiyu-allinai/file-icons": "workspace:*",
