@@ -16,26 +16,19 @@ COPY apps/server/ apps/server/
 # Install dependencies with workspace resolution
 RUN bun install
 
-WORKDIR /app/apps/server
-
-ENV NODE_ENV=production
-
-# Build with explicit module resolution
-RUN bun build src/index.ts --compile --outfile server
-
-FROM debian:bookworm-slim
+# Use oven/bun:slim as runtime (not compile to binary)
+FROM oven/bun:slim
 
 WORKDIR /app
 
-# Install minimal runtime dependencies for Bun compiled binary
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY --from=build /app/apps/server/server server
+# Copy installed node_modules and source
+COPY --from=build /app/node_modules node_modules
+COPY --from=build /app/packages packages
+COPY --from=build /app/apps/server apps/server
+COPY --from=build /app/package.json package.json
 
 ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["./server"]
+CMD ["bun", "run", "apps/server/src/index.ts"]
