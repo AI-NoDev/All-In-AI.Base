@@ -1,32 +1,31 @@
 import { relations } from "drizzle-orm";
-import { folder } from "./folder";
-import { file } from "./file";
-import { fileVersion } from "./fileVersion";
+import { node } from "./node";
+import { nodeVersion } from "./nodeVersion";
+import { favorite } from "./favorite";
 
-// 文件夹关系
-export const folderRelations = relations(folder, ({ one, many }) => ({
-  parent: one(folder, {
-    fields: [folder.parentId],
-    references: [folder.id],
-    relationName: "folderParent",
+// 节点关系 (自引用 - 父子关系)
+export const nodeRelations = relations(node, ({ one, many }) => ({
+  parent: one(node, {
+    fields: [node.parentId],
+    references: [node.id],
+    relationName: "nodeParent",
   }),
-  children: many(folder, { relationName: "folderParent" }),
-  files: many(file),
+  children: many(node, { relationName: "nodeParent" }),
+  versions: many(nodeVersion),
 }));
 
-// 文件关系
-export const fileRelations = relations(file, ({ one, many }) => ({
-  folder: one(folder, {
-    fields: [file.folderId],
-    references: [folder.id],
+// 节点版本关系
+export const nodeVersionRelations = relations(nodeVersion, ({ one }) => ({
+  node: one(node, {
+    fields: [nodeVersion.nodeId],
+    references: [node.id],
   }),
-  versions: many(fileVersion),
 }));
 
-// 文件版本关系
-export const fileVersionRelations = relations(fileVersion, ({ one }) => ({
-  file: one(file, {
-    fields: [fileVersion.fileId],
-    references: [file.id],
+// 收藏关系
+export const favoriteRelations = relations(favorite, ({ one }) => ({
+  node: one(node, {
+    fields: [favorite.resourceId],
+    references: [node.id],
   }),
 }));

@@ -152,105 +152,6 @@ export interface DeleteApiAiToolGroupByIdParams {
   id: string;
 }
 
-export interface DeleteApiFilesByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiFilesByIdParams {
-  id: string;
-}
-
-export interface DeleteApiFilesFoldersByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiFilesFoldersByIdParams {
-  id: string;
-}
-
-export interface DeleteApiFilesPermissionAllByResourceTypeByResourceIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams {
-  resourceId: string;
-  resourceType: ResourceTypeEnum6;
-}
-
-export enum DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams1Enum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams {
-  permission: PermissionEnum;
-  resourceId: string;
-  resourceType: ResourceTypeEnum4;
-  subjectId: string;
-  subjectType: SubjectTypeEnum;
-}
-
-export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1Enum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1Enum1 {
-  User = "user",
-  Role = "role",
-  Dept = "dept",
-}
-
-export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1Enum2 {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
-  Manage = "manage",
-}
-
-export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1PermissionEnum {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
-  Manage = "manage",
-}
-
-export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1ResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1SubjectTypeEnum {
-  User = "user",
-  Role = "role",
-  Dept = "dept",
-}
-
 export interface DeleteApiImConversationByIdData {
   data: any;
   /** @default "ok" */
@@ -296,7 +197,7 @@ export interface DeleteApiImTempFileCleanExpiredData {
   status: number;
 }
 
-export interface DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData {
+export interface DeleteApiKnowledgeFavoritesByNodeIdData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -304,22 +205,11 @@ export interface DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData {
   status: number;
 }
 
-export interface DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams {
-  resourceId: string;
-  resourceType: ResourceTypeEnum;
+export interface DeleteApiKnowledgeFavoritesByNodeIdParams {
+  nodeId: string;
 }
 
-export enum DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams1Enum {
-  Folder = "folder",
-  File = "file",
-}
-
-export enum DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-}
-
-export interface DeleteApiKnowledgeFileByIdData {
+export interface DeleteApiKnowledgeNodesByIdData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -327,11 +217,11 @@ export interface DeleteApiKnowledgeFileByIdData {
   status: number;
 }
 
-export interface DeleteApiKnowledgeFileByIdParams {
+export interface DeleteApiKnowledgeNodesByIdParams {
   id: string;
 }
 
-export interface DeleteApiKnowledgeFileVersionByIdData {
+export interface DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -339,20 +229,30 @@ export interface DeleteApiKnowledgeFileVersionByIdData {
   status: number;
 }
 
-export interface DeleteApiKnowledgeFileVersionByIdParams {
+export interface DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams {
   id: string;
+  permission?: PermissionEnum;
+  subjectId: string;
+  subjectType: SubjectTypeEnum;
 }
 
-export interface DeleteApiKnowledgeFolderByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
+export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1Enum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
 }
 
-export interface DeleteApiKnowledgeFolderByIdParams {
-  id: string;
+export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1PermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1SubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
 }
 
 export interface DeleteApiSystemConfigByIdData {
@@ -721,6 +621,18 @@ export interface GetApiAiApiKeySchemaData {
   status: number;
 }
 
+export interface GetApiAiMcpServerByIdConfigData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiAiMcpServerByIdConfigParams {
+  id: string;
+}
+
 export interface GetApiAiMcpServerByIdData {
   data: any;
   /** @default "ok" */
@@ -927,112 +839,6 @@ export interface GetApiDevProjectCodeRootData {
   status: number;
 }
 
-export interface GetApiFilesByIdContentData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesByIdContentParams {
-  id: string;
-}
-
-export interface GetApiFilesByIdDownloadUrlData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesByIdDownloadUrlParams {
-  id: string;
-}
-
-export interface GetApiFilesByIdTextContentData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesByIdTextContentParams {
-  id: string;
-}
-
-export interface GetApiFilesPermissionByResourceTypeByResourceIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesPermissionByResourceTypeByResourceIdParams {
-  resourceId: string;
-  resourceType: ResourceTypeEnum2;
-}
-
-export enum GetApiFilesPermissionByResourceTypeByResourceIdParams1Enum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum GetApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams {
-  resourceId: string;
-  resourceType: ResourceTypeEnum5;
-}
-
-export enum GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams1Enum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface GetApiFilesShareFolderPathByFolderIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesShareFolderPathByFolderIdParams {
-  folderId: string;
-}
-
-export interface GetApiFilesVersionsByIdDownloadUrlData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiFilesVersionsByIdDownloadUrlParams {
-  id: string;
-}
-
 export interface GetApiImConversationByIdData {
   data: any;
   /** @default "ok" */
@@ -1164,7 +970,7 @@ export interface GetApiImTempFileSchemaData {
   status: number;
 }
 
-export interface GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData {
+export interface GetApiKnowledgeNodesByIdChildrenData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1172,22 +978,17 @@ export interface GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData {
   status: number;
 }
 
-export interface GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams {
-  resourceId: string;
-  resourceType: ResourceTypeEnum1;
+export interface GetApiKnowledgeNodesByIdChildrenParams {
+  id: string;
+  type?: TypeEnum;
 }
 
-export enum GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams1Enum {
+export enum GetApiKnowledgeNodesByIdChildrenParams1TypeEnum {
   Folder = "folder",
   File = "file",
 }
 
-export enum GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-}
-
-export interface GetApiKnowledgeFileByIdData {
+export interface GetApiKnowledgeNodesByIdContentData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1195,11 +996,11 @@ export interface GetApiKnowledgeFileByIdData {
   status: number;
 }
 
-export interface GetApiKnowledgeFileByIdParams {
+export interface GetApiKnowledgeNodesByIdContentParams {
   id: string;
 }
 
-export interface GetApiKnowledgeFileSchemaData {
+export interface GetApiKnowledgeNodesByIdData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1207,7 +1008,7 @@ export interface GetApiKnowledgeFileSchemaData {
   status: number;
 }
 
-export interface GetApiKnowledgeFileVersionByIdData {
+export interface GetApiKnowledgeNodesByIdDownloadUrlData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1215,11 +1016,11 @@ export interface GetApiKnowledgeFileVersionByIdData {
   status: number;
 }
 
-export interface GetApiKnowledgeFileVersionByIdParams {
+export interface GetApiKnowledgeNodesByIdDownloadUrlParams {
   id: string;
 }
 
-export interface GetApiKnowledgeFileVersionSchemaData {
+export interface GetApiKnowledgeNodesByIdEffectivePermissionsData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1227,19 +1028,84 @@ export interface GetApiKnowledgeFileVersionSchemaData {
   status: number;
 }
 
-export interface GetApiKnowledgeFolderByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
+export interface GetApiKnowledgeNodesByIdEffectivePermissionsParams {
+  id: string;
+  userId?: string;
 }
 
-export interface GetApiKnowledgeFolderByIdParams {
+export interface GetApiKnowledgeNodesByIdParams {
   id: string;
 }
 
-export interface GetApiKnowledgeFolderSchemaData {
+export interface GetApiKnowledgeNodesByIdPathData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeNodesByIdPathParams {
+  id: string;
+}
+
+export interface GetApiKnowledgeNodesByIdPermissionsData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeNodesByIdPermissionsParams {
+  id: string;
+}
+
+export interface GetApiKnowledgeNodesByIdTextData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeNodesByIdTextParams {
+  id: string;
+}
+
+export interface GetApiKnowledgeNodesByIdVersionsData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeNodesByIdVersionsParams {
+  id: string;
+}
+
+export interface GetApiKnowledgeNodesSchemaData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeVersionsByIdDownloadUrlData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiKnowledgeVersionsByIdDownloadUrlParams {
+  id: string;
+}
+
+export interface GetApiKnowledgeVersionsSchemaData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -1711,6 +1577,10 @@ export interface GetApiSystemUserSchemaData {
   message: string;
   /** @default 200 */
   status: number;
+}
+
+export interface GetMcpByIdParams {
+  id: string;
 }
 
 export enum PermissionEnum {
@@ -3575,456 +3445,6 @@ export interface PostApiFilesAiChatUploadPayload {
   mimeType: string;
 }
 
-export interface PostApiFilesByIdCopyAsDuplicateData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesByIdCopyAsDuplicateParams {
-  id: string;
-}
-
-export interface PostApiFilesByIdCopyAsDuplicatePayload {
-  targetFolderId: string | null;
-}
-
-export interface PostApiFilesByIdCopyData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesByIdCopyParams {
-  id: string;
-}
-
-export interface PostApiFilesByIdCopyPayload {
-  targetFolderId: string | null;
-}
-
-export interface PostApiFilesByIdMoveData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesByIdMoveParams {
-  id: string;
-}
-
-export interface PostApiFilesByIdMovePayload {
-  targetFolderId: string | null;
-}
-
-export interface PostApiFilesCheckExistsData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesCheckExistsPayload {
-  folderId?: string | null;
-  names: string[];
-}
-
-export interface PostApiFilesConfirmUploadData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesConfirmUploadPayload {
-  description?: string;
-  folderId?: string | null;
-  mimeType: string;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  size: number;
-  storageKey: string;
-}
-
-export interface PostApiFilesDeleteBatchData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesDeleteBatchPayload {
-  ids: string[];
-}
-
-export interface PostApiFilesFoldersByIdMoveData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesFoldersByIdMoveParams {
-  id: string;
-}
-
-export interface PostApiFilesFoldersByIdMovePayload {
-  targetParentId: string | null;
-}
-
-export interface PostApiFilesFoldersData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesFoldersPayload {
-  color?: string;
-  description?: string;
-  icon?: string;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  parentId?: string | null;
-}
-
-export interface PostApiFilesPermissionByResourceTypeByResourceIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-/** @default "allow" */
-export enum PostApiFilesPermissionByResourceTypeByResourceIdEffectEnum {
-  Allow = "allow",
-  Deny = "deny",
-}
-
-export interface PostApiFilesPermissionByResourceTypeByResourceIdParams {
-  resourceId: string;
-  resourceType: ResourceTypeEnum3;
-}
-
-export enum PostApiFilesPermissionByResourceTypeByResourceIdParams1Enum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum PostApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface PostApiFilesPermissionByResourceTypeByResourceIdPayload {
-  permissions: {
-    /** @default "allow" */
-    effect?: PostApiFilesPermissionByResourceTypeByResourceIdEffectEnum;
-    permission: PostApiFilesPermissionByResourceTypeByResourceIdPermissionEnum;
-    subjectId: string;
-    subjectType: PostApiFilesPermissionByResourceTypeByResourceIdSubjectTypeEnum;
-  }[];
-}
-
-export enum PostApiFilesPermissionByResourceTypeByResourceIdPermissionEnum {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
-  Manage = "manage",
-}
-
-export enum PostApiFilesPermissionByResourceTypeByResourceIdSubjectTypeEnum {
-  User = "user",
-  Role = "role",
-  Dept = "dept",
-}
-
-export interface PostApiFilesPermissionCheckData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesPermissionCheckPayload {
-  permission: PostApiFilesPermissionCheckPermissionEnum;
-  resourceId: string;
-  resourceType: PostApiFilesPermissionCheckResourceTypeEnum;
-  userId: string;
-}
-
-export enum PostApiFilesPermissionCheckPermissionEnum {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
-  Manage = "manage",
-}
-
-export enum PostApiFilesPermissionCheckResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface PostApiFilesPermissionCopyData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesPermissionCopyPayload {
-  sourceId: string;
-  sourceType: PostApiFilesPermissionCopySourceTypeEnum;
-  targetId: string;
-  targetType: PostApiFilesPermissionCopyTargetTypeEnum;
-}
-
-export enum PostApiFilesPermissionCopySourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum PostApiFilesPermissionCopyTargetTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface PostApiFilesPermissionData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-/** @default "allow" */
-export enum PostApiFilesPermissionEffectEnum {
-  Allow = "allow",
-  Deny = "deny",
-}
-
-export interface PostApiFilesPermissionParentData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesPermissionParentPayload {
-  parentFolderId: string | null;
-  resourceId: string;
-  resourceType: PostApiFilesPermissionParentResourceTypeEnum;
-}
-
-export enum PostApiFilesPermissionParentResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export interface PostApiFilesPermissionPayload {
-  /** @default "allow" */
-  effect?: PostApiFilesPermissionEffectEnum;
-  permission: PostApiFilesPermissionPermissionEnum;
-  resourceId: string;
-  resourceType: PostApiFilesPermissionResourceTypeEnum;
-  subjectId: string;
-  subjectType: PostApiFilesPermissionSubjectTypeEnum;
-}
-
-export enum PostApiFilesPermissionPermissionEnum {
-  Read = "read",
-  Write = "write",
-  Delete = "delete",
-  Manage = "manage",
-}
-
-export enum PostApiFilesPermissionResourceTypeEnum {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum PostApiFilesPermissionSubjectTypeEnum {
-  User = "user",
-  Role = "role",
-  Dept = "dept",
-}
-
-export interface PostApiFilesShareFolderContentsData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesShareFolderContentsPayload {
-  folderId: string;
-  /**
-   * @min 1
-   * @max 100
-   * @default 50
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-  viewMode: PostApiFilesShareFolderContentsViewModeEnum;
-}
-
-export enum PostApiFilesShareFolderContentsViewModeEnum {
-  SharedWithMe = "shared-with-me",
-  MyShared = "my-shared",
-  Favorites = "favorites",
-}
-
-export interface PostApiFilesShareMySharedData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesShareMySharedPayload {
-  /**
-   * @min 1
-   * @max 100
-   * @default 50
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-}
-
-export interface PostApiFilesShareSharedWithMeData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesShareSharedWithMePayload {
-  /**
-   * @min 1
-   * @max 100
-   * @default 50
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-}
-
-export interface PostApiFilesUploadData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiFilesUploadForceConflictModeEnum {
-  Overwrite = "overwrite",
-  NewVersion = "newVersion",
-  Copy = "copy",
-}
-
-export interface PostApiFilesUploadForceData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesUploadForcePayload {
-  conflictMode: PostApiFilesUploadForceConflictModeEnum;
-  content: string;
-  description?: string;
-  existingFileId?: string;
-  folderId?: string | null;
-  mimeType?: string;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-}
-
-export interface PostApiFilesUploadPayload {
-  content: string;
-  description?: string;
-  folderId?: string | null;
-  mimeType?: string;
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-}
-
-export interface PostApiFilesUploadUrlData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesUploadUrlPayload {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  filename: string;
-  folderId?: string | null;
-  mimeType: string;
-}
-
-export interface PostApiFilesVersionsByIdRestoreData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiFilesVersionsByIdRestoreParams {
-  id: string;
-}
-
 export interface PostApiImConversationByIdDissolveData {
   data: any;
   /** @default "ok" */
@@ -4688,7 +4108,7 @@ export interface PostApiImTempFileUploadPayload {
   mimeType: string;
 }
 
-export interface PostApiKnowledgeFavoriteCheckBatchData {
+export interface PostApiKnowledgeFavoritesCheckData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -4696,14 +4116,11 @@ export interface PostApiKnowledgeFavoriteCheckBatchData {
   status: number;
 }
 
-export interface PostApiKnowledgeFavoriteCheckBatchPayload {
-  /** @default [] */
-  fileIds?: string[];
-  /** @default [] */
-  folderIds?: string[];
+export interface PostApiKnowledgeFavoritesCheckPayload {
+  nodeIds: string[];
 }
 
-export interface PostApiKnowledgeFavoriteData {
+export interface PostApiKnowledgeFavoritesData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -4711,7 +4128,7 @@ export interface PostApiKnowledgeFavoriteData {
   status: number;
 }
 
-export interface PostApiKnowledgeFavoriteListData {
+export interface PostApiKnowledgeFavoritesListData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -4719,7 +4136,7 @@ export interface PostApiKnowledgeFavoriteListData {
   status: number;
 }
 
-export interface PostApiKnowledgeFavoriteListPayload {
+export interface PostApiKnowledgeFavoritesListPayload {
   /**
    * @min 1
    * @max 100
@@ -4732,28 +4149,19 @@ export interface PostApiKnowledgeFavoriteListPayload {
    * @default 0
    */
   offset?: number;
-  /** @default "all" */
-  resourceType?: PostApiKnowledgeFavoriteListResourceTypeEnum;
+  type?: PostApiKnowledgeFavoritesListTypeEnum;
 }
 
-/** @default "all" */
-export enum PostApiKnowledgeFavoriteListResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-  All = "all",
-}
-
-export interface PostApiKnowledgeFavoritePayload {
-  resourceId: string;
-  resourceType: PostApiKnowledgeFavoriteResourceTypeEnum;
-}
-
-export enum PostApiKnowledgeFavoriteResourceTypeEnum {
+export enum PostApiKnowledgeFavoritesListTypeEnum {
   Folder = "folder",
   File = "file",
 }
 
-export interface PostApiKnowledgeFileBatchData {
+export interface PostApiKnowledgeFavoritesPayload {
+  nodeId: string;
+}
+
+export interface PostApiKnowledgeNodesByIdCopyData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -4761,112 +4169,15 @@ export interface PostApiKnowledgeFileBatchData {
   status: number;
 }
 
-export interface PostApiKnowledgeFileBatchPayload {
-  data: {
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    downloadCount?: number;
-    /** ETag */
-    etag?: string | null;
-    /** 扩展名 */
-    extension?: string | null;
-    /** 文件夹ID */
-    folderId?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 公开 */
-    isPublic?: boolean;
-    /** 元数据 */
-    metadata?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** MIME类型 */
-    mimeType?: string | null;
-    /**
-     * 文件名称
-     * @maxLength 255
-     */
-    name: string;
-    /**
-     * 原始文件名
-     * @maxLength 255
-     */
-    originalName: string;
-    /** 处理结果 */
-    processResult?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** 处理状态 */
-    processStatus?: string | null;
-    /** 区域 */
-    region?: string | null;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /** 状态 */
-    status?: string | null;
-    /** 存储类型 */
-    storageClass?: string | null;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey: string;
-    /** 标签 */
-    tags: string[];
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    versionCount?: number;
-    /** 版本ID */
-    versionId?: string | null;
-  }[];
+export interface PostApiKnowledgeNodesByIdCopyParams {
+  id: string;
 }
 
-export interface PostApiKnowledgeFileData {
+export interface PostApiKnowledgeNodesByIdCopyPayload {
+  targetParentId: string | null;
+}
+
+export interface PostApiKnowledgeNodesByIdMoveData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -4874,112 +4185,15 @@ export interface PostApiKnowledgeFileData {
   status: number;
 }
 
-export interface PostApiKnowledgeFilePayload {
-  data: {
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    downloadCount?: number;
-    /** ETag */
-    etag?: string | null;
-    /** 扩展名 */
-    extension?: string | null;
-    /** 文件夹ID */
-    folderId?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 公开 */
-    isPublic?: boolean;
-    /** 元数据 */
-    metadata?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** MIME类型 */
-    mimeType?: string | null;
-    /**
-     * 文件名称
-     * @maxLength 255
-     */
-    name: string;
-    /**
-     * 原始文件名
-     * @maxLength 255
-     */
-    originalName: string;
-    /** 处理结果 */
-    processResult?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** 处理状态 */
-    processStatus?: string | null;
-    /** 区域 */
-    region?: string | null;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /** 状态 */
-    status?: string | null;
-    /** 存储类型 */
-    storageClass?: string | null;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey: string;
-    /** 标签 */
-    tags: string[];
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    versionCount?: number;
-    /** 版本ID */
-    versionId?: string | null;
-  };
+export interface PostApiKnowledgeNodesByIdMoveParams {
+  id: string;
 }
 
-export interface PostApiKnowledgeFileQueryData {
+export interface PostApiKnowledgeNodesByIdMovePayload {
+  targetParentId: string | null;
+}
+
+export interface PostApiKnowledgeNodesByIdPermissionsData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -4987,19 +4201,158 @@ export interface PostApiKnowledgeFileQueryData {
   status: number;
 }
 
-export enum PostApiKnowledgeFileQueryFieldEnum {
+/** @default "allow" */
+export enum PostApiKnowledgeNodesByIdPermissionsEffectEnum {
+  Allow = "allow",
+  Deny = "deny",
+}
+
+export interface PostApiKnowledgeNodesByIdPermissionsParams {
+  id: string;
+}
+
+export interface PostApiKnowledgeNodesByIdPermissionsPayload {
+  /** @default "allow" */
+  effect?: PostApiKnowledgeNodesByIdPermissionsEffectEnum;
+  permission: PostApiKnowledgeNodesByIdPermissionsPermissionEnum;
+  subjectId: string;
+  subjectType: PostApiKnowledgeNodesByIdPermissionsSubjectTypeEnum;
+}
+
+export enum PostApiKnowledgeNodesByIdPermissionsPermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum PostApiKnowledgeNodesByIdPermissionsSubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
+}
+
+export interface PostApiKnowledgeNodesByIdQuickShareData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export enum PostApiKnowledgeNodesByIdQuickShareLevelEnum {
+  Read = "read",
+  Edit = "edit",
+  Full = "full",
+}
+
+export interface PostApiKnowledgeNodesByIdQuickShareParams {
+  id: string;
+}
+
+export interface PostApiKnowledgeNodesByIdQuickSharePayload {
+  level: PostApiKnowledgeNodesByIdQuickShareLevelEnum;
+  userIds: string[];
+}
+
+export interface PostApiKnowledgeNodesByIdRevokeShareData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeNodesByIdRevokeShareParams {
+  id: string;
+}
+
+export interface PostApiKnowledgeNodesByIdRevokeSharePayload {
+  userIds: string[];
+}
+
+export interface PostApiKnowledgeNodesCheckExistsData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeNodesCheckExistsPayload {
+  names: string[];
+  parentId?: string | null;
+  type?: PostApiKnowledgeNodesCheckExistsTypeEnum;
+}
+
+export enum PostApiKnowledgeNodesCheckExistsTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
+export interface PostApiKnowledgeNodesData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeNodesDeleteBatchData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeNodesDeleteBatchPayload {
+  ids: string[];
+}
+
+export interface PostApiKnowledgeNodesPayload {
+  bucket?: string;
+  color?: string;
+  description?: string;
+  etag?: string;
+  extension?: string;
+  icon?: string;
+  mimeType?: string;
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  parentId?: string | null;
+  size?: number;
+  storageKey?: string;
+  type: PostApiKnowledgeNodesTypeEnum;
+  versionId?: string;
+}
+
+export interface PostApiKnowledgeNodesQueryData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export enum PostApiKnowledgeNodesQueryFieldEnum {
   Name = "name",
+  Type = "type",
   Size = "size",
+  OrderNum = "orderNum",
   CreatedAt = "createdAt",
   UpdatedAt = "updatedAt",
 }
 
-export enum PostApiKnowledgeFileQueryOrderEnum {
+export enum PostApiKnowledgeNodesQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
-export interface PostApiKnowledgeFileQueryPayload {
+export interface PostApiKnowledgeNodesQueryPayload {
   filter?: {
     /**
      * @format date-time
@@ -5012,14 +4365,12 @@ export interface PostApiKnowledgeFileQueryPayload {
      */
     createdAtStart?: string;
     extension?: string;
-    extensions?: string[];
-    folderId?: string | null;
     ids?: string[];
-    mimeType?: string;
+    isPublic?: boolean;
     name?: string;
-    names?: string[];
-    processStatus?: PostApiKnowledgeFileQueryProcessStatusEnum;
-    status?: PostApiKnowledgeFileQueryStatusEnum;
+    parentId?: string | null;
+    type?: PostApiKnowledgeNodesQueryTypeEnum;
+    types?: PostApiKnowledgeNodesQueryTypesEnum[];
   };
   /**
    * @min 1
@@ -5034,23 +4385,22 @@ export interface PostApiKnowledgeFileQueryPayload {
    */
   offset?: number;
   sort?: {
-    field: PostApiKnowledgeFileQueryFieldEnum;
-    order: PostApiKnowledgeFileQueryOrderEnum;
+    field: PostApiKnowledgeNodesQueryFieldEnum;
+    order: PostApiKnowledgeNodesQueryOrderEnum;
   };
 }
 
-export enum PostApiKnowledgeFileQueryProcessStatusEnum {
-  Value0 = "0",
-  Value1 = "1",
-  Value2 = "2",
+export enum PostApiKnowledgeNodesQueryTypeEnum {
+  Folder = "folder",
+  File = "file",
 }
 
-export enum PostApiKnowledgeFileQueryStatusEnum {
-  Value0 = "0",
-  Value1 = "1",
+export enum PostApiKnowledgeNodesQueryTypesEnum {
+  Folder = "folder",
+  File = "file",
 }
 
-export interface PostApiKnowledgeFileVersionBatchData {
+export interface PostApiKnowledgeNodesSearchData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -5058,60 +4408,32 @@ export interface PostApiKnowledgeFileVersionBatchData {
   status: number;
 }
 
-export interface PostApiKnowledgeFileVersionBatchPayload {
-  data: {
-    /** S3版本ID */
-    s3VersionId?: string | null;
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket: string;
-    /** 变更日志 */
-    changeLog?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建人
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建人ID */
-    createdById?: string | null;
-    /** ETag */
-    etag?: string | null;
-    /**
-     * 文件ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    fileId: string;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey: string;
-    /**
-     * 版本号
-     * @maxLength 32
-     */
-    versionNumber: string;
-  }[];
+export interface PostApiKnowledgeNodesSearchPayload {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  keyword: string;
+  /**
+   * @min 1
+   * @max 50
+   * @default 20
+   */
+  limit?: number;
+  type?: PostApiKnowledgeNodesSearchTypeEnum;
 }
 
-export interface PostApiKnowledgeFileVersionData {
+export enum PostApiKnowledgeNodesSearchTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
+export enum PostApiKnowledgeNodesTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
+export interface PostApiKnowledgeShareMySharedData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -5119,60 +4441,28 @@ export interface PostApiKnowledgeFileVersionData {
   status: number;
 }
 
-export interface PostApiKnowledgeFileVersionPayload {
-  data: {
-    /** S3版本ID */
-    s3VersionId?: string | null;
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket: string;
-    /** 变更日志 */
-    changeLog?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建人
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建人ID */
-    createdById?: string | null;
-    /** ETag */
-    etag?: string | null;
-    /**
-     * 文件ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    fileId: string;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey: string;
-    /**
-     * 版本号
-     * @maxLength 32
-     */
-    versionNumber: string;
-  };
+export interface PostApiKnowledgeShareMySharedPayload {
+  /**
+   * @min 1
+   * @max 100
+   * @default 50
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+  type?: PostApiKnowledgeShareMySharedTypeEnum;
 }
 
-export interface PostApiKnowledgeFileVersionQueryData {
+export enum PostApiKnowledgeShareMySharedTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
+export interface PostApiKnowledgeShareSharedWithMeData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -5180,18 +4470,147 @@ export interface PostApiKnowledgeFileVersionQueryData {
   status: number;
 }
 
-export enum PostApiKnowledgeFileVersionQueryFieldEnum {
+export interface PostApiKnowledgeShareSharedWithMePayload {
+  folderId?: string;
+  /**
+   * @min 1
+   * @max 100
+   * @default 50
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+  type?: PostApiKnowledgeShareSharedWithMeTypeEnum;
+}
+
+export enum PostApiKnowledgeShareSharedWithMeTypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
+export interface PostApiKnowledgeUploadConfirmData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeUploadConfirmPayload {
+  description?: string;
+  mimeType: string;
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  parentId?: string | null;
+  size: number;
+  storageKey: string;
+}
+
+export interface PostApiKnowledgeUploadDirectData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeUploadDirectPayload {
+  content: string;
+  description?: string;
+  mimeType?: string;
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  parentId?: string | null;
+}
+
+export enum PostApiKnowledgeUploadForceConflictModeEnum {
+  Overwrite = "overwrite",
+  NewVersion = "newVersion",
+  Copy = "copy",
+}
+
+export interface PostApiKnowledgeUploadForceData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeUploadForcePayload {
+  conflictMode: PostApiKnowledgeUploadForceConflictModeEnum;
+  content: string;
+  description?: string;
+  existingNodeId?: string;
+  mimeType?: string;
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  parentId?: string | null;
+}
+
+export interface PostApiKnowledgeUploadUrlData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeUploadUrlPayload {
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  filename: string;
+  mimeType: string;
+  parentId?: string | null;
+}
+
+export interface PostApiKnowledgeVersionsByIdRestoreData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeVersionsByIdRestoreParams {
+  id: string;
+}
+
+export interface PostApiKnowledgeVersionsQueryData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export enum PostApiKnowledgeVersionsQueryFieldEnum {
   VersionNumber = "versionNumber",
   Size = "size",
   CreatedAt = "createdAt",
 }
 
-export enum PostApiKnowledgeFileVersionQueryOrderEnum {
+export enum PostApiKnowledgeVersionsQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
-export interface PostApiKnowledgeFileVersionQueryPayload {
+export interface PostApiKnowledgeVersionsQueryPayload {
   filter?: {
     /**
      * @format date-time
@@ -5203,11 +4622,9 @@ export interface PostApiKnowledgeFileVersionQueryPayload {
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart?: string;
-    fileId?: string;
-    fileIds?: string[];
-    ids?: string[];
+    nodeId?: string;
+    nodeIds?: string[];
     versionNumber?: string;
-    versionNumbers?: string[];
   };
   /**
    * @min 1
@@ -5222,195 +4639,8 @@ export interface PostApiKnowledgeFileVersionQueryPayload {
    */
   offset?: number;
   sort?: {
-    field: PostApiKnowledgeFileVersionQueryFieldEnum;
-    order: PostApiKnowledgeFileVersionQueryOrderEnum;
-  };
-}
-
-export interface PostApiKnowledgeFolderBatchData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiKnowledgeFolderBatchPayload {
-  data: {
-    /** 颜色 */
-    color?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /** 图标 */
-    icon?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 是否公开 */
-    isPublic?: boolean;
-    /**
-     * 文件夹名称
-     * @maxLength 255
-     */
-    name: string;
-    /**
-     * 排序号
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    /** 父文件夹ID */
-    parentId?: string | null;
-    /** 路径 */
-    path: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  }[];
-}
-
-export interface PostApiKnowledgeFolderData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiKnowledgeFolderPayload {
-  data: {
-    /** 颜色 */
-    color?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /** 图标 */
-    icon?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 是否公开 */
-    isPublic?: boolean;
-    /**
-     * 文件夹名称
-     * @maxLength 255
-     */
-    name: string;
-    /**
-     * 排序号
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    /** 父文件夹ID */
-    parentId?: string | null;
-    /** 路径 */
-    path: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  };
-}
-
-export interface PostApiKnowledgeFolderQueryData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiKnowledgeFolderQueryFieldEnum {
-  Name = "name",
-  OrderNum = "orderNum",
-  CreatedAt = "createdAt",
-  UpdatedAt = "updatedAt",
-}
-
-export enum PostApiKnowledgeFolderQueryOrderEnum {
-  Asc = "asc",
-  Desc = "desc",
-}
-
-export interface PostApiKnowledgeFolderQueryPayload {
-  filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtStart?: string;
-    ids?: string[];
-    name?: string;
-    names?: string[];
-    parentId?: string | null;
-  };
-  /**
-   * @min 1
-   * @max 100
-   * @default 20
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-  sort?: {
-    field: PostApiKnowledgeFolderQueryFieldEnum;
-    order: PostApiKnowledgeFolderQueryOrderEnum;
+    field: PostApiKnowledgeVersionsQueryFieldEnum;
+    order: PostApiKnowledgeVersionsQueryOrderEnum;
   };
 }
 
@@ -7946,6 +7176,17 @@ export interface PostApiSystemUserRoleQueryPayload {
   };
 }
 
+export interface PostMcpByIdParams {
+  id: string;
+}
+
+export interface PostMcpByIdPayload {
+  id: string | number;
+  jsonrpc: "2.0";
+  method: string;
+  params?: any;
+}
+
 export interface PutApiAiAgentBatchData {
   data: any;
   /** @default "ok" */
@@ -8867,131 +8108,6 @@ export interface PutApiAuthPasswordPayload {
   oldPassword: string;
 }
 
-export interface PutApiFilesByIdContentData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesByIdContentParams {
-  id: string;
-}
-
-export interface PutApiFilesByIdContentPayload {
-  content: string;
-}
-
-export interface PutApiFilesByIdDescriptionData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesByIdDescriptionParams {
-  id: string;
-}
-
-export interface PutApiFilesByIdDescriptionPayload {
-  description: string | null;
-}
-
-export interface PutApiFilesByIdRenameData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesByIdRenameParams {
-  id: string;
-}
-
-export interface PutApiFilesByIdRenamePayload {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-}
-
-export interface PutApiFilesFoldersByIdDescriptionData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesFoldersByIdDescriptionParams {
-  id: string;
-}
-
-export interface PutApiFilesFoldersByIdDescriptionPayload {
-  description: string | null;
-}
-
-export interface PutApiFilesFoldersByIdOrderData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesFoldersByIdOrderParams {
-  id: string;
-}
-
-export interface PutApiFilesFoldersByIdOrderPayload {
-  /**
-   * @min -9007199254740991
-   * @max 9007199254740991
-   */
-  orderNum: number;
-}
-
-export interface PutApiFilesFoldersByIdRenameData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesFoldersByIdRenameParams {
-  id: string;
-}
-
-export interface PutApiFilesFoldersByIdRenamePayload {
-  /**
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-}
-
-export interface PutApiFilesFoldersByIdStyleData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiFilesFoldersByIdStyleParams {
-  id: string;
-}
-
-export interface PutApiFilesFoldersByIdStylePayload {
-  color?: string | null;
-  icon?: string | null;
-}
-
 export interface PutApiImConversationByIdData {
   data: any;
   /** @default "ok" */
@@ -9261,7 +8377,7 @@ export interface PutApiImTempFileByIdPayload {
   };
 }
 
-export interface PutApiKnowledgeFileBatchData {
+export interface PutApiKnowledgeNodesByIdData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -9269,230 +8385,29 @@ export interface PutApiKnowledgeFileBatchData {
   status: number;
 }
 
-export interface PutApiKnowledgeFileBatchPayload {
-  data: {
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket?: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    downloadCount?: number;
-    /** ETag */
-    etag?: string | null;
-    /** 扩展名 */
-    extension?: string | null;
-    /** 文件夹ID */
-    folderId?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 公开 */
-    isPublic?: boolean;
-    /** 元数据 */
-    metadata?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** MIME类型 */
-    mimeType?: string | null;
-    /**
-     * 文件名称
-     * @maxLength 255
-     */
-    name?: string;
-    /**
-     * 原始文件名
-     * @maxLength 255
-     */
-    originalName?: string;
-    /** 处理结果 */
-    processResult?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** 处理状态 */
-    processStatus?: string | null;
-    /** 区域 */
-    region?: string | null;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /** 状态 */
-    status?: string | null;
-    /** 存储类型 */
-    storageClass?: string | null;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey?: string;
-    /** 标签 */
-    tags?: string[];
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    versionCount?: number;
-    /** 版本ID */
-    versionId?: string | null;
-  };
-  ids: string[];
-}
-
-export interface PutApiKnowledgeFileByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiKnowledgeFileByIdParams {
+export interface PutApiKnowledgeNodesByIdParams {
   id: string;
 }
 
-export interface PutApiKnowledgeFileByIdPayload {
-  data: {
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket?: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    downloadCount?: number;
-    /** ETag */
-    etag?: string | null;
-    /** 扩展名 */
-    extension?: string | null;
-    /** 文件夹ID */
-    folderId?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 公开 */
-    isPublic?: boolean;
-    /** 元数据 */
-    metadata?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** MIME类型 */
-    mimeType?: string | null;
-    /**
-     * 文件名称
-     * @maxLength 255
-     */
-    name?: string;
-    /**
-     * 原始文件名
-     * @maxLength 255
-     */
-    originalName?: string;
-    /** 处理结果 */
-    processResult?:
-      | ((string | number | boolean | null) | Record<string, any> | any[])
-      | null;
-    /** 处理状态 */
-    processStatus?: string | null;
-    /** 区域 */
-    region?: string | null;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /** 状态 */
-    status?: string | null;
-    /** 存储类型 */
-    storageClass?: string | null;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey?: string;
-    /** 标签 */
-    tags?: string[];
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-    /**
-     * 下载次数
-     * @min -2147483648
-     * @max 2147483647
-     */
-    versionCount?: number;
-    /** 版本ID */
-    versionId?: string | null;
-  };
+export interface PutApiKnowledgeNodesByIdPayload {
+  color?: string | null;
+  description?: string | null;
+  icon?: string | null;
+  isPublic?: boolean;
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name?: string;
+  /**
+   * @min -9007199254740991
+   * @max 9007199254740991
+   */
+  orderNum?: number;
+  tags?: string[];
 }
 
-export interface PutApiKnowledgeFileVersionBatchData {
+export interface PutApiKnowledgeNodesByIdPermissionsData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -9500,126 +8415,40 @@ export interface PutApiKnowledgeFileVersionBatchData {
   status: number;
 }
 
-export interface PutApiKnowledgeFileVersionBatchPayload {
-  data: {
-    /** S3版本ID */
-    s3VersionId?: string | null;
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket?: string;
-    /** 变更日志 */
-    changeLog?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建人
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建人ID */
-    createdById?: string | null;
-    /** ETag */
-    etag?: string | null;
-    /**
-     * 文件ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    fileId?: string;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey?: string;
-    /**
-     * 版本号
-     * @maxLength 32
-     */
-    versionNumber?: string;
-  };
-  ids: string[];
+/** @default "allow" */
+export enum PutApiKnowledgeNodesByIdPermissionsEffectEnum {
+  Allow = "allow",
+  Deny = "deny",
 }
 
-export interface PutApiKnowledgeFileVersionByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiKnowledgeFileVersionByIdParams {
+export interface PutApiKnowledgeNodesByIdPermissionsParams {
   id: string;
 }
 
-export interface PutApiKnowledgeFileVersionByIdPayload {
-  data: {
-    /** S3版本ID */
-    s3VersionId?: string | null;
-    /**
-     * 存储桶
-     * @maxLength 128
-     */
-    bucket?: string;
-    /** 变更日志 */
-    changeLog?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建人
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建人ID */
-    createdById?: string | null;
-    /** ETag */
-    etag?: string | null;
-    /**
-     * 文件ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    fileId?: string;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /**
-     * 文件大小
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size?: number;
-    /**
-     * 存储键
-     * @maxLength 512
-     */
-    storageKey?: string;
-    /**
-     * 版本号
-     * @maxLength 32
-     */
-    versionNumber?: string;
-  };
+export interface PutApiKnowledgeNodesByIdPermissionsPayload {
+  permissions: {
+    /** @default "allow" */
+    effect?: PutApiKnowledgeNodesByIdPermissionsEffectEnum;
+    permission: PutApiKnowledgeNodesByIdPermissionsPermissionEnum;
+    subjectId: string;
+    subjectType: PutApiKnowledgeNodesByIdPermissionsSubjectTypeEnum;
+  }[];
 }
 
-export interface PutApiKnowledgeFolderBatchData {
+export enum PutApiKnowledgeNodesByIdPermissionsPermissionEnum {
+  Read = "read",
+  Write = "write",
+  Delete = "delete",
+  Manage = "manage",
+}
+
+export enum PutApiKnowledgeNodesByIdPermissionsSubjectTypeEnum {
+  User = "user",
+  Role = "role",
+  Dept = "dept",
+}
+
+export interface PutApiKnowledgeNodesByIdTextData {
   data: any;
   /** @default "ok" */
   message: string;
@@ -9627,133 +8456,31 @@ export interface PutApiKnowledgeFolderBatchData {
   status: number;
 }
 
-export interface PutApiKnowledgeFolderBatchPayload {
-  data: {
-    /** 颜色 */
-    color?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /** 图标 */
-    icon?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 是否公开 */
-    isPublic?: boolean;
-    /**
-     * 文件夹名称
-     * @maxLength 255
-     */
-    name?: string;
-    /**
-     * 排序号
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    /** 父文件夹ID */
-    parentId?: string | null;
-    /** 路径 */
-    path?: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  };
-  ids: string[];
-}
-
-export interface PutApiKnowledgeFolderByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiKnowledgeFolderByIdParams {
+export interface PutApiKnowledgeNodesByIdTextParams {
   id: string;
 }
 
-export interface PutApiKnowledgeFolderByIdPayload {
-  data: {
-    /** 颜色 */
-    color?: string | null;
-    /** 创建时间 */
-    createdAt?: string;
+export interface PutApiKnowledgeNodesByIdTextPayload {
+  content: string;
+}
+
+export interface PutApiKnowledgeNodesOrderData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiKnowledgeNodesOrderPayload {
+  items: {
+    id: string;
     /**
-     * 创建者
-     * @maxLength 64
+     * @min -9007199254740991
+     * @max 9007199254740991
      */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 删除时间 */
-    deletedAt?: string | null;
-    /** 删除者 */
-    deletedBy?: string | null;
-    /** 删除者ID */
-    deletedById?: string | null;
-    /** 描述 */
-    description?: string | null;
-    /** 图标 */
-    icon?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 是否公开 */
-    isPublic?: boolean;
-    /**
-     * 文件夹名称
-     * @maxLength 255
-     */
-    name?: string;
-    /**
-     * 排序号
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum?: number;
-    /** 父文件夹ID */
-    parentId?: string | null;
-    /** 路径 */
-    path?: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  };
+    orderNum: number;
+  }[];
 }
 
 export interface PutApiSystemCasbinRuleRoleByRoleKeyPermissionsData {
@@ -11049,45 +9776,51 @@ export interface PutApiSystemUserRoleUserByUserIdPayload {
   roleIds: string[];
 }
 
-export enum ResourceTypeEnum {
-  Folder = "folder",
-  File = "file",
-}
-
-export enum ResourceTypeEnum1 {
-  Folder = "folder",
-  File = "file",
-}
-
-export enum ResourceTypeEnum2 {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum ResourceTypeEnum3 {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum ResourceTypeEnum4 {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum ResourceTypeEnum5 {
-  File = "file",
-  Folder = "folder",
-}
-
-export enum ResourceTypeEnum6 {
-  File = "file",
-  Folder = "folder",
-}
-
 export enum SubjectTypeEnum {
   User = "user",
   Role = "role",
   Dept = "dept",
+}
+
+export enum TypeEnum {
+  Folder = "folder",
+  File = "file",
+}
+
+export namespace Mcp {
+  /**
+   * @description Get MCP server information for discovery
+   * @tags mcp
+   * @name GetMcpById
+   * @summary Get MCP Server Info
+   * @request GET:/mcp/{id}
+   */
+  export namespace GetMcpById {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * @description Handle MCP protocol JSON-RPC requests
+   * @tags mcp
+   * @name PostMcpById
+   * @summary MCP JSON-RPC Endpoint
+   * @request POST:/mcp/{id}
+   */
+  export namespace PostMcpById {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PostMcpByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
 }
 
 export namespace Ai {
@@ -11483,6 +10216,24 @@ export namespace Ai {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiAiMcpServerByIdData;
+  }
+
+  /**
+   * @description 获取MCP服务的配置JSON，用于集成到AI工具
+   * @tags ai, mcpServer
+   * @name GetApiAiMcpServerByIdConfig
+   * @summary 获取MCP配置
+   * @request GET:/api/ai/mcp-server/{id}/config
+   * @response `200` `GetApiAiMcpServerByIdConfigData` Response for status 200
+   */
+  export namespace GetApiAiMcpServerByIdConfig {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiMcpServerByIdConfigData;
   }
 
   /**
@@ -15261,493 +14012,696 @@ export namespace System {
 
 export namespace Knowledge {
   /**
-   * @description 取消收藏文件或文件夹
+   * @description 取消收藏节点
    * @tags knowledge, favorite
-   * @name DeleteApiKnowledgeFavoriteByResourceTypeByResourceId
+   * @name DeleteApiKnowledgeFavoritesByNodeId
    * @summary 取消收藏
-   * @request DELETE:/api/knowledge/favorite/{resourceType}/{resourceId}
-   * @response `200` `DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData` Response for status 200
+   * @request DELETE:/api/knowledge/favorites/{nodeId}
+   * @response `200` `DeleteApiKnowledgeFavoritesByNodeIdData` Response for status 200
    */
-  export namespace DeleteApiKnowledgeFavoriteByResourceTypeByResourceId {
+  export namespace DeleteApiKnowledgeFavoritesByNodeId {
     export type RequestParams = {
-      resourceId: string;
-      resourceType: DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams1ResourceTypeEnum;
+      nodeId: string;
     };
     export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiKnowledgeFavoritesByNodeIdData;
+  }
+
+  /**
+   * @description 软删除节点（文件夹会递归删除子节点）
+   * @tags knowledge, node, mutation
+   * @name DeleteApiKnowledgeNodesById
+   * @summary 删除节点
+   * @request DELETE:/api/knowledge/nodes/{id}
+   * @response `200` `DeleteApiKnowledgeNodesByIdData` Response for status 200
+   */
+  export namespace DeleteApiKnowledgeNodesById {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiKnowledgeNodesByIdData;
+  }
+
+  /**
+   * @description 移除节点的权限
+   * @tags knowledge, permission
+   * @name DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId
+   * @summary 移除权限
+   * @request DELETE:/api/knowledge/nodes/{id}/permissions/{subjectType}/{subjectId}
+   * @response `200` `DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdData` Response for status 200
+   */
+  export namespace DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId {
+    export type RequestParams = {
+      id: string;
+      subjectId: string;
+      subjectType: DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1SubjectTypeEnum;
+    };
+    export type RequestQuery = {
+      permission?: DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1PermissionEnum;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody =
-      DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData;
+      DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdData;
   }
 
   /**
-   * @description 根据ID软删除文件
-   * @tags knowledge, file
-   * @name DeleteApiKnowledgeFileById
-   * @summary 删除文件
-   * @request DELETE:/api/knowledge/file/{id}
-   * @response `200` `DeleteApiKnowledgeFileByIdData` Response for status 200
+   * @description 根据主键ID查询单个节点
+   * @tags knowledge, node, query
+   * @name GetApiKnowledgeNodesById
+   * @summary 根据ID查询节点
+   * @request GET:/api/knowledge/nodes/{id}
+   * @response `200` `GetApiKnowledgeNodesByIdData` Response for status 200
    */
-  export namespace DeleteApiKnowledgeFileById {
+  export namespace GetApiKnowledgeNodesById {
     export type RequestParams = {
       id: string;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiKnowledgeFileByIdData;
+    export type ResponseBody = GetApiKnowledgeNodesByIdData;
   }
 
   /**
-   * @description 根据ID硬删除文件版本
-   * @tags knowledge, fileVersion
-   * @name DeleteApiKnowledgeFileVersionById
-   * @summary 删除文件版本
-   * @request DELETE:/api/knowledge/file-version/{id}
-   * @response `200` `DeleteApiKnowledgeFileVersionByIdData` Response for status 200
+   * @description 获取指定父节点下的所有子节点
+   * @tags knowledge, node, query
+   * @name GetApiKnowledgeNodesByIdChildren
+   * @summary 获取子节点
+   * @request GET:/api/knowledge/nodes/{id}/children
+   * @response `200` `GetApiKnowledgeNodesByIdChildrenData` Response for status 200
    */
-  export namespace DeleteApiKnowledgeFileVersionById {
+  export namespace GetApiKnowledgeNodesByIdChildren {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {
+      type?: GetApiKnowledgeNodesByIdChildrenParams1TypeEnum;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesByIdChildrenData;
+  }
+
+  /**
+   * @description 获取文件原始内容（不验证类型）
+   * @tags knowledge, content
+   * @name GetApiKnowledgeNodesByIdContent
+   * @summary 获取原始内容
+   * @request GET:/api/knowledge/nodes/{id}/content
+   * @response `200` `GetApiKnowledgeNodesByIdContentData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesByIdContent {
     export type RequestParams = {
       id: string;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiKnowledgeFileVersionByIdData;
+    export type ResponseBody = GetApiKnowledgeNodesByIdContentData;
   }
 
   /**
-   * @description 根据ID软删除文件夹
-   * @tags knowledge, folder
-   * @name DeleteApiKnowledgeFolderById
-   * @summary 删除文件夹
-   * @request DELETE:/api/knowledge/folder/{id}
-   * @response `200` `DeleteApiKnowledgeFolderByIdData` Response for status 200
+   * @description 获取文件预签名下载URL
+   * @tags knowledge, content
+   * @name GetApiKnowledgeNodesByIdDownloadUrl
+   * @summary 获取下载URL
+   * @request GET:/api/knowledge/nodes/{id}/download-url
+   * @response `200` `GetApiKnowledgeNodesByIdDownloadUrlData` Response for status 200
    */
-  export namespace DeleteApiKnowledgeFolderById {
+  export namespace GetApiKnowledgeNodesByIdDownloadUrl {
     export type RequestParams = {
       id: string;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiKnowledgeFolderByIdData;
+    export type ResponseBody = GetApiKnowledgeNodesByIdDownloadUrlData;
   }
 
   /**
-   * @description 检查资源是否已被收藏
+   * @description 获取用户对节点的有效权限
+   * @tags knowledge, permission
+   * @name GetApiKnowledgeNodesByIdEffectivePermissions
+   * @summary 获取有效权限
+   * @request GET:/api/knowledge/nodes/{id}/effective-permissions
+   * @response `200` `GetApiKnowledgeNodesByIdEffectivePermissionsData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesByIdEffectivePermissions {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {
+      userId?: string;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesByIdEffectivePermissionsData;
+  }
+
+  /**
+   * @description 获取节点的完整路径（面包屑）
+   * @tags knowledge, operations
+   * @name GetApiKnowledgeNodesByIdPath
+   * @summary 获取节点路径
+   * @request GET:/api/knowledge/nodes/{id}/path
+   * @response `200` `GetApiKnowledgeNodesByIdPathData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesByIdPath {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesByIdPathData;
+  }
+
+  /**
+   * @description 获取节点的权限列表
+   * @tags knowledge, permission
+   * @name GetApiKnowledgeNodesByIdPermissions
+   * @summary 获取节点权限
+   * @request GET:/api/knowledge/nodes/{id}/permissions
+   * @response `200` `GetApiKnowledgeNodesByIdPermissionsData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesByIdPermissions {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesByIdPermissionsData;
+  }
+
+  /**
+   * @description 获取文本文件内容
+   * @tags knowledge, content
+   * @name GetApiKnowledgeNodesByIdText
+   * @summary 获取文本内容
+   * @request GET:/api/knowledge/nodes/{id}/text
+   * @response `200` `GetApiKnowledgeNodesByIdTextData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesByIdText {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesByIdTextData;
+  }
+
+  /**
+   * @description 获取文件的所有历史版本
+   * @tags knowledge, version
+   * @name GetApiKnowledgeNodesByIdVersions
+   * @summary 获取版本列表
+   * @request GET:/api/knowledge/nodes/{id}/versions
+   * @response `200` `GetApiKnowledgeNodesByIdVersionsData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesByIdVersions {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesByIdVersionsData;
+  }
+
+  /**
+   * @description 获取节点表的JSON Schema
+   * @tags knowledge, node, schema
+   * @name GetApiKnowledgeNodesSchema
+   * @summary 获取节点Schema
+   * @request GET:/api/knowledge/nodes/schema
+   * @response `200` `GetApiKnowledgeNodesSchemaData` Response for status 200
+   */
+  export namespace GetApiKnowledgeNodesSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeNodesSchemaData;
+  }
+
+  /**
+   * @description 获取历史版本的下载URL
+   * @tags knowledge, version
+   * @name GetApiKnowledgeVersionsByIdDownloadUrl
+   * @summary 下载历史版本
+   * @request GET:/api/knowledge/versions/{id}/download-url
+   * @response `200` `GetApiKnowledgeVersionsByIdDownloadUrlData` Response for status 200
+   */
+  export namespace GetApiKnowledgeVersionsByIdDownloadUrl {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeVersionsByIdDownloadUrlData;
+  }
+
+  /**
+   * @description 获取版本表的JSON Schema
+   * @tags knowledge, version
+   * @name GetApiKnowledgeVersionsSchema
+   * @summary 获取版本Schema
+   * @request GET:/api/knowledge/versions/schema
+   * @response `200` `GetApiKnowledgeVersionsSchemaData` Response for status 200
+   */
+  export namespace GetApiKnowledgeVersionsSchema {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiKnowledgeVersionsSchemaData;
+  }
+
+  /**
+   * @description 收藏节点
    * @tags knowledge, favorite
-   * @name GetApiKnowledgeFavoriteCheckByResourceTypeByResourceId
-   * @summary 检查收藏状态
-   * @request GET:/api/knowledge/favorite/check/{resourceType}/{resourceId}
-   * @response `200` `GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFavoriteCheckByResourceTypeByResourceId {
-    export type RequestParams = {
-      resourceId: string;
-      resourceType: GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams1ResourceTypeEnum;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody =
-      GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个文件（需要权限）
-   * @tags knowledge, file
-   * @name GetApiKnowledgeFileById
-   * @summary 根据ID查询文件
-   * @request GET:/api/knowledge/file/{id}
-   * @response `200` `GetApiKnowledgeFileByIdData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFileById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeFileByIdData;
-  }
-
-  /**
-   * @description 获取文件表的JSON Schema
-   * @tags knowledge, file
-   * @name GetApiKnowledgeFileSchema
-   * @summary 获取文件Schema
-   * @request GET:/api/knowledge/file/schema
-   * @response `200` `GetApiKnowledgeFileSchemaData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFileSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeFileSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个文件版本
-   * @tags knowledge, fileVersion
-   * @name GetApiKnowledgeFileVersionById
-   * @summary 根据ID查询文件版本
-   * @request GET:/api/knowledge/file-version/{id}
-   * @response `200` `GetApiKnowledgeFileVersionByIdData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFileVersionById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeFileVersionByIdData;
-  }
-
-  /**
-   * @description 获取文件版本表的JSON Schema
-   * @tags knowledge, fileVersion
-   * @name GetApiKnowledgeFileVersionSchema
-   * @summary 获取文件版本Schema
-   * @request GET:/api/knowledge/file-version/schema
-   * @response `200` `GetApiKnowledgeFileVersionSchemaData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFileVersionSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeFileVersionSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个文件夹
-   * @tags knowledge, folder
-   * @name GetApiKnowledgeFolderById
-   * @summary 根据ID查询文件夹
-   * @request GET:/api/knowledge/folder/{id}
-   * @response `200` `GetApiKnowledgeFolderByIdData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFolderById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeFolderByIdData;
-  }
-
-  /**
-   * @description 获取文件夹表的JSON Schema
-   * @tags knowledge, folder
-   * @name GetApiKnowledgeFolderSchema
-   * @summary 获取文件夹Schema
-   * @request GET:/api/knowledge/folder/schema
-   * @response `200` `GetApiKnowledgeFolderSchemaData` Response for status 200
-   */
-  export namespace GetApiKnowledgeFolderSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiKnowledgeFolderSchemaData;
-  }
-
-  /**
-   * @description 收藏文件或文件夹
-   * @tags knowledge, favorite
-   * @name PostApiKnowledgeFavorite
+   * @name PostApiKnowledgeFavorites
    * @summary 添加收藏
-   * @request POST:/api/knowledge/favorite
-   * @response `200` `PostApiKnowledgeFavoriteData` Response for status 200
+   * @request POST:/api/knowledge/favorites
+   * @response `200` `PostApiKnowledgeFavoritesData` Response for status 200
    */
-  export namespace PostApiKnowledgeFavorite {
+  export namespace PostApiKnowledgeFavorites {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFavoritePayload;
+    export type RequestBody = PostApiKnowledgeFavoritesPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFavoriteData;
+    export type ResponseBody = PostApiKnowledgeFavoritesData;
   }
 
   /**
-   * @description 批量检查多个资源是否已被收藏
+   * @description 检查节点是否已收藏
    * @tags knowledge, favorite
-   * @name PostApiKnowledgeFavoriteCheckBatch
-   * @summary 批量检查收藏状态
-   * @request POST:/api/knowledge/favorite/check-batch
-   * @response `200` `PostApiKnowledgeFavoriteCheckBatchData` Response for status 200
+   * @name PostApiKnowledgeFavoritesCheck
+   * @summary 检查收藏状态
+   * @request POST:/api/knowledge/favorites/check
+   * @response `200` `PostApiKnowledgeFavoritesCheckData` Response for status 200
    */
-  export namespace PostApiKnowledgeFavoriteCheckBatch {
+  export namespace PostApiKnowledgeFavoritesCheck {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFavoriteCheckBatchPayload;
+    export type RequestBody = PostApiKnowledgeFavoritesCheckPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFavoriteCheckBatchData;
+    export type ResponseBody = PostApiKnowledgeFavoritesCheckData;
   }
 
   /**
-   * @description 获取当前用户的收藏列表
+   * @description 获取当前用户的收藏列表（带节点详情）
    * @tags knowledge, favorite
-   * @name PostApiKnowledgeFavoriteList
+   * @name PostApiKnowledgeFavoritesList
    * @summary 获取收藏列表
-   * @request POST:/api/knowledge/favorite/list
-   * @response `200` `PostApiKnowledgeFavoriteListData` Response for status 200
+   * @request POST:/api/knowledge/favorites/list
+   * @response `200` `PostApiKnowledgeFavoritesListData` Response for status 200
    */
-  export namespace PostApiKnowledgeFavoriteList {
+  export namespace PostApiKnowledgeFavoritesList {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFavoriteListPayload;
+    export type RequestBody = PostApiKnowledgeFavoritesListPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFavoriteListData;
+    export type ResponseBody = PostApiKnowledgeFavoritesListData;
   }
 
   /**
-   * @description 创建单个文件记录
-   * @tags knowledge, file
-   * @name PostApiKnowledgeFile
-   * @summary 创建文件
-   * @request POST:/api/knowledge/file
-   * @response `200` `PostApiKnowledgeFileData` Response for status 200
+   * @description 创建文件夹或文件节点
+   * @tags knowledge, node, mutation
+   * @name PostApiKnowledgeNodes
+   * @summary 创建节点
+   * @request POST:/api/knowledge/nodes
+   * @response `200` `PostApiKnowledgeNodesData` Response for status 200
    */
-  export namespace PostApiKnowledgeFile {
+  export namespace PostApiKnowledgeNodes {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFilePayload;
+    export type RequestBody = PostApiKnowledgeNodesPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFileData;
+    export type ResponseBody = PostApiKnowledgeNodesData;
   }
 
   /**
-   * @description 批量创建多个文件记录
-   * @tags knowledge, file
-   * @name PostApiKnowledgeFileBatch
-   * @summary 批量创建文件
-   * @request POST:/api/knowledge/file/batch
-   * @response `200` `PostApiKnowledgeFileBatchData` Response for status 200
+   * @description 复制节点到目标文件夹
+   * @tags knowledge, operations
+   * @name PostApiKnowledgeNodesByIdCopy
+   * @summary 复制节点
+   * @request POST:/api/knowledge/nodes/{id}/copy
+   * @response `200` `PostApiKnowledgeNodesByIdCopyData` Response for status 200
    */
-  export namespace PostApiKnowledgeFileBatch {
-    export type RequestParams = {};
+  export namespace PostApiKnowledgeNodesByIdCopy {
+    export type RequestParams = {
+      id: string;
+    };
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFileBatchPayload;
+    export type RequestBody = PostApiKnowledgeNodesByIdCopyPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFileBatchData;
+    export type ResponseBody = PostApiKnowledgeNodesByIdCopyData;
   }
 
   /**
-   * @description 分页查询文件列表，自动排除已删除数据，自动筛选当前用户的文件
-   * @tags knowledge, file
-   * @name PostApiKnowledgeFileQuery
-   * @summary 分页查询文件
-   * @request POST:/api/knowledge/file/query
-   * @response `200` `PostApiKnowledgeFileQueryData` Response for status 200
+   * @description 移动节点到目标文件夹
+   * @tags knowledge, operations
+   * @name PostApiKnowledgeNodesByIdMove
+   * @summary 移动节点
+   * @request POST:/api/knowledge/nodes/{id}/move
+   * @response `200` `PostApiKnowledgeNodesByIdMoveData` Response for status 200
    */
-  export namespace PostApiKnowledgeFileQuery {
-    export type RequestParams = {};
+  export namespace PostApiKnowledgeNodesByIdMove {
+    export type RequestParams = {
+      id: string;
+    };
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFileQueryPayload;
+    export type RequestBody = PostApiKnowledgeNodesByIdMovePayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFileQueryData;
+    export type ResponseBody = PostApiKnowledgeNodesByIdMoveData;
   }
 
   /**
-   * @description 创建单个文件版本
-   * @tags knowledge, fileVersion
-   * @name PostApiKnowledgeFileVersion
-   * @summary 创建文件版本
-   * @request POST:/api/knowledge/file-version
-   * @response `200` `PostApiKnowledgeFileVersionData` Response for status 200
+   * @description 为节点添加权限
+   * @tags knowledge, permission
+   * @name PostApiKnowledgeNodesByIdPermissions
+   * @summary 添加权限
+   * @request POST:/api/knowledge/nodes/{id}/permissions
+   * @response `200` `PostApiKnowledgeNodesByIdPermissionsData` Response for status 200
    */
-  export namespace PostApiKnowledgeFileVersion {
-    export type RequestParams = {};
+  export namespace PostApiKnowledgeNodesByIdPermissions {
+    export type RequestParams = {
+      id: string;
+    };
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFileVersionPayload;
+    export type RequestBody = PostApiKnowledgeNodesByIdPermissionsPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFileVersionData;
+    export type ResponseBody = PostApiKnowledgeNodesByIdPermissionsData;
   }
 
   /**
-   * @description 批量创建多个文件版本
-   * @tags knowledge, fileVersion
-   * @name PostApiKnowledgeFileVersionBatch
-   * @summary 批量创建文件版本
-   * @request POST:/api/knowledge/file-version/batch
-   * @response `200` `PostApiKnowledgeFileVersionBatchData` Response for status 200
+   * @description 快速共享节点给用户
+   * @tags knowledge, permission
+   * @name PostApiKnowledgeNodesByIdQuickShare
+   * @summary 快捷共享
+   * @request POST:/api/knowledge/nodes/{id}/quick-share
+   * @response `200` `PostApiKnowledgeNodesByIdQuickShareData` Response for status 200
    */
-  export namespace PostApiKnowledgeFileVersionBatch {
+  export namespace PostApiKnowledgeNodesByIdQuickShare {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesByIdQuickSharePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesByIdQuickShareData;
+  }
+
+  /**
+   * @description 取消用户对节点的所有权限
+   * @tags knowledge, permission
+   * @name PostApiKnowledgeNodesByIdRevokeShare
+   * @summary 取消共享
+   * @request POST:/api/knowledge/nodes/{id}/revoke-share
+   * @response `200` `PostApiKnowledgeNodesByIdRevokeShareData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesByIdRevokeShare {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesByIdRevokeSharePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesByIdRevokeShareData;
+  }
+
+  /**
+   * @description 检查指定父节点下是否存在同名节点
+   * @tags knowledge, operations
+   * @name PostApiKnowledgeNodesCheckExists
+   * @summary 检查节点是否存在
+   * @request POST:/api/knowledge/nodes/check-exists
+   * @response `200` `PostApiKnowledgeNodesCheckExistsData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesCheckExists {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFileVersionBatchPayload;
+    export type RequestBody = PostApiKnowledgeNodesCheckExistsPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFileVersionBatchData;
+    export type ResponseBody = PostApiKnowledgeNodesCheckExistsData;
+  }
+
+  /**
+   * @description 批量软删除多个节点
+   * @tags knowledge, node, mutation
+   * @name PostApiKnowledgeNodesDeleteBatch
+   * @summary 批量删除节点
+   * @request POST:/api/knowledge/nodes/delete-batch
+   * @response `200` `PostApiKnowledgeNodesDeleteBatchData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesDeleteBatch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesDeleteBatchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesDeleteBatchData;
+  }
+
+  /**
+   * @description 分页查询知识库节点列表，自动筛选当前用户的节点
+   * @tags knowledge, node, query
+   * @name PostApiKnowledgeNodesQuery
+   * @summary 分页查询节点
+   * @request POST:/api/knowledge/nodes/query
+   * @response `200` `PostApiKnowledgeNodesQueryData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesQueryData;
+  }
+
+  /**
+   * @description 全文搜索知识库节点
+   * @tags knowledge, operations
+   * @name PostApiKnowledgeNodesSearch
+   * @summary 搜索节点
+   * @request POST:/api/knowledge/nodes/search
+   * @response `200` `PostApiKnowledgeNodesSearchData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesSearch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesSearchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesSearchData;
+  }
+
+  /**
+   * @description 获取当前用户共享给他人的节点
+   * @tags knowledge, share
+   * @name PostApiKnowledgeShareMyShared
+   * @summary 获取我共享的资源
+   * @request POST:/api/knowledge/share/my-shared
+   * @response `200` `PostApiKnowledgeShareMySharedData` Response for status 200
+   */
+  export namespace PostApiKnowledgeShareMyShared {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeShareMySharedPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeShareMySharedData;
+  }
+
+  /**
+   * @description 获取他人共享给当前用户的节点，支持文件夹层级浏览
+   * @tags knowledge, share
+   * @name PostApiKnowledgeShareSharedWithMe
+   * @summary 获取共享给我的资源
+   * @request POST:/api/knowledge/share/shared-with-me
+   * @response `200` `PostApiKnowledgeShareSharedWithMeData` Response for status 200
+   */
+  export namespace PostApiKnowledgeShareSharedWithMe {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeShareSharedWithMePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeShareSharedWithMeData;
+  }
+
+  /**
+   * @description 确认文件上传完成并创建节点
+   * @tags knowledge, upload
+   * @name PostApiKnowledgeUploadConfirm
+   * @summary 确认上传
+   * @request POST:/api/knowledge/upload/confirm
+   * @response `200` `PostApiKnowledgeUploadConfirmData` Response for status 200
+   */
+  export namespace PostApiKnowledgeUploadConfirm {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeUploadConfirmPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeUploadConfirmData;
+  }
+
+  /**
+   * @description 直接上传小文件（Base64）
+   * @tags knowledge, upload
+   * @name PostApiKnowledgeUploadDirect
+   * @summary 直接上传
+   * @request POST:/api/knowledge/upload/direct
+   * @response `200` `PostApiKnowledgeUploadDirectData` Response for status 200
+   */
+  export namespace PostApiKnowledgeUploadDirect {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeUploadDirectPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeUploadDirectData;
+  }
+
+  /**
+   * @description 上传文件并处理冲突（覆盖/新版本/副本）
+   * @tags knowledge, upload
+   * @name PostApiKnowledgeUploadForce
+   * @summary 强制上传
+   * @request POST:/api/knowledge/upload/force
+   * @response `200` `PostApiKnowledgeUploadForceData` Response for status 200
+   */
+  export namespace PostApiKnowledgeUploadForce {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeUploadForcePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeUploadForceData;
+  }
+
+  /**
+   * @description 获取预签名上传URL
+   * @tags knowledge, upload
+   * @name PostApiKnowledgeUploadUrl
+   * @summary 获取上传URL
+   * @request POST:/api/knowledge/upload/url
+   * @response `200` `PostApiKnowledgeUploadUrlData` Response for status 200
+   */
+  export namespace PostApiKnowledgeUploadUrl {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeUploadUrlPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeUploadUrlData;
+  }
+
+  /**
+   * @description 将历史版本恢复为当前版本
+   * @tags knowledge, version
+   * @name PostApiKnowledgeVersionsByIdRestore
+   * @summary 恢复历史版本
+   * @request POST:/api/knowledge/versions/{id}/restore
+   * @response `200` `PostApiKnowledgeVersionsByIdRestoreData` Response for status 200
+   */
+  export namespace PostApiKnowledgeVersionsByIdRestore {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeVersionsByIdRestoreData;
   }
 
   /**
    * @description 分页查询文件版本列表
-   * @tags knowledge, fileVersion
-   * @name PostApiKnowledgeFileVersionQuery
-   * @summary 分页查询文件版本
-   * @request POST:/api/knowledge/file-version/query
-   * @response `200` `PostApiKnowledgeFileVersionQueryData` Response for status 200
+   * @tags knowledge, version
+   * @name PostApiKnowledgeVersionsQuery
+   * @summary 分页查询版本
+   * @request POST:/api/knowledge/versions/query
+   * @response `200` `PostApiKnowledgeVersionsQueryData` Response for status 200
    */
-  export namespace PostApiKnowledgeFileVersionQuery {
+  export namespace PostApiKnowledgeVersionsQuery {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFileVersionQueryPayload;
+    export type RequestBody = PostApiKnowledgeVersionsQueryPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFileVersionQueryData;
+    export type ResponseBody = PostApiKnowledgeVersionsQueryData;
   }
 
   /**
-   * @description 创建单个文件夹
-   * @tags knowledge, folder
-   * @name PostApiKnowledgeFolder
-   * @summary 创建文件夹
-   * @request POST:/api/knowledge/folder
-   * @response `200` `PostApiKnowledgeFolderData` Response for status 200
+   * @description 更新节点信息
+   * @tags knowledge, node, mutation
+   * @name PutApiKnowledgeNodesById
+   * @summary 更新节点
+   * @request PUT:/api/knowledge/nodes/{id}
+   * @response `200` `PutApiKnowledgeNodesByIdData` Response for status 200
    */
-  export namespace PostApiKnowledgeFolder {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFolderPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFolderData;
-  }
-
-  /**
-   * @description 批量创建多个文件夹
-   * @tags knowledge, folder
-   * @name PostApiKnowledgeFolderBatch
-   * @summary 批量创建文件夹
-   * @request POST:/api/knowledge/folder/batch
-   * @response `200` `PostApiKnowledgeFolderBatchData` Response for status 200
-   */
-  export namespace PostApiKnowledgeFolderBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFolderBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFolderBatchData;
-  }
-
-  /**
-   * @description 分页查询文件夹列表，自动排除已删除数据，自动筛选当前用户的文件夹
-   * @tags knowledge, folder
-   * @name PostApiKnowledgeFolderQuery
-   * @summary 分页查询文件夹
-   * @request POST:/api/knowledge/folder/query
-   * @response `200` `PostApiKnowledgeFolderQueryData` Response for status 200
-   */
-  export namespace PostApiKnowledgeFolderQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiKnowledgeFolderQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiKnowledgeFolderQueryData;
-  }
-
-  /**
-   * @description 根据ID列表批量更新文件
-   * @tags knowledge, file
-   * @name PutApiKnowledgeFileBatch
-   * @summary 批量更新文件
-   * @request PUT:/api/knowledge/file/batch
-   * @response `200` `PutApiKnowledgeFileBatchData` Response for status 200
-   */
-  export namespace PutApiKnowledgeFileBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeFileBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeFileBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个文件
-   * @tags knowledge, file
-   * @name PutApiKnowledgeFileById
-   * @summary 更新文件
-   * @request PUT:/api/knowledge/file/{id}
-   * @response `200` `PutApiKnowledgeFileByIdData` Response for status 200
-   */
-  export namespace PutApiKnowledgeFileById {
+  export namespace PutApiKnowledgeNodesById {
     export type RequestParams = {
       id: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeFileByIdPayload;
+    export type RequestBody = PutApiKnowledgeNodesByIdPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeFileByIdData;
+    export type ResponseBody = PutApiKnowledgeNodesByIdData;
   }
 
   /**
-   * @description 根据ID列表批量更新文件版本
-   * @tags knowledge, fileVersion
-   * @name PutApiKnowledgeFileVersionBatch
-   * @summary 批量更新文件版本
-   * @request PUT:/api/knowledge/file-version/batch
-   * @response `200` `PutApiKnowledgeFileVersionBatchData` Response for status 200
+   * @description 设置节点的权限（替换现有权限）
+   * @tags knowledge, permission
+   * @name PutApiKnowledgeNodesByIdPermissions
+   * @summary 设置节点权限
+   * @request PUT:/api/knowledge/nodes/{id}/permissions
+   * @response `200` `PutApiKnowledgeNodesByIdPermissionsData` Response for status 200
    */
-  export namespace PutApiKnowledgeFileVersionBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeFileVersionBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeFileVersionBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个文件版本
-   * @tags knowledge, fileVersion
-   * @name PutApiKnowledgeFileVersionById
-   * @summary 更新文件版本
-   * @request PUT:/api/knowledge/file-version/{id}
-   * @response `200` `PutApiKnowledgeFileVersionByIdData` Response for status 200
-   */
-  export namespace PutApiKnowledgeFileVersionById {
+  export namespace PutApiKnowledgeNodesByIdPermissions {
     export type RequestParams = {
       id: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeFileVersionByIdPayload;
+    export type RequestBody = PutApiKnowledgeNodesByIdPermissionsPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeFileVersionByIdData;
+    export type ResponseBody = PutApiKnowledgeNodesByIdPermissionsData;
   }
 
   /**
-   * @description 根据ID列表批量更新文件夹
-   * @tags knowledge, folder
-   * @name PutApiKnowledgeFolderBatch
-   * @summary 批量更新文件夹
-   * @request PUT:/api/knowledge/folder/batch
-   * @response `200` `PutApiKnowledgeFolderBatchData` Response for status 200
+   * @description 保存文本文件内容
+   * @tags knowledge, content
+   * @name PutApiKnowledgeNodesByIdText
+   * @summary 保存文本内容
+   * @request PUT:/api/knowledge/nodes/{id}/text
+   * @response `200` `PutApiKnowledgeNodesByIdTextData` Response for status 200
    */
-  export namespace PutApiKnowledgeFolderBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeFolderBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeFolderBatchData;
-  }
-
-  /**
-   * @description 根据ID更新单个文件夹
-   * @tags knowledge, folder
-   * @name PutApiKnowledgeFolderById
-   * @summary 更新文件夹
-   * @request PUT:/api/knowledge/folder/{id}
-   * @response `200` `PutApiKnowledgeFolderByIdData` Response for status 200
-   */
-  export namespace PutApiKnowledgeFolderById {
+  export namespace PutApiKnowledgeNodesByIdText {
     export type RequestParams = {
       id: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeFolderByIdPayload;
+    export type RequestBody = PutApiKnowledgeNodesByIdTextPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeFolderByIdData;
+    export type ResponseBody = PutApiKnowledgeNodesByIdTextData;
+  }
+
+  /**
+   * @description 批量更新节点排序
+   * @tags knowledge, operations
+   * @name PutApiKnowledgeNodesOrder
+   * @summary 更新节点排序
+   * @request PUT:/api/knowledge/nodes/order
+   * @response `200` `PutApiKnowledgeNodesOrderData` Response for status 200
+   */
+  export namespace PutApiKnowledgeNodesOrder {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PutApiKnowledgeNodesOrderPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiKnowledgeNodesOrderData;
   }
 }
 
@@ -16414,216 +15368,25 @@ export namespace Im {
   }
 }
 
+export namespace Public {
+  /**
+   * @description 上传头像到公开存储，返回可直接访问的URL
+   * @tags public, upload, avatar
+   * @name PostApiPublicUploadAvatar
+   * @summary 上传公开头像
+   * @request POST:/api/public/upload/avatar
+   * @response `200` `PostApiPublicUploadAvatarData` Response for status 200
+   */
+  export namespace PostApiPublicUploadAvatar {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiPublicUploadAvatarPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiPublicUploadAvatarData;
+  }
+}
+
 export namespace Files {
-  /**
-   * @description 软删除文件
-   * @tags files, files
-   * @name DeleteApiFilesById
-   * @summary 删除文件
-   * @request DELETE:/api/files/{id}
-   * @response `200` `DeleteApiFilesByIdData` Response for status 200
-   */
-  export namespace DeleteApiFilesById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiFilesByIdData;
-  }
-
-  /**
-   * @description 软删除文件夹及其内容
-   * @tags files, files
-   * @name DeleteApiFilesFoldersById
-   * @summary 删除文件夹
-   * @request DELETE:/api/files/folders/{id}
-   * @response `200` `DeleteApiFilesFoldersByIdData` Response for status 200
-   */
-  export namespace DeleteApiFilesFoldersById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiFilesFoldersByIdData;
-  }
-
-  /**
-   * @description 删除资源的所有权限和继承关系
-   * @tags files, permission
-   * @name DeleteApiFilesPermissionAllByResourceTypeByResourceId
-   * @summary 删除所有权限
-   * @request DELETE:/api/files/permission/all/{resourceType}/{resourceId}
-   * @response `200` `DeleteApiFilesPermissionAllByResourceTypeByResourceIdData` Response for status 200
-   */
-  export namespace DeleteApiFilesPermissionAllByResourceTypeByResourceId {
-    export type RequestParams = {
-      resourceId: string;
-      resourceType: DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams1ResourceTypeEnum;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody =
-      DeleteApiFilesPermissionAllByResourceTypeByResourceIdData;
-  }
-
-  /**
-   * @description 移除资源的权限
-   * @tags files, permission
-   * @name DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission
-   * @summary 移除权限
-   * @request DELETE:/api/files/permission/{resourceType}/{resourceId}/{subjectType}/{subjectId}/{permission}
-   * @response `200` `DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData` Response for status 200
-   */
-  export namespace DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission {
-    export type RequestParams = {
-      permission: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1PermissionEnum;
-      resourceId: string;
-      resourceType: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1ResourceTypeEnum;
-      subjectId: string;
-      subjectType: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams1SubjectTypeEnum;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody =
-      DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData;
-  }
-
-  /**
-   * @description 获取文本文件内容
-   * @tags files, files
-   * @name GetApiFilesByIdContent
-   * @summary 获取文件内容
-   * @request GET:/api/files/{id}/content
-   * @response `200` `GetApiFilesByIdContentData` Response for status 200
-   */
-  export namespace GetApiFilesByIdContent {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiFilesByIdContentData;
-  }
-
-  /**
-   * @description 获取预签名下载URL
-   * @tags files, files
-   * @name GetApiFilesByIdDownloadUrl
-   * @summary 获取下载URL
-   * @request GET:/api/files/{id}/download-url
-   * @response `200` `GetApiFilesByIdDownloadUrlData` Response for status 200
-   */
-  export namespace GetApiFilesByIdDownloadUrl {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiFilesByIdDownloadUrlData;
-  }
-
-  /**
-   * @description 获取文本文件内容，仅支持纯文本文件
-   * @tags files, files
-   * @name GetApiFilesByIdTextContent
-   * @summary 获取文本文件内容
-   * @request GET:/api/files/{id}/text-content
-   * @response `200` `GetApiFilesByIdTextContentData` Response for status 200
-   */
-  export namespace GetApiFilesByIdTextContent {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiFilesByIdTextContentData;
-  }
-
-  /**
-   * @description 获取文件或文件夹的权限列表
-   * @tags files, permission
-   * @name GetApiFilesPermissionByResourceTypeByResourceId
-   * @summary 获取资源权限
-   * @request GET:/api/files/permission/{resourceType}/{resourceId}
-   * @response `200` `GetApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
-   */
-  export namespace GetApiFilesPermissionByResourceTypeByResourceId {
-    export type RequestParams = {
-      resourceId: string;
-      resourceType: GetApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody =
-      GetApiFilesPermissionByResourceTypeByResourceIdData;
-  }
-
-  /**
-   * @description 获取用户对资源的所有有效权限（包括继承的权限）
-   * @tags files, permission
-   * @name GetApiFilesPermissionEffectiveByResourceTypeByResourceId
-   * @summary 获取有效权限
-   * @request GET:/api/files/permission/effective/{resourceType}/{resourceId}
-   * @response `200` `GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData` Response for status 200
-   */
-  export namespace GetApiFilesPermissionEffectiveByResourceTypeByResourceId {
-    export type RequestParams = {
-      resourceId: string;
-      resourceType: GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams1ResourceTypeEnum;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody =
-      GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData;
-  }
-
-  /**
-   * @description 获取文件夹的完整路径（面包屑）
-   * @tags files, share
-   * @name GetApiFilesShareFolderPathByFolderId
-   * @summary 获取文件夹路径
-   * @request GET:/api/files/share/folder-path/{folderId}
-   * @response `200` `GetApiFilesShareFolderPathByFolderIdData` Response for status 200
-   */
-  export namespace GetApiFilesShareFolderPathByFolderId {
-    export type RequestParams = {
-      folderId: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiFilesShareFolderPathByFolderIdData;
-  }
-
-  /**
-   * @description 获取历史版本的下载URL
-   * @tags files, files
-   * @name GetApiFilesVersionsByIdDownloadUrl
-   * @summary 下载历史版本
-   * @request GET:/api/files/versions/{id}/download-url
-   * @response `200` `GetApiFilesVersionsByIdDownloadUrlData` Response for status 200
-   */
-  export namespace GetApiFilesVersionsByIdDownloadUrl {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiFilesVersionsByIdDownloadUrlData;
-  }
-
   /**
    * @description 获取已上传附件的访问URL
    * @tags files, ai-chat
@@ -16654,485 +15417,6 @@ export namespace Files {
     export type RequestBody = PostApiFilesAiChatUploadPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiFilesAiChatUploadData;
-  }
-
-  /**
-   * @description 复制文件到目标文件夹
-   * @tags files, files
-   * @name PostApiFilesByIdCopy
-   * @summary 复制文件
-   * @request POST:/api/files/{id}/copy
-   * @response `200` `PostApiFilesByIdCopyData` Response for status 200
-   */
-  export namespace PostApiFilesByIdCopy {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesByIdCopyPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesByIdCopyData;
-  }
-
-  /**
-   * @description 复制文件到目标文件夹，自动生成唯一文件名 filename(num).ext
-   * @tags files, files
-   * @name PostApiFilesByIdCopyAsDuplicate
-   * @summary 复制文件为副本
-   * @request POST:/api/files/{id}/copy-as-duplicate
-   * @response `200` `PostApiFilesByIdCopyAsDuplicateData` Response for status 200
-   */
-  export namespace PostApiFilesByIdCopyAsDuplicate {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesByIdCopyAsDuplicatePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesByIdCopyAsDuplicateData;
-  }
-
-  /**
-   * @description 移动文件到目标文件夹
-   * @tags files, files
-   * @name PostApiFilesByIdMove
-   * @summary 移动文件
-   * @request POST:/api/files/{id}/move
-   * @response `200` `PostApiFilesByIdMoveData` Response for status 200
-   */
-  export namespace PostApiFilesByIdMove {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesByIdMovePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesByIdMoveData;
-  }
-
-  /**
-   * @description 检查指定文件夹中是否存在同名文件
-   * @tags files, files
-   * @name PostApiFilesCheckExists
-   * @summary 检查文件是否存在
-   * @request POST:/api/files/check-exists
-   * @response `200` `PostApiFilesCheckExistsData` Response for status 200
-   */
-  export namespace PostApiFilesCheckExists {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesCheckExistsPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesCheckExistsData;
-  }
-
-  /**
-   * @description 确认文件上传完成并创建记录
-   * @tags files, files
-   * @name PostApiFilesConfirmUpload
-   * @summary 确认上传
-   * @request POST:/api/files/confirm-upload
-   * @response `200` `PostApiFilesConfirmUploadData` Response for status 200
-   */
-  export namespace PostApiFilesConfirmUpload {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesConfirmUploadPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesConfirmUploadData;
-  }
-
-  /**
-   * @description 批量软删除文件
-   * @tags files, files
-   * @name PostApiFilesDeleteBatch
-   * @summary 批量删除文件
-   * @request POST:/api/files/delete-batch
-   * @response `200` `PostApiFilesDeleteBatchData` Response for status 200
-   */
-  export namespace PostApiFilesDeleteBatch {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesDeleteBatchPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesDeleteBatchData;
-  }
-
-  /**
-   * @description 创建新文件夹
-   * @tags files, files
-   * @name PostApiFilesFolders
-   * @summary 创建文件夹
-   * @request POST:/api/files/folders
-   * @response `200` `PostApiFilesFoldersData` Response for status 200
-   */
-  export namespace PostApiFilesFolders {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesFoldersPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesFoldersData;
-  }
-
-  /**
-   * @description 移动文件夹到目标位置
-   * @tags files, files
-   * @name PostApiFilesFoldersByIdMove
-   * @summary 移动文件夹
-   * @request POST:/api/files/folders/{id}/move
-   * @response `200` `PostApiFilesFoldersByIdMoveData` Response for status 200
-   */
-  export namespace PostApiFilesFoldersByIdMove {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesFoldersByIdMovePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesFoldersByIdMoveData;
-  }
-
-  /**
-   * @description 为资源添加单个权限
-   * @tags files, permission
-   * @name PostApiFilesPermission
-   * @summary 添加权限
-   * @request POST:/api/files/permission
-   * @response `200` `PostApiFilesPermissionData` Response for status 200
-   */
-  export namespace PostApiFilesPermission {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesPermissionPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesPermissionData;
-  }
-
-  /**
-   * @description 设置文件或文件夹的权限（替换现有权限）
-   * @tags files, permission
-   * @name PostApiFilesPermissionByResourceTypeByResourceId
-   * @summary 设置资源权限
-   * @request POST:/api/files/permission/{resourceType}/{resourceId}
-   * @response `200` `PostApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
-   */
-  export namespace PostApiFilesPermissionByResourceTypeByResourceId {
-    export type RequestParams = {
-      resourceId: string;
-      resourceType: PostApiFilesPermissionByResourceTypeByResourceIdParams1ResourceTypeEnum;
-    };
-    export type RequestQuery = {};
-    export type RequestBody =
-      PostApiFilesPermissionByResourceTypeByResourceIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody =
-      PostApiFilesPermissionByResourceTypeByResourceIdData;
-  }
-
-  /**
-   * @description 检查用户对资源的权限
-   * @tags files, permission
-   * @name PostApiFilesPermissionCheck
-   * @summary 检查权限
-   * @request POST:/api/files/permission/check
-   * @response `200` `PostApiFilesPermissionCheckData` Response for status 200
-   */
-  export namespace PostApiFilesPermissionCheck {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesPermissionCheckPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesPermissionCheckData;
-  }
-
-  /**
-   * @description 将一个资源的权限复制到另一个资源
-   * @tags files, permission
-   * @name PostApiFilesPermissionCopy
-   * @summary 复制权限
-   * @request POST:/api/files/permission/copy
-   * @response `200` `PostApiFilesPermissionCopyData` Response for status 200
-   */
-  export namespace PostApiFilesPermissionCopy {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesPermissionCopyPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesPermissionCopyData;
-  }
-
-  /**
-   * @description 设置文件或文件夹的父级文件夹（用于权限继承）
-   * @tags files, permission
-   * @name PostApiFilesPermissionParent
-   * @summary 设置资源父级
-   * @request POST:/api/files/permission/parent
-   * @response `200` `PostApiFilesPermissionParentData` Response for status 200
-   */
-  export namespace PostApiFilesPermissionParent {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesPermissionParentPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesPermissionParentData;
-  }
-
-  /**
-   * @description 获取共享文件夹的子文件夹和文件，支持权限继承
-   * @tags files, share
-   * @name PostApiFilesShareFolderContents
-   * @summary 获取共享文件夹内容
-   * @request POST:/api/files/share/folder-contents
-   * @response `200` `PostApiFilesShareFolderContentsData` Response for status 200
-   */
-  export namespace PostApiFilesShareFolderContents {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesShareFolderContentsPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesShareFolderContentsData;
-  }
-
-  /**
-   * @description 获取当前用户共享给他人的文件和文件夹
-   * @tags files, share
-   * @name PostApiFilesShareMyShared
-   * @summary 获取我共享的资源
-   * @request POST:/api/files/share/my-shared
-   * @response `200` `PostApiFilesShareMySharedData` Response for status 200
-   */
-  export namespace PostApiFilesShareMyShared {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesShareMySharedPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesShareMySharedData;
-  }
-
-  /**
-   * @description 获取他人共享给当前用户的文件和文件夹
-   * @tags files, share
-   * @name PostApiFilesShareSharedWithMe
-   * @summary 获取收到的共享
-   * @request POST:/api/files/share/shared-with-me
-   * @response `200` `PostApiFilesShareSharedWithMeData` Response for status 200
-   */
-  export namespace PostApiFilesShareSharedWithMe {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesShareSharedWithMePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesShareSharedWithMeData;
-  }
-
-  /**
-   * @description 上传文件到存储（如果文件已存在则返回冲突信息）
-   * @tags files, files
-   * @name PostApiFilesUpload
-   * @summary 上传文件
-   * @request POST:/api/files/upload
-   * @response `200` `PostApiFilesUploadData` Response for status 200
-   */
-  export namespace PostApiFilesUpload {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesUploadPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesUploadData;
-  }
-
-  /**
-   * @description 上传文件并处理冲突（覆盖/创建新版本/创建副本）
-   * @tags files, files
-   * @name PostApiFilesUploadForce
-   * @summary 强制上传文件
-   * @request POST:/api/files/upload-force
-   * @response `200` `PostApiFilesUploadForceData` Response for status 200
-   */
-  export namespace PostApiFilesUploadForce {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesUploadForcePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesUploadForceData;
-  }
-
-  /**
-   * @description 获取预签名上传URL
-   * @tags files, files
-   * @name PostApiFilesUploadUrl
-   * @summary 获取上传URL
-   * @request POST:/api/files/upload-url
-   * @response `200` `PostApiFilesUploadUrlData` Response for status 200
-   */
-  export namespace PostApiFilesUploadUrl {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiFilesUploadUrlPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesUploadUrlData;
-  }
-
-  /**
-   * @description 将历史版本恢复为当前版本（交换S3字段）
-   * @tags files, files
-   * @name PostApiFilesVersionsByIdRestore
-   * @summary 恢复历史版本
-   * @request POST:/api/files/versions/{id}/restore
-   * @response `200` `PostApiFilesVersionsByIdRestoreData` Response for status 200
-   */
-  export namespace PostApiFilesVersionsByIdRestore {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiFilesVersionsByIdRestoreData;
-  }
-
-  /**
-   * @description 保存文本文件内容
-   * @tags files, files
-   * @name PutApiFilesByIdContent
-   * @summary 保存文件内容
-   * @request PUT:/api/files/{id}/content
-   * @response `200` `PutApiFilesByIdContentData` Response for status 200
-   */
-  export namespace PutApiFilesByIdContent {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesByIdContentPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesByIdContentData;
-  }
-
-  /**
-   * @description 更新文件描述信息
-   * @tags files, files
-   * @name PutApiFilesByIdDescription
-   * @summary 更新文件描述
-   * @request PUT:/api/files/{id}/description
-   * @response `200` `PutApiFilesByIdDescriptionData` Response for status 200
-   */
-  export namespace PutApiFilesByIdDescription {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesByIdDescriptionPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesByIdDescriptionData;
-  }
-
-  /**
-   * @description 重命名文件
-   * @tags files, files
-   * @name PutApiFilesByIdRename
-   * @summary 重命名文件
-   * @request PUT:/api/files/{id}/rename
-   * @response `200` `PutApiFilesByIdRenameData` Response for status 200
-   */
-  export namespace PutApiFilesByIdRename {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesByIdRenamePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesByIdRenameData;
-  }
-
-  /**
-   * @description 更新文件夹描述信息
-   * @tags files, files
-   * @name PutApiFilesFoldersByIdDescription
-   * @summary 更新文件夹描述
-   * @request PUT:/api/files/folders/{id}/description
-   * @response `200` `PutApiFilesFoldersByIdDescriptionData` Response for status 200
-   */
-  export namespace PutApiFilesFoldersByIdDescription {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesFoldersByIdDescriptionPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesFoldersByIdDescriptionData;
-  }
-
-  /**
-   * @description 更新文件夹排序
-   * @tags files, files
-   * @name PutApiFilesFoldersByIdOrder
-   * @summary 更新文件夹排序
-   * @request PUT:/api/files/folders/{id}/order
-   * @response `200` `PutApiFilesFoldersByIdOrderData` Response for status 200
-   */
-  export namespace PutApiFilesFoldersByIdOrder {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesFoldersByIdOrderPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesFoldersByIdOrderData;
-  }
-
-  /**
-   * @description 重命名文件夹
-   * @tags files, files
-   * @name PutApiFilesFoldersByIdRename
-   * @summary 重命名文件夹
-   * @request PUT:/api/files/folders/{id}/rename
-   * @response `200` `PutApiFilesFoldersByIdRenameData` Response for status 200
-   */
-  export namespace PutApiFilesFoldersByIdRename {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesFoldersByIdRenamePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesFoldersByIdRenameData;
-  }
-
-  /**
-   * @description 更新文件夹图标和颜色
-   * @tags files, files
-   * @name PutApiFilesFoldersByIdStyle
-   * @summary 更新文件夹样式
-   * @request PUT:/api/files/folders/{id}/style
-   * @response `200` `PutApiFilesFoldersByIdStyleData` Response for status 200
-   */
-  export namespace PutApiFilesFoldersByIdStyle {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiFilesFoldersByIdStylePayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiFilesFoldersByIdStyleData;
-  }
-}
-
-export namespace Public {
-  /**
-   * @description 上传头像到公开存储，返回可直接访问的URL
-   * @tags public, upload, avatar
-   * @name PostApiPublicUploadAvatar
-   * @summary 上传公开头像
-   * @request POST:/api/public/upload/avatar
-   * @response `200` `PostApiPublicUploadAvatarData` Response for status 200
-   */
-  export namespace PostApiPublicUploadAvatar {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiPublicUploadAvatarPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiPublicUploadAvatarData;
   }
 }
 
@@ -17467,6 +15751,46 @@ export class Api<SecurityDataType extends unknown> {
       ...params,
     });
 
+  mcp = {
+    /**
+     * @description Get MCP server information for discovery
+     *
+     * @tags mcp
+     * @name GetMcpById
+     * @summary Get MCP Server Info
+     * @request GET:/mcp/{id}
+     */
+    getMcpById: (
+      { id, ...query }: GetMcpByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/mcp/${id}`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * @description Handle MCP protocol JSON-RPC requests
+     *
+     * @tags mcp
+     * @name PostMcpById
+     * @summary MCP JSON-RPC Endpoint
+     * @request POST:/mcp/{id}
+     */
+    postMcpById: (
+      { id, ...query }: PostMcpByIdParams,
+      data: PostMcpByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/mcp/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+  };
   ai = {
     /**
      * @description 根据ID删除AI智能体
@@ -17886,6 +16210,26 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<GetApiAiMcpServerByIdData, any>({
         path: `/api/ai/mcp-server/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取MCP服务的配置JSON，用于集成到AI工具
+     *
+     * @tags ai, mcpServer
+     * @name GetApiAiMcpServerByIdConfig
+     * @summary 获取MCP配置
+     * @request GET:/api/ai/mcp-server/{id}/config
+     * @response `200` `GetApiAiMcpServerByIdConfigData` Response for status 200
+     */
+    getApiAiMcpServerByIdConfig: (
+      { id, ...query }: GetApiAiMcpServerByIdConfigParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiMcpServerByIdConfigData, any>({
+        path: `/api/ai/mcp-server/${id}/config`,
         method: "GET",
         format: "json",
         ...params,
@@ -22459,245 +20803,325 @@ export class Api<SecurityDataType extends unknown> {
   };
   knowledge = {
     /**
-     * @description 取消收藏文件或文件夹
+     * @description 取消收藏节点
      *
      * @tags knowledge, favorite
-     * @name DeleteApiKnowledgeFavoriteByResourceTypeByResourceId
+     * @name DeleteApiKnowledgeFavoritesByNodeId
      * @summary 取消收藏
-     * @request DELETE:/api/knowledge/favorite/{resourceType}/{resourceId}
-     * @response `200` `DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData` Response for status 200
+     * @request DELETE:/api/knowledge/favorites/{nodeId}
+     * @response `200` `DeleteApiKnowledgeFavoritesByNodeIdData` Response for status 200
      */
-    deleteApiKnowledgeFavoriteByResourceTypeByResourceId: (
+    deleteApiKnowledgeFavoritesByNodeId: (
+      { nodeId, ...query }: DeleteApiKnowledgeFavoritesByNodeIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiKnowledgeFavoritesByNodeIdData, any>({
+        path: `/api/knowledge/favorites/${nodeId}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 软删除节点（文件夹会递归删除子节点）
+     *
+     * @tags knowledge, node, mutation
+     * @name DeleteApiKnowledgeNodesById
+     * @summary 删除节点
+     * @request DELETE:/api/knowledge/nodes/{id}
+     * @response `200` `DeleteApiKnowledgeNodesByIdData` Response for status 200
+     */
+    deleteApiKnowledgeNodesById: (
+      { id, ...query }: DeleteApiKnowledgeNodesByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiKnowledgeNodesByIdData, any>({
+        path: `/api/knowledge/nodes/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 移除节点的权限
+     *
+     * @tags knowledge, permission
+     * @name DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId
+     * @summary 移除权限
+     * @request DELETE:/api/knowledge/nodes/{id}/permissions/{subjectType}/{subjectId}
+     * @response `200` `DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdData` Response for status 200
+     */
+    deleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId: (
       {
-        resourceType,
-        resourceId,
+        id,
+        subjectType,
+        subjectId,
         ...query
-      }: DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdParams,
+      }: DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams,
       params: RequestParams = {},
     ) =>
       this.http.request<
-        DeleteApiKnowledgeFavoriteByResourceTypeByResourceIdData,
+        DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdData,
         any
       >({
-        path: `/api/knowledge/favorite/${resourceType}/${resourceId}`,
+        path: `/api/knowledge/nodes/${id}/permissions/${subjectType}/${subjectId}`,
         method: "DELETE",
+        query: query,
         format: "json",
         ...params,
       }),
 
     /**
-     * @description 根据ID软删除文件
+     * @description 根据主键ID查询单个节点
      *
-     * @tags knowledge, file
-     * @name DeleteApiKnowledgeFileById
-     * @summary 删除文件
-     * @request DELETE:/api/knowledge/file/{id}
-     * @response `200` `DeleteApiKnowledgeFileByIdData` Response for status 200
+     * @tags knowledge, node, query
+     * @name GetApiKnowledgeNodesById
+     * @summary 根据ID查询节点
+     * @request GET:/api/knowledge/nodes/{id}
+     * @response `200` `GetApiKnowledgeNodesByIdData` Response for status 200
      */
-    deleteApiKnowledgeFileById: (
-      { id, ...query }: DeleteApiKnowledgeFileByIdParams,
+    getApiKnowledgeNodesById: (
+      { id, ...query }: GetApiKnowledgeNodesByIdParams,
       params: RequestParams = {},
     ) =>
-      this.http.request<DeleteApiKnowledgeFileByIdData, any>({
-        path: `/api/knowledge/file/${id}`,
-        method: "DELETE",
+      this.http.request<GetApiKnowledgeNodesByIdData, any>({
+        path: `/api/knowledge/nodes/${id}`,
+        method: "GET",
         format: "json",
         ...params,
       }),
 
     /**
-     * @description 根据ID硬删除文件版本
+     * @description 获取指定父节点下的所有子节点
      *
-     * @tags knowledge, fileVersion
-     * @name DeleteApiKnowledgeFileVersionById
-     * @summary 删除文件版本
-     * @request DELETE:/api/knowledge/file-version/{id}
-     * @response `200` `DeleteApiKnowledgeFileVersionByIdData` Response for status 200
+     * @tags knowledge, node, query
+     * @name GetApiKnowledgeNodesByIdChildren
+     * @summary 获取子节点
+     * @request GET:/api/knowledge/nodes/{id}/children
+     * @response `200` `GetApiKnowledgeNodesByIdChildrenData` Response for status 200
      */
-    deleteApiKnowledgeFileVersionById: (
-      { id, ...query }: DeleteApiKnowledgeFileVersionByIdParams,
+    getApiKnowledgeNodesByIdChildren: (
+      { id, ...query }: GetApiKnowledgeNodesByIdChildrenParams,
       params: RequestParams = {},
     ) =>
-      this.http.request<DeleteApiKnowledgeFileVersionByIdData, any>({
-        path: `/api/knowledge/file-version/${id}`,
-        method: "DELETE",
+      this.http.request<GetApiKnowledgeNodesByIdChildrenData, any>({
+        path: `/api/knowledge/nodes/${id}/children`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
 
     /**
-     * @description 根据ID软删除文件夹
+     * @description 获取文件原始内容（不验证类型）
      *
-     * @tags knowledge, folder
-     * @name DeleteApiKnowledgeFolderById
-     * @summary 删除文件夹
-     * @request DELETE:/api/knowledge/folder/{id}
-     * @response `200` `DeleteApiKnowledgeFolderByIdData` Response for status 200
+     * @tags knowledge, content
+     * @name GetApiKnowledgeNodesByIdContent
+     * @summary 获取原始内容
+     * @request GET:/api/knowledge/nodes/{id}/content
+     * @response `200` `GetApiKnowledgeNodesByIdContentData` Response for status 200
      */
-    deleteApiKnowledgeFolderById: (
-      { id, ...query }: DeleteApiKnowledgeFolderByIdParams,
+    getApiKnowledgeNodesByIdContent: (
+      { id, ...query }: GetApiKnowledgeNodesByIdContentParams,
       params: RequestParams = {},
     ) =>
-      this.http.request<DeleteApiKnowledgeFolderByIdData, any>({
-        path: `/api/knowledge/folder/${id}`,
-        method: "DELETE",
+      this.http.request<GetApiKnowledgeNodesByIdContentData, any>({
+        path: `/api/knowledge/nodes/${id}/content`,
+        method: "GET",
         format: "json",
         ...params,
       }),
 
     /**
-     * @description 检查资源是否已被收藏
+     * @description 获取文件预签名下载URL
+     *
+     * @tags knowledge, content
+     * @name GetApiKnowledgeNodesByIdDownloadUrl
+     * @summary 获取下载URL
+     * @request GET:/api/knowledge/nodes/{id}/download-url
+     * @response `200` `GetApiKnowledgeNodesByIdDownloadUrlData` Response for status 200
+     */
+    getApiKnowledgeNodesByIdDownloadUrl: (
+      { id, ...query }: GetApiKnowledgeNodesByIdDownloadUrlParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeNodesByIdDownloadUrlData, any>({
+        path: `/api/knowledge/nodes/${id}/download-url`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取用户对节点的有效权限
+     *
+     * @tags knowledge, permission
+     * @name GetApiKnowledgeNodesByIdEffectivePermissions
+     * @summary 获取有效权限
+     * @request GET:/api/knowledge/nodes/{id}/effective-permissions
+     * @response `200` `GetApiKnowledgeNodesByIdEffectivePermissionsData` Response for status 200
+     */
+    getApiKnowledgeNodesByIdEffectivePermissions: (
+      { id, ...query }: GetApiKnowledgeNodesByIdEffectivePermissionsParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeNodesByIdEffectivePermissionsData, any>({
+        path: `/api/knowledge/nodes/${id}/effective-permissions`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取节点的完整路径（面包屑）
+     *
+     * @tags knowledge, operations
+     * @name GetApiKnowledgeNodesByIdPath
+     * @summary 获取节点路径
+     * @request GET:/api/knowledge/nodes/{id}/path
+     * @response `200` `GetApiKnowledgeNodesByIdPathData` Response for status 200
+     */
+    getApiKnowledgeNodesByIdPath: (
+      { id, ...query }: GetApiKnowledgeNodesByIdPathParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeNodesByIdPathData, any>({
+        path: `/api/knowledge/nodes/${id}/path`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取节点的权限列表
+     *
+     * @tags knowledge, permission
+     * @name GetApiKnowledgeNodesByIdPermissions
+     * @summary 获取节点权限
+     * @request GET:/api/knowledge/nodes/{id}/permissions
+     * @response `200` `GetApiKnowledgeNodesByIdPermissionsData` Response for status 200
+     */
+    getApiKnowledgeNodesByIdPermissions: (
+      { id, ...query }: GetApiKnowledgeNodesByIdPermissionsParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeNodesByIdPermissionsData, any>({
+        path: `/api/knowledge/nodes/${id}/permissions`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取文本文件内容
+     *
+     * @tags knowledge, content
+     * @name GetApiKnowledgeNodesByIdText
+     * @summary 获取文本内容
+     * @request GET:/api/knowledge/nodes/{id}/text
+     * @response `200` `GetApiKnowledgeNodesByIdTextData` Response for status 200
+     */
+    getApiKnowledgeNodesByIdText: (
+      { id, ...query }: GetApiKnowledgeNodesByIdTextParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeNodesByIdTextData, any>({
+        path: `/api/knowledge/nodes/${id}/text`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取文件的所有历史版本
+     *
+     * @tags knowledge, version
+     * @name GetApiKnowledgeNodesByIdVersions
+     * @summary 获取版本列表
+     * @request GET:/api/knowledge/nodes/{id}/versions
+     * @response `200` `GetApiKnowledgeNodesByIdVersionsData` Response for status 200
+     */
+    getApiKnowledgeNodesByIdVersions: (
+      { id, ...query }: GetApiKnowledgeNodesByIdVersionsParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeNodesByIdVersionsData, any>({
+        path: `/api/knowledge/nodes/${id}/versions`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取节点表的JSON Schema
+     *
+     * @tags knowledge, node, schema
+     * @name GetApiKnowledgeNodesSchema
+     * @summary 获取节点Schema
+     * @request GET:/api/knowledge/nodes/schema
+     * @response `200` `GetApiKnowledgeNodesSchemaData` Response for status 200
+     */
+    getApiKnowledgeNodesSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiKnowledgeNodesSchemaData, any>({
+        path: `/api/knowledge/nodes/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取历史版本的下载URL
+     *
+     * @tags knowledge, version
+     * @name GetApiKnowledgeVersionsByIdDownloadUrl
+     * @summary 下载历史版本
+     * @request GET:/api/knowledge/versions/{id}/download-url
+     * @response `200` `GetApiKnowledgeVersionsByIdDownloadUrlData` Response for status 200
+     */
+    getApiKnowledgeVersionsByIdDownloadUrl: (
+      { id, ...query }: GetApiKnowledgeVersionsByIdDownloadUrlParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiKnowledgeVersionsByIdDownloadUrlData, any>({
+        path: `/api/knowledge/versions/${id}/download-url`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取版本表的JSON Schema
+     *
+     * @tags knowledge, version
+     * @name GetApiKnowledgeVersionsSchema
+     * @summary 获取版本Schema
+     * @request GET:/api/knowledge/versions/schema
+     * @response `200` `GetApiKnowledgeVersionsSchemaData` Response for status 200
+     */
+    getApiKnowledgeVersionsSchema: (params: RequestParams = {}) =>
+      this.http.request<GetApiKnowledgeVersionsSchemaData, any>({
+        path: `/api/knowledge/versions/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 收藏节点
      *
      * @tags knowledge, favorite
-     * @name GetApiKnowledgeFavoriteCheckByResourceTypeByResourceId
-     * @summary 检查收藏状态
-     * @request GET:/api/knowledge/favorite/check/{resourceType}/{resourceId}
-     * @response `200` `GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData` Response for status 200
-     */
-    getApiKnowledgeFavoriteCheckByResourceTypeByResourceId: (
-      {
-        resourceType,
-        resourceId,
-        ...query
-      }: GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<
-        GetApiKnowledgeFavoriteCheckByResourceTypeByResourceIdData,
-        any
-      >({
-        path: `/api/knowledge/favorite/check/${resourceType}/${resourceId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个文件（需要权限）
-     *
-     * @tags knowledge, file
-     * @name GetApiKnowledgeFileById
-     * @summary 根据ID查询文件
-     * @request GET:/api/knowledge/file/{id}
-     * @response `200` `GetApiKnowledgeFileByIdData` Response for status 200
-     */
-    getApiKnowledgeFileById: (
-      { id, ...query }: GetApiKnowledgeFileByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiKnowledgeFileByIdData, any>({
-        path: `/api/knowledge/file/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取文件表的JSON Schema
-     *
-     * @tags knowledge, file
-     * @name GetApiKnowledgeFileSchema
-     * @summary 获取文件Schema
-     * @request GET:/api/knowledge/file/schema
-     * @response `200` `GetApiKnowledgeFileSchemaData` Response for status 200
-     */
-    getApiKnowledgeFileSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiKnowledgeFileSchemaData, any>({
-        path: `/api/knowledge/file/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个文件版本
-     *
-     * @tags knowledge, fileVersion
-     * @name GetApiKnowledgeFileVersionById
-     * @summary 根据ID查询文件版本
-     * @request GET:/api/knowledge/file-version/{id}
-     * @response `200` `GetApiKnowledgeFileVersionByIdData` Response for status 200
-     */
-    getApiKnowledgeFileVersionById: (
-      { id, ...query }: GetApiKnowledgeFileVersionByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiKnowledgeFileVersionByIdData, any>({
-        path: `/api/knowledge/file-version/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取文件版本表的JSON Schema
-     *
-     * @tags knowledge, fileVersion
-     * @name GetApiKnowledgeFileVersionSchema
-     * @summary 获取文件版本Schema
-     * @request GET:/api/knowledge/file-version/schema
-     * @response `200` `GetApiKnowledgeFileVersionSchemaData` Response for status 200
-     */
-    getApiKnowledgeFileVersionSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiKnowledgeFileVersionSchemaData, any>({
-        path: `/api/knowledge/file-version/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个文件夹
-     *
-     * @tags knowledge, folder
-     * @name GetApiKnowledgeFolderById
-     * @summary 根据ID查询文件夹
-     * @request GET:/api/knowledge/folder/{id}
-     * @response `200` `GetApiKnowledgeFolderByIdData` Response for status 200
-     */
-    getApiKnowledgeFolderById: (
-      { id, ...query }: GetApiKnowledgeFolderByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiKnowledgeFolderByIdData, any>({
-        path: `/api/knowledge/folder/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取文件夹表的JSON Schema
-     *
-     * @tags knowledge, folder
-     * @name GetApiKnowledgeFolderSchema
-     * @summary 获取文件夹Schema
-     * @request GET:/api/knowledge/folder/schema
-     * @response `200` `GetApiKnowledgeFolderSchemaData` Response for status 200
-     */
-    getApiKnowledgeFolderSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiKnowledgeFolderSchemaData, any>({
-        path: `/api/knowledge/folder/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 收藏文件或文件夹
-     *
-     * @tags knowledge, favorite
-     * @name PostApiKnowledgeFavorite
+     * @name PostApiKnowledgeFavorites
      * @summary 添加收藏
-     * @request POST:/api/knowledge/favorite
-     * @response `200` `PostApiKnowledgeFavoriteData` Response for status 200
+     * @request POST:/api/knowledge/favorites
+     * @response `200` `PostApiKnowledgeFavoritesData` Response for status 200
      */
-    postApiKnowledgeFavorite: (
-      data: PostApiKnowledgeFavoritePayload,
+    postApiKnowledgeFavorites: (
+      data: PostApiKnowledgeFavoritesPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFavoriteData, any>({
-        path: `/api/knowledge/favorite`,
+      this.http.request<PostApiKnowledgeFavoritesData, any>({
+        path: `/api/knowledge/favorites`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22706,20 +21130,20 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量检查多个资源是否已被收藏
+     * @description 检查节点是否已收藏
      *
      * @tags knowledge, favorite
-     * @name PostApiKnowledgeFavoriteCheckBatch
-     * @summary 批量检查收藏状态
-     * @request POST:/api/knowledge/favorite/check-batch
-     * @response `200` `PostApiKnowledgeFavoriteCheckBatchData` Response for status 200
+     * @name PostApiKnowledgeFavoritesCheck
+     * @summary 检查收藏状态
+     * @request POST:/api/knowledge/favorites/check
+     * @response `200` `PostApiKnowledgeFavoritesCheckData` Response for status 200
      */
-    postApiKnowledgeFavoriteCheckBatch: (
-      data: PostApiKnowledgeFavoriteCheckBatchPayload,
+    postApiKnowledgeFavoritesCheck: (
+      data: PostApiKnowledgeFavoritesCheckPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFavoriteCheckBatchData, any>({
-        path: `/api/knowledge/favorite/check-batch`,
+      this.http.request<PostApiKnowledgeFavoritesCheckData, any>({
+        path: `/api/knowledge/favorites/check`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22728,20 +21152,20 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取当前用户的收藏列表
+     * @description 获取当前用户的收藏列表（带节点详情）
      *
      * @tags knowledge, favorite
-     * @name PostApiKnowledgeFavoriteList
+     * @name PostApiKnowledgeFavoritesList
      * @summary 获取收藏列表
-     * @request POST:/api/knowledge/favorite/list
-     * @response `200` `PostApiKnowledgeFavoriteListData` Response for status 200
+     * @request POST:/api/knowledge/favorites/list
+     * @response `200` `PostApiKnowledgeFavoritesListData` Response for status 200
      */
-    postApiKnowledgeFavoriteList: (
-      data: PostApiKnowledgeFavoriteListPayload,
+    postApiKnowledgeFavoritesList: (
+      data: PostApiKnowledgeFavoritesListPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFavoriteListData, any>({
-        path: `/api/knowledge/favorite/list`,
+      this.http.request<PostApiKnowledgeFavoritesListData, any>({
+        path: `/api/knowledge/favorites/list`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22750,20 +21174,20 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个文件记录
+     * @description 创建文件夹或文件节点
      *
-     * @tags knowledge, file
-     * @name PostApiKnowledgeFile
-     * @summary 创建文件
-     * @request POST:/api/knowledge/file
-     * @response `200` `PostApiKnowledgeFileData` Response for status 200
+     * @tags knowledge, node, mutation
+     * @name PostApiKnowledgeNodes
+     * @summary 创建节点
+     * @request POST:/api/knowledge/nodes
+     * @response `200` `PostApiKnowledgeNodesData` Response for status 200
      */
-    postApiKnowledgeFile: (
-      data: PostApiKnowledgeFilePayload,
+    postApiKnowledgeNodes: (
+      data: PostApiKnowledgeNodesPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFileData, any>({
-        path: `/api/knowledge/file`,
+      this.http.request<PostApiKnowledgeNodesData, any>({
+        path: `/api/knowledge/nodes`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22772,20 +21196,21 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个文件记录
+     * @description 复制节点到目标文件夹
      *
-     * @tags knowledge, file
-     * @name PostApiKnowledgeFileBatch
-     * @summary 批量创建文件
-     * @request POST:/api/knowledge/file/batch
-     * @response `200` `PostApiKnowledgeFileBatchData` Response for status 200
+     * @tags knowledge, operations
+     * @name PostApiKnowledgeNodesByIdCopy
+     * @summary 复制节点
+     * @request POST:/api/knowledge/nodes/{id}/copy
+     * @response `200` `PostApiKnowledgeNodesByIdCopyData` Response for status 200
      */
-    postApiKnowledgeFileBatch: (
-      data: PostApiKnowledgeFileBatchPayload,
+    postApiKnowledgeNodesByIdCopy: (
+      { id, ...query }: PostApiKnowledgeNodesByIdCopyParams,
+      data: PostApiKnowledgeNodesByIdCopyPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFileBatchData, any>({
-        path: `/api/knowledge/file/batch`,
+      this.http.request<PostApiKnowledgeNodesByIdCopyData, any>({
+        path: `/api/knowledge/nodes/${id}/copy`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22794,20 +21219,21 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询文件列表，自动排除已删除数据，自动筛选当前用户的文件
+     * @description 移动节点到目标文件夹
      *
-     * @tags knowledge, file
-     * @name PostApiKnowledgeFileQuery
-     * @summary 分页查询文件
-     * @request POST:/api/knowledge/file/query
-     * @response `200` `PostApiKnowledgeFileQueryData` Response for status 200
+     * @tags knowledge, operations
+     * @name PostApiKnowledgeNodesByIdMove
+     * @summary 移动节点
+     * @request POST:/api/knowledge/nodes/{id}/move
+     * @response `200` `PostApiKnowledgeNodesByIdMoveData` Response for status 200
      */
-    postApiKnowledgeFileQuery: (
-      data: PostApiKnowledgeFileQueryPayload,
+    postApiKnowledgeNodesByIdMove: (
+      { id, ...query }: PostApiKnowledgeNodesByIdMoveParams,
+      data: PostApiKnowledgeNodesByIdMovePayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFileQueryData, any>({
-        path: `/api/knowledge/file/query`,
+      this.http.request<PostApiKnowledgeNodesByIdMoveData, any>({
+        path: `/api/knowledge/nodes/${id}/move`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22816,20 +21242,21 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个文件版本
+     * @description 为节点添加权限
      *
-     * @tags knowledge, fileVersion
-     * @name PostApiKnowledgeFileVersion
-     * @summary 创建文件版本
-     * @request POST:/api/knowledge/file-version
-     * @response `200` `PostApiKnowledgeFileVersionData` Response for status 200
+     * @tags knowledge, permission
+     * @name PostApiKnowledgeNodesByIdPermissions
+     * @summary 添加权限
+     * @request POST:/api/knowledge/nodes/{id}/permissions
+     * @response `200` `PostApiKnowledgeNodesByIdPermissionsData` Response for status 200
      */
-    postApiKnowledgeFileVersion: (
-      data: PostApiKnowledgeFileVersionPayload,
+    postApiKnowledgeNodesByIdPermissions: (
+      { id, ...query }: PostApiKnowledgeNodesByIdPermissionsParams,
+      data: PostApiKnowledgeNodesByIdPermissionsPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFileVersionData, any>({
-        path: `/api/knowledge/file-version`,
+      this.http.request<PostApiKnowledgeNodesByIdPermissionsData, any>({
+        path: `/api/knowledge/nodes/${id}/permissions`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22838,23 +21265,287 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个文件版本
+     * @description 快速共享节点给用户
      *
-     * @tags knowledge, fileVersion
-     * @name PostApiKnowledgeFileVersionBatch
-     * @summary 批量创建文件版本
-     * @request POST:/api/knowledge/file-version/batch
-     * @response `200` `PostApiKnowledgeFileVersionBatchData` Response for status 200
+     * @tags knowledge, permission
+     * @name PostApiKnowledgeNodesByIdQuickShare
+     * @summary 快捷共享
+     * @request POST:/api/knowledge/nodes/{id}/quick-share
+     * @response `200` `PostApiKnowledgeNodesByIdQuickShareData` Response for status 200
      */
-    postApiKnowledgeFileVersionBatch: (
-      data: PostApiKnowledgeFileVersionBatchPayload,
+    postApiKnowledgeNodesByIdQuickShare: (
+      { id, ...query }: PostApiKnowledgeNodesByIdQuickShareParams,
+      data: PostApiKnowledgeNodesByIdQuickSharePayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFileVersionBatchData, any>({
-        path: `/api/knowledge/file-version/batch`,
+      this.http.request<PostApiKnowledgeNodesByIdQuickShareData, any>({
+        path: `/api/knowledge/nodes/${id}/quick-share`,
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 取消用户对节点的所有权限
+     *
+     * @tags knowledge, permission
+     * @name PostApiKnowledgeNodesByIdRevokeShare
+     * @summary 取消共享
+     * @request POST:/api/knowledge/nodes/{id}/revoke-share
+     * @response `200` `PostApiKnowledgeNodesByIdRevokeShareData` Response for status 200
+     */
+    postApiKnowledgeNodesByIdRevokeShare: (
+      { id, ...query }: PostApiKnowledgeNodesByIdRevokeShareParams,
+      data: PostApiKnowledgeNodesByIdRevokeSharePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesByIdRevokeShareData, any>({
+        path: `/api/knowledge/nodes/${id}/revoke-share`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 检查指定父节点下是否存在同名节点
+     *
+     * @tags knowledge, operations
+     * @name PostApiKnowledgeNodesCheckExists
+     * @summary 检查节点是否存在
+     * @request POST:/api/knowledge/nodes/check-exists
+     * @response `200` `PostApiKnowledgeNodesCheckExistsData` Response for status 200
+     */
+    postApiKnowledgeNodesCheckExists: (
+      data: PostApiKnowledgeNodesCheckExistsPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesCheckExistsData, any>({
+        path: `/api/knowledge/nodes/check-exists`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量软删除多个节点
+     *
+     * @tags knowledge, node, mutation
+     * @name PostApiKnowledgeNodesDeleteBatch
+     * @summary 批量删除节点
+     * @request POST:/api/knowledge/nodes/delete-batch
+     * @response `200` `PostApiKnowledgeNodesDeleteBatchData` Response for status 200
+     */
+    postApiKnowledgeNodesDeleteBatch: (
+      data: PostApiKnowledgeNodesDeleteBatchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesDeleteBatchData, any>({
+        path: `/api/knowledge/nodes/delete-batch`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询知识库节点列表，自动筛选当前用户的节点
+     *
+     * @tags knowledge, node, query
+     * @name PostApiKnowledgeNodesQuery
+     * @summary 分页查询节点
+     * @request POST:/api/knowledge/nodes/query
+     * @response `200` `PostApiKnowledgeNodesQueryData` Response for status 200
+     */
+    postApiKnowledgeNodesQuery: (
+      data: PostApiKnowledgeNodesQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesQueryData, any>({
+        path: `/api/knowledge/nodes/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 全文搜索知识库节点
+     *
+     * @tags knowledge, operations
+     * @name PostApiKnowledgeNodesSearch
+     * @summary 搜索节点
+     * @request POST:/api/knowledge/nodes/search
+     * @response `200` `PostApiKnowledgeNodesSearchData` Response for status 200
+     */
+    postApiKnowledgeNodesSearch: (
+      data: PostApiKnowledgeNodesSearchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesSearchData, any>({
+        path: `/api/knowledge/nodes/search`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取当前用户共享给他人的节点
+     *
+     * @tags knowledge, share
+     * @name PostApiKnowledgeShareMyShared
+     * @summary 获取我共享的资源
+     * @request POST:/api/knowledge/share/my-shared
+     * @response `200` `PostApiKnowledgeShareMySharedData` Response for status 200
+     */
+    postApiKnowledgeShareMyShared: (
+      data: PostApiKnowledgeShareMySharedPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeShareMySharedData, any>({
+        path: `/api/knowledge/share/my-shared`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取他人共享给当前用户的节点，支持文件夹层级浏览
+     *
+     * @tags knowledge, share
+     * @name PostApiKnowledgeShareSharedWithMe
+     * @summary 获取共享给我的资源
+     * @request POST:/api/knowledge/share/shared-with-me
+     * @response `200` `PostApiKnowledgeShareSharedWithMeData` Response for status 200
+     */
+    postApiKnowledgeShareSharedWithMe: (
+      data: PostApiKnowledgeShareSharedWithMePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeShareSharedWithMeData, any>({
+        path: `/api/knowledge/share/shared-with-me`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 确认文件上传完成并创建节点
+     *
+     * @tags knowledge, upload
+     * @name PostApiKnowledgeUploadConfirm
+     * @summary 确认上传
+     * @request POST:/api/knowledge/upload/confirm
+     * @response `200` `PostApiKnowledgeUploadConfirmData` Response for status 200
+     */
+    postApiKnowledgeUploadConfirm: (
+      data: PostApiKnowledgeUploadConfirmPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeUploadConfirmData, any>({
+        path: `/api/knowledge/upload/confirm`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 直接上传小文件（Base64）
+     *
+     * @tags knowledge, upload
+     * @name PostApiKnowledgeUploadDirect
+     * @summary 直接上传
+     * @request POST:/api/knowledge/upload/direct
+     * @response `200` `PostApiKnowledgeUploadDirectData` Response for status 200
+     */
+    postApiKnowledgeUploadDirect: (
+      data: PostApiKnowledgeUploadDirectPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeUploadDirectData, any>({
+        path: `/api/knowledge/upload/direct`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 上传文件并处理冲突（覆盖/新版本/副本）
+     *
+     * @tags knowledge, upload
+     * @name PostApiKnowledgeUploadForce
+     * @summary 强制上传
+     * @request POST:/api/knowledge/upload/force
+     * @response `200` `PostApiKnowledgeUploadForceData` Response for status 200
+     */
+    postApiKnowledgeUploadForce: (
+      data: PostApiKnowledgeUploadForcePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeUploadForceData, any>({
+        path: `/api/knowledge/upload/force`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取预签名上传URL
+     *
+     * @tags knowledge, upload
+     * @name PostApiKnowledgeUploadUrl
+     * @summary 获取上传URL
+     * @request POST:/api/knowledge/upload/url
+     * @response `200` `PostApiKnowledgeUploadUrlData` Response for status 200
+     */
+    postApiKnowledgeUploadUrl: (
+      data: PostApiKnowledgeUploadUrlPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeUploadUrlData, any>({
+        path: `/api/knowledge/upload/url`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 将历史版本恢复为当前版本
+     *
+     * @tags knowledge, version
+     * @name PostApiKnowledgeVersionsByIdRestore
+     * @summary 恢复历史版本
+     * @request POST:/api/knowledge/versions/{id}/restore
+     * @response `200` `PostApiKnowledgeVersionsByIdRestoreData` Response for status 200
+     */
+    postApiKnowledgeVersionsByIdRestore: (
+      { id, ...query }: PostApiKnowledgeVersionsByIdRestoreParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeVersionsByIdRestoreData, any>({
+        path: `/api/knowledge/versions/${id}/restore`,
+        method: "POST",
         format: "json",
         ...params,
       }),
@@ -22862,18 +21553,18 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 分页查询文件版本列表
      *
-     * @tags knowledge, fileVersion
-     * @name PostApiKnowledgeFileVersionQuery
-     * @summary 分页查询文件版本
-     * @request POST:/api/knowledge/file-version/query
-     * @response `200` `PostApiKnowledgeFileVersionQueryData` Response for status 200
+     * @tags knowledge, version
+     * @name PostApiKnowledgeVersionsQuery
+     * @summary 分页查询版本
+     * @request POST:/api/knowledge/versions/query
+     * @response `200` `PostApiKnowledgeVersionsQueryData` Response for status 200
      */
-    postApiKnowledgeFileVersionQuery: (
-      data: PostApiKnowledgeFileVersionQueryPayload,
+    postApiKnowledgeVersionsQuery: (
+      data: PostApiKnowledgeVersionsQueryPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFileVersionQueryData, any>({
-        path: `/api/knowledge/file-version/query`,
+      this.http.request<PostApiKnowledgeVersionsQueryData, any>({
+        path: `/api/knowledge/versions/query`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -22882,86 +21573,21 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个文件夹
+     * @description 更新节点信息
      *
-     * @tags knowledge, folder
-     * @name PostApiKnowledgeFolder
-     * @summary 创建文件夹
-     * @request POST:/api/knowledge/folder
-     * @response `200` `PostApiKnowledgeFolderData` Response for status 200
+     * @tags knowledge, node, mutation
+     * @name PutApiKnowledgeNodesById
+     * @summary 更新节点
+     * @request PUT:/api/knowledge/nodes/{id}
+     * @response `200` `PutApiKnowledgeNodesByIdData` Response for status 200
      */
-    postApiKnowledgeFolder: (
-      data: PostApiKnowledgeFolderPayload,
+    putApiKnowledgeNodesById: (
+      { id, ...query }: PutApiKnowledgeNodesByIdParams,
+      data: PutApiKnowledgeNodesByIdPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PostApiKnowledgeFolderData, any>({
-        path: `/api/knowledge/folder`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量创建多个文件夹
-     *
-     * @tags knowledge, folder
-     * @name PostApiKnowledgeFolderBatch
-     * @summary 批量创建文件夹
-     * @request POST:/api/knowledge/folder/batch
-     * @response `200` `PostApiKnowledgeFolderBatchData` Response for status 200
-     */
-    postApiKnowledgeFolderBatch: (
-      data: PostApiKnowledgeFolderBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiKnowledgeFolderBatchData, any>({
-        path: `/api/knowledge/folder/batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询文件夹列表，自动排除已删除数据，自动筛选当前用户的文件夹
-     *
-     * @tags knowledge, folder
-     * @name PostApiKnowledgeFolderQuery
-     * @summary 分页查询文件夹
-     * @request POST:/api/knowledge/folder/query
-     * @response `200` `PostApiKnowledgeFolderQueryData` Response for status 200
-     */
-    postApiKnowledgeFolderQuery: (
-      data: PostApiKnowledgeFolderQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiKnowledgeFolderQueryData, any>({
-        path: `/api/knowledge/folder/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新文件
-     *
-     * @tags knowledge, file
-     * @name PutApiKnowledgeFileBatch
-     * @summary 批量更新文件
-     * @request PUT:/api/knowledge/file/batch
-     * @response `200` `PutApiKnowledgeFileBatchData` Response for status 200
-     */
-    putApiKnowledgeFileBatch: (
-      data: PutApiKnowledgeFileBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiKnowledgeFileBatchData, any>({
-        path: `/api/knowledge/file/batch`,
+      this.http.request<PutApiKnowledgeNodesByIdData, any>({
+        path: `/api/knowledge/nodes/${id}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -22970,21 +21596,21 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个文件
+     * @description 设置节点的权限（替换现有权限）
      *
-     * @tags knowledge, file
-     * @name PutApiKnowledgeFileById
-     * @summary 更新文件
-     * @request PUT:/api/knowledge/file/{id}
-     * @response `200` `PutApiKnowledgeFileByIdData` Response for status 200
+     * @tags knowledge, permission
+     * @name PutApiKnowledgeNodesByIdPermissions
+     * @summary 设置节点权限
+     * @request PUT:/api/knowledge/nodes/{id}/permissions
+     * @response `200` `PutApiKnowledgeNodesByIdPermissionsData` Response for status 200
      */
-    putApiKnowledgeFileById: (
-      { id, ...query }: PutApiKnowledgeFileByIdParams,
-      data: PutApiKnowledgeFileByIdPayload,
+    putApiKnowledgeNodesByIdPermissions: (
+      { id, ...query }: PutApiKnowledgeNodesByIdPermissionsParams,
+      data: PutApiKnowledgeNodesByIdPermissionsPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PutApiKnowledgeFileByIdData, any>({
-        path: `/api/knowledge/file/${id}`,
+      this.http.request<PutApiKnowledgeNodesByIdPermissionsData, any>({
+        path: `/api/knowledge/nodes/${id}/permissions`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -22993,20 +21619,21 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新文件版本
+     * @description 保存文本文件内容
      *
-     * @tags knowledge, fileVersion
-     * @name PutApiKnowledgeFileVersionBatch
-     * @summary 批量更新文件版本
-     * @request PUT:/api/knowledge/file-version/batch
-     * @response `200` `PutApiKnowledgeFileVersionBatchData` Response for status 200
+     * @tags knowledge, content
+     * @name PutApiKnowledgeNodesByIdText
+     * @summary 保存文本内容
+     * @request PUT:/api/knowledge/nodes/{id}/text
+     * @response `200` `PutApiKnowledgeNodesByIdTextData` Response for status 200
      */
-    putApiKnowledgeFileVersionBatch: (
-      data: PutApiKnowledgeFileVersionBatchPayload,
+    putApiKnowledgeNodesByIdText: (
+      { id, ...query }: PutApiKnowledgeNodesByIdTextParams,
+      data: PutApiKnowledgeNodesByIdTextPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PutApiKnowledgeFileVersionBatchData, any>({
-        path: `/api/knowledge/file-version/batch`,
+      this.http.request<PutApiKnowledgeNodesByIdTextData, any>({
+        path: `/api/knowledge/nodes/${id}/text`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -23015,66 +21642,20 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个文件版本
+     * @description 批量更新节点排序
      *
-     * @tags knowledge, fileVersion
-     * @name PutApiKnowledgeFileVersionById
-     * @summary 更新文件版本
-     * @request PUT:/api/knowledge/file-version/{id}
-     * @response `200` `PutApiKnowledgeFileVersionByIdData` Response for status 200
+     * @tags knowledge, operations
+     * @name PutApiKnowledgeNodesOrder
+     * @summary 更新节点排序
+     * @request PUT:/api/knowledge/nodes/order
+     * @response `200` `PutApiKnowledgeNodesOrderData` Response for status 200
      */
-    putApiKnowledgeFileVersionById: (
-      { id, ...query }: PutApiKnowledgeFileVersionByIdParams,
-      data: PutApiKnowledgeFileVersionByIdPayload,
+    putApiKnowledgeNodesOrder: (
+      data: PutApiKnowledgeNodesOrderPayload,
       params: RequestParams = {},
     ) =>
-      this.http.request<PutApiKnowledgeFileVersionByIdData, any>({
-        path: `/api/knowledge/file-version/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID列表批量更新文件夹
-     *
-     * @tags knowledge, folder
-     * @name PutApiKnowledgeFolderBatch
-     * @summary 批量更新文件夹
-     * @request PUT:/api/knowledge/folder/batch
-     * @response `200` `PutApiKnowledgeFolderBatchData` Response for status 200
-     */
-    putApiKnowledgeFolderBatch: (
-      data: PutApiKnowledgeFolderBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiKnowledgeFolderBatchData, any>({
-        path: `/api/knowledge/folder/batch`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个文件夹
-     *
-     * @tags knowledge, folder
-     * @name PutApiKnowledgeFolderById
-     * @summary 更新文件夹
-     * @request PUT:/api/knowledge/folder/{id}
-     * @response `200` `PutApiKnowledgeFolderByIdData` Response for status 200
-     */
-    putApiKnowledgeFolderById: (
-      { id, ...query }: PutApiKnowledgeFolderByIdParams,
-      data: PutApiKnowledgeFolderByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiKnowledgeFolderByIdData, any>({
-        path: `/api/knowledge/folder/${id}`,
+      this.http.request<PutApiKnowledgeNodesOrderData, any>({
+        path: `/api/knowledge/nodes/order`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -23905,259 +22486,30 @@ export class Api<SecurityDataType extends unknown> {
         ...params,
       }),
   };
+  public = {
+    /**
+     * @description 上传头像到公开存储，返回可直接访问的URL
+     *
+     * @tags public, upload, avatar
+     * @name PostApiPublicUploadAvatar
+     * @summary 上传公开头像
+     * @request POST:/api/public/upload/avatar
+     * @response `200` `PostApiPublicUploadAvatarData` Response for status 200
+     */
+    postApiPublicUploadAvatar: (
+      data: PostApiPublicUploadAvatarPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiPublicUploadAvatarData, any>({
+        path: `/api/public/upload/avatar`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   files = {
-    /**
-     * @description 软删除文件
-     *
-     * @tags files, files
-     * @name DeleteApiFilesById
-     * @summary 删除文件
-     * @request DELETE:/api/files/{id}
-     * @response `200` `DeleteApiFilesByIdData` Response for status 200
-     */
-    deleteApiFilesById: (
-      { id, ...query }: DeleteApiFilesByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiFilesByIdData, any>({
-        path: `/api/files/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 软删除文件夹及其内容
-     *
-     * @tags files, files
-     * @name DeleteApiFilesFoldersById
-     * @summary 删除文件夹
-     * @request DELETE:/api/files/folders/{id}
-     * @response `200` `DeleteApiFilesFoldersByIdData` Response for status 200
-     */
-    deleteApiFilesFoldersById: (
-      { id, ...query }: DeleteApiFilesFoldersByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiFilesFoldersByIdData, any>({
-        path: `/api/files/folders/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 删除资源的所有权限和继承关系
-     *
-     * @tags files, permission
-     * @name DeleteApiFilesPermissionAllByResourceTypeByResourceId
-     * @summary 删除所有权限
-     * @request DELETE:/api/files/permission/all/{resourceType}/{resourceId}
-     * @response `200` `DeleteApiFilesPermissionAllByResourceTypeByResourceIdData` Response for status 200
-     */
-    deleteApiFilesPermissionAllByResourceTypeByResourceId: (
-      {
-        resourceType,
-        resourceId,
-        ...query
-      }: DeleteApiFilesPermissionAllByResourceTypeByResourceIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<
-        DeleteApiFilesPermissionAllByResourceTypeByResourceIdData,
-        any
-      >({
-        path: `/api/files/permission/all/${resourceType}/${resourceId}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 移除资源的权限
-     *
-     * @tags files, permission
-     * @name DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission
-     * @summary 移除权限
-     * @request DELETE:/api/files/permission/{resourceType}/{resourceId}/{subjectType}/{subjectId}/{permission}
-     * @response `200` `DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData` Response for status 200
-     */
-    deleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermission:
-      (
-        {
-          resourceType,
-          resourceId,
-          subjectType,
-          subjectId,
-          permission,
-          ...query
-        }: DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionParams,
-        params: RequestParams = {},
-      ) =>
-        this.http.request<
-          DeleteApiFilesPermissionByResourceTypeByResourceIdBySubjectTypeBySubjectIdByPermissionData,
-          any
-        >({
-          path: `/api/files/permission/${resourceType}/${resourceId}/${subjectType}/${subjectId}/${permission}`,
-          method: "DELETE",
-          format: "json",
-          ...params,
-        }),
-
-    /**
-     * @description 获取文本文件内容
-     *
-     * @tags files, files
-     * @name GetApiFilesByIdContent
-     * @summary 获取文件内容
-     * @request GET:/api/files/{id}/content
-     * @response `200` `GetApiFilesByIdContentData` Response for status 200
-     */
-    getApiFilesByIdContent: (
-      { id, ...query }: GetApiFilesByIdContentParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiFilesByIdContentData, any>({
-        path: `/api/files/${id}/content`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取预签名下载URL
-     *
-     * @tags files, files
-     * @name GetApiFilesByIdDownloadUrl
-     * @summary 获取下载URL
-     * @request GET:/api/files/{id}/download-url
-     * @response `200` `GetApiFilesByIdDownloadUrlData` Response for status 200
-     */
-    getApiFilesByIdDownloadUrl: (
-      { id, ...query }: GetApiFilesByIdDownloadUrlParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiFilesByIdDownloadUrlData, any>({
-        path: `/api/files/${id}/download-url`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取文本文件内容，仅支持纯文本文件
-     *
-     * @tags files, files
-     * @name GetApiFilesByIdTextContent
-     * @summary 获取文本文件内容
-     * @request GET:/api/files/{id}/text-content
-     * @response `200` `GetApiFilesByIdTextContentData` Response for status 200
-     */
-    getApiFilesByIdTextContent: (
-      { id, ...query }: GetApiFilesByIdTextContentParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiFilesByIdTextContentData, any>({
-        path: `/api/files/${id}/text-content`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取文件或文件夹的权限列表
-     *
-     * @tags files, permission
-     * @name GetApiFilesPermissionByResourceTypeByResourceId
-     * @summary 获取资源权限
-     * @request GET:/api/files/permission/{resourceType}/{resourceId}
-     * @response `200` `GetApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
-     */
-    getApiFilesPermissionByResourceTypeByResourceId: (
-      {
-        resourceType,
-        resourceId,
-        ...query
-      }: GetApiFilesPermissionByResourceTypeByResourceIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<
-        GetApiFilesPermissionByResourceTypeByResourceIdData,
-        any
-      >({
-        path: `/api/files/permission/${resourceType}/${resourceId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取用户对资源的所有有效权限（包括继承的权限）
-     *
-     * @tags files, permission
-     * @name GetApiFilesPermissionEffectiveByResourceTypeByResourceId
-     * @summary 获取有效权限
-     * @request GET:/api/files/permission/effective/{resourceType}/{resourceId}
-     * @response `200` `GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData` Response for status 200
-     */
-    getApiFilesPermissionEffectiveByResourceTypeByResourceId: (
-      {
-        resourceType,
-        resourceId,
-        ...query
-      }: GetApiFilesPermissionEffectiveByResourceTypeByResourceIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<
-        GetApiFilesPermissionEffectiveByResourceTypeByResourceIdData,
-        any
-      >({
-        path: `/api/files/permission/effective/${resourceType}/${resourceId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取文件夹的完整路径（面包屑）
-     *
-     * @tags files, share
-     * @name GetApiFilesShareFolderPathByFolderId
-     * @summary 获取文件夹路径
-     * @request GET:/api/files/share/folder-path/{folderId}
-     * @response `200` `GetApiFilesShareFolderPathByFolderIdData` Response for status 200
-     */
-    getApiFilesShareFolderPathByFolderId: (
-      { folderId, ...query }: GetApiFilesShareFolderPathByFolderIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiFilesShareFolderPathByFolderIdData, any>({
-        path: `/api/files/share/folder-path/${folderId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取历史版本的下载URL
-     *
-     * @tags files, files
-     * @name GetApiFilesVersionsByIdDownloadUrl
-     * @summary 下载历史版本
-     * @request GET:/api/files/versions/{id}/download-url
-     * @response `200` `GetApiFilesVersionsByIdDownloadUrlData` Response for status 200
-     */
-    getApiFilesVersionsByIdDownloadUrl: (
-      { id, ...query }: GetApiFilesVersionsByIdDownloadUrlParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiFilesVersionsByIdDownloadUrlData, any>({
-        path: `/api/files/versions/${id}/download-url`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
     /**
      * @description 获取已上传附件的访问URL
      *
@@ -24195,640 +22547,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PostApiFilesAiChatUploadData, any>({
         path: `/api/files/ai-chat/upload`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 复制文件到目标文件夹
-     *
-     * @tags files, files
-     * @name PostApiFilesByIdCopy
-     * @summary 复制文件
-     * @request POST:/api/files/{id}/copy
-     * @response `200` `PostApiFilesByIdCopyData` Response for status 200
-     */
-    postApiFilesByIdCopy: (
-      { id, ...query }: PostApiFilesByIdCopyParams,
-      data: PostApiFilesByIdCopyPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesByIdCopyData, any>({
-        path: `/api/files/${id}/copy`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 复制文件到目标文件夹，自动生成唯一文件名 filename(num).ext
-     *
-     * @tags files, files
-     * @name PostApiFilesByIdCopyAsDuplicate
-     * @summary 复制文件为副本
-     * @request POST:/api/files/{id}/copy-as-duplicate
-     * @response `200` `PostApiFilesByIdCopyAsDuplicateData` Response for status 200
-     */
-    postApiFilesByIdCopyAsDuplicate: (
-      { id, ...query }: PostApiFilesByIdCopyAsDuplicateParams,
-      data: PostApiFilesByIdCopyAsDuplicatePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesByIdCopyAsDuplicateData, any>({
-        path: `/api/files/${id}/copy-as-duplicate`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 移动文件到目标文件夹
-     *
-     * @tags files, files
-     * @name PostApiFilesByIdMove
-     * @summary 移动文件
-     * @request POST:/api/files/{id}/move
-     * @response `200` `PostApiFilesByIdMoveData` Response for status 200
-     */
-    postApiFilesByIdMove: (
-      { id, ...query }: PostApiFilesByIdMoveParams,
-      data: PostApiFilesByIdMovePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesByIdMoveData, any>({
-        path: `/api/files/${id}/move`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 检查指定文件夹中是否存在同名文件
-     *
-     * @tags files, files
-     * @name PostApiFilesCheckExists
-     * @summary 检查文件是否存在
-     * @request POST:/api/files/check-exists
-     * @response `200` `PostApiFilesCheckExistsData` Response for status 200
-     */
-    postApiFilesCheckExists: (
-      data: PostApiFilesCheckExistsPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesCheckExistsData, any>({
-        path: `/api/files/check-exists`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 确认文件上传完成并创建记录
-     *
-     * @tags files, files
-     * @name PostApiFilesConfirmUpload
-     * @summary 确认上传
-     * @request POST:/api/files/confirm-upload
-     * @response `200` `PostApiFilesConfirmUploadData` Response for status 200
-     */
-    postApiFilesConfirmUpload: (
-      data: PostApiFilesConfirmUploadPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesConfirmUploadData, any>({
-        path: `/api/files/confirm-upload`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 批量软删除文件
-     *
-     * @tags files, files
-     * @name PostApiFilesDeleteBatch
-     * @summary 批量删除文件
-     * @request POST:/api/files/delete-batch
-     * @response `200` `PostApiFilesDeleteBatchData` Response for status 200
-     */
-    postApiFilesDeleteBatch: (
-      data: PostApiFilesDeleteBatchPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesDeleteBatchData, any>({
-        path: `/api/files/delete-batch`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建新文件夹
-     *
-     * @tags files, files
-     * @name PostApiFilesFolders
-     * @summary 创建文件夹
-     * @request POST:/api/files/folders
-     * @response `200` `PostApiFilesFoldersData` Response for status 200
-     */
-    postApiFilesFolders: (
-      data: PostApiFilesFoldersPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesFoldersData, any>({
-        path: `/api/files/folders`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 移动文件夹到目标位置
-     *
-     * @tags files, files
-     * @name PostApiFilesFoldersByIdMove
-     * @summary 移动文件夹
-     * @request POST:/api/files/folders/{id}/move
-     * @response `200` `PostApiFilesFoldersByIdMoveData` Response for status 200
-     */
-    postApiFilesFoldersByIdMove: (
-      { id, ...query }: PostApiFilesFoldersByIdMoveParams,
-      data: PostApiFilesFoldersByIdMovePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesFoldersByIdMoveData, any>({
-        path: `/api/files/folders/${id}/move`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 为资源添加单个权限
-     *
-     * @tags files, permission
-     * @name PostApiFilesPermission
-     * @summary 添加权限
-     * @request POST:/api/files/permission
-     * @response `200` `PostApiFilesPermissionData` Response for status 200
-     */
-    postApiFilesPermission: (
-      data: PostApiFilesPermissionPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesPermissionData, any>({
-        path: `/api/files/permission`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 设置文件或文件夹的权限（替换现有权限）
-     *
-     * @tags files, permission
-     * @name PostApiFilesPermissionByResourceTypeByResourceId
-     * @summary 设置资源权限
-     * @request POST:/api/files/permission/{resourceType}/{resourceId}
-     * @response `200` `PostApiFilesPermissionByResourceTypeByResourceIdData` Response for status 200
-     */
-    postApiFilesPermissionByResourceTypeByResourceId: (
-      {
-        resourceType,
-        resourceId,
-        ...query
-      }: PostApiFilesPermissionByResourceTypeByResourceIdParams,
-      data: PostApiFilesPermissionByResourceTypeByResourceIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<
-        PostApiFilesPermissionByResourceTypeByResourceIdData,
-        any
-      >({
-        path: `/api/files/permission/${resourceType}/${resourceId}`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 检查用户对资源的权限
-     *
-     * @tags files, permission
-     * @name PostApiFilesPermissionCheck
-     * @summary 检查权限
-     * @request POST:/api/files/permission/check
-     * @response `200` `PostApiFilesPermissionCheckData` Response for status 200
-     */
-    postApiFilesPermissionCheck: (
-      data: PostApiFilesPermissionCheckPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesPermissionCheckData, any>({
-        path: `/api/files/permission/check`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 将一个资源的权限复制到另一个资源
-     *
-     * @tags files, permission
-     * @name PostApiFilesPermissionCopy
-     * @summary 复制权限
-     * @request POST:/api/files/permission/copy
-     * @response `200` `PostApiFilesPermissionCopyData` Response for status 200
-     */
-    postApiFilesPermissionCopy: (
-      data: PostApiFilesPermissionCopyPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesPermissionCopyData, any>({
-        path: `/api/files/permission/copy`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 设置文件或文件夹的父级文件夹（用于权限继承）
-     *
-     * @tags files, permission
-     * @name PostApiFilesPermissionParent
-     * @summary 设置资源父级
-     * @request POST:/api/files/permission/parent
-     * @response `200` `PostApiFilesPermissionParentData` Response for status 200
-     */
-    postApiFilesPermissionParent: (
-      data: PostApiFilesPermissionParentPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesPermissionParentData, any>({
-        path: `/api/files/permission/parent`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取共享文件夹的子文件夹和文件，支持权限继承
-     *
-     * @tags files, share
-     * @name PostApiFilesShareFolderContents
-     * @summary 获取共享文件夹内容
-     * @request POST:/api/files/share/folder-contents
-     * @response `200` `PostApiFilesShareFolderContentsData` Response for status 200
-     */
-    postApiFilesShareFolderContents: (
-      data: PostApiFilesShareFolderContentsPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesShareFolderContentsData, any>({
-        path: `/api/files/share/folder-contents`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取当前用户共享给他人的文件和文件夹
-     *
-     * @tags files, share
-     * @name PostApiFilesShareMyShared
-     * @summary 获取我共享的资源
-     * @request POST:/api/files/share/my-shared
-     * @response `200` `PostApiFilesShareMySharedData` Response for status 200
-     */
-    postApiFilesShareMyShared: (
-      data: PostApiFilesShareMySharedPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesShareMySharedData, any>({
-        path: `/api/files/share/my-shared`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取他人共享给当前用户的文件和文件夹
-     *
-     * @tags files, share
-     * @name PostApiFilesShareSharedWithMe
-     * @summary 获取收到的共享
-     * @request POST:/api/files/share/shared-with-me
-     * @response `200` `PostApiFilesShareSharedWithMeData` Response for status 200
-     */
-    postApiFilesShareSharedWithMe: (
-      data: PostApiFilesShareSharedWithMePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesShareSharedWithMeData, any>({
-        path: `/api/files/share/shared-with-me`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 上传文件到存储（如果文件已存在则返回冲突信息）
-     *
-     * @tags files, files
-     * @name PostApiFilesUpload
-     * @summary 上传文件
-     * @request POST:/api/files/upload
-     * @response `200` `PostApiFilesUploadData` Response for status 200
-     */
-    postApiFilesUpload: (
-      data: PostApiFilesUploadPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesUploadData, any>({
-        path: `/api/files/upload`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 上传文件并处理冲突（覆盖/创建新版本/创建副本）
-     *
-     * @tags files, files
-     * @name PostApiFilesUploadForce
-     * @summary 强制上传文件
-     * @request POST:/api/files/upload-force
-     * @response `200` `PostApiFilesUploadForceData` Response for status 200
-     */
-    postApiFilesUploadForce: (
-      data: PostApiFilesUploadForcePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesUploadForceData, any>({
-        path: `/api/files/upload-force`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取预签名上传URL
-     *
-     * @tags files, files
-     * @name PostApiFilesUploadUrl
-     * @summary 获取上传URL
-     * @request POST:/api/files/upload-url
-     * @response `200` `PostApiFilesUploadUrlData` Response for status 200
-     */
-    postApiFilesUploadUrl: (
-      data: PostApiFilesUploadUrlPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesUploadUrlData, any>({
-        path: `/api/files/upload-url`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 将历史版本恢复为当前版本（交换S3字段）
-     *
-     * @tags files, files
-     * @name PostApiFilesVersionsByIdRestore
-     * @summary 恢复历史版本
-     * @request POST:/api/files/versions/{id}/restore
-     * @response `200` `PostApiFilesVersionsByIdRestoreData` Response for status 200
-     */
-    postApiFilesVersionsByIdRestore: (
-      { id, ...query }: PostApiFilesVersionsByIdRestoreParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiFilesVersionsByIdRestoreData, any>({
-        path: `/api/files/versions/${id}/restore`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 保存文本文件内容
-     *
-     * @tags files, files
-     * @name PutApiFilesByIdContent
-     * @summary 保存文件内容
-     * @request PUT:/api/files/{id}/content
-     * @response `200` `PutApiFilesByIdContentData` Response for status 200
-     */
-    putApiFilesByIdContent: (
-      { id, ...query }: PutApiFilesByIdContentParams,
-      data: PutApiFilesByIdContentPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesByIdContentData, any>({
-        path: `/api/files/${id}/content`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 更新文件描述信息
-     *
-     * @tags files, files
-     * @name PutApiFilesByIdDescription
-     * @summary 更新文件描述
-     * @request PUT:/api/files/{id}/description
-     * @response `200` `PutApiFilesByIdDescriptionData` Response for status 200
-     */
-    putApiFilesByIdDescription: (
-      { id, ...query }: PutApiFilesByIdDescriptionParams,
-      data: PutApiFilesByIdDescriptionPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesByIdDescriptionData, any>({
-        path: `/api/files/${id}/description`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 重命名文件
-     *
-     * @tags files, files
-     * @name PutApiFilesByIdRename
-     * @summary 重命名文件
-     * @request PUT:/api/files/{id}/rename
-     * @response `200` `PutApiFilesByIdRenameData` Response for status 200
-     */
-    putApiFilesByIdRename: (
-      { id, ...query }: PutApiFilesByIdRenameParams,
-      data: PutApiFilesByIdRenamePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesByIdRenameData, any>({
-        path: `/api/files/${id}/rename`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 更新文件夹描述信息
-     *
-     * @tags files, files
-     * @name PutApiFilesFoldersByIdDescription
-     * @summary 更新文件夹描述
-     * @request PUT:/api/files/folders/{id}/description
-     * @response `200` `PutApiFilesFoldersByIdDescriptionData` Response for status 200
-     */
-    putApiFilesFoldersByIdDescription: (
-      { id, ...query }: PutApiFilesFoldersByIdDescriptionParams,
-      data: PutApiFilesFoldersByIdDescriptionPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesFoldersByIdDescriptionData, any>({
-        path: `/api/files/folders/${id}/description`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 更新文件夹排序
-     *
-     * @tags files, files
-     * @name PutApiFilesFoldersByIdOrder
-     * @summary 更新文件夹排序
-     * @request PUT:/api/files/folders/{id}/order
-     * @response `200` `PutApiFilesFoldersByIdOrderData` Response for status 200
-     */
-    putApiFilesFoldersByIdOrder: (
-      { id, ...query }: PutApiFilesFoldersByIdOrderParams,
-      data: PutApiFilesFoldersByIdOrderPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesFoldersByIdOrderData, any>({
-        path: `/api/files/folders/${id}/order`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 重命名文件夹
-     *
-     * @tags files, files
-     * @name PutApiFilesFoldersByIdRename
-     * @summary 重命名文件夹
-     * @request PUT:/api/files/folders/{id}/rename
-     * @response `200` `PutApiFilesFoldersByIdRenameData` Response for status 200
-     */
-    putApiFilesFoldersByIdRename: (
-      { id, ...query }: PutApiFilesFoldersByIdRenameParams,
-      data: PutApiFilesFoldersByIdRenamePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesFoldersByIdRenameData, any>({
-        path: `/api/files/folders/${id}/rename`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 更新文件夹图标和颜色
-     *
-     * @tags files, files
-     * @name PutApiFilesFoldersByIdStyle
-     * @summary 更新文件夹样式
-     * @request PUT:/api/files/folders/{id}/style
-     * @response `200` `PutApiFilesFoldersByIdStyleData` Response for status 200
-     */
-    putApiFilesFoldersByIdStyle: (
-      { id, ...query }: PutApiFilesFoldersByIdStyleParams,
-      data: PutApiFilesFoldersByIdStylePayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiFilesFoldersByIdStyleData, any>({
-        path: `/api/files/folders/${id}/style`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
-  public = {
-    /**
-     * @description 上传头像到公开存储，返回可直接访问的URL
-     *
-     * @tags public, upload, avatar
-     * @name PostApiPublicUploadAvatar
-     * @summary 上传公开头像
-     * @request POST:/api/public/upload/avatar
-     * @response `200` `PostApiPublicUploadAvatarData` Response for status 200
-     */
-    postApiPublicUploadAvatar: (
-      data: PostApiPublicUploadAvatarPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiPublicUploadAvatarData, any>({
-        path: `/api/public/upload/avatar`,
         method: "POST",
         body: data,
         type: ContentType.Json,

@@ -123,4 +123,53 @@ export const mcpServerGetSchema = defineAction({
   },
 });
 
-export const mcpServerActions = [mcpServerGetByPagination, mcpServerGetByPk, mcpServerCreate, mcpServerUpdate, mcpServerDeleteByPk, mcpServerGetSchema];
+// MCP 配置输出 schema
+const mcpConfigSchema = z.object({
+  endpoint: z.string(),
+  config: z.object({
+    mcpServers: z.record(z.string(), z.object({
+      url: z.string(),
+      headers: z.object({
+        Authorization: z.string(),
+      }).optional(),
+    })),
+  }),
+  configJson: z.string(),
+});
+
+export const mcpServerGetConfig = defineAction({
+  meta: { name: 'ai.mcpServer.getConfig', displayName: '获取MCP配置', description: '获取MCP服务的配置JSON，用于集成到AI工具', tags: ['ai', 'mcpServer'], method: 'GET', path: '/api/ai/mcp-server/:id/config' },
+  schemas: {
+    paramsSchema: z.object({ id: z.string() }),
+    outputSchema: mcpConfigSchema,
+  },
+  execute: async (input, context) => {
+    const { db } = context;
+    const [server] = await db.select().from(mcpServer).where(eq(mcpServer.id, input.id)).limit(1);
+    if (!server) throw new Error('error.mcp.server.notFound');
+
+    // 从环境变量或配置获取服务器基础 URL
+    const baseUrl = process.env.SERVER_BASE_URL || `http://localhost:${process.env.PORT || 3030}`;
+    // MCP 端点 - elysia-mcp 使用 Streamable HTTP transport
+    const endpoint = `${baseUrl}/mcp/${server.id}`;
+    
+    const serverConfig: { url: string; headers?: { Authorization: string } } = { url: endpoint };
+    if (!server.isPublic) {
+      serverConfig.headers = { Authorization: 'Bearer <YOUR_API_KEY>' };
+    }
+
+    const config = {
+      mcpServers: {
+        [server.name]: serverConfig,
+      },
+    };
+
+    return {
+      endpoint,
+      config,
+      configJson: JSON.stringify(config, null, 2),
+    };
+  },
+});
+
+export const mcpServerActions = [mcpServerGetByPagination, mcpServerGetByPk, mcpServerCreate, mcpServerUpdate, mcpServerDeleteByPk, mcpServerGetSchema, mcpServerGetConfig];

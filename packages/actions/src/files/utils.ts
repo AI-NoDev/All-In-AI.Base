@@ -1,8 +1,11 @@
 /**
  * 文件操作工具函数
+ * 
+ * 注意：此文件仅用于旧的文件上传功能
+ * 新的知识库操作请使用 knowledge/utils.ts
  */
 
-import { FilePermissionAdapter } from '@qiyu-allinai/db/casbin';
+import { KnowledgePermissionAdapter } from '@qiyu-allinai/db/casbin';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type { DrizzleDB } from '../core/types';
 import { ActionError } from '../core/errors';
@@ -36,8 +39,8 @@ export async function checkResourcePermission(
     return true;
   }
   
-  // 检查 Casbin 权限
-  const adapter = new FilePermissionAdapter(db as PostgresJsDatabase);
+  // 检查 Casbin 权限 (使用新的 KnowledgePermissionAdapter)
+  const adapter = new KnowledgePermissionAdapter(db as PostgresJsDatabase);
   return adapter.checkPermission(userId, resourceType, resource.id, permission);
 }
 

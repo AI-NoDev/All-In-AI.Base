@@ -1,18 +1,9 @@
-// Knowledge module actions
-export * from './folder';
-export * from './file';
-export * from './fileVersion';
-export * from './favorite';
+/**
+ * 知识库模块 Actions
+ * 
+ * 注意: 已迁移到 packages/actions/src/knowledge/
+ * 此文件保留用于向后兼容，请使用新路径导入
+ */
 
-// Aggregate all knowledge actions
-import { folderActions } from './folder';
-import { fileActions } from './file';
-import { fileVersionActions } from './fileVersion';
-import { favoriteActions } from './favorite';
-
-export const knowledgeActions = [
-  ...folderActions,
-  ...fileActions,
-  ...fileVersionActions,
-  ...favoriteActions,
-];
+// 重新导出新模块的所有内容
+export * from '../../knowledge';

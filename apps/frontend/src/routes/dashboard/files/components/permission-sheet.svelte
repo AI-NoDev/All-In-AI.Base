@@ -58,8 +58,8 @@
   let loading = $state(false);
   let userLoading = $state(false);
 
-  // Permission map: subjectType:subjectId -> { permission -> effect }
-  let permissionMap = $state<Map<string, Map<FilePermission, PermissionEffect>>>(new Map());
+  // Permission map: subjectType:subjectId -> permission (单选模式，只存储一个权限)
+  let permissionMap = $state<Record<string, FilePermission>>({});
 
   const api = authStore.createApi(true);
   const currentUserId = authStore.user?.id;
@@ -76,10 +76,7 @@
 
   function getPermission(subjectType: SubjectType, subjectId: string): FilePermission | null {
     const key = getPermissionKey(subjectType, subjectId);
-    const perms = permissionMap.get(key);
-    if (!perms || perms.size === 0) return null;
-    // 返回第一个权限（单选模式）
-    return Array.from(perms.keys())[0];
+    return permissionMap[key] || null;
   }
 
   function hasPermission(subjectType: SubjectType, subjectId: string, permission: FilePermission): boolean {
@@ -88,19 +85,15 @@
 
   function setPermission(subjectType: SubjectType, subjectId: string, permission: FilePermission | null) {
     const key = getPermissionKey(subjectType, subjectId);
-    const newMap = new Map(permissionMap);
     
     if (permission === null) {
       // 移除权限
-      newMap.delete(key);
+      const { [key]: _, ...rest } = permissionMap;
+      permissionMap = rest;
     } else {
-      // 设置单一权限（替换之前的）
-      const perms = new Map<FilePermission, PermissionEffect>();
-      perms.set(permission, 'allow');
-      newMap.set(key, perms);
+      // 设置权限
+      permissionMap = { ...permissionMap, [key]: permission };
     }
-    
-    permissionMap = newMap;
   }
 
   function togglePermission(subjectType: SubjectType, subjectId: string, permission: FilePermission) {
@@ -173,25 +166,30 @@
 
   async function loadExistingPermissions() {
     try {
-      const res = await api.files.getApiFilesPermissionByResourceTypeByResourceId({
-        resourceType,
-        resourceId,
+      const res = await api.knowledge.getApiKnowledgeNodesByIdPermissions({
+        id: resourceId,
       });
-      const permissions = res.data || [];
-      const newMap = new Map<string, Map<FilePermission, PermissionEffect>>();
+      // API 响应格式: { data: { permissions: [...] }, status: 200, message: 'ok' }
+      const permissions = res.data?.permissions || [];
+      
+      const newMap: Record<string, FilePermission> = {};
       
       for (const p of permissions) {
         const key = getPermissionKey(p.subjectType as SubjectType, p.subjectId);
-        if (!newMap.has(key)) {
-          newMap.set(key, new Map());
+        // 单选模式：只保留一个权限（优先级：manage > write > read）
+        const currentPerm = newMap[key];
+        const newPerm = p.permission as FilePermission;
+        if (!currentPerm || 
+            (newPerm === 'manage') || 
+            (newPerm === 'write' && currentPerm === 'read')) {
+          newMap[key] = newPerm;
         }
-        newMap.get(key)!.set(p.permission as FilePermission, p.effect as PermissionEffect);
       }
       
       permissionMap = newMap;
     } catch (err) {
       console.error('Failed to load existing permissions:', err);
-      permissionMap = new Map();
+      permissionMap = {};
     }
   }
 
@@ -208,43 +206,41 @@
   function handleSave() {
     const permissions: PermissionGrantee[] = [];
     
-    permissionMap.forEach((perms, key) => {
+    for (const [key, permission] of Object.entries(permissionMap)) {
       const [subjectType, subjectId] = key.split(':');
-      perms.forEach((effect, permission) => {
-        permissions.push({
-          subjectType: subjectType as SubjectType,
-          subjectId,
-          permission,
-          effect,
-        });
+      permissions.push({
+        subjectType: subjectType as SubjectType,
+        subjectId,
+        permission,
+        effect: 'allow',
       });
-    });
+    }
     
     onSave(isPublic, permissions);
   }
 
   // Count permissions by type
   let userPermCount = $derived(
-    Array.from(permissionMap.keys()).filter(k => k.startsWith('user:')).length
+    Object.keys(permissionMap).filter(k => k.startsWith('user:')).length
   );
   let rolePermCount = $derived(
-    Array.from(permissionMap.keys()).filter(k => k.startsWith('role:')).length
+    Object.keys(permissionMap).filter(k => k.startsWith('role:')).length
   );
   let deptPermCount = $derived(
-    Array.from(permissionMap.keys()).filter(k => k.startsWith('dept:')).length
+    Object.keys(permissionMap).filter(k => k.startsWith('dept:')).length
   );
 
   // Get permission badges for a subject
   function getSubjectPermissions(subjectType: SubjectType, subjectId: string): FilePermission[] {
     const key = getPermissionKey(subjectType, subjectId);
-    const perms = permissionMap.get(key);
-    return perms ? Array.from(perms.keys()) : [];
+    const perm = permissionMap[key];
+    return perm ? [perm] : [];
   }
 
   $effect(() => {
     if (open) {
       isPublic = initialIsPublic;
-      permissionMap = new Map();
+      permissionMap = {};
       loading = true;
       Promise.all([
         loadDepartments(),

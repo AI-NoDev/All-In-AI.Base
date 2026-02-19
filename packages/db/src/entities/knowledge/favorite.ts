@@ -56,3 +56,7 @@ export const favoriteConfig = getFieldConfigs(favoriteFields);
 
 // ============ Schemas ============
 export const favoriteZodSchemas = createZodSchemas(favorite, favoriteFields);
+
+// ============ 类型导出 ============
+export type FavoriteSelect = typeof favorite.$inferSelect;
+export type FavoriteInsert = typeof favorite.$inferInsert;

@@ -29,8 +29,8 @@
       const base64Content = btoa(unescape(encodeURIComponent(content)));
       const targetFolderId = folderId === 'root' ? null : folderId;
       
-      await api.files.postApiFilesUpload({
-        folderId: targetFolderId,
+      await api.knowledge.postApiKnowledgeUploadDirect({
+        parentId: targetFolderId,
         name,
         content: base64Content,
         mimeType: 'text/plain',

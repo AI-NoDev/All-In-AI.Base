@@ -74,14 +74,17 @@
     error = null;
     try {
       // 先获取文件基本信息
-      const res = await api.knowledge.getApiKnowledgeFileById({ id: fileId });
+      const res = await api.knowledge.getApiKnowledgeNodesById({ id: fileId });
       const fileInfo = res.data;
+      if (!fileInfo) {
+        throw new Error('文件不存在');
+      }
       fileData = {
         id: fileInfo.id,
         name: fileInfo.name,
         extension: fileInfo.extension,
         mimeType: fileInfo.mimeType || 'application/octet-stream',
-        folderId: fileInfo.folderId,
+        folderId: fileInfo.parentId,
         size: fileInfo.size,
       };
       
@@ -89,16 +92,16 @@
       const type = getFileType(fileInfo.mimeType || undefined);
       if (type === 'text') {
         try {
-          const textRes = await api.files.getApiFilesByIdTextContent({ id: fileId });
-          content = textRes.data.content;
+          const textRes = await api.knowledge.getApiKnowledgeNodesByIdText({ id: fileId });
+          content = textRes.data?.content || '';
         } catch {
           // 获取文本内容失败，可能不是真正的文本文件
         }
       }
       
       // 获取下载URL用于预览
-      const urlRes = await api.files.getApiFilesByIdDownloadUrl({ id: fileId });
-      downloadUrl = urlRes.data.url;
+      const urlRes = await api.knowledge.getApiKnowledgeNodesByIdDownloadUrl({ id: fileId });
+      downloadUrl = urlRes.data?.url || null;
     } catch (err: unknown) {
       const e = err as ApiError;
       // 检查是否是 403 权限错误
@@ -116,7 +119,7 @@
     if (!fileData || saving) return;
     saving = true;
     try {
-      await api.files.putApiFilesByIdContent({ id: fileId }, { content });
+      await api.knowledge.putApiKnowledgeNodesByIdText({ id: fileId }, { content });
       goBack();
     } catch (err: unknown) {
       const e = err as { message?: string };
@@ -156,13 +159,13 @@
       const buffer = await pendingFile.arrayBuffer();
       const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
       
-      await api.files.postApiFilesUploadForce({
-        folderId: fileData.folderId,
+      await api.knowledge.postApiKnowledgeUploadForce({
+        parentId: fileData.folderId,
         name: fileData.name,
         content: base64,
         mimeType: pendingFile.type || fileData.mimeType,
         conflictMode: 'overwrite',
-        existingFileId: fileData.id,
+        existingNodeId: fileData.id,
       });
       
       // 重新加载文件

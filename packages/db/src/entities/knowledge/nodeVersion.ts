@@ -1,5 +1,9 @@
+/**
+ * 知识库节点版本实体 (仅用于文件类型节点)
+ */
+
 import { sql } from "drizzle-orm";
-import { pgTable, uuid, varchar, bigint, timestamp, text } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, bigint, timestamp, text, index } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
   createZodSchemas, createPermissions,
@@ -8,10 +12,10 @@ import {
 import { pkSchema } from '../base/pkSchema';
 
 // ============ Fields ============
-const fileVersionOwnFields = {
-  fileId: {
-    field: uuid("file_id").notNull(),
-    comment: () => '文件ID',
+const nodeVersionOwnFields = {
+  nodeId: {
+    field: uuid("node_id").notNull(),
+    comment: () => '节点ID',
     config: { canExport: false, canImport: false }
   },
   versionNumber: {
@@ -66,22 +70,32 @@ const fileVersionOwnFields = {
   },
 } satisfies FieldMap;
 
-export const fileVersionFields = mergeFields(pkSchema, fileVersionOwnFields);
+export const nodeVersionFields = mergeFields(pkSchema, nodeVersionOwnFields);
 
 // ============ Meta ============
-export const fileVersionMeta: EntityMeta = {
-  name: 'knowledge_file_version',
-  displayName: () => '文件版本',
-  verboseName: () => '文件版本',
-  verboseNamePlural: () => '文件版本列表',
-  permissions: createPermissions('knowledge_file_version'),
+export const nodeVersionMeta: EntityMeta = {
+  name: 'knowledge_node_version',
+  displayName: () => '节点版本',
+  verboseName: () => '节点版本',
+  verboseNamePlural: () => '节点版本列表',
+  permissions: createPermissions('knowledge_node_version'),
 };
 
 // ============ Table ============
-export const fileVersion = pgTable(fileVersionMeta.name, getTableFields(fileVersionFields));
+export const nodeVersion = pgTable(
+  nodeVersionMeta.name, 
+  getTableFields(nodeVersionFields),
+  (table) => [
+    index('node_version_node_id_idx').on(table.nodeId),
+  ]
+);
 
 // ============ Config ============
-export const fileVersionConfig = getFieldConfigs(fileVersionFields);
+export const nodeVersionConfig = getFieldConfigs(nodeVersionFields);
 
 // ============ Schemas ============
-export const fileVersionZodSchemas = createZodSchemas(fileVersion, fileVersionFields);
+export const nodeVersionZodSchemas = createZodSchemas(nodeVersion, nodeVersionFields);
+
+// ============ 类型导出 ============
+export type NodeVersionSelect = typeof nodeVersion.$inferSelect;
+export type NodeVersionInsert = typeof nodeVersion.$inferInsert;

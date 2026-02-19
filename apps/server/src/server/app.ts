@@ -16,6 +16,7 @@ import {
   aiPlugin,
   i18nPlugin,
 } from "./plugins";
+import { createMcpPlugin } from "./plugins/mcp";
 import { wsPlugin, registerWsChannel } from "./plugins/ws";
 import { imChannelHandler, monitorChannelHandler } from "./plugins/ws/channels";
 import { authRouter } from "../routers";
@@ -27,19 +28,25 @@ const coreActions = [...dbActions, ...filesActions, ...devActions];
 /**
  * 创建完整的 Elysia 应用实例
  */
-function createApp() {
+async function createApp() {
   // 启动监控调度器
   startScheduler();
   
   // 注册 WebSocket 频道处理器
   registerWsChannel(imChannelHandler);
   registerWsChannel(monitorChannelHandler);
+
+  // 创建 MCP 插件（异步加载数据库中的 MCP 服务器配置）
+  const mcpPlugin = await createMcpPlugin();
   
   return base
     .use(corsPlugin)
     .use(loggerPlugin)
     .use(serverTimingPlugin)
     .use(i18nPlugin)
+    // MCP plugin 在 auth 之前注册（公开路由，使用 API Key 认证）
+    // @ts-ignore - elysia version mismatch
+    .use(mcpPlugin)
     .use(bearerPlugin)
     .use(jwtPlugin)
     .use(openapiPlugin)

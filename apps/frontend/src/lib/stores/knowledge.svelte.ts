@@ -1,19 +1,47 @@
 /**
  * 知识库 Store
  * 管理文件系统的状态、导航和剪贴板
+ * 使用统一的 Node 模式（文件和文件夹统一为节点）
  */
 
 import { authStore } from './auth.svelte';
-import {
-  PostApiKnowledgeFolderQueryFieldEnum,
-  PostApiKnowledgeFolderQueryOrderEnum,
-  PostApiKnowledgeFileQueryFieldEnum,
-  PostApiKnowledgeFileQueryOrderEnum,
-} from '@qiyu-allinai/api';
+import { PostApiKnowledgeNodesTypeEnum } from '@qiyu-allinai/api';
 
 // ============ Types ============
 export type FileViewMode = 'all' | 'my-shared' | 'shared-with-me' | 'favorites';
+export type NodeType = 'folder' | 'file';
 
+export interface NodeItem {
+  id: string;
+  type: NodeType;
+  name: string;
+  parentId: string | null;
+  path: string;
+  materializedPath: string | null;
+  description: string | null;
+  icon: string | null;
+  color: string | null;
+  orderNum: number | null;
+  isPublic: boolean;
+  // 文件特有字段
+  originalName: string | null;
+  extension: string | null;
+  mimeType: string | null;
+  size: number;
+  storageKey: string | null;
+  bucket: string | null;
+  etag: string | null;
+  versionId: string | null;
+  downloadCount: number;
+  tags: string[] | null;
+  // 审计字段
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  createdById: string;
+}
+
+// 兼容旧的 FolderItem 和 FileItem 类型
 export interface FolderItem {
   id: string;
   name: string;
@@ -47,55 +75,101 @@ export interface FileItem {
   createdById: string;
 }
 
-// Shared item types with additional metadata
-export interface SharedFolderItem extends Omit<FolderItem, 'path' | 'orderNum' | 'updatedAt' | 'createdById'> {
-  sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
-  sharedBy?: string | null;
-  permission?: string;
-}
-
-export interface SharedFileItem extends Omit<FileItem, 'originalName' | 'storageKey' | 'bucket' | 'versionCount' | 'updatedAt' | 'createdById'> {
-  sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
-  sharedBy?: string | null;
-  permission?: string;
-}
-
 export interface PathItem {
   id: string | null;
   name: string;
 }
 
 export interface ClipboardItem {
-  type: 'folder' | 'file';
+  type: NodeType;
   id: string;
   name: string;
   action: 'copy' | 'cut';
-  sourceFolderId: string | null; // The folder where the item was copied/cut from
+  sourceFolderId: string | null;
+}
+
+// Shared item types with additional metadata
+export interface SharedNodeItem extends NodeItem {
+  sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
+  sharedBy?: string | null;
+  permission?: string;
 }
 
 const STORAGE_KEY = 'knowledge-path';
 
+// 将 NodeItem 转换为 FolderItem（兼容旧组件）
+function nodeToFolder(n: NodeItem): FolderItem {
+  return {
+    id: n.id,
+    name: n.name,
+    parentId: n.parentId,
+    path: n.path,
+    description: n.description,
+    icon: n.icon,
+    color: n.color,
+    orderNum: n.orderNum,
+    isPublic: n.isPublic,
+    createdAt: n.createdAt,
+    updatedAt: n.updatedAt,
+    createdById: n.createdById,
+  };
+}
+
+// 将 NodeItem 转换为 FileItem（兼容旧组件）
+function nodeToFile(n: NodeItem): FileItem {
+  return {
+    id: n.id,
+    name: n.name,
+    folderId: n.parentId,
+    originalName: n.originalName || n.name,
+    extension: n.extension,
+    mimeType: n.mimeType,
+    size: n.size,
+    description: n.description,
+    storageKey: n.storageKey || '',
+    bucket: n.bucket || '',
+    isPublic: n.isPublic,
+    versionCount: 0, // TODO: 从版本表获取
+    createdAt: n.createdAt,
+    updatedAt: n.updatedAt,
+    createdById: n.createdById,
+  };
+}
+
 function createKnowledgeStore() {
-  // State
-  let folders = $state<FolderItem[]>([]);
-  let files = $state<FileItem[]>([]);
+  // State - 使用统一的 nodes
+  let nodes = $state<NodeItem[]>([]);
   let loading = $state(false);
   let currentFolderId = $state<string | null>(null);
   let pathStack = $state<PathItem[]>([{ id: null, name: '根目录' }]);
-  let selectedFolderIds = $state<Set<string>>(new Set());
-  let selectedFileIds = $state<Set<string>>(new Set());
+  let selectedNodeIds = $state<Set<string>>(new Set());
   let clipboard = $state<ClipboardItem[]>([]);
   let viewMode = $state<FileViewMode>('all');
   
   // Favorites state
-  let favoritedFolderIds = $state<Set<string>>(new Set());
-  let favoritedFileIds = $state<Set<string>>(new Set());
+  let favoritedNodeIds = $state<Set<string>>(new Set());
   
-  // Shared/Favorites data
-  let sharedFolders = $state<SharedFolderItem[]>([]);
-  let sharedFiles = $state<SharedFileItem[]>([]);
+  // Shared data
+  let sharedNodes = $state<SharedNodeItem[]>([]);
 
   const api = authStore.createApi(true);
+
+  // ============ Derived State ============
+  // 分离文件夹和文件（兼容旧组件）
+  let folders = $derived(nodes.filter(n => n.type === 'folder').map(nodeToFolder));
+  let files = $derived(nodes.filter(n => n.type === 'file').map(nodeToFile));
+  let selectedFolderIds = $derived(new Set(
+    Array.from(selectedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'folder')
+  ));
+  let selectedFileIds = $derived(new Set(
+    Array.from(selectedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'file')
+  ));
+  let favoritedFolderIds = $derived(new Set(
+    Array.from(favoritedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'folder')
+  ));
+  let favoritedFileIds = $derived(new Set(
+    Array.from(favoritedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'file')
+  ));
 
   // ============ LocalStorage ============
   function loadPathFromStorage(): void {
@@ -129,56 +203,36 @@ function createKnowledgeStore() {
     clearSelection();
     
     try {
-      const [folderRes, fileRes] = await Promise.all([
-        api.knowledge.postApiKnowledgeFolderQuery({
-          filter: { parentId: folderId },
-          sort: {
-            field: PostApiKnowledgeFolderQueryFieldEnum.Name,
-            order: PostApiKnowledgeFolderQueryOrderEnum.Asc,
-          },
-          limit: 100,
-        }),
-        api.knowledge.postApiKnowledgeFileQuery({
-          filter: { folderId: folderId },
-          sort: {
-            field: PostApiKnowledgeFileQueryFieldEnum.Name,
-            order: PostApiKnowledgeFileQueryOrderEnum.Asc,
-          },
-          limit: 100,
-        }),
-      ]);
-      folders = (folderRes.data?.data || []) as FolderItem[];
-      files = (fileRes.data?.data || []) as FileItem[];
+      // 使用新的 node API 获取子节点
+      const parentId = folderId === null ? 'root' : folderId;
+      const res = await api.knowledge.getApiKnowledgeNodesByIdChildren({ id: parentId });
+      nodes = (res.data?.data || []) as NodeItem[];
       
       // Load favorite status
       await loadFavoriteStatus();
     } catch (err) {
       console.error('加载失败:', err);
-      folders = [];
-      files = [];
+      nodes = [];
     } finally {
       loading = false;
     }
   }
   
   async function loadFavoriteStatus(): Promise<void> {
-    const folderIds = folders.map(f => f.id);
-    const fileIds = files.map(f => f.id);
+    const nodeIds = nodes.map(n => n.id);
     
-    if (folderIds.length === 0 && fileIds.length === 0) {
-      favoritedFolderIds = new Set();
-      favoritedFileIds = new Set();
+    if (nodeIds.length === 0) {
+      favoritedNodeIds = new Set();
       return;
     }
     
     try {
-      const res = await api.knowledge.postApiKnowledgeFavoriteCheckBatch({ folderIds, fileIds });
-      favoritedFolderIds = new Set(res.data?.favoritedFolderIds || []);
-      favoritedFileIds = new Set(res.data?.favoritedFileIds || []);
+      const res = await api.knowledge.postApiKnowledgeFavoritesCheck({ nodeIds });
+      const favorites = res.data?.favorites || {};
+      favoritedNodeIds = new Set(Object.entries(favorites).filter(([, v]) => v).map(([k]) => k));
     } catch (err) {
       console.error('加载收藏状态失败:', err);
-      favoritedFolderIds = new Set();
-      favoritedFileIds = new Set();
+      favoritedNodeIds = new Set();
     }
   }
 
@@ -204,74 +258,79 @@ function createKnowledgeStore() {
   async function loadViewModeData(): Promise<void> {
     loading = true;
     clearSelection();
-    sharedFolders = [];
-    sharedFiles = [];
+    sharedNodes = [];
     
     try {
       if (viewMode === 'my-shared') {
-        // Load resources I shared with others
-        const res = await api.files.postApiFilesShareMyShared({ limit: 100, offset: 0 });
+        const res = await api.knowledge.postApiKnowledgeShareMyShared({ limit: 100, offset: 0 });
         if (res.data) {
-          sharedFolders = res.data.folders || [];
-          sharedFiles = res.data.files || [];
+          sharedNodes = res.data.map((item: { node: NodeItem; sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }> }) => ({
+            ...item.node,
+            sharedTo: item.sharedTo,
+          })) as SharedNodeItem[];
         }
       } else if (viewMode === 'shared-with-me') {
-        // Load resources shared with me
-        const res = await api.files.postApiFilesShareSharedWithMe({ limit: 100, offset: 0 });
+        const res = await api.knowledge.postApiKnowledgeShareSharedWithMe({ limit: 100, offset: 0 });
         if (res.data) {
-          sharedFolders = res.data.folders || [];
-          sharedFiles = res.data.files || [];
+          sharedNodes = res.data.map((item: { node: NodeItem; sharedBy?: { userName?: string }; permissions?: string[] }) => ({
+            ...item.node,
+            sharedBy: item.sharedBy?.userName,
+            permission: item.permissions?.[0],
+          })) as SharedNodeItem[];
         }
       } else if (viewMode === 'favorites') {
-        // Load favorited resources
-        const res = await api.knowledge.postApiKnowledgeFavoriteList({ resourceType: 'all', limit: 100, offset: 0 });
+        const res = await api.knowledge.postApiKnowledgeFavoritesList({ limit: 100, offset: 0 });
         if (res.data) {
-          sharedFolders = res.data.folders || [];
-          sharedFiles = res.data.files || [];
+          sharedNodes = res.data.map((item: { nodeId: string; type: NodeType; name: string; parentId: string | null; icon?: string | null; color?: string | null; extension?: string | null; mimeType?: string | null; size?: number; createdAt: string }) => ({
+            id: item.nodeId,
+            type: item.type,
+            name: item.name,
+            parentId: item.parentId,
+            path: '/',
+            materializedPath: null,
+            description: null,
+            icon: item.icon,
+            color: item.color,
+            orderNum: null,
+            isPublic: false,
+            originalName: null,
+            extension: item.extension,
+            mimeType: item.mimeType,
+            size: item.size || 0,
+            storageKey: null,
+            bucket: null,
+            etag: null,
+            versionId: null,
+            downloadCount: 0,
+            tags: null,
+            createdAt: item.createdAt,
+            updatedAt: item.createdAt,
+            createdBy: '',
+            createdById: '',
+          })) as SharedNodeItem[];
         }
       }
     } catch (err) {
       console.error('加载数据失败:', err);
-      sharedFolders = [];
-      sharedFiles = [];
+      sharedNodes = [];
     } finally {
       loading = false;
     }
   }
 
   // ============ Favorites ============
-  async function toggleFavorite(resourceType: 'folder' | 'file', resourceId: string): Promise<boolean> {
+  async function toggleFavorite(_resourceType: 'folder' | 'file', resourceId: string): Promise<boolean> {
     try {
-      const isFavorited = resourceType === 'folder' 
-        ? favoritedFolderIds.has(resourceId)
-        : favoritedFileIds.has(resourceId);
+      const isFavorited = favoritedNodeIds.has(resourceId);
       
       if (isFavorited) {
-        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({
-          resourceType,
-          resourceId,
-        });
-        // Update local state
-        if (resourceType === 'folder') {
-          const newSet = new Set(favoritedFolderIds);
-          newSet.delete(resourceId);
-          favoritedFolderIds = newSet;
-        } else {
-          const newSet = new Set(favoritedFileIds);
-          newSet.delete(resourceId);
-          favoritedFileIds = newSet;
-        }
+        await api.knowledge.deleteApiKnowledgeFavoritesByNodeId({ nodeId: resourceId });
+        const newSet = new Set(favoritedNodeIds);
+        newSet.delete(resourceId);
+        favoritedNodeIds = newSet;
       } else {
-        await api.knowledge.postApiKnowledgeFavorite({
-          resourceType,
-          resourceId,
-        });
-        // Update local state
-        if (resourceType === 'folder') {
-          favoritedFolderIds = new Set([...favoritedFolderIds, resourceId]);
-        } else {
-          favoritedFileIds = new Set([...favoritedFileIds, resourceId]);
-        }
+        await api.knowledge.postApiKnowledgeFavorites({ nodeId: resourceId });
+        favoritedNodeIds = new Set([...favoritedNodeIds, resourceId]);
       }
       
       // Refresh if in favorites view
@@ -287,11 +346,11 @@ function createKnowledgeStore() {
   }
   
   function isFolderFavorited(folderId: string): boolean {
-    return favoritedFolderIds.has(folderId);
+    return favoritedNodeIds.has(folderId);
   }
   
   function isFileFavorited(fileId: string): boolean {
-    return favoritedFileIds.has(fileId);
+    return favoritedNodeIds.has(fileId);
   }
 
   // ============ Navigation ============
@@ -327,59 +386,46 @@ function createKnowledgeStore() {
 
   // ============ Selection ============
   function clearSelection(): void {
-    selectedFolderIds = new Set();
-    selectedFileIds = new Set();
+    selectedNodeIds = new Set();
   }
 
   function toggleSelectAll(): void {
-    const allSelected =
-      (folders.length > 0 || files.length > 0) &&
-      folders.every((f) => selectedFolderIds.has(f.id)) &&
-      files.every((f) => selectedFileIds.has(f.id));
+    const allSelected = nodes.length > 0 && nodes.every(n => selectedNodeIds.has(n.id));
     
     if (allSelected) {
       clearSelection();
     } else {
-      selectedFolderIds = new Set(folders.map((f) => f.id));
-      selectedFileIds = new Set(files.map((f) => f.id));
+      selectedNodeIds = new Set(nodes.map(n => n.id));
     }
   }
 
   function toggleFolderSelect(id: string): void {
-    const s = new Set(selectedFolderIds);
+    const s = new Set(selectedNodeIds);
     s.has(id) ? s.delete(id) : s.add(id);
-    selectedFolderIds = s;
+    selectedNodeIds = s;
   }
 
   function toggleFileSelect(id: string): void {
-    const s = new Set(selectedFileIds);
+    const s = new Set(selectedNodeIds);
     s.has(id) ? s.delete(id) : s.add(id);
-    selectedFileIds = s;
+    selectedNodeIds = s;
   }
 
   // ============ Clipboard ============
   function copySelected(): void {
     const items: ClipboardItem[] = [];
-    selectedFolderIds.forEach((id) => {
-      const f = folders.find((x) => x.id === id);
-      if (f) items.push({ type: 'folder', id, name: f.name, action: 'copy', sourceFolderId: f.parentId });
-    });
-    selectedFileIds.forEach((id) => {
-      const f = files.find((x) => x.id === id);
-      if (f) items.push({ type: 'file', id, name: f.name, action: 'copy', sourceFolderId: f.folderId });
+    selectedNodeIds.forEach(id => {
+      const n = nodes.find(x => x.id === id);
+      if (n) items.push({ type: n.type, id, name: n.name, action: 'copy', sourceFolderId: n.parentId });
     });
     clipboard = items;
   }
 
   function cutSelected(): void {
     const items: ClipboardItem[] = [];
-    selectedFolderIds.forEach((id) => {
-      const f = folders.find((x) => x.id === id);
-      if (f) items.push({ type: 'folder', id, name: f.name, action: 'cut', sourceFolderId: f.parentId });
-    });
-    selectedFileIds.forEach((id) => {
-      const f = files.find((x) => x.id === id);
-      if (f) items.push({ type: 'file', id, name: f.name, action: 'cut', sourceFolderId: f.folderId });
+    selectedNodeIds.forEach(id => {
+      const n = nodes.find(x => x.id === id);
+      if (n) items.push({ type: n.type, id, name: n.name, action: 'cut', sourceFolderId: n.parentId });
     });
     clipboard = items;
   }
@@ -407,17 +453,13 @@ function createKnowledgeStore() {
   // ============ CRUD Operations ============
   async function createFolder(name: string): Promise<FolderItem | null> {
     try {
-      const res = await api.knowledge.postApiKnowledgeFolder({
-        data: {
-          parentId: currentFolderId,
-          name,
-          path: '/',
-          createdBy: '',
-          updatedBy: '',
-        },
+      const res = await api.knowledge.postApiKnowledgeNodes({
+        type: PostApiKnowledgeNodesTypeEnum.Folder,
+        parentId: currentFolderId,
+        name,
       });
       await refresh();
-      return res.data as FolderItem;
+      return res.data ? nodeToFolder(res.data as NodeItem) : null;
     } catch (err) {
       console.error('创建文件夹失败:', err);
       return null;
@@ -426,7 +468,7 @@ function createKnowledgeStore() {
 
   async function deleteFolder(folder: FolderItem): Promise<boolean> {
     try {
-      await api.knowledge.deleteApiKnowledgeFolderById({ id: folder.id });
+      await api.knowledge.deleteApiKnowledgeNodesById({ id: folder.id });
       await refresh();
       return true;
     } catch (err) {
@@ -437,7 +479,7 @@ function createKnowledgeStore() {
 
   async function deleteFile(file: FileItem): Promise<boolean> {
     try {
-      await api.knowledge.deleteApiKnowledgeFileById({ id: file.id });
+      await api.knowledge.deleteApiKnowledgeNodesById({ id: file.id });
       await refresh();
       return true;
     } catch (err) {
@@ -447,14 +489,15 @@ function createKnowledgeStore() {
   }
 
   async function deleteSelected(): Promise<void> {
-    const folderPromises = Array.from(selectedFolderIds).map((id) =>
-      api.knowledge.deleteApiKnowledgeFolderById({ id })
-    );
-    const filePromises = Array.from(selectedFileIds).map((id) =>
-      api.knowledge.deleteApiKnowledgeFileById({ id })
-    );
-    await Promise.all([...folderPromises, ...filePromises]);
-    await refresh();
+    const ids = Array.from(selectedNodeIds);
+    if (ids.length === 0) return;
+    
+    try {
+      await api.knowledge.postApiKnowledgeNodesDeleteBatch({ ids });
+      await refresh();
+    } catch (err) {
+      console.error('批量删除失败:', err);
+    }
   }
 
   // ============ Initialization ============
@@ -464,26 +507,25 @@ function createKnowledgeStore() {
   }
 
   // ============ Derived State ============
-  const hasSelection = () => selectedFolderIds.size > 0 || selectedFileIds.size > 0;
+  const hasSelection = () => selectedNodeIds.size > 0;
   const hasClipboard = () => clipboard.length > 0;
-  const isAllSelected = () => 
-    (folders.length > 0 || files.length > 0) &&
-    folders.every((f) => selectedFolderIds.has(f.id)) &&
-    files.every((f) => selectedFileIds.has(f.id));
+  const isAllSelected = () => nodes.length > 0 && nodes.every(n => selectedNodeIds.has(n.id));
 
   return {
     // State getters
+    get nodes() { return nodes; },
     get folders() { return folders; },
     get files() { return files; },
     get loading() { return loading; },
     get currentFolderId() { return currentFolderId; },
     get pathStack() { return pathStack; },
+    get selectedNodeIds() { return selectedNodeIds; },
     get selectedFolderIds() { return selectedFolderIds; },
     get selectedFileIds() { return selectedFileIds; },
     get clipboard() { return clipboard; },
     get viewMode() { return viewMode; },
-    get sharedFolders() { return sharedFolders; },
-    get sharedFiles() { return sharedFiles; },
+    get sharedNodes() { return sharedNodes; },
+    get favoritedNodeIds() { return favoritedNodeIds; },
     get favoritedFolderIds() { return favoritedFolderIds; },
     get favoritedFileIds() { return favoritedFileIds; },
     

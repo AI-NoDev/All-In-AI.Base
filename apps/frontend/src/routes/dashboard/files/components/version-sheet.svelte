@@ -8,13 +8,13 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { knowledgeStore } from '@/lib/stores/knowledge.svelte';
   import {
-    PostApiKnowledgeFileVersionQueryFieldEnum,
-    PostApiKnowledgeFileVersionQueryOrderEnum,
+    PostApiKnowledgeVersionsQueryFieldEnum,
+    PostApiKnowledgeVersionsQueryOrderEnum,
   } from '@qiyu-allinai/api';
 
   interface FileVersion {
     id: string;
-    fileId: string;
+    nodeId: string;
     versionNumber: string;
     storageKey: string;
     bucket: string;
@@ -48,11 +48,11 @@
   async function loadVersions() {
     loading = true;
     try {
-      const res = await api.knowledge.postApiKnowledgeFileVersionQuery({
-        filter: { fileId },
+      const res = await api.knowledge.postApiKnowledgeVersionsQuery({
+        filter: { nodeId: fileId },
         sort: {
-          field: PostApiKnowledgeFileVersionQueryFieldEnum.CreatedAt,
-          order: PostApiKnowledgeFileVersionQueryOrderEnum.Desc,
+          field: PostApiKnowledgeVersionsQueryFieldEnum.CreatedAt,
+          order: PostApiKnowledgeVersionsQueryOrderEnum.Desc,
         },
         limit: 100,
       });
@@ -68,7 +68,7 @@
   async function handleDownload(version: FileVersion) {
     actionLoading = version.id;
     try {
-      const res = await api.files.getApiFilesVersionsByIdDownloadUrl({ id: version.id });
+      const res = await api.knowledge.getApiKnowledgeVersionsByIdDownload({ id: version.id });
       if (res.data?.url) {
         window.open(res.data.url, '_blank');
       }
@@ -86,7 +86,7 @@
     
     actionLoading = version.id;
     try {
-      await api.files.postApiFilesVersionsByIdRestore({ id: version.id });
+      await api.knowledge.postApiKnowledgeVersionsByIdRestore({ id: version.id });
       // 刷新版本列表和文件列表
       await loadVersions();
       await knowledgeStore.refresh();

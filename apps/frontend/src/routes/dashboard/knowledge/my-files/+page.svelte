@@ -3,7 +3,10 @@
   import { goto } from '$app/navigation';
   import { authStore } from '$lib/stores/auth.svelte';
   import { knowledgeStore, type FolderItem, type FileItem } from '$lib/stores/knowledge.svelte';
-  import { PostApiFilesUploadForceConflictModeEnum } from '@qiyu-allinai/api';
+  import { 
+    PostApiKnowledgeUploadForceConflictModeEnum,
+    PostApiKnowledgeNodesTypeEnum,
+  } from '@qiyu-allinai/api';
   import {
     FileBreadcrumb,
     FileToolbar,
@@ -84,9 +87,13 @@
     const fileItems = items.filter(i => i.clipboardItem.type === 'file');
     if (fileItems.length > 0) {
       try {
-        const res = await api.files.postApiFilesCheckExists({ folderId: targetFolderId ?? null, names: fileItems.map(i => i.clipboardItem.name) });
+        const res = await api.knowledge.postApiKnowledgeNodesCheckExists({ 
+          parentId: targetFolderId ?? null, 
+          names: fileItems.map(i => i.clipboardItem.name),
+          type: PostApiKnowledgeNodesTypeEnum.File,
+        });
         if (res.data?.exists?.length) {
-          const existingMap = new Map(res.data.exists.map(e => [e.name, e.fileId]));
+          const existingMap = new Map(res.data.exists.map((e: { name: string; nodeId: string }) => [e.name, e.nodeId]));
           for (const item of items) {
             if (item.clipboardItem.type === 'file' && existingMap.has(item.clipboardItem.name)) {
               const existingFileId = existingMap.get(item.clipboardItem.name);
@@ -134,24 +141,48 @@
         if (item.clipboardItem.type === 'folder') {
           if (item.clipboardItem.action === 'cut') {
             if (isSameFolder) throw new Error('不能移动到同一文件夹');
-            await api.files.postApiFilesFoldersByIdMove({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
-          } else throw new Error('复制文件夹功能暂不支持');
+            await api.knowledge.postApiKnowledgeNodesByIdMove({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
+          } else {
+            await api.knowledge.postApiKnowledgeNodesByIdCopy({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
+          }
         } else {
           const hasConflict = item.conflictMode && item.existingFileId;
           if (item.clipboardItem.action === 'cut') {
             if (isSameFolder && !hasConflict) throw new Error('不能移动到同一文件夹');
             if (hasConflict) {
               const { content, mimeType } = await downloadFileAsBase64(item.clipboardItem.id);
-              await api.files.postApiFilesUploadForce({ folderId: targetFolderId ?? null, name: item.clipboardItem.name, content, mimeType, conflictMode: mapConflictMode(item.conflictMode!), existingFileId: item.existingFileId });
-              await api.knowledge.deleteApiKnowledgeFileById({ id: item.clipboardItem.id });
-            } else await api.files.postApiFilesByIdMove({ id: item.clipboardItem.id }, { targetFolderId });
+              await api.knowledge.postApiKnowledgeUploadForce({ 
+                parentId: targetFolderId ?? null, 
+                name: item.clipboardItem.name, 
+                content, 
+                mimeType, 
+                conflictMode: mapConflictMode(item.conflictMode!), 
+                existingNodeId: item.existingFileId 
+              });
+              await api.knowledge.deleteApiKnowledgeNodesById({ id: item.clipboardItem.id });
+            } else {
+              await api.knowledge.postApiKnowledgeNodesByIdMove({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
+            }
           } else {
-            if (hasConflict && item.conflictMode === 'copy') await api.files.postApiFilesByIdCopyAsDuplicate({ id: item.clipboardItem.id }, { targetFolderId: targetFolderId ?? null });
-            else if (hasConflict) {
+            if (hasConflict && item.conflictMode === 'copy') {
+              // 复制为副本
+              await api.knowledge.postApiKnowledgeNodesByIdCopy({ id: item.clipboardItem.id }, { targetParentId: targetFolderId ?? null });
+            } else if (hasConflict) {
               const { content, mimeType } = await downloadFileAsBase64(item.clipboardItem.id);
-              await api.files.postApiFilesUploadForce({ folderId: targetFolderId ?? null, name: item.clipboardItem.name, content, mimeType, conflictMode: mapConflictMode(item.conflictMode!), existingFileId: item.existingFileId });
-            } else if (isSameFolder) await api.files.postApiFilesByIdCopyAsDuplicate({ id: item.clipboardItem.id }, { targetFolderId: targetFolderId ?? null });
-            else await api.files.postApiFilesByIdCopy({ id: item.clipboardItem.id }, { targetFolderId });
+              await api.knowledge.postApiKnowledgeUploadForce({ 
+                parentId: targetFolderId ?? null, 
+                name: item.clipboardItem.name, 
+                content, 
+                mimeType, 
+                conflictMode: mapConflictMode(item.conflictMode!), 
+                existingNodeId: item.existingFileId 
+              });
+            } else if (isSameFolder) {
+              // 同文件夹复制为副本
+              await api.knowledge.postApiKnowledgeNodesByIdCopy({ id: item.clipboardItem.id }, { targetParentId: targetFolderId ?? null });
+            } else {
+              await api.knowledge.postApiKnowledgeNodesByIdCopy({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
+            }
           }
         }
         pasteItems = pasteItems.map((p, idx) => idx === i ? { ...p, status: 'success' as const } : p);
@@ -165,7 +196,7 @@
   }
 
   async function downloadFileAsBase64(fileId: string): Promise<{ content: string; mimeType: string }> {
-    const urlRes = await api.files.getApiFilesByIdDownloadUrl({ id: fileId });
+    const urlRes = await api.knowledge.getApiKnowledgeNodesByIdDownloadUrl({ id: fileId });
     if (!urlRes.data?.url) throw new Error('获取下载链接失败');
     const response = await fetch(urlRes.data.url);
     if (!response.ok) throw new Error('下载文件失败');
@@ -178,8 +209,8 @@
     });
   }
 
-  function mapConflictMode(mode: ConflictMode): PostApiFilesUploadForceConflictModeEnum {
-    return mode === 'overwrite' ? PostApiFilesUploadForceConflictModeEnum.Overwrite : PostApiFilesUploadForceConflictModeEnum.NewVersion;
+  function mapConflictMode(mode: ConflictMode): PostApiKnowledgeUploadForceConflictModeEnum {
+    return mode === 'overwrite' ? PostApiKnowledgeUploadForceConflictModeEnum.Overwrite : PostApiKnowledgeUploadForceConflictModeEnum.NewVersion;
   }
 
   async function handleBatchDelete() { if (confirm('确定要删除选中的项目吗？')) await knowledgeStore.deleteSelected(); }
@@ -207,18 +238,18 @@
   // Dialog callbacks
   async function handleRename(newName: string) {
     if (!renameTarget) return;
-    console.log('重命名', renameTarget.type, renameTarget.id, '->', newName);
-    renameDialogOpen = false; renameTarget = null; await knowledgeStore.refresh();
+    try {
+      await api.knowledge.putApiKnowledgeNodesById({ id: renameTarget.id }, { name: newName });
+      renameDialogOpen = false; renameTarget = null; await knowledgeStore.refresh();
+    } catch (err) {
+      console.error('重命名失败:', err);
+    }
   }
 
   async function handleSaveDescription(desc: string | null) {
     if (!descriptionTarget) return;
     try {
-      if (descriptionTarget.type === 'folder') {
-        await api.knowledge.putApiKnowledgeFolderById({ id: descriptionTarget.id }, { data: { description: desc, updatedBy: '' } });
-      } else {
-        await api.knowledge.putApiKnowledgeFileById({ id: descriptionTarget.id }, { data: { description: desc, updatedBy: '' } });
-      }
+      await api.knowledge.putApiKnowledgeNodesById({ id: descriptionTarget.id }, { description: desc });
       descriptionSheetOpen = false; descriptionTarget = null; await knowledgeStore.refresh();
     } catch (err) {
       console.error('保存描述失败:', err);
@@ -228,7 +259,7 @@
   async function handleSaveFolderStyle(icon: string | null, color: string | null) {
     if (!styleTarget) return;
     try {
-      await api.files.putApiFilesFoldersByIdStyle({ id: styleTarget.id }, { icon, color });
+      await api.knowledge.putApiKnowledgeNodesById({ id: styleTarget.id }, { icon, color });
       folderStyleDialogOpen = false; styleTarget = null; await knowledgeStore.refresh();
     } catch (err) { console.error('保存文件夹样式失败', err); }
   }
@@ -236,10 +267,10 @@
   async function handleSavePermission(isPublic: boolean, permissions: PermissionGrantee[]) {
     if (!permissionTarget) return;
     try {
-      if (permissionTarget.type === 'folder') await api.knowledge.putApiKnowledgeFolderById({ id: permissionTarget.id }, { data: { isPublic, updatedBy: '' } });
-      else await api.knowledge.putApiKnowledgeFileById({ id: permissionTarget.id }, { data: { isPublic, updatedBy: '' } });
-      await api.files.postApiFilesPermissionByResourceTypeByResourceId(
-        { resourceType: permissionTarget.type, resourceId: permissionTarget.id },
+      await api.knowledge.putApiKnowledgeNodesById({ id: permissionTarget.id }, { isPublic });
+      // 设置权限
+      await api.knowledge.putApiKnowledgeNodesByIdPermissions(
+        { id: permissionTarget.id },
         { permissions: permissions.map(p => ({ subjectType: p.subjectType, subjectId: p.subjectId, permission: p.permission, effect: p.effect })) }
       );
       permissionSheetOpen = false; permissionTarget = null; await knowledgeStore.refresh();
@@ -310,8 +341,11 @@
       const parentFolderId = folderMap.get(parentPath);
       if (parentFolderId === 'NEW') { folderMap.set(folderPath, 'NEW'); continue; }
       try {
-        const res = await api.knowledge.postApiKnowledgeFolderQuery({ filter: { parentId: parentFolderId ?? knowledgeStore.currentFolderId, names: [folderName] }, limit: 1 });
-        folderMap.set(folderPath, res.data?.data?.length ? res.data.data[0].id : 'NEW');
+        const res = await api.knowledge.postApiKnowledgeNodesQuery({ 
+          filter: { parentId: parentFolderId ?? knowledgeStore.currentFolderId, name: folderName, type: PostApiKnowledgeNodesTypeEnum.Folder }, 
+          limit: 1 
+        });
+        folderMap.set(folderPath, res.data?.length ? res.data[0].id : 'NEW');
       } catch { folderMap.set(folderPath, 'NEW'); }
     }
     const filesByFolder = new Map<string, string[]>();
@@ -326,8 +360,12 @@
       const folderId = folderMap.get(folderPath);
       if (folderId === 'NEW') { existingFilesMap.set(folderPath, new Map()); continue; }
       try {
-        const res = await api.files.postApiFilesCheckExists({ folderId: folderId ?? null, names: fileNames });
-        existingFilesMap.set(folderPath, new Map(res.data?.exists?.map(e => [e.name, e.fileId]) || []));
+        const res = await api.knowledge.postApiKnowledgeNodesCheckExists({ 
+          parentId: folderId ?? null, 
+          names: fileNames,
+          type: PostApiKnowledgeNodesTypeEnum.File,
+        });
+        existingFilesMap.set(folderPath, new Map(res.data?.exists?.map((e: { name: string; nodeId: string }) => [e.name, e.nodeId]) || []));
       } catch { existingFilesMap.set(folderPath, new Map()); }
     }
     uploadItems = uploadItems.map(item => {
@@ -369,11 +407,18 @@
       const parentFolderId = folderMap.get(parentPath);
       if (parentFolderId === '__FAILED__') { folderMap.set(folderPath, '__FAILED__'); continue; }
       try {
-        const existingRes = await api.knowledge.postApiKnowledgeFolderQuery({ filter: { parentId: parentFolderId ?? knowledgeStore.currentFolderId, names: [folderName] }, limit: 1 });
-        if (existingRes.data?.data?.length) folderMap.set(folderPath, existingRes.data.data[0].id);
+        const existingRes = await api.knowledge.postApiKnowledgeNodesQuery({ 
+          filter: { parentId: parentFolderId ?? knowledgeStore.currentFolderId, name: folderName, type: PostApiKnowledgeNodesTypeEnum.Folder }, 
+          limit: 1 
+        });
+        if (existingRes.data?.length) folderMap.set(folderPath, existingRes.data[0].id);
         else {
-          const res = await api.knowledge.postApiKnowledgeFolder({ data: { parentId: (parentFolderId ?? knowledgeStore.currentFolderId) ?? null, name: folderName, path: '/', createdBy: '', updatedBy: '' } });
-          folderMap.set(folderPath, res.data?.id ?? '__FAILED__');
+          const res = await api.knowledge.postApiKnowledgeNodes({ 
+            type: PostApiKnowledgeNodesTypeEnum.Folder,
+            parentId: (parentFolderId ?? knowledgeStore.currentFolderId) ?? null, 
+            name: folderName,
+          });
+          folderMap.set(folderPath, res.id ?? '__FAILED__');
         }
       } catch { folderMap.set(folderPath, '__FAILED__'); }
     }
@@ -390,10 +435,21 @@
         const content = await readFileAsBase64(item.file);
         uploadItems = uploadItems.map((u, idx) => idx === i ? { ...u, progress: 30 } : u);
         if (item.conflictMode && item.existingFileId) {
-          await api.files.postApiFilesUploadForce({ folderId: targetFolderId ?? null, name: item.file.name, content, mimeType: item.file.type || 'application/octet-stream', conflictMode: mapConflictMode(item.conflictMode), existingFileId: item.existingFileId });
+          await api.knowledge.postApiKnowledgeUploadForce({ 
+            parentId: targetFolderId ?? null, 
+            name: item.file.name, 
+            content, 
+            mimeType: item.file.type || 'application/octet-stream', 
+            conflictMode: mapConflictMode(item.conflictMode), 
+            existingNodeId: item.existingFileId 
+          });
         } else {
-          const uploadRes = await api.files.postApiFilesUpload({ folderId: targetFolderId ?? null, name: item.file.name, content, mimeType: item.file.type || 'application/octet-stream' });
-          if (uploadRes.data && !uploadRes.data.success && uploadRes.data.conflict) throw new Error(`文件已存在: ${uploadRes.data.conflict.name}`);
+          await api.knowledge.postApiKnowledgeUploadDirect({ 
+            parentId: targetFolderId ?? null, 
+            name: item.file.name, 
+            content, 
+            mimeType: item.file.type || 'application/octet-stream' 
+          });
         }
         uploadItems = uploadItems.map((u, idx) => idx === i ? { ...u, status: 'success' as const, progress: 100 } : u);
       } catch (err) {

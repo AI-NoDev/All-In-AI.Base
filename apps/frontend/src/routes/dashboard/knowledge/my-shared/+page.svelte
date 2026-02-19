@@ -19,6 +19,23 @@
     name: string;
   }
 
+  interface SharedItem {
+    node: {
+      id: string;
+      type: 'folder' | 'file';
+      name: string;
+      parentId: string | null;
+      icon?: string | null;
+      color?: string | null;
+      extension?: string | null;
+      mimeType?: string | null;
+      size?: number;
+      isPublic?: boolean;
+      createdAt: string;
+    };
+    sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
+  }
+
   let loading = $state(true);
   let folders = $state<GenericFolder[]>([]);
   let files = $state<GenericFile[]>([]);
@@ -40,18 +57,51 @@
     loading = true;
     try {
       if (currentFolderId === null) {
-        const res = await api.files.postApiFilesShareMyShared({ limit: 100, offset: 0 });
-        folders = (res.data?.folders || []) as GenericFolder[];
-        files = (res.data?.files || []) as GenericFile[];
+        const res = await api.knowledge.postApiKnowledgeShareMyShared({ limit: 100, offset: 0 });
+        const items = (res.data?.data || []) as SharedItem[];
+        folders = items.filter(i => i.node.type === 'folder').map(i => ({
+          id: i.node.id,
+          name: i.node.name,
+          parentId: i.node.parentId,
+          icon: i.node.icon,
+          color: i.node.color,
+          isPublic: i.node.isPublic,
+          createdAt: i.node.createdAt,
+          sharedTo: i.sharedTo,
+        })) as GenericFolder[];
+        files = items.filter(i => i.node.type === 'file').map(i => ({
+          id: i.node.id,
+          name: i.node.name,
+          folderId: i.node.parentId,
+          extension: i.node.extension,
+          mimeType: i.node.mimeType,
+          size: i.node.size || 0,
+          isPublic: i.node.isPublic,
+          createdAt: i.node.createdAt,
+          sharedTo: i.sharedTo,
+        })) as GenericFile[];
       } else {
-        const res = await api.files.postApiFilesShareFolderContents({
-          folderId: currentFolderId,
-          viewMode: 'my-shared',
-          limit: 100,
-          offset: 0,
-        });
-        folders = (res.data?.folders || []) as GenericFolder[];
-        files = (res.data?.files || []) as GenericFile[];
+        const res = await api.knowledge.getApiKnowledgeNodesByIdChildren({ id: currentFolderId });
+        const nodes = res.data?.data || [];
+        folders = nodes.filter((n: { type: string }) => n.type === 'folder').map((n: { id: string; name: string; parentId: string | null; icon?: string | null; color?: string | null; isPublic?: boolean; createdAt: string }) => ({
+          id: n.id,
+          name: n.name,
+          parentId: n.parentId,
+          icon: n.icon,
+          color: n.color,
+          isPublic: n.isPublic,
+          createdAt: n.createdAt,
+        })) as GenericFolder[];
+        files = nodes.filter((n: { type: string }) => n.type === 'file').map((n: { id: string; name: string; parentId: string | null; extension?: string | null; mimeType?: string | null; size?: number; isPublic?: boolean; createdAt: string }) => ({
+          id: n.id,
+          name: n.name,
+          folderId: n.parentId,
+          extension: n.extension,
+          mimeType: n.mimeType,
+          size: n.size || 0,
+          isPublic: n.isPublic,
+          createdAt: n.createdAt,
+        })) as GenericFile[];
       }
     } catch (err) {
       console.error('加载我的共享数据失败:', err);
@@ -98,20 +148,15 @@
   }
 
   function handleFileClick(file: GenericFile) {
-    // 我的共享文件，自己是所有者，可以编辑
     goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}`);
   }
 
   async function handleSavePermission(isPublic: boolean, permissions: PermissionGrantee[]) {
     if (!permissionTarget) return;
     try {
-      if (permissionTarget.type === 'folder') {
-        await api.knowledge.putApiKnowledgeFolderById({ id: permissionTarget.id }, { data: { isPublic, updatedBy: '' } });
-      } else {
-        await api.knowledge.putApiKnowledgeFileById({ id: permissionTarget.id }, { data: { isPublic, updatedBy: '' } });
-      }
-      await api.files.postApiFilesPermissionByResourceTypeByResourceId(
-        { resourceType: permissionTarget.type, resourceId: permissionTarget.id },
+      await api.knowledge.putApiKnowledgeNodesById({ id: permissionTarget.id }, { isPublic });
+      await api.knowledge.putApiKnowledgeNodesByIdPermissions(
+        { id: permissionTarget.id },
         { permissions: permissions.map(p => ({ subjectType: p.subjectType, subjectId: p.subjectId, permission: p.permission, effect: p.effect })) }
       );
       permissionSheetOpen = false;

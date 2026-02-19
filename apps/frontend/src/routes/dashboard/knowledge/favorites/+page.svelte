@@ -28,12 +28,24 @@
     permission?: 'read' | 'write' | 'manage' | 'none';
   }
 
+  interface FavoriteItem {
+    nodeId: string;
+    type: 'folder' | 'file';
+    name: string;
+    parentId: string | null;
+    icon?: string | null;
+    color?: string | null;
+    extension?: string | null;
+    mimeType?: string | null;
+    size?: number;
+    createdAt: string;
+  }
+
   let loading = $state(true);
   let folders = $state<FavoriteFolder[]>([]);
   let files = $state<FavoriteFile[]>([]);
   let pathStack = $state<PathItem[]>([{ id: null, name: '收藏' }]);
   let currentFolderId = $state<string | null>(null);
-  // 收藏页面所有显示的都是已收藏的
   let favoritedFolderIds = $state<Set<string>>(new Set());
   let favoritedFileIds = $state<Set<string>>(new Set());
 
@@ -43,22 +55,47 @@
     loading = true;
     try {
       if (currentFolderId === null) {
-        const res = await api.knowledge.postApiKnowledgeFavoriteList({ resourceType: 'all', limit: 100, offset: 0 });
-        folders = (res.data?.folders || []) as FavoriteFolder[];
-        files = (res.data?.files || []) as FavoriteFile[];
-        // 收藏列表中的所有项目都是已收藏的
+        const res = await api.knowledge.postApiKnowledgeFavoritesList({ limit: 100, offset: 0 });
+        const items = (res.data?.data || []) as FavoriteItem[];
+        folders = items.filter(i => i.type === 'folder').map(i => ({
+          id: i.nodeId,
+          name: i.name,
+          parentId: i.parentId,
+          icon: i.icon,
+          color: i.color,
+          createdAt: i.createdAt,
+        })) as FavoriteFolder[];
+        files = items.filter(i => i.type === 'file').map(i => ({
+          id: i.nodeId,
+          name: i.name,
+          folderId: i.parentId,
+          extension: i.extension,
+          mimeType: i.mimeType,
+          size: i.size || 0,
+          createdAt: i.createdAt,
+        })) as FavoriteFile[];
         favoritedFolderIds = new Set(folders.map(f => f.id));
         favoritedFileIds = new Set(files.map(f => f.id));
       } else {
-        const res = await api.files.postApiFilesShareFolderContents({
-          folderId: currentFolderId,
-          viewMode: 'favorites',
-          limit: 100,
-          offset: 0,
-        });
-        folders = (res.data?.folders || []) as FavoriteFolder[];
-        files = (res.data?.files || []) as FavoriteFile[];
-        // 加载子文件夹的收藏状态
+        const res = await api.knowledge.getApiKnowledgeNodesByIdChildren({ id: currentFolderId });
+        const nodes = res.data?.data || [];
+        folders = nodes.filter((n: { type: string }) => n.type === 'folder').map((n: { id: string; name: string; parentId: string | null; icon?: string | null; color?: string | null; createdAt: string }) => ({
+          id: n.id,
+          name: n.name,
+          parentId: n.parentId,
+          icon: n.icon,
+          color: n.color,
+          createdAt: n.createdAt,
+        })) as FavoriteFolder[];
+        files = nodes.filter((n: { type: string }) => n.type === 'file').map((n: { id: string; name: string; parentId: string | null; extension?: string | null; mimeType?: string | null; size?: number; createdAt: string }) => ({
+          id: n.id,
+          name: n.name,
+          folderId: n.parentId,
+          extension: n.extension,
+          mimeType: n.mimeType,
+          size: n.size || 0,
+          createdAt: n.createdAt,
+        })) as FavoriteFile[];
         await loadFavoriteStatus();
       }
     } catch (err) {
@@ -71,24 +108,24 @@
   }
 
   async function loadFavoriteStatus() {
-    const folderIds = folders.map(f => f.id);
-    const fileIds = files.map(f => f.id);
-    if (folderIds.length === 0 && fileIds.length === 0) {
+    const nodeIds = [...folders.map(f => f.id), ...files.map(f => f.id)];
+    if (nodeIds.length === 0) {
       favoritedFolderIds = new Set();
       favoritedFileIds = new Set();
       return;
     }
     try {
-      const res = await api.knowledge.postApiKnowledgeFavoriteCheckBatch({ folderIds, fileIds });
-      favoritedFolderIds = new Set(res.data?.favoritedFolderIds || []);
-      favoritedFileIds = new Set(res.data?.favoritedFileIds || []);
+      const res = await api.knowledge.postApiKnowledgeFavoritesCheck({ nodeIds });
+      const favorites = res.data?.favorites || {};
+      const favoritedIds = Object.entries(favorites).filter(([, v]) => v).map(([k]) => k);
+      favoritedFolderIds = new Set(folders.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
+      favoritedFileIds = new Set(files.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
     } catch (err) {
       console.error('加载收藏状态失败:', err);
     }
   }
 
   function navigateToFolder(folder: FavoriteFolder) {
-    // 无权限的文件夹不能进入
     if (folder.permission === 'none') return;
     currentFolderId = folder.id;
     pathStack = [...pathStack, { id: folder.id, name: folder.name }];
@@ -110,22 +147,18 @@
   }
 
   function handleFileClick(file: FavoriteFile) {
-    // 无权限的文件不能打开
     if (file.permission === 'none') return;
-    
     if (file.permission === 'write' || file.permission === 'manage' || file.isOwner) {
       goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}`);
     } else {
-      // 只读模式查看
       goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}?readonly=true`);
     }
   }
 
   async function handleDownloadFile(file: FavoriteFile) {
-    // 无权限的文件不能下载
     if (file.permission === 'none') return;
     try {
-      const res = await api.files.getApiFilesByIdDownloadUrl({ id: file.id });
+      const res = await api.knowledge.getApiKnowledgeNodesByIdDownloadUrl({ id: file.id });
       if (res.data?.url) {
         window.open(res.data.url, '_blank');
       }
@@ -138,16 +171,15 @@
     try {
       const isFavorited = favoritedFolderIds.has(folder.id);
       if (isFavorited) {
-        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({ resourceType: 'folder', resourceId: folder.id });
+        await api.knowledge.deleteApiKnowledgeFavoritesByNodeId({ nodeId: folder.id });
         const newSet = new Set(favoritedFolderIds);
         newSet.delete(folder.id);
         favoritedFolderIds = newSet;
-        // 如果在根目录，从列表中移除
         if (currentFolderId === null) {
           folders = folders.filter(f => f.id !== folder.id);
         }
       } else {
-        await api.knowledge.postApiKnowledgeFavorite({ resourceType: 'folder', resourceId: folder.id });
+        await api.knowledge.postApiKnowledgeFavorites({ nodeId: folder.id });
         favoritedFolderIds = new Set([...favoritedFolderIds, folder.id]);
       }
     } catch (err) {
@@ -159,16 +191,15 @@
     try {
       const isFavorited = favoritedFileIds.has(file.id);
       if (isFavorited) {
-        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({ resourceType: 'file', resourceId: file.id });
+        await api.knowledge.deleteApiKnowledgeFavoritesByNodeId({ nodeId: file.id });
         const newSet = new Set(favoritedFileIds);
         newSet.delete(file.id);
         favoritedFileIds = newSet;
-        // 如果在根目录，从列表中移除
         if (currentFolderId === null) {
           files = files.filter(f => f.id !== file.id);
         }
       } else {
-        await api.knowledge.postApiKnowledgeFavorite({ resourceType: 'file', resourceId: file.id });
+        await api.knowledge.postApiKnowledgeFavorites({ nodeId: file.id });
         favoritedFileIds = new Set([...favoritedFileIds, file.id]);
       }
     } catch (err) {

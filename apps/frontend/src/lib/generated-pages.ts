@@ -183,19 +183,19 @@ export const pages: PageMeta[] = [
     "order": 30
   },
   {
-    "path": "/dashboard/ai/api-keys",
-    "title": "API 密钥",
-    "permission": "ai:apiKey:view",
-    "icon": "mdi:key-variant",
-    "group": "AI 管理",
-    "order": 32
-  },
-  {
     "path": "/dashboard/ai/mcp-servers",
     "title": "MCP发布",
     "icon": "mdi:api",
     "group": "智能体",
     "order": 60
+  },
+  {
+    "path": "/dashboard/ai/api-keys",
+    "title": "API 密钥",
+    "permission": "ai:apiKey:view",
+    "icon": "mdi:key-variant",
+    "group": "智能体",
+    "order": 100
   },
   {
     "path": "/dashboard/preferences",
@@ -316,8 +316,8 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
   '/dashboard/ai/agents': "智能体管理",
-  '/dashboard/ai/api-keys': "API 密钥",
   '/dashboard/ai/mcp-servers': "MCP发布",
+  '/dashboard/ai/api-keys': "API 密钥",
   '/dashboard/preferences': "个性化",
   '/dashboard/server-monitor/overview': "服务器监控",
   '/dashboard/system-config': "系统参数",
@@ -440,6 +440,14 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "mdi:api",
       "group": "智能体",
       "order": 60
+    },
+    {
+      "path": "/dashboard/ai/api-keys",
+      "title": "API 密钥",
+      "permission": "ai:apiKey:view",
+      "icon": "mdi:key-variant",
+      "group": "智能体",
+      "order": 100
     }
   ],
   "系统管理": [
@@ -530,16 +538,6 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "tdesign:user-add",
       "group": "系统管理",
       "hidden": true
-    }
-  ],
-  "AI 管理": [
-    {
-      "path": "/dashboard/ai/api-keys",
-      "title": "API 密钥",
-      "permission": "ai:apiKey:view",
-      "icon": "mdi:key-variant",
-      "group": "AI 管理",
-      "order": 32
     }
   ],
   "系统设置": [

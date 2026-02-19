@@ -15,6 +15,25 @@
   interface PathItem {
     id: string | null;
     name: string;
+    permission?: 'read' | 'write';
+  }
+
+  interface SharedWithMeItem {
+    node: {
+      id: string;
+      type: 'folder' | 'file';
+      name: string;
+      parentId: string | null;
+      icon?: string | null;
+      color?: string | null;
+      extension?: string | null;
+      mimeType?: string | null;
+      size?: number;
+      createdAt: string;
+    };
+    sharedBy?: { userId?: string | null; userName?: string | null };
+    permissions?: string[];
+    permissionSource?: 'direct' | 'inherited';
   }
 
   let loading = $state(true);
@@ -27,24 +46,45 @@
 
   const api = authStore.createApi(true);
 
+  function getPermissionLevel(permissions: string[] | undefined): 'read' | 'write' {
+    if (!permissions || permissions.length === 0) return 'read';
+    if (permissions.includes('write') || permissions.includes('manage')) return 'write';
+    return 'read';
+  }
+
   async function loadData() {
     loading = true;
     try {
-      if (currentFolderId === null) {
-        const res = await api.files.postApiFilesShareSharedWithMe({ limit: 100, offset: 0 });
-        folders = (res.data?.folders || []) as GenericFolder[];
-        files = (res.data?.files || []) as GenericFile[];
-      } else {
-        const res = await api.files.postApiFilesShareFolderContents({
-          folderId: currentFolderId,
-          viewMode: 'shared-with-me',
-          limit: 100,
-          offset: 0,
-        });
-        folders = (res.data?.folders || []) as GenericFolder[];
-        files = (res.data?.files || []) as GenericFile[];
-      }
-      // 加载收藏状态
+      // 使用同一个 API，通过 folderId 参数区分根级别和子文件夹
+      const res = await api.knowledge.postApiKnowledgeShareSharedWithMe({ 
+        folderId: currentFolderId || undefined,
+        limit: 100, 
+        offset: 0 
+      });
+      const items = (res.data?.data || []) as SharedWithMeItem[];
+      
+      folders = items.filter(i => i.node.type === 'folder').map(i => ({
+        id: i.node.id,
+        name: i.node.name,
+        parentId: i.node.parentId,
+        icon: i.node.icon,
+        color: i.node.color,
+        createdAt: i.node.createdAt,
+        sharedBy: i.sharedBy?.userName,
+        permission: getPermissionLevel(i.permissions),
+      })) as GenericFolder[];
+      files = items.filter(i => i.node.type === 'file').map(i => ({
+        id: i.node.id,
+        name: i.node.name,
+        folderId: i.node.parentId,
+        extension: i.node.extension,
+        mimeType: i.node.mimeType,
+        size: i.node.size || 0,
+        createdAt: i.node.createdAt,
+        sharedBy: i.sharedBy?.userName,
+        permission: getPermissionLevel(i.permissions),
+      })) as GenericFile[];
+      
       await loadFavoriteStatus();
     } catch (err) {
       console.error('加载共享数据失败:', err);
@@ -56,14 +96,18 @@
   }
 
   async function loadFavoriteStatus() {
-    if (folders.length === 0 && files.length === 0) return;
+    const nodeIds = [...folders.map(f => f.id), ...files.map(f => f.id)];
+    if (nodeIds.length === 0) {
+      favoritedFolderIds = new Set();
+      favoritedFileIds = new Set();
+      return;
+    }
     try {
-      const res = await api.knowledge.postApiKnowledgeFavoriteCheckBatch({
-        folderIds: folders.map(f => f.id),
-        fileIds: files.map(f => f.id),
-      });
-      favoritedFolderIds = new Set(res.data?.favoritedFolderIds || []);
-      favoritedFileIds = new Set(res.data?.favoritedFileIds || []);
+      const res = await api.knowledge.postApiKnowledgeFavoritesCheck({ nodeIds });
+      const favorites = res.data?.favorites || {};
+      const favoritedIds = Object.entries(favorites).filter(([, v]) => v).map(([k]) => k);
+      favoritedFolderIds = new Set(folders.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
+      favoritedFileIds = new Set(files.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
     } catch (err) {
       console.error('加载收藏状态失败:', err);
     }
@@ -72,16 +116,10 @@
   async function toggleFolderFavorite(folder: GenericFolder) {
     try {
       if (favoritedFolderIds.has(folder.id)) {
-        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({
-          resourceType: 'folder',
-          resourceId: folder.id,
-        });
+        await api.knowledge.deleteApiKnowledgeFavoritesByNodeId({ nodeId: folder.id });
         favoritedFolderIds = new Set([...favoritedFolderIds].filter(id => id !== folder.id));
       } else {
-        await api.knowledge.postApiKnowledgeFavorite({
-          resourceType: 'folder',
-          resourceId: folder.id,
-        });
+        await api.knowledge.postApiKnowledgeFavorites({ nodeId: folder.id });
         favoritedFolderIds = new Set([...favoritedFolderIds, folder.id]);
       }
     } catch (err) {
@@ -92,16 +130,10 @@
   async function toggleFileFavorite(file: GenericFile) {
     try {
       if (favoritedFileIds.has(file.id)) {
-        await api.knowledge.deleteApiKnowledgeFavoriteByResourceTypeByResourceId({
-          resourceType: 'file',
-          resourceId: file.id,
-        });
+        await api.knowledge.deleteApiKnowledgeFavoritesByNodeId({ nodeId: file.id });
         favoritedFileIds = new Set([...favoritedFileIds].filter(id => id !== file.id));
       } else {
-        await api.knowledge.postApiKnowledgeFavorite({
-          resourceType: 'file',
-          resourceId: file.id,
-        });
+        await api.knowledge.postApiKnowledgeFavorites({ nodeId: file.id });
         favoritedFileIds = new Set([...favoritedFileIds, file.id]);
       }
     } catch (err) {
@@ -111,7 +143,7 @@
 
   function navigateToFolder(folder: GenericFolder) {
     currentFolderId = folder.id;
-    pathStack = [...pathStack, { id: folder.id, name: folder.name }];
+    pathStack = [...pathStack, { id: folder.id, name: folder.name, permission: folder.permission as 'read' | 'write' }];
     loadData();
   }
 
@@ -133,14 +165,13 @@
     if (file.permission === 'write') {
       goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}`);
     } else {
-      // 只读模式查看
       goto(`/dashboard/knowledge/my-files/${file.folderId || 'root'}/edit/${file.id}?readonly=true`);
     }
   }
 
   async function handleDownloadFile(file: GenericFile) {
     try {
-      const res = await api.files.getApiFilesByIdDownloadUrl({ id: file.id });
+      const res = await api.knowledge.getApiKnowledgeNodesByIdDownloadUrl({ id: file.id });
       if (res.data?.url) {
         window.open(res.data.url, '_blank');
       }
@@ -161,12 +192,20 @@
   </div>
 
   <div class="flex-1 flex flex-col min-h-0">
-    {#if !loading && folders.length === 0 && files.length === 0 && currentFolderId === null}
-      <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
-        <Icon icon="tdesign:user-transmit" class="size-16 mb-4 opacity-50" />
-        <p class="text-lg">还没有人与您共享文件</p>
-        <p class="text-sm">当有人共享文件给您时，会显示在这里</p>
-      </div>
+    {#if !loading && folders.length === 0 && files.length === 0}
+      {#if currentFolderId === null}
+        <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
+          <Icon icon="tdesign:user-transmit" class="size-16 mb-4 opacity-50" />
+          <p class="text-lg">还没有人与您共享文件</p>
+          <p class="text-sm">当有人共享文件给您时，会显示在这里</p>
+        </div>
+      {:else}
+        <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
+          <Icon icon="tdesign:folder-open" class="size-16 mb-4 opacity-50" />
+          <p class="text-lg">此文件夹为空</p>
+          <p class="text-sm">该文件夹中没有任何文件或子文件夹</p>
+        </div>
+      {/if}
     {:else}
       <KnowledgeFileList
         viewMode="shared-with-me"
