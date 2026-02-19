@@ -11,7 +11,7 @@ COPY apps/frontend/ apps/frontend/
 RUN bun install
 
 # Build all packages and frontend with turbo
-RUN bun run build --filter=frontend
+RUN bun run build --filter=@qiyu-allinai/frontend
 
 FROM nginx:alpine
 
