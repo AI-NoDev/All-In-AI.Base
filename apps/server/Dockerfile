@@ -9,8 +9,10 @@ COPY package.json bun.lock turbo.json ./
 COPY packages/db/ packages/db/
 COPY packages/actions/ packages/actions/
 COPY packages/ai/ packages/ai/
-COPY packages/actions-flow-editor/ packages/actions-flow-editor/
-COPY packages/config/ packages/config/
+COPY packages/api/ packages/api/
+COPY packages/file-icons/ packages/file-icons/
+COPY packages/zod-visual-eidtor/ packages/zod-visual-eidtor/
+COPY packages/flow-editor/ packages/flow-editor/
 COPY packages/i18n/package.json packages/i18n/package.json
 COPY packages/i18n/paraglide/ packages/i18n/paraglide/
 
