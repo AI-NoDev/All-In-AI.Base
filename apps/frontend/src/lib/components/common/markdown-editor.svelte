@@ -3,6 +3,8 @@
   import { mode } from 'mode-watcher';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
   import { onMount, onDestroy } from 'svelte';
+  import "vditor/dist/index.css"
+  import Vditor from 'vditor';
 
   type ToolbarItem = string | { name: string; toolbar: string[] };
 
@@ -63,9 +65,6 @@
 
   async function init() {
     if (!browser || !editorRef || vditor) return;
-
-    const Vditor = (await import('vditor')).default;
-    await import('vditor/dist/index.css');
 
     const currentTheme = isDark ? 'dark' : 'classic';
 
