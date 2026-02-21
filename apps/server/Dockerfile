@@ -10,6 +10,8 @@ COPY packages/db/ packages/db/
 COPY packages/actions/ packages/actions/
 COPY packages/ai/ packages/ai/
 COPY packages/api/ packages/api/
+COPY packages/cache/ packages/cache/
+COPY packages/storage/ packages/storage/
 COPY packages/file-icons/ packages/file-icons/
 COPY packages/zod-visual-editor/ packages/zod-visual-editor/
 COPY packages/flow-editor/ packages/flow-editor/
