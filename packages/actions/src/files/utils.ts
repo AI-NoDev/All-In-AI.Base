@@ -5,7 +5,7 @@
  * 新的知识库操作请使用 knowledge/utils.ts
  */
 
-import { KnowledgePermissionAdapter } from '@qiyu-allinai/db/casbin';
+import { KnowledgePermissionAdapter, type KnowledgePermission } from '@qiyu-allinai/db/casbin';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type { DrizzleDB } from '../core/types';
 import { ActionError } from '../core/errors';
@@ -41,7 +41,7 @@ export async function checkResourcePermission(
   
   // 检查 Casbin 权限 (使用新的 KnowledgePermissionAdapter)
   const adapter = new KnowledgePermissionAdapter(db as PostgresJsDatabase);
-  return adapter.checkPermission(userId, resourceType, resource.id, permission);
+  return adapter.checkPermission(userId, resource.id, permission as KnowledgePermission);
 }
 
 /**

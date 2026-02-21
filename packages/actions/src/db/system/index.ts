@@ -14,7 +14,6 @@ export * from './post';
 export * from './role';
 export * from './roleDepartment';
 export * from './roleMenu';
-export * from './token';
 export * from './userPost';
 export * from './userRole';
 export * from './permission';
@@ -36,7 +35,6 @@ import { postActions } from './post';
 import { roleActions } from './role';
 import { roleDepartmentActions } from './roleDepartment';
 import { roleMenuActions } from './roleMenu';
-import { tokenActions } from './token';
 import { userPostActions } from './userPost';
 import { userRoleActions } from './userRole';
 import { permissionActions } from './permission';
@@ -58,7 +56,6 @@ export const systemActions = [
   ...roleActions,
   ...roleDepartmentActions,
   ...roleMenuActions,
-  ...tokenActions,
   ...userPostActions,
   ...userRoleActions,
   ...permissionActions,

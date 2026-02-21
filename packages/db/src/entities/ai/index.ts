@@ -4,6 +4,8 @@ export { aiSession, aiSessionFields, aiSessionMeta, aiSessionConfig, aiSessionZo
 export type { TokenUsage } from './aiSession';
 export { aiSessionMessage, aiSessionMessageFields, aiSessionMessageMeta, aiSessionMessageConfig, aiSessionMessageZodSchemas, AI_SESSION_MESSAGE_ROLES, AI_SESSION_MESSAGE_CONTENT_TYPES } from './aiSessionMessage';
 export type { ToolCall, ToolResult, TextMessageContent, ImageMessageContent, FileMessageContent, AISessionMessageContent } from './aiSessionMessage';
+export { userMemory, userMemoryFields, userMemoryMeta, userMemoryConfig, userMemoryZodSchemas, MEMORY_TYPES } from './userMemory';
+export type { MemoryType, MemoryMetadata } from './userMemory';
 // Legacy exports for backward compatibility (deprecated)
 export { agentSession, agentSessionFields, agentSessionMeta, agentSessionConfig, agentSessionZodSchemas } from './agentSession';
 export { agentMessage, agentMessageFields, agentMessageMeta, agentMessageConfig, agentMessageZodSchemas, AGENT_MESSAGE_ROLES, AGENT_MESSAGE_CONTENT_TYPES } from './agentMessage';

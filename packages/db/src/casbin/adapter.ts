@@ -1,6 +1,10 @@
 import { eq, and } from 'drizzle-orm';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PgDatabase } from 'drizzle-orm/pg-core';
 import { casbinRule, CASBIN_POLICY_TYPES } from '../entities/system/casbinRule';
+
+/** Drizzle Database 类型 (兼容 postgres-js 和 PGlite) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DrizzleDB = PgDatabase<any, any, any>;
 
 /**
  * Casbin Drizzle Adapter
@@ -28,9 +32,9 @@ export interface CasbinPolicy {
 }
 
 export class DrizzleCasbinAdapter {
-  private db: PostgresJsDatabase;
+  private db: DrizzleDB;
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: DrizzleDB) {
     this.db = db;
   }
 

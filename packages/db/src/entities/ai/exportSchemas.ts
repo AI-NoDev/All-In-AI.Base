@@ -4,6 +4,7 @@
 export { agent } from './agent';
 export { aiSession } from './aiSession';
 export { aiSessionMessage } from './aiSessionMessage';
+export { userMemory } from './userMemory';
 // Legacy tables (deprecated, kept for migration)
 export { agentSession } from './agentSession';
 export { agentMessage } from './agentMessage';

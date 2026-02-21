@@ -136,8 +136,8 @@ export const userZodSchemas = createZodSchemas(user, userFields);
 
 // ============ 用户类型常量 ============
 export const USER_TYPES = {
-  /** 系统管理员 */
-  SYSTEM: 'system',
+  /** 系统管理员 - 拥有所有权限 */
+  SYSTEM_ADMIN: '00',
   /** 普通用户 */
   USER: 'user',
 } as const;

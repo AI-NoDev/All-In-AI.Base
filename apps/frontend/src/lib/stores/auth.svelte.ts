@@ -4,14 +4,41 @@ import { t } from "@/lib/stores/i18n.svelte";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3030";
 
+interface MenuInfo {
+  id: string;
+  name: string;
+  parentId: string | null;
+  path: string | null;
+  type: string;
+  icon: string | null;
+  orderNum: number;
+  visible: boolean;
+  isFrame: boolean;
+  linkUrl: string | null;
+  linkTarget: string | null;
+  perms: string | null;
+}
+
+interface RoleInfo {
+  id: string;
+  name: string;
+  key: string;
+}
+
 interface UserInfo {
   id: string;
   loginName: string;
   name: string | null;
   avatar: string | null;
   email: string | null;
-  permissions: string[] | null;
+  userType: string | null;
+  permissions: string[];
+  menus: MenuInfo[];
+  roles: RoleInfo[];
 }
+
+/** 系统管理员用户类型 */
+const SYSTEM_ADMIN_USER_TYPE = '00';
 
 interface AuthState {
   user: UserInfo | null;
@@ -275,12 +302,22 @@ function createAuthStore() {
         state.refreshToken = refreshToken;
         state.accessTokenExp = accessTokenExp;
         state.refreshTokenExp = refreshTokenExp;
-        state.user = user;
+        state.user = {
+          ...user,
+          userType: null,
+          permissions: [],
+          menus: [],
+          roles: [],
+        };
         state.isAuthenticated = true;
         state.error = null;
         
         saveToStorage();
         resetHttpClient(); // 重建 HttpClient 以使用新 token
+        
+        // 登录后立即获取完整用户信息（包含权限和菜单）
+        await fetchCurrentUser();
+        
         return true;
       } else {
         const messageKey = response.message || "error.network.error";
@@ -345,13 +382,29 @@ function createAuthStore() {
       const response = await api.auth.getApiAuthMe();
       
       if (response.success && response.data) {
+        // 类型断言：后端已更新返回 permissions/menus/roles，但 API 类型尚未重新生成
+        const data = response.data as {
+          id: string;
+          loginName: string;
+          name: string | null;
+          avatar: string | null;
+          email: string | null;
+          userType?: string | null;
+          permissions?: string[];
+          menus?: MenuInfo[];
+          roles?: RoleInfo[];
+        };
+        
         state.user = {
-          id: response.data.id,
-          loginName: response.data.loginName,
-          name: response.data.name,
-          avatar: response.data.avatar,
-          email: response.data.email,
-          permissions: response.data.permissions,
+          id: data.id,
+          loginName: data.loginName,
+          name: data.name,
+          avatar: data.avatar,
+          email: data.email,
+          userType: data.userType || null,
+          permissions: data.permissions || [],
+          menus: data.menus || [],
+          roles: data.roles || [],
         };
         saveToStorage();
         return true;
@@ -360,6 +413,126 @@ function createAuthStore() {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * 检查用户是否是系统管理员（拥有所有权限）
+   * @returns 是否是系统管理员
+   */
+  function isSystemAdmin(): boolean {
+    if (!state.user) return false;
+    
+    // userType === '00' 是系统管理员
+    if (state.user.userType === SYSTEM_ADMIN_USER_TYPE) {
+      return true;
+    }
+    
+    // 超级管理员角色也拥有所有权限
+    if (state.user.roles?.some(r => r.key === "super_admin")) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  /**
+   * 检查用户是否拥有指定权限
+   * @param code 权限码，如 "system:user:view"
+   * @returns 是否拥有权限
+   */
+  function hasPermission(code: string): boolean {
+    if (!state.user) return false;
+    
+    // 系统管理员拥有所有权限
+    if (isSystemAdmin()) {
+      return true;
+    }
+    
+    return state.user.permissions?.includes(code) ?? false;
+  }
+
+  /**
+   * 检查用户是否拥有任意一个指定权限
+   * @param codes 权限码数组
+   * @returns 是否拥有任意一个权限
+   */
+  function hasAnyPermission(codes: string[]): boolean {
+    if (!state.user) return false;
+    
+    // 系统管理员拥有所有权限
+    if (isSystemAdmin()) {
+      return true;
+    }
+    
+    return codes.some(code => state.user?.permissions?.includes(code));
+  }
+
+  /**
+   * 检查用户是否拥有所有指定权限
+   * @param codes 权限码数组
+   * @returns 是否拥有所有权限
+   */
+  function hasAllPermissions(codes: string[]): boolean {
+    if (!state.user) return false;
+    
+    // 系统管理员拥有所有权限
+    if (isSystemAdmin()) {
+      return true;
+    }
+    
+    return codes.every(code => state.user?.permissions?.includes(code));
+  }
+
+  /**
+   * 检查用户是否拥有指定角色
+   * @param roleKey 角色标识，如 "admin"
+   * @returns 是否拥有角色
+   */
+  function hasRole(roleKey: string): boolean {
+    if (!state.user) return false;
+    return state.user.roles?.some(r => r.key === roleKey) ?? false;
+  }
+
+  /**
+   * 获取用户的菜单树
+   * @returns 菜单树结构
+   */
+  function getMenuTree(): MenuInfo[] {
+    if (!state.user?.menus) return [];
+    
+    const menus = [...state.user.menus];
+    const menuMap = new Map<string, MenuInfo & { children?: MenuInfo[] }>();
+    const roots: (MenuInfo & { children?: MenuInfo[] })[] = [];
+    
+    // 先建立映射
+    menus.forEach(m => {
+      menuMap.set(m.id, { ...m, children: [] });
+    });
+    
+    // 构建树
+    menus.forEach(m => {
+      const node = menuMap.get(m.id)!;
+      if (m.parentId && menuMap.has(m.parentId)) {
+        const parent = menuMap.get(m.parentId)!;
+        parent.children = parent.children || [];
+        parent.children.push(node);
+      } else {
+        roots.push(node);
+      }
+    });
+    
+    // 按 orderNum 排序
+    const sortMenus = (items: (MenuInfo & { children?: MenuInfo[] })[]) => {
+      items.sort((a, b) => a.orderNum - b.orderNum);
+      items.forEach(item => {
+        if (item.children?.length) {
+          sortMenus(item.children);
+        }
+      });
+    };
+    
+    sortMenus(roots);
+    return roots;
   }
 
   loadFromStorage();
@@ -371,6 +544,9 @@ function createAuthStore() {
     get isLoading() { return state.isLoading; },
     get error() { return state.error; },
     get accessToken() { return state.accessToken; },
+    get permissions() { return state.user?.permissions ?? []; },
+    get menus() { return state.user?.menus ?? []; },
+    get roles() { return state.user?.roles ?? []; },
     login,
     logout,
     refreshAccessToken,
@@ -378,6 +554,12 @@ function createAuthStore() {
     fetchCurrentUser,
     isTokenExpired,
     createApi,
+    hasPermission,
+    hasAnyPermission,
+    hasAllPermissions,
+    hasRole,
+    getMenuTree,
+    isSystemAdmin,
   };
 }
 

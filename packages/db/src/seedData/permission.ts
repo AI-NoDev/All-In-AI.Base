@@ -69,6 +69,7 @@ function getActionName(action: string): string {
 
 /**
  * 权限种子数据（树形结构）
+ * 基于实际的前端路由和后端 Actions 定义
  */
 export const permissionSeeds: PermissionSeed[] = [
   // 系统管理模块
@@ -76,13 +77,12 @@ export const permissionSeeds: PermissionSeed[] = [
     { code: 'user', name: '用户管理', actions: ['read', 'write', 'delete', 'manage', 'export', 'import'] },
     { code: 'role', name: '角色管理' },
     { code: 'menu', name: '菜单管理' },
+    { code: 'permission', name: '权限管理' },
     { code: 'department', name: '部门管理' },
     { code: 'post', name: '岗位管理' },
     { code: 'dict', name: '字典管理' },
     { code: 'config', name: '参数配置' },
-    { code: 'notice', name: '通知公告' },
     { code: 'log', name: '日志管理', actions: ['read', 'delete', 'export'] },
-    { code: 'permission', name: '权限管理' },
     { code: 'casbin', name: '策略管理' },
   ], 1),
 
@@ -91,16 +91,17 @@ export const permissionSeeds: PermissionSeed[] = [
     { code: 'provider', name: '服务商管理' },
     { code: 'model', name: '模型管理' },
     { code: 'agent', name: 'Agent 管理' },
-    { code: 'tool', name: '工具管理' },
-    { code: 'skill', name: '技能管理' },
+    { code: 'apikey', name: 'API 密钥管理' },
+    { code: 'mcp', name: 'MCP 服务器管理' },
     { code: 'session', name: '会话管理', actions: ['read', 'delete'] },
   ], 2),
 
   // 知识库模块
   createModulePermissions('knowledge', '知识库', [
-    { code: 'folder', name: '文件夹管理' },
-    { code: 'file', name: '文件管理', actions: ['read', 'write', 'delete', 'manage', 'export'] },
-    { code: 'base', name: '知识库管理' },
+    { code: 'node', name: '文件/文件夹管理', actions: ['read', 'write', 'delete', 'manage', 'export'] },
+    { code: 'share', name: '共享管理' },
+    { code: 'favorite', name: '收藏管理', actions: ['read', 'write', 'delete'] },
+    { code: 'version', name: '版本管理', actions: ['read', 'write', 'delete'] },
   ], 3),
 
   // 即时通讯模块
@@ -109,6 +110,19 @@ export const permissionSeeds: PermissionSeed[] = [
     { code: 'message', name: '消息管理', actions: ['read', 'delete'] },
     { code: 'group', name: '群组管理' },
   ], 4),
+
+  // 服务器监控模块
+  createModulePermissions('monitor', '服务器监控', [
+    { code: 'overview', name: '概览', actions: ['read'] },
+    { code: 'charts', name: '图表', actions: ['read'] },
+    { code: 'processes', name: '进程管理', actions: ['read', 'manage'] },
+    { code: 'ports', name: '端口监控', actions: ['read'] },
+  ], 5),
+
+  // 开发模块
+  createModulePermissions('dev', '开发工具', [
+    { code: 'code', name: '项目代码', actions: ['read'] },
+  ], 99),
 ];
 
 /**

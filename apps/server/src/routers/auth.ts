@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray, isNull } from "drizzle-orm";
 import db from "@qiyu-allinai/db/connect";
-import { user, loginInfo } from "@qiyu-allinai/db/entities/system";
+import { user, loginInfo, userRole, roleMenu, menu, role } from "@qiyu-allinai/db/entities/system";
 import { config, jwtExpStrings, jwtExpMs } from "../config";
 import { jwtPlugin } from "../server/plugins/jwt";
 import { bearerPlugin } from "../server/plugins/bearer";
@@ -25,6 +25,9 @@ const MSG = {
   serverError: "error.auth.serverError",
 } as const;
 
+/** 系统管理员用户类型 */
+const SYSTEM_ADMIN_USER_TYPE = '00';
+
 // ============ Response Schemas ============
 const UserInfoSchema = t.Object({
   id: t.String(),
@@ -46,6 +49,26 @@ const UserDetailSchema = t.Object({
   userType: t.Nullable(t.String()),
   loginDate: t.Nullable(t.Date()),
   loginIp: t.Nullable(t.String()),
+  permissions: t.Array(t.String()),
+  menus: t.Array(t.Object({
+    id: t.String(),
+    name: t.String(),
+    parentId: t.Nullable(t.String()),
+    path: t.Nullable(t.String()),
+    type: t.String(),
+    icon: t.Nullable(t.String()),
+    orderNum: t.Number(),
+    visible: t.Boolean(),
+    isFrame: t.Boolean(),
+    linkUrl: t.Nullable(t.String()),
+    linkTarget: t.Nullable(t.String()),
+    perms: t.Nullable(t.String()),
+  })),
+  roles: t.Array(t.Object({
+    id: t.String(),
+    name: t.String(),
+    key: t.String(),
+  })),
 });
 
 const SuccessResponse = <T extends ReturnType<typeof t.Object>>(dataSchema: T) =>
@@ -459,6 +482,101 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
         return { success: false as const, message: MSG.userNotFound, data: null };
       }
       
+      // 查询用户的角色
+      const userRoles = await db
+        .select({
+          id: role.id,
+          name: role.name,
+          key: role.key,
+        })
+        .from(userRole)
+        .innerJoin(role, eq(userRole.roleId, role.id))
+        .where(and(
+          eq(userRole.userId, foundUser.id),
+          eq(role.status, "0"),
+          isNull(role.deletedAt)
+        ));
+      
+      const roleIds = userRoles.map(r => r.id);
+      
+      // 查询角色关联的菜单
+      let userMenus: {
+        id: string;
+        name: string;
+        parentId: string | null;
+        path: string | null;
+        type: string;
+        icon: string | null;
+        orderNum: number;
+        visible: boolean;
+        isFrame: boolean;
+        linkUrl: string | null;
+        linkTarget: string | null;
+        perms: string | null;
+      }[] = [];
+      
+      // 检查是否是系统管理员（userType === '00'）或超级管理员角色
+      const isSystemAdmin = foundUser.userType === SYSTEM_ADMIN_USER_TYPE;
+      const isSuperAdminRole = userRoles.some(r => r.key === "super_admin");
+      const hasAllPermissions = isSystemAdmin || isSuperAdminRole;
+      
+      if (hasAllPermissions) {
+        // 系统管理员或超级管理员获取所有可见菜单
+        userMenus = await db
+          .select({
+            id: menu.id,
+            name: menu.name,
+            parentId: menu.parentId,
+            path: menu.path,
+            type: menu.type,
+            icon: menu.icon,
+            orderNum: menu.orderNum,
+            visible: menu.visible,
+            isFrame: menu.isFrame,
+            linkUrl: menu.linkUrl,
+            linkTarget: menu.linkTarget,
+            perms: menu.perms,
+          })
+          .from(menu)
+          .where(eq(menu.visible, true))
+          .orderBy(menu.orderNum);
+      } else if (roleIds.length > 0) {
+        // 普通用户根据角色菜单关联查询
+        const menuIds = await db
+          .selectDistinct({ menuId: roleMenu.menuId })
+          .from(roleMenu)
+          .where(inArray(roleMenu.roleId, roleIds));
+        
+        if (menuIds.length > 0) {
+          userMenus = await db
+            .select({
+              id: menu.id,
+              name: menu.name,
+              parentId: menu.parentId,
+              path: menu.path,
+              type: menu.type,
+              icon: menu.icon,
+              orderNum: menu.orderNum,
+              visible: menu.visible,
+              isFrame: menu.isFrame,
+              linkUrl: menu.linkUrl,
+              linkTarget: menu.linkTarget,
+              perms: menu.perms,
+            })
+            .from(menu)
+            .where(and(
+              inArray(menu.id, menuIds.map(m => m.menuId)),
+              eq(menu.visible, true)
+            ))
+            .orderBy(menu.orderNum);
+        }
+      }
+      
+      // 提取权限码（从菜单的 perms 字段）
+      const permissions = userMenus
+        .map(m => m.perms)
+        .filter((p): p is string => p !== null && p !== "");
+      
       return {
         success: true as const,
         message: MSG.fetchSuccess,
@@ -474,6 +592,9 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
           userType: foundUser.userType,
           loginDate: foundUser.loginDate,
           loginIp: foundUser.loginIp,
+          permissions,
+          menus: userMenus,
+          roles: userRoles,
         },
       };
     } catch (error) {
@@ -486,7 +607,7 @@ export const authRouter = new Elysia({ prefix: "/api/auth" })
       401: ErrorResponse,
       500: ErrorResponse,
     },
-    detail: { summary: "获取当前用户", description: "获取当前登录用户的详细信息", tags: ["auth"] },
+    detail: { summary: "获取当前用户", description: "获取当前登录用户的详细信息、菜单和权限", tags: ["auth"] },
   })
   
   // ============ 修改密码 ============

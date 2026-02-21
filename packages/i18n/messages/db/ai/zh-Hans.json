@@ -184,5 +184,20 @@
   "apiKeyMcp_meta_verboseName": "关联",
   "apiKeyMcp_meta_verboseNamePlural": "关联列表",
   "apiKeyMcp_apiKeyId": "API密钥ID",
-  "apiKeyMcp_mcpServerId": "MCP服务ID"
+  "apiKeyMcp_mcpServerId": "MCP服务ID",
+  "userMemory_meta_displayName": "用户记忆",
+  "userMemory_meta_verboseName": "记忆",
+  "userMemory_meta_verboseNamePlural": "记忆列表",
+  "userMemory_userId": "用户ID",
+  "userMemory_agentId": "Agent ID",
+  "userMemory_sessionId": "会话ID",
+  "userMemory_memoryType": "记忆类型",
+  "userMemory_content": "记忆内容",
+  "userMemory_metadata": "元数据",
+  "userMemory_importance": "重要性",
+  "userMemory_accessCount": "访问次数",
+  "userMemory_lastAccessAt": "最后访问时间",
+  "userMemory_expireAt": "过期时间",
+  "userMemory_embedding": "向量嵌入",
+  "userMemory_status": "状态"
 }

@@ -16,8 +16,12 @@
  */
 
 import { eq, and, inArray } from 'drizzle-orm';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PgDatabase } from 'drizzle-orm/pg-core';
 import { casbinRule, CASBIN_POLICY_TYPES } from '../entities/system/casbinRule';
+
+/** Drizzle Database 类型 (兼容 postgres-js 和 PGlite) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DrizzleDB = PgDatabase<any, any, any>;
 
 // ============ 通用常量 ============
 
@@ -83,7 +87,7 @@ export function parseResourceId(resource: string | null | undefined): string {
  * @template P 权限类型枚举
  */
 export abstract class ResourcePermissionAdapter<P extends string = string> {
-  protected db: PostgresJsDatabase;
+  protected db: DrizzleDB;
   
   /** 资源类型前缀，子类必须实现 */
   protected abstract readonly resourcePrefix: string;
@@ -91,7 +95,7 @@ export abstract class ResourcePermissionAdapter<P extends string = string> {
   /** 支持的权限列表，子类必须实现 */
   protected abstract readonly permissions: readonly P[];
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: DrizzleDB) {
     this.db = db;
   }
 

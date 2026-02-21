@@ -8,6 +8,16 @@ import type { PgDatabase } from 'drizzle-orm/pg-core';
 export type DrizzleDB = PgDatabase<any, any, any>;
 
 /**
+ * 嵌入服务接口（用于向量生成）
+ */
+export interface EmbeddingService {
+  /** 生成文本的向量嵌入 */
+  generateEmbedding(text: string): Promise<number[]>;
+  /** 批量生成向量嵌入 */
+  generateEmbeddings?(texts: string[]): Promise<number[][]>;
+}
+
+/**
  * Action 执行上下文
  */
 export interface ActionContext {
@@ -19,6 +29,14 @@ export interface ActionContext {
   currentUserId: string;
   /** 当前用户名 */
   currentUserName: string;
+  /** 当前用户部门ID */
+  currentUserDeptId?: string | null;
+  /** 当前用户类型 (00=系统管理员) */
+  currentUserType?: string | null;
+  /** WebSocket 连接管理器（可选，用于 WS 相关 actions） */
+  wsConnectionManager?: unknown;
+  /** 嵌入服务（可选，用于向量生成） */
+  embeddingService?: EmbeddingService;
 }
 
 /**

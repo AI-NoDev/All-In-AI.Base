@@ -26,3 +26,20 @@ export {
   type KnowledgePermissionEntry,
   type KnowledgeEffectivePermission,
 } from './knowledgePermission';
+
+// 部门数据权限适配器
+export {
+  DepartmentPermissionAdapter,
+  DATA_SCOPE,
+  PERMISSION_SCOPE,
+  BUSINESS_MODULE,
+  getDescendantDeptIds,
+  getAncestorDeptIds,
+  buildMaterializedPath,
+  type DataScope,
+  type PermissionScope,
+  type BusinessModule,
+  type DeptDataPermission,
+  type DeptDataPermissionResult,
+  type DeptInfo,
+} from './departmentPermission';

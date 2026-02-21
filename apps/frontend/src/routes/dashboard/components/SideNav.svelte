@@ -5,24 +5,42 @@
   import { Badge } from '$lib/components/ui/badge';
   import { tabsStore } from '@/lib/stores/tabs.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { authStore } from '@/lib/stores/auth.svelte';
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { dev } from '$app/environment';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
 
-  // 开发模式分组名?
+  // 开发模式分组名
   const DEV_GROUP_NAME = '开发模式';
 
-  // 过滤隐藏页面，生产模式下隐藏开发模式分组
-  const visibleGroups = Object.entries(groupedPages)
-    .filter(([key]) => key !== 'default')
-    .filter(([key]) => dev || key !== DEV_GROUP_NAME) // 生产模式隐藏开发模式
-    .map(([label, items]) => ({
-      label,
-      items: items.filter((p) => !p.hidden)
-    }))
-    .filter((g) => g.items.length > 0);
+  /**
+   * 检查用户是否有权限访问某个页面
+   * - 没有 permission 字段的页面默认允许访问
+   * - 超级管理员拥有所有权限
+   */
+  function hasPagePermission(pageMeta: PageMeta): boolean {
+    // 没有定义权限的页面，默认允许访问
+    if (!pageMeta.permission) return true;
+    
+    // 使用 authStore 的权限检查
+    return authStore.hasPermission(pageMeta.permission);
+  }
+
+  // 过滤隐藏页面和无权限页面，生产模式下隐藏开发模式分组
+  let visibleGroups = $derived(
+    Object.entries(groupedPages)
+      .filter(([key]) => key !== 'default')
+      .filter(([key]) => dev || key !== DEV_GROUP_NAME) // 生产模式隐藏开发模式
+      .map(([label, items]) => ({
+        label,
+        items: items
+          .filter((p) => !p.hidden) // 过滤隐藏页面
+          .filter((p) => hasPagePermission(p)) // 过滤无权限页面
+      }))
+      .filter((g) => g.items.length > 0) // 过滤空分组
+  );
 
   let loaded = $state(false);
   let zoomLevel = $state(100);

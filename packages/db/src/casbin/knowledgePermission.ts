@@ -8,7 +8,7 @@
  * - allow/deny 规则（deny 优先）
  */
 
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type { PgDatabase } from 'drizzle-orm/pg-core';
 import { 
   ResourcePermissionAdapter, 
   type PermissionEntry, 
@@ -16,6 +16,10 @@ import {
   type SubjectType,
   type PermissionEffect,
 } from './resourcePermission';
+
+/** Drizzle Database 类型 (兼容 postgres-js 和 PGlite) */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DrizzleDB = PgDatabase<any, any, any>;
 
 // ============ 知识库权限常量 ============
 
@@ -49,7 +53,7 @@ export class KnowledgePermissionAdapter extends ResourcePermissionAdapter<Knowle
   protected readonly resourcePrefix = 'node';
   protected readonly permissions = Object.values(KNOWLEDGE_PERMISSIONS) as readonly KnowledgePermission[];
 
-  constructor(db: PostgresJsDatabase) {
+  constructor(db: DrizzleDB) {
     super(db);
   }
 

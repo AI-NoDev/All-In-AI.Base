@@ -12,6 +12,7 @@
     parentId: string | null;
     type: string;
     icon: string | null;
+    orderNum: number;
   }
 
   interface Props {
@@ -34,6 +35,7 @@
     'M': 'tdesign:folder',
     'C': 'tdesign:file',
     'F': 'tdesign:control-platform',
+    'L': 'tdesign:link',
   };
 
   // 转换为 TreeSelector 需要的格式
@@ -54,7 +56,6 @@
       const api = authStore.createApi(true);
       
       // 加载所有菜单（分页加载）
-      console.log('Loading menus...');
       let allMenus: Menu[] = [];
       let offset = 0;
       const limit = 100;
@@ -75,21 +76,30 @@
         }
       }
       
-      menus = allMenus;
-      console.log('Loaded menus:', menus.length);
+      // 按 orderNum 排序
+      menus = allMenus.sort((a, b) => (a.orderNum || 0) - (b.orderNum || 0));
       
       // 加载角色已有的菜单
-      // 检查 API 方法是否存在
-      if (typeof api.system.getApiSystemRoleMenuRoleByRoleId === 'function') {
-        console.log('Loading role menus for roleId:', roleId);
-        const roleMenuRes = await api.system.getApiSystemRoleMenuRoleByRoleId({ roleId });
-        console.log('Role menu response:', roleMenuRes.data);
-        if (roleMenuRes.data) {
-          selectedIds = Array.isArray(roleMenuRes.data) ? roleMenuRes.data : [];
+      try {
+        // 使用 role-menu query API 获取角色的菜单
+        const roleMenuRes = await api.system.postApiSystemRoleMenuQuery({
+          filter: { roleId },
+          limit: 1000,
+          offset: 0,
+        });
+        
+        if (roleMenuRes.data?.data) {
+          selectedIds = roleMenuRes.data.data.map((rm: { menuId: string }) => rm.menuId);
         }
-      } else {
-        console.warn('API method getApiSystemRoleMenuRoleByRoleId not found. Please run: bun run generate:api');
-        error = '请先运行 bun run generate:api 生成 API 客户端';
+      } catch (err) {
+        console.warn('Failed to load role menus via query, trying direct API:', err);
+        // 尝试直接 API（如果已生成）
+        if (typeof (api.system as Record<string, unknown>).getApiSystemRoleMenuRoleByRoleId === 'function') {
+          const roleMenuRes = await (api.system as Record<string, (...args: unknown[]) => Promise<{ data?: string[] }>>).getApiSystemRoleMenuRoleByRoleId({ roleId });
+          if (roleMenuRes.data) {
+            selectedIds = Array.isArray(roleMenuRes.data) ? roleMenuRes.data : [];
+          }
+        }
       }
     } catch (err) {
       console.error('Failed to load menus:', err);
@@ -104,16 +114,32 @@
     try {
       const api = authStore.createApi(true);
       
-      if (typeof api.system.putApiSystemRoleMenuRoleByRoleId === 'function') {
-        await api.system.putApiSystemRoleMenuRoleByRoleId(
-          { roleId },
-          { menuIds: selectedIds }
-        );
-        onSaved();
-        open = false;
-      } else {
-        alert('请先运行 bun run generate:api 生成 API 客户端');
+      // 先删除该角色的所有菜单关联
+      const existingRes = await api.system.postApiSystemRoleMenuQuery({
+        filter: { roleId },
+        limit: 1000,
+        offset: 0,
+      });
+      
+      if (existingRes.data?.data) {
+        // 删除现有关联
+        for (const rm of existingRes.data.data) {
+          await api.system.deleteApiSystemRoleMenuByRoleIdByMenuId({
+            roleId: rm.roleId,
+            menuId: rm.menuId,
+          });
+        }
       }
+      
+      // 批量创建新的关联
+      if (selectedIds.length > 0) {
+        await api.system.postApiSystemRoleMenuBatch({
+          data: selectedIds.map(menuId => ({ roleId, menuId })),
+        });
+      }
+      
+      onSaved();
+      open = false;
     } catch (err) {
       console.error('Failed to save menus:', err);
       alert('保存失败');
@@ -145,7 +171,10 @@
       {:else if error}
         <div class="text-center text-destructive py-8">
           <p>{error}</p>
-          <p class="text-sm text-muted-foreground mt-2">在 apps/frontend 目录运行: bun run generate:api</p>
+        </div>
+      {:else if menus.length === 0}
+        <div class="text-center text-muted-foreground py-8">
+          <p>暂无菜单数据</p>
         </div>
       {:else}
         <TreeSelector

@@ -184,5 +184,20 @@
   "apiKeyMcp_meta_verboseName": "Association",
   "apiKeyMcp_meta_verboseNamePlural": "Associations",
   "apiKeyMcp_apiKeyId": "API Key ID",
-  "apiKeyMcp_mcpServerId": "MCP Server ID"
+  "apiKeyMcp_mcpServerId": "MCP Server ID",
+  "userMemory_meta_displayName": "User Memory",
+  "userMemory_meta_verboseName": "Memory",
+  "userMemory_meta_verboseNamePlural": "Memories",
+  "userMemory_userId": "User ID",
+  "userMemory_agentId": "Agent ID",
+  "userMemory_sessionId": "Session ID",
+  "userMemory_memoryType": "Memory Type",
+  "userMemory_content": "Content",
+  "userMemory_metadata": "Metadata",
+  "userMemory_importance": "Importance",
+  "userMemory_accessCount": "Access Count",
+  "userMemory_lastAccessAt": "Last Access Time",
+  "userMemory_expireAt": "Expire Time",
+  "userMemory_embedding": "Embedding Vector",
+  "userMemory_status": "Status"
 }

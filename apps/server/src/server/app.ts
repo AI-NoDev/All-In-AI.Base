@@ -1,4 +1,4 @@
-import { dbActions, filesActions, devActions } from "@qiyu-allinai/actions";
+import { dbActions, filesActions, devActions, wsActions } from "@qiyu-allinai/actions";
 import { base } from "./base";
 import {
   corsPlugin,
@@ -17,13 +17,13 @@ import {
   i18nPlugin,
 } from "./plugins";
 import { createMcpPlugin } from "./plugins/mcp";
-import { wsPlugin, registerWsChannel } from "./plugins/ws";
+import { wsPlugin, registerWsChannel, connectionManager } from "./plugins/ws";
 import { imChannelHandler, monitorChannelHandler } from "./plugins/ws/channels";
 import { authRouter } from "../routers";
 import { monitorRouter, startScheduler } from "../monitor";
 
-// 核心 actions
-const coreActions = [...dbActions, ...filesActions, ...devActions];
+// 核心 actions（包含 WS actions）
+const coreActions = [...dbActions, ...filesActions, ...devActions, ...wsActions];
 
 /**
  * 创建完整的 Elysia 应用实例
@@ -61,7 +61,7 @@ async function createApp() {
     .use(monitorRouter)
     .get("/", () => ({ message: "Hello AI Drive System" }))
     .get("/health", () => ({ status: "ok", timestamp: Date.now() }))
-    .use(actionsPlugin(coreActions));
+    .use(actionsPlugin(coreActions, connectionManager));
 }
 
 // 导出创建函数

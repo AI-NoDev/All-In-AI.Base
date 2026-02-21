@@ -27,6 +27,8 @@ interface CurrentUser {
   id: string;
   name: string | null;
   loginName: string;
+  deptId: string | null;
+  userType: string | null;
 }
 
 interface ApiResponse<T = unknown> {
@@ -104,8 +106,10 @@ function zodToJsonSchema(schema: unknown): Record<string, unknown> | undefined {
 
 /**
  * Actions Plugin - 注册所有 actions 路由 + 元数据查询接口
+ * @param allActions - 所有 action 定义
+ * @param wsConnectionManager - WebSocket 连接管理器（可选，用于 WS 相关 actions）
  */
-export const actionsPlugin = (allActions: ActionDefinition[]) => {
+export const actionsPlugin = (allActions: ActionDefinition[], wsConnectionManager?: unknown) => {
   // 构建 actions Map 用于快速查找
   const actionsMap = new Map<string, ActionDefinition>();
   for (const action of allActions) {
@@ -256,7 +260,7 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
           }
 
           const [userResult] = await db
-            .select({ id: user.id, name: user.name, loginName: user.loginName })
+            .select({ id: user.id, name: user.name, loginName: user.loginName, deptId: user.deptId, userType: user.userType })
             .from(user)
             .where(eq(user.id, payload.sub))
             .limit(1);
@@ -278,6 +282,9 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
               token: bearer,
               currentUserId: currentUser.id,
               currentUserName: currentUser.name || currentUser.loginName,
+              currentUserDeptId: currentUser.deptId,
+              currentUserType: currentUser.userType,
+              wsConnectionManager,
             }
           );
           return { data: result, status: 200, message: "ok" };
@@ -382,7 +389,7 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
             }
 
             const [userResult] = await db
-              .select({ id: user.id, name: user.name, loginName: user.loginName })
+              .select({ id: user.id, name: user.name, loginName: user.loginName, deptId: user.deptId, userType: user.userType })
               .from(user)
               .where(eq(user.id, payload.sub))
               .limit(1);
@@ -407,6 +414,9 @@ export const actionsPlugin = (allActions: ActionDefinition[]) => {
                 token: bearer,
                 currentUserId: currentUser.id,
                 currentUserName: currentUser.name || currentUser.loginName,
+                currentUserDeptId: currentUser.deptId,
+                currentUserType: currentUser.userType,
+                wsConnectionManager,
               }
             );
             return { data: result, status: 200, message: "ok" };

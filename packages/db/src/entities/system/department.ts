@@ -33,6 +33,11 @@ const departmentOwnFields = {
     comment: db_system_department_ancestors,
     config: { canExport: false, canImport: false }
   },
+  materializedPath: {
+    field: text("materialized_path").notNull().default(''),
+    comment: () => 'UUID物化路径（用于高效查询祖先/后代）',
+    config: { canExport: false, canImport: false }
+  },
   name: {
     field: varchar("name", { length: 50 }).notNull(),
     comment: db_system_department_name,

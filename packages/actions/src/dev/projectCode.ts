@@ -101,7 +101,23 @@ export const getProjectRoot = defineAction({
   meta: {
     name: 'dev.projectCode.getRoot',
     displayName: '获取项目根目录',
-    description: '获取 monorepo 项目根目录路径',
+    description: `获取 Turborepo monorepo 项目的根目录路径。
+
+**返回：**
+- root: 项目根目录绝对路径
+- name: 项目名称（目录名）
+
+**使用场景：**
+- 开发模式下浏览项目代码结构
+- 获取项目基础信息
+
+**示例响应：**
+\`\`\`json
+{
+  "root": "/home/user/ai-drive-system",
+  "name": "ai-drive-system"
+}
+\`\`\``,
     tags: ['dev', 'project-code'],
     method: 'GET',
     path: '/api/dev/project-code/root',
@@ -128,7 +144,29 @@ export const readDirectory = defineAction({
   meta: {
     name: 'dev.projectCode.readDirectory',
     displayName: '读取目录',
-    description: '读取指定目录下的文件和子目录',
+    description: `读取指定目录下的文件和子目录列表。
+
+**请求体参数：**
+- relativePath: 相对于项目根目录的路径，可选，默认为根目录 ""
+
+**返回：**
+- items: 文件/目录列表，包含 name, path, type, size, extension
+- currentPath: 当前目录相对路径
+
+**过滤规则：**
+- 自动忽略：node_modules, .git, .svelte-kit, dist, build 等
+- 仅显示代码相关文件：.ts, .js, .svelte, .json, .md 等
+
+**使用场景：**
+- 开发模式下浏览项目目录结构
+- 代码文件导航
+
+**示例：**
+\`\`\`json
+{
+  "relativePath": "packages/actions/src"
+}
+\`\`\``,
     tags: ['dev', 'project-code'],
     method: 'POST',
     path: '/api/dev/project-code/directory',
@@ -211,7 +249,33 @@ export const readFileContent = defineAction({
   meta: {
     name: 'dev.projectCode.readFile',
     displayName: '读取文件',
-    description: '读取指定文件的内容',
+    description: `读取指定代码文件的内容。
+
+**请求体参数：**
+- relativePath: 相对于项目根目录的文件路径，必填
+
+**返回：**
+- content: 文件内容（UTF-8）
+- path: 文件相对路径
+- name: 文件名
+- extension: 文件扩展名
+- size: 文件大小（字节）
+- language: 编程语言（用于语法高亮）
+
+**限制：**
+- 最大文件大小：1MB
+- 路径必须在项目根目录内（安全检查）
+
+**使用场景：**
+- 开发模式下查看代码文件内容
+- 代码审查和分析
+
+**示例：**
+\`\`\`json
+{
+  "relativePath": "packages/actions/src/core/define.ts"
+}
+\`\`\``,
     tags: ['dev', 'project-code'],
     method: 'POST',
     path: '/api/dev/project-code/file',

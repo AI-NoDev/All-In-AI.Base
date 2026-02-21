@@ -42,3 +42,25 @@ export { toJSONSchema } from './schema';
 // Events
 export { actionEvents } from './events';
 export type { GroupCreatedEvent, GroupDissolvedEvent, MessageRecalledEvent, NewMessageEvent, EventMap } from './events';
+
+// Department Permission
+export {
+  SYSTEM_ADMIN_USER_TYPE,
+  DATA_SCOPE,
+  PERMISSION_SCOPE,
+  BUSINESS_MODULE,
+  isSystemAdmin,
+  getAllDepts,
+  resolveDataPermission,
+  checkReadPermission,
+  checkWritePermission,
+  checkManagePermission,
+  buildDeptPermissionConditions,
+} from './deptPermission';
+export type {
+  PermissionCheckResult,
+  DataPermissionFilter,
+  BusinessModule,
+  DeptInfo,
+  DeptDataPermissionResult,
+} from './deptPermission';

@@ -152,6 +152,19 @@ export interface DeleteApiAiToolGroupByIdParams {
   id: string;
 }
 
+export interface DeleteApiAiUserMemoryByIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiAiUserMemoryByIdParams {
+  /** 记忆ID */
+  id: string;
+}
+
 export interface DeleteApiImConversationByIdData {
   data: any;
   /** @default "ok" */
@@ -206,6 +219,7 @@ export interface DeleteApiKnowledgeFavoritesByNodeIdData {
 }
 
 export interface DeleteApiKnowledgeFavoritesByNodeIdParams {
+  /** 节点 ID */
   nodeId: string;
 }
 
@@ -230,18 +244,24 @@ export interface DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdD
 }
 
 export interface DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams {
+  /** 节点 ID */
   id: string;
+  /** 要移除的特定权限，不指定则移除所有 */
   permission?: PermissionEnum;
+  /** 主体 ID */
   subjectId: string;
+  /** 主体类型：user=用户，role=角色，dept=部门 */
   subjectType: SubjectTypeEnum;
 }
 
+/** 主体类型：user=用户，role=角色，dept=部门 */
 export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1Enum {
   User = "user",
   Role = "role",
   Dept = "dept",
 }
 
+/** 要移除的特定权限，不指定则移除所有 */
 export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1PermissionEnum {
   Read = "read",
   Write = "write",
@@ -249,6 +269,7 @@ export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams
   Manage = "manage",
 }
 
+/** 主体类型：user=用户，role=角色，dept=部门 */
 export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1SubjectTypeEnum {
   User = "user",
   Role = "role",
@@ -441,18 +462,6 @@ export interface DeleteApiSystemRoleMenuByRoleIdByMenuIdParams {
   roleId: string;
 }
 
-export interface DeleteApiSystemTokenByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface DeleteApiSystemTokenByIdParams {
-  id: string;
-}
-
 export interface DeleteApiSystemUserByIdData {
   data: any;
   /** @default "ok" */
@@ -489,6 +498,10 @@ export interface DeleteApiSystemUserRoleByUserIdByRoleIdData {
 export interface DeleteApiSystemUserRoleByUserIdByRoleIdParams {
   roleId: string;
   userId: string;
+}
+
+export interface DeleteMcpByIdParams {
+  id: string;
 }
 
 export interface GetApiActionsByNameData {
@@ -776,6 +789,19 @@ export interface GetApiAiToolGroupSchemaData {
   status: number;
 }
 
+export interface GetApiAiUserMemoryByIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiAiUserMemoryByIdParams {
+  /** 记忆ID */
+  id: string;
+}
+
 export interface GetApiAuthConfigData {
   data: {
     accessTokenExpMinutes: number;
@@ -794,8 +820,28 @@ export interface GetApiAuthMeData {
     loginDate: (date | string | number) | null;
     loginIp: string | null;
     loginName: string;
+    menus: {
+      icon: string | null;
+      id: string;
+      isFrame: boolean;
+      linkTarget: string | null;
+      linkUrl: string | null;
+      name: string;
+      orderNum: number;
+      parentId: string | null;
+      path: string | null;
+      perms: string | null;
+      type: string;
+      visible: boolean;
+    }[];
     name: string | null;
+    permissions: string[];
     phonenumber: string | null;
+    roles: {
+      id: string;
+      key: string;
+      name: string;
+    }[];
     sex: string | null;
     userType: string | null;
   };
@@ -997,6 +1043,7 @@ export interface GetApiKnowledgeNodesByIdContentData {
 }
 
 export interface GetApiKnowledgeNodesByIdContentParams {
+  /** 文件节点 ID */
   id: string;
 }
 
@@ -1017,6 +1064,7 @@ export interface GetApiKnowledgeNodesByIdDownloadUrlData {
 }
 
 export interface GetApiKnowledgeNodesByIdDownloadUrlParams {
+  /** 文件节点 ID */
   id: string;
 }
 
@@ -1029,7 +1077,9 @@ export interface GetApiKnowledgeNodesByIdEffectivePermissionsData {
 }
 
 export interface GetApiKnowledgeNodesByIdEffectivePermissionsParams {
+  /** 节点 ID */
   id: string;
+  /** 用户 ID，不指定则查询当前用户 */
   userId?: string;
 }
 
@@ -1046,6 +1096,7 @@ export interface GetApiKnowledgeNodesByIdPathData {
 }
 
 export interface GetApiKnowledgeNodesByIdPathParams {
+  /** 节点 ID */
   id: string;
 }
 
@@ -1058,6 +1109,7 @@ export interface GetApiKnowledgeNodesByIdPermissionsData {
 }
 
 export interface GetApiKnowledgeNodesByIdPermissionsParams {
+  /** 节点 ID */
   id: string;
 }
 
@@ -1070,6 +1122,7 @@ export interface GetApiKnowledgeNodesByIdTextData {
 }
 
 export interface GetApiKnowledgeNodesByIdTextParams {
+  /** 文件节点 ID */
   id: string;
 }
 
@@ -1082,6 +1135,7 @@ export interface GetApiKnowledgeNodesByIdVersionsData {
 }
 
 export interface GetApiKnowledgeNodesByIdVersionsParams {
+  /** 节点 ID */
   id: string;
 }
 
@@ -1102,6 +1156,7 @@ export interface GetApiKnowledgeVersionsByIdDownloadUrlData {
 }
 
 export interface GetApiKnowledgeVersionsByIdDownloadUrlParams {
+  /** 版本 ID */
   id: string;
 }
 
@@ -1473,26 +1528,6 @@ export interface GetApiSystemRoleSchemaData {
   status: number;
 }
 
-export interface GetApiSystemTokenByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface GetApiSystemTokenByIdParams {
-  id: string;
-}
-
-export interface GetApiSystemTokenSchemaData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
 export interface GetApiSystemUserByIdData {
   data: any;
   /** @default "ok" */
@@ -1579,10 +1614,19 @@ export interface GetApiSystemUserSchemaData {
   status: number;
 }
 
-export interface GetMcpByIdParams {
+export interface GetApiWsUsersOnlineData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetMcpByIdInfoParams {
   id: string;
 }
 
+/** 要移除的特定权限，不指定则移除所有 */
 export enum PermissionEnum {
   Read = "read",
   Write = "write",
@@ -1825,53 +1869,66 @@ export interface PostApiAiAgentMessageQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiAgentMessageQueryFieldEnum {
   MsgSeq = "msgSeq",
   CreatedAt = "createdAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiAgentMessageQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** Agent消息分页查询请求体 */
 export interface PostApiAiAgentMessageQueryPayload {
+  /** Agent消息过滤条件 */
   filter?: {
+    /** 按内容类型精确匹配 */
     contentType?: string;
+    /** 按内容类型列表精确匹配 */
     contentTypes?: string[];
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按完成原因精确匹配 */
     finishReason?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 消息序号范围-结束 */
     msgSeqEnd?: number;
+    /** 消息序号范围-开始 */
     msgSeqStart?: number;
+    /** 按角色精确匹配：user=用户, assistant=助手, system=系统, tool=工具 */
     role?: string;
+    /** 按角色列表精确匹配 */
     roles?: string[];
+    /** 按会话ID精确匹配 */
     sessionId?: string;
+    /** 按会话ID列表精确匹配 */
     sessionIds?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 50
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiAgentMessageQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiAgentMessageQueryOrderEnum;
   };
 }
@@ -1962,54 +2019,75 @@ export interface PostApiAiAgentQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiAgentQueryFieldEnum {
   Name = "name",
   CreatedAt = "createdAt",
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiAgentQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** 智能体分页查询请求体 */
 export interface PostApiAiAgentQueryPayload {
+  /** 智能体过滤条件 */
   filter?: {
+    /** 上下文策略 */
     contextStrategy?: string;
     /**
+     * 创建时间范围-结束，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtEnd?: string;
     /**
+     * 创建时间范围-开始，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 按模型ID精确匹配 */
     modelId?: string;
+    /** 按模型ID列表精确匹配 */
     modelIds?: string[];
+    /** 按名称模糊搜索 */
     name?: string;
+    /** 按名称列表精确匹配 */
     names?: string[];
+    /** 按提供商ID精确匹配 */
     providerId?: string;
+    /** 按提供商ID列表精确匹配 */
     providerIds?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
+    /** 是否支持循环调用 */
     supportLoop?: boolean;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiAgentQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiAgentQueryOrderEnum;
   };
 }
@@ -2103,6 +2181,7 @@ export interface PostApiAiAgentSessionQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiAgentSessionQueryFieldEnum {
   Title = "title",
   LastMessageAt = "lastMessageAt",
@@ -2111,57 +2190,62 @@ export enum PostApiAiAgentSessionQueryFieldEnum {
   MessageCount = "messageCount",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiAgentSessionQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** Agent会话分页查询请求体 */
 export interface PostApiAiAgentSessionQueryPayload {
+  /** Agent会话过滤条件 */
   filter?: {
+    /** 按Agent ID精确匹配 */
     agentId?: string;
+    /** 按Agent ID列表精确匹配 */
     agentIds?: string[];
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否已归档 */
     isArchived?: boolean;
+    /** 是否已置顶 */
     isPinned?: boolean;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 最后消息时间范围-结束，ISO 8601格式 */
     lastMessageAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 最后消息时间范围-开始，ISO 8601格式 */
     lastMessageAtStart?: string;
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
+    /** 按标题模糊搜索 */
     title?: string;
+    /** 按用户ID精确匹配 */
     userId?: string;
+    /** 按用户ID列表精确匹配 */
     userIds?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiAgentSessionQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiAgentSessionQueryOrderEnum;
   };
 }
@@ -2206,38 +2290,51 @@ export interface PostApiAiApiKeyQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiApiKeyQueryFieldEnum {
   CreatedAt = "createdAt",
   Name = "name",
   LastUsedAt = "lastUsedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiApiKeyQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** API密钥分页查询请求体 */
 export interface PostApiAiApiKeyQueryPayload {
+  /** API密钥过滤条件 */
   filter?: {
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否已撤销 */
     isRevoked?: boolean;
+    /** 按名称模糊搜索 */
     name?: string;
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiApiKeyQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiApiKeyQueryOrderEnum;
   };
 }
@@ -2347,37 +2444,50 @@ export interface PostApiAiMcpServerQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiMcpServerQueryFieldEnum {
   CreatedAt = "createdAt",
   Name = "name",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiMcpServerQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** MCP服务分页查询请求体 */
 export interface PostApiAiMcpServerQueryPayload {
+  /** MCP服务过滤条件 */
   filter?: {
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否公开访问 */
     isPublic?: boolean;
+    /** 按名称模糊搜索 */
     name?: string;
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiMcpServerQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiMcpServerQueryOrderEnum;
   };
 }
@@ -2601,6 +2711,7 @@ export interface PostApiAiModelQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiModelQueryFieldEnum {
   Name = "name",
   ModelId = "modelId",
@@ -2608,46 +2719,56 @@ export enum PostApiAiModelQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiModelQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** AI模型分页查询请求体 */
 export interface PostApiAiModelQueryPayload {
+  /** 模型过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 按模型标识模糊搜索 */
     modelId?: string;
+    /** 按模型标识列表精确匹配 */
     modelIds?: string[];
+    /** 按名称模糊搜索 */
     name?: string;
+    /** 按提供商ID精确匹配 */
     providerId?: string;
+    /** 按提供商ID列表精确匹配 */
     providerIds?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
+    /** 是否支持工具调用 */
     supportTools?: boolean;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiModelQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiModelQueryOrderEnum;
   };
 }
@@ -2776,48 +2897,55 @@ export interface PostApiAiProviderQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiProviderQueryFieldEnum {
   Name = "name",
   CreatedAt = "createdAt",
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiProviderQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** AI提供商分页查询请求体 */
 export interface PostApiAiProviderQueryPayload {
+  /** 提供商过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 按名称模糊搜索 */
     name?: string;
+    /** 按名称列表精确匹配 */
     names?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiProviderQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiProviderQueryOrderEnum;
   };
 }
@@ -2957,53 +3085,66 @@ export interface PostApiAiSessionMessageQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiSessionMessageQueryFieldEnum {
   MsgSeq = "msgSeq",
   CreatedAt = "createdAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiSessionMessageQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** AI会话消息分页查询请求体 */
 export interface PostApiAiSessionMessageQueryPayload {
+  /** AI会话消息过滤条件 */
   filter?: {
+    /** 按内容类型精确匹配 */
     contentType?: string;
+    /** 按内容类型列表精确匹配 */
     contentTypes?: string[];
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按完成原因精确匹配 */
     finishReason?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 消息序号范围-结束 */
     msgSeqEnd?: number;
+    /** 消息序号范围-开始 */
     msgSeqStart?: number;
+    /** 按角色精确匹配：user=用户, assistant=助手, system=系统 */
     role?: string;
+    /** 按角色列表精确匹配 */
     roles?: string[];
+    /** 按会话ID精确匹配 */
     sessionId?: string;
+    /** 按会话ID列表精确匹配 */
     sessionIds?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 50
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiSessionMessageQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiSessionMessageQueryOrderEnum;
   };
 }
@@ -3089,6 +3230,7 @@ export interface PostApiAiSessionQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiSessionQueryFieldEnum {
   Title = "title",
   LastMessageAt = "lastMessageAt",
@@ -3097,55 +3239,58 @@ export enum PostApiAiSessionQueryFieldEnum {
   MessageCount = "messageCount",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiSessionQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** AI会话分页查询请求体 */
 export interface PostApiAiSessionQueryPayload {
+  /** AI会话过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否已归档 */
     isArchived?: boolean;
+    /** 是否已置顶 */
     isPinned?: boolean;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 最后消息时间范围-结束，ISO 8601格式 */
     lastMessageAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 最后消息时间范围-开始，ISO 8601格式 */
     lastMessageAtStart?: string;
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
+    /** 按标题模糊搜索 */
     title?: string;
+    /** 按用户ID精确匹配 */
     userId?: string;
+    /** 按用户ID列表精确匹配 */
     userIds?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiSessionQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiSessionQueryOrderEnum;
   };
 }
@@ -3278,6 +3423,7 @@ export interface PostApiAiToolGroupQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiAiToolGroupQueryFieldEnum {
   Name = "name",
   OrderNum = "orderNum",
@@ -3285,44 +3431,263 @@ export enum PostApiAiToolGroupQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiAiToolGroupQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** 工具组分页查询请求体 */
 export interface PostApiAiToolGroupQueryPayload {
+  /** 工具组过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 按名称模糊搜索 */
     name?: string;
+    /** 按名称列表精确匹配 */
     names?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiAiToolGroupQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiAiToolGroupQueryOrderEnum;
   };
+}
+
+export interface PostApiAiUserMemoryData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+/** 创建用户记忆请求体 */
+export interface PostApiAiUserMemoryPayload {
+  /** 记忆数据 */
+  data: {
+    /**
+     * 访问次数
+     * @min -2147483648
+     * @max 2147483647
+     */
+    accessCount?: number;
+    /** Agent ID */
+    agentId?: string | null;
+    /** 记忆内容 */
+    content: string;
+    /** 创建时间 */
+    createdAt?: string;
+    /**
+     * 创建者
+     * @maxLength 64
+     */
+    createdBy: string;
+    /** 创建者ID */
+    createdById?: string | null;
+    /** 向量嵌入 */
+    embedding?: number[];
+    /** 过期时间 */
+    expireAt?: string | null;
+    /**
+     * 主键ID
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    id?: string;
+    /**
+     * 重要性
+     * @min -2147483648
+     * @max 2147483647
+     */
+    importance?: number;
+    /** 最后访问时间 */
+    lastAccessAt?: string | null;
+    /**
+     * 记忆类型
+     * @maxLength 16
+     */
+    memoryType?: string;
+    /** 元数据 */
+    metadata?: Record<string, any>;
+    /** 会话ID */
+    sessionId?: string | null;
+    /** 状态 */
+    status?: string | null;
+    /** 更新时间 */
+    updatedAt?: string;
+    /**
+     * 更新者
+     * @maxLength 64
+     */
+    updatedBy: string;
+    /** 更新者ID */
+    updatedById?: string | null;
+    /**
+     * 用户ID
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    userId: string;
+  };
+  /**
+   * 是否自动生成向量嵌入（需要配置嵌入服务）
+   * @default false
+   */
+  generateEmbedding?: boolean;
+}
+
+export interface PostApiAiUserMemoryQueryData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+/** 排序字段 */
+export enum PostApiAiUserMemoryQueryFieldEnum {
+  Importance = "importance",
+  AccessCount = "accessCount",
+  LastAccessAt = "lastAccessAt",
+  CreatedAt = "createdAt",
+  UpdatedAt = "updatedAt",
+  ExpireAt = "expireAt",
+}
+
+/** 排序方向：asc=升序，desc=降序 */
+export enum PostApiAiUserMemoryQueryOrderEnum {
+  Asc = "asc",
+  Desc = "desc",
+}
+
+/** 用户记忆分页查询请求体 */
+export interface PostApiAiUserMemoryQueryPayload {
+  /** 用户记忆过滤条件 */
+  filter?: {
+    /** 按Agent ID精确匹配（创建此记忆的Agent，可能是外部Agent） */
+    agentId?: string;
+    /** 按Agent ID列表精确匹配 */
+    agentIds?: string[];
+    /** 按内容模糊搜索 */
+    content?: string;
+    /** 创建时间范围-结束，ISO 8601格式 */
+    createdAtEnd?: string;
+    /** 创建时间范围-开始，ISO 8601格式 */
+    createdAtStart?: string;
+    /** 过期时间范围-结束 */
+    expireAtEnd?: string;
+    /** 过期时间范围-开始 */
+    expireAtStart?: string;
+    /** 按ID列表精确匹配 */
+    ids?: string[];
+    /** 重要性最大值（1-10） */
+    importanceMax?: number;
+    /** 重要性最小值（1-10） */
+    importanceMin?: number;
+    /** 是否包含已过期记忆，默认false */
+    includeExpired?: boolean;
+    /** 按记忆类型精确匹配：STM=短期，LTM=长期，PREFERENCE=偏好，FACT=事实，EPISODIC=情景 */
+    memoryType?: string;
+    /** 按记忆类型列表精确匹配 */
+    memoryTypes?: string[];
+    /** 按会话ID精确匹配 */
+    sessionId?: string;
+    /** 按会话ID列表精确匹配 */
+    sessionIds?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
+    status?: string;
+    /** 按用户ID精确匹配 */
+    userId?: string;
+    /** 按用户ID列表精确匹配 */
+    userIds?: string[];
+  };
+  /**
+   * 每页数量，1-100
+   * @min 1
+   * @max 100
+   * @default 20
+   */
+  limit?: number;
+  /**
+   * 分页偏移量，从0开始
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+  /** 排序配置 */
+  sort?: {
+    /** 排序字段 */
+    field: PostApiAiUserMemoryQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
+    order: PostApiAiUserMemoryQueryOrderEnum;
+  };
+}
+
+export interface PostApiAiUserMemorySemanticSearchData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+/** 语义检索请求体 */
+export interface PostApiAiUserMemorySemanticSearchPayload {
+  /**
+   * 是否考虑记忆衰减
+   * @default true
+   */
+  considerDecay?: boolean;
+  /**
+   * 是否包含已过期记忆
+   * @default false
+   */
+  includeExpired?: boolean;
+  /** 限定记忆类型 */
+  memoryTypes?: string[];
+  /**
+   * 最小相似度阈值（0-1）
+   * @min 0
+   * @max 1
+   * @default 0.5
+   */
+  minSimilarity?: number;
+  /** 检索文本，将转换为向量进行相似度匹配 */
+  query: string;
+  /**
+   * 返回最相似的K条记忆
+   * @min 1
+   * @max 50
+   * @default 10
+   */
+  topK?: number;
+  /** 用户ID */
+  userId: string;
 }
 
 export interface PostApiAuthLoginData {
@@ -3601,6 +3966,7 @@ export interface PostApiImConversationQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiImConversationQueryFieldEnum {
   Name = "name",
   LastMessageAt = "lastMessageAt",
@@ -3609,56 +3975,76 @@ export enum PostApiImConversationQueryFieldEnum {
   MemberCount = "memberCount",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiImConversationQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** IM会话分页查询请求体 */
 export interface PostApiImConversationQueryPayload {
+  /** 会话过滤条件 */
   filter?: {
     /**
+     * 创建时间范围-结束，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtEnd?: string;
     /**
+     * 创建时间范围-开始，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否静音 */
     isMuted?: boolean;
+    /** 是否置顶 */
     isTop?: boolean;
     /**
+     * 最后消息时间范围-结束，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     lastMessageAtEnd?: string;
     /**
+     * 最后消息时间范围-开始，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     lastMessageAtStart?: string;
+    /** 按会话名称模糊搜索 */
     name?: string;
+    /** 按群主ID精确匹配 */
     ownerId?: string;
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: string;
+    /** 按会话类型精确匹配：01=单聊，02=群聊 */
     type?: string;
+    /** 按会话类型列表精确匹配 */
     types?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiImConversationQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiImConversationQueryOrderEnum;
   };
 }
@@ -3909,53 +4295,74 @@ export interface PostApiImMessageQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiImMessageQueryFieldEnum {
   MsgSeq = "msgSeq",
   CreatedAt = "createdAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiImMessageQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** IM消息分页查询请求体 */
 export interface PostApiImMessageQueryPayload {
+  /** 消息过滤条件 */
   filter?: {
+    /** 按会话ID精确匹配 */
     conversationId?: string;
+    /** 按会话ID列表精确匹配 */
     conversationIds?: string[];
     /**
+     * 创建时间范围-结束，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtEnd?: string;
     /**
+     * 创建时间范围-开始，ISO 8601格式
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否已撤回 */
     isRecalled?: boolean;
+    /** 消息序号范围-结束 */
     msgSeqEnd?: number;
+    /** 消息序号范围-开始 */
     msgSeqStart?: number;
+    /** 按消息类型精确匹配：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件 */
     msgType?: string;
+    /** 按消息类型列表精确匹配 */
     msgTypes?: string[];
+    /** 按发送者ID精确匹配 */
     senderId?: string;
+    /** 按发送者ID列表精确匹配 */
     senderIds?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 50
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiImMessageQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiImMessageQueryOrderEnum;
   };
 }
@@ -4117,6 +4524,7 @@ export interface PostApiKnowledgeFavoritesCheckData {
 }
 
 export interface PostApiKnowledgeFavoritesCheckPayload {
+  /** 要检查的节点 ID 列表 */
   nodeIds: string[];
 }
 
@@ -4138,26 +4546,31 @@ export interface PostApiKnowledgeFavoritesListData {
 
 export interface PostApiKnowledgeFavoritesListPayload {
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 50
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 节点类型：folder=文件夹，file=文件 */
   type?: PostApiKnowledgeFavoritesListTypeEnum;
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeFavoritesListTypeEnum {
   Folder = "folder",
   File = "file",
 }
 
 export interface PostApiKnowledgeFavoritesPayload {
+  /** 要收藏的节点 ID */
   nodeId: string;
 }
 
@@ -4170,10 +4583,12 @@ export interface PostApiKnowledgeNodesByIdCopyData {
 }
 
 export interface PostApiKnowledgeNodesByIdCopyParams {
+  /** 节点 ID */
   id: string;
 }
 
 export interface PostApiKnowledgeNodesByIdCopyPayload {
+  /** 目标父文件夹 ID，null 表示复制到根目录 */
   targetParentId: string | null;
 }
 
@@ -4186,10 +4601,12 @@ export interface PostApiKnowledgeNodesByIdMoveData {
 }
 
 export interface PostApiKnowledgeNodesByIdMoveParams {
+  /** 节点 ID */
   id: string;
 }
 
 export interface PostApiKnowledgeNodesByIdMovePayload {
+  /** 目标父文件夹 ID，null 表示移动到根目录 */
   targetParentId: string | null;
 }
 
@@ -4201,24 +4618,35 @@ export interface PostApiKnowledgeNodesByIdPermissionsData {
   status: number;
 }
 
-/** @default "allow" */
+/**
+ * 权限效果：allow=允许，deny=拒绝
+ * @default "allow"
+ */
 export enum PostApiKnowledgeNodesByIdPermissionsEffectEnum {
   Allow = "allow",
   Deny = "deny",
 }
 
 export interface PostApiKnowledgeNodesByIdPermissionsParams {
+  /** 节点 ID */
   id: string;
 }
 
 export interface PostApiKnowledgeNodesByIdPermissionsPayload {
-  /** @default "allow" */
+  /**
+   * 权限效果：allow=允许，deny=拒绝
+   * @default "allow"
+   */
   effect?: PostApiKnowledgeNodesByIdPermissionsEffectEnum;
+  /** 权限类型：read=读取，write=写入，delete=删除，manage=管理 */
   permission: PostApiKnowledgeNodesByIdPermissionsPermissionEnum;
+  /** 主体 ID */
   subjectId: string;
+  /** 主体类型：user=用户，role=角色，dept=部门 */
   subjectType: PostApiKnowledgeNodesByIdPermissionsSubjectTypeEnum;
 }
 
+/** 权限类型：read=读取，write=写入，delete=删除，manage=管理 */
 export enum PostApiKnowledgeNodesByIdPermissionsPermissionEnum {
   Read = "read",
   Write = "write",
@@ -4226,6 +4654,7 @@ export enum PostApiKnowledgeNodesByIdPermissionsPermissionEnum {
   Manage = "manage",
 }
 
+/** 主体类型：user=用户，role=角色，dept=部门 */
 export enum PostApiKnowledgeNodesByIdPermissionsSubjectTypeEnum {
   User = "user",
   Role = "role",
@@ -4240,6 +4669,7 @@ export interface PostApiKnowledgeNodesByIdQuickShareData {
   status: number;
 }
 
+/** 共享级别：read=只读，edit=可编辑，full=完全控制 */
 export enum PostApiKnowledgeNodesByIdQuickShareLevelEnum {
   Read = "read",
   Edit = "edit",
@@ -4247,11 +4677,14 @@ export enum PostApiKnowledgeNodesByIdQuickShareLevelEnum {
 }
 
 export interface PostApiKnowledgeNodesByIdQuickShareParams {
+  /** 节点 ID */
   id: string;
 }
 
 export interface PostApiKnowledgeNodesByIdQuickSharePayload {
+  /** 共享级别：read=只读，edit=可编辑，full=完全控制 */
   level: PostApiKnowledgeNodesByIdQuickShareLevelEnum;
+  /** 目标用户 ID 列表 */
   userIds: string[];
 }
 
@@ -4264,10 +4697,12 @@ export interface PostApiKnowledgeNodesByIdRevokeShareData {
 }
 
 export interface PostApiKnowledgeNodesByIdRevokeShareParams {
+  /** 节点 ID */
   id: string;
 }
 
 export interface PostApiKnowledgeNodesByIdRevokeSharePayload {
+  /** 要撤销共享的用户 ID 列表 */
   userIds: string[];
 }
 
@@ -4280,11 +4715,15 @@ export interface PostApiKnowledgeNodesCheckExistsData {
 }
 
 export interface PostApiKnowledgeNodesCheckExistsPayload {
+  /** 要检查的名称列表 */
   names: string[];
+  /** 父文件夹 ID，null 表示根目录 */
   parentId?: string | null;
+  /** 节点类型：folder=文件夹，file=文件 */
   type?: PostApiKnowledgeNodesCheckExistsTypeEnum;
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeNodesCheckExistsTypeEnum {
   Folder = "folder",
   File = "file",
@@ -4311,22 +4750,35 @@ export interface PostApiKnowledgeNodesDeleteBatchPayload {
 }
 
 export interface PostApiKnowledgeNodesPayload {
+  /** 存储桶 */
   bucket?: string;
+  /** 颜色（文件夹） */
   color?: string;
+  /** 描述 */
   description?: string;
+  /** ETag */
   etag?: string;
+  /** 文件扩展名 */
   extension?: string;
+  /** 图标（文件夹） */
   icon?: string;
+  /** MIME 类型 */
   mimeType?: string;
   /**
+   * 节点名称
    * @minLength 1
    * @maxLength 255
    */
   name: string;
+  /** 父文件夹 ID，null 表示根目录 */
   parentId?: string | null;
+  /** 文件大小（字节） */
   size?: number;
+  /** 存储键 */
   storageKey?: string;
+  /** 节点类型：folder=文件夹，file=文件 */
   type: PostApiKnowledgeNodesTypeEnum;
+  /** 版本 ID */
   versionId?: string;
 }
 
@@ -4338,6 +4790,7 @@ export interface PostApiKnowledgeNodesQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiKnowledgeNodesQueryFieldEnum {
   Name = "name",
   Type = "type",
@@ -4347,49 +4800,58 @@ export enum PostApiKnowledgeNodesQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiKnowledgeNodesQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiKnowledgeNodesQueryPayload {
+  /** 过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 文件扩展名 */
     extension?: string;
+    /** 节点 ID 列表，批量查询 */
     ids?: string[];
+    /** 是否公开 */
     isPublic?: boolean;
+    /** 名称（模糊匹配） */
     name?: string;
+    /** 父文件夹 ID，null 表示根目录 */
     parentId?: string | null;
+    /** 节点类型：folder=文件夹，file=文件 */
     type?: PostApiKnowledgeNodesQueryTypeEnum;
+    /** 节点类型列表 */
     types?: PostApiKnowledgeNodesQueryTypesEnum[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiKnowledgeNodesQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiKnowledgeNodesQueryOrderEnum;
   };
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeNodesQueryTypeEnum {
   Folder = "folder",
   File = "file",
@@ -4410,24 +4872,29 @@ export interface PostApiKnowledgeNodesSearchData {
 
 export interface PostApiKnowledgeNodesSearchPayload {
   /**
+   * 搜索关键词
    * @minLength 1
    * @maxLength 100
    */
   keyword: string;
   /**
+   * 返回数量限制
    * @min 1
    * @max 50
    * @default 20
    */
   limit?: number;
+  /** 节点类型：folder=文件夹，file=文件 */
   type?: PostApiKnowledgeNodesSearchTypeEnum;
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeNodesSearchTypeEnum {
   Folder = "folder",
   File = "file",
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeNodesTypeEnum {
   Folder = "folder",
   File = "file",
@@ -4443,20 +4910,24 @@ export interface PostApiKnowledgeShareMySharedData {
 
 export interface PostApiKnowledgeShareMySharedPayload {
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 50
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 节点类型：folder=文件夹，file=文件 */
   type?: PostApiKnowledgeShareMySharedTypeEnum;
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeShareMySharedTypeEnum {
   Folder = "folder",
   File = "file",
@@ -4471,22 +4942,27 @@ export interface PostApiKnowledgeShareSharedWithMeData {
 }
 
 export interface PostApiKnowledgeShareSharedWithMePayload {
+  /** 文件夹 ID，用于浏览共享文件夹内容 */
   folderId?: string;
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 50
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 节点类型：folder=文件夹，file=文件 */
   type?: PostApiKnowledgeShareSharedWithMeTypeEnum;
 }
 
+/** 节点类型：folder=文件夹，file=文件 */
 export enum PostApiKnowledgeShareSharedWithMeTypeEnum {
   Folder = "folder",
   File = "file",
@@ -4501,15 +4977,21 @@ export interface PostApiKnowledgeUploadConfirmData {
 }
 
 export interface PostApiKnowledgeUploadConfirmPayload {
+  /** 文件描述 */
   description?: string;
+  /** 文件 MIME 类型 */
   mimeType: string;
   /**
+   * 文件名
    * @minLength 1
    * @maxLength 255
    */
   name: string;
+  /** 父文件夹 ID，null 表示根目录 */
   parentId?: string | null;
+  /** 文件大小（字节） */
   size: number;
+  /** 存储键 */
   storageKey: string;
 }
 
@@ -4522,17 +5004,23 @@ export interface PostApiKnowledgeUploadDirectData {
 }
 
 export interface PostApiKnowledgeUploadDirectPayload {
+  /** 文件内容（Base64 编码） */
   content: string;
+  /** 文件描述 */
   description?: string;
+  /** 文件 MIME 类型 */
   mimeType?: string;
   /**
+   * 文件名
    * @minLength 1
    * @maxLength 255
    */
   name: string;
+  /** 父文件夹 ID，null 表示根目录 */
   parentId?: string | null;
 }
 
+/** 冲突处理模式：overwrite=覆盖，newVersion=新版本，copy=复制 */
 export enum PostApiKnowledgeUploadForceConflictModeEnum {
   Overwrite = "overwrite",
   NewVersion = "newVersion",
@@ -4548,16 +5036,23 @@ export interface PostApiKnowledgeUploadForceData {
 }
 
 export interface PostApiKnowledgeUploadForcePayload {
+  /** 冲突处理模式：overwrite=覆盖，newVersion=新版本，copy=复制 */
   conflictMode: PostApiKnowledgeUploadForceConflictModeEnum;
+  /** 文件内容（Base64 编码） */
   content: string;
+  /** 文件描述 */
   description?: string;
+  /** 已存在的节点 ID（用于覆盖或新版本） */
   existingNodeId?: string;
+  /** 文件 MIME 类型 */
   mimeType?: string;
   /**
+   * 文件名
    * @minLength 1
    * @maxLength 255
    */
   name: string;
+  /** 父文件夹 ID，null 表示根目录 */
   parentId?: string | null;
 }
 
@@ -4571,11 +5066,14 @@ export interface PostApiKnowledgeUploadUrlData {
 
 export interface PostApiKnowledgeUploadUrlPayload {
   /**
+   * 文件名
    * @minLength 1
    * @maxLength 255
    */
   filename: string;
+  /** 文件 MIME 类型 */
   mimeType: string;
+  /** 父文件夹 ID，null 表示根目录 */
   parentId?: string | null;
 }
 
@@ -4588,6 +5086,7 @@ export interface PostApiKnowledgeVersionsByIdRestoreData {
 }
 
 export interface PostApiKnowledgeVersionsByIdRestoreParams {
+  /** 版本 ID */
   id: string;
 }
 
@@ -4599,47 +5098,60 @@ export interface PostApiKnowledgeVersionsQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiKnowledgeVersionsQueryFieldEnum {
   VersionNumber = "versionNumber",
   Size = "size",
   CreatedAt = "createdAt",
 }
 
+/** 排序方向 */
 export enum PostApiKnowledgeVersionsQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiKnowledgeVersionsQueryPayload {
+  /** 过滤条件 */
   filter?: {
     /**
+     * 创建时间结束
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtEnd?: string;
     /**
+     * 创建时间起始
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart?: string;
+    /** 节点 ID，单个查询 */
     nodeId?: string;
+    /** 节点 ID 列表，批量查询 */
     nodeIds?: string[];
+    /** 版本号 */
     versionNumber?: string;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiKnowledgeVersionsQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiKnowledgeVersionsQueryOrderEnum;
   };
 }
@@ -4789,6 +5301,7 @@ export interface PostApiSystemConfigQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemConfigQueryFieldEnum {
   Name = "name",
   Key = "key",
@@ -4796,44 +5309,52 @@ export enum PostApiSystemConfigQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiSystemConfigQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** 系统配置分页查询请求体 */
 export interface PostApiSystemConfigQueryPayload {
+  /** 配置过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否系统内置配置 */
     isSystem?: boolean;
+    /** 按配置键模糊搜索 */
     key?: string;
+    /** 按配置键列表精确匹配，如 ["sys.name", "sys.logo"] */
     keys?: string[];
+    /** 按配置名称模糊搜索 */
     name?: string;
+    /** 按配置名称列表精确匹配 */
     names?: string[];
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemConfigQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiSystemConfigQueryOrderEnum;
   };
 }
@@ -4875,6 +5396,8 @@ export interface PostApiSystemDepartmentBatchPayload {
     id?: string;
     /** 负责人 */
     leader?: string | null;
+    /** UUID物化路径（用于高效查询祖先/后代） */
+    materializedPath?: string;
     /**
      * 部门名称
      * @maxLength 50
@@ -4941,6 +5464,8 @@ export interface PostApiSystemDepartmentPayload {
     id?: string;
     /** 负责人 */
     leader?: string | null;
+    /** UUID物化路径（用于高效查询祖先/后代） */
+    materializedPath?: string;
     /**
      * 部门名称
      * @maxLength 50
@@ -4978,6 +5503,7 @@ export interface PostApiSystemDepartmentQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemDepartmentQueryFieldEnum {
   Name = "name",
   OrderNum = "orderNum",
@@ -4985,43 +5511,57 @@ export enum PostApiSystemDepartmentQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemDepartmentQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemDepartmentQueryPayload {
+  /** 过滤条件 */
   filter?: {
     /**
+     * 创建时间结束
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtEnd?: string;
     /**
+     * 创建时间起始
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart?: string;
+    /** 部门 ID 列表，批量查询 */
     ids?: string[];
+    /** 部门名称（模糊匹配） */
     name?: string;
+    /** 部门名称列表，批量查询 */
     names?: string[];
+    /** 父部门 ID，null 表示顶级部门 */
     parentId?: string | null;
+    /** 状态：true=启用，false=禁用 */
     status?: boolean;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemDepartmentQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemDepartmentQueryOrderEnum;
   };
 }
@@ -5206,6 +5746,7 @@ export interface PostApiSystemDictGroupQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemDictGroupQueryFieldEnum {
   Key = "key",
   Name = "name",
@@ -5213,47 +5754,55 @@ export enum PostApiSystemDictGroupQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiSystemDictGroupQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** 字典组分页查询请求体 */
 export interface PostApiSystemDictGroupQueryPayload {
+  /** 字典组过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按字典组键模糊搜索 */
     key?: string;
+    /** 按字典组键列表精确匹配 */
     keys?: string[];
+    /** 按字典组名称模糊搜索 */
     name?: string;
+    /** 按字典组名称列表精确匹配 */
     names?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: PostApiSystemDictGroupQueryStatusEnum;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemDictGroupQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiSystemDictGroupQueryOrderEnum;
   };
 }
 
+/** 按状态精确匹配：0=正常，1=禁用 */
 export enum PostApiSystemDictGroupQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -5333,6 +5882,7 @@ export interface PostApiSystemDictQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemDictQueryFieldEnum {
   Group = "group",
   Label = "label",
@@ -5341,49 +5891,59 @@ export enum PostApiSystemDictQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向：asc=升序，desc=降序 */
 export enum PostApiSystemDictQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
+/** 字典分页查询请求体 */
 export interface PostApiSystemDictQueryPayload {
+  /** 字典过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-结束，ISO 8601格式 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间范围-开始，ISO 8601格式 */
     createdAtStart?: string;
+    /** 按分组模糊搜索 */
     group?: string;
+    /** 按分组列表精确匹配 */
     groups?: string[];
+    /** 按ID列表精确匹配 */
     ids?: string[];
+    /** 是否默认值 */
     isDefault?: boolean;
+    /** 按标签模糊搜索 */
     label?: string;
+    /** 按标签列表精确匹配 */
     labels?: string[];
+    /** 按状态精确匹配：0=正常，1=禁用 */
     status?: PostApiSystemDictQueryStatusEnum;
   };
   /**
+   * 每页数量，1-100
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 分页偏移量，从0开始
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemDictQueryFieldEnum;
+    /** 排序方向：asc=升序，desc=降序 */
     order: PostApiSystemDictQueryOrderEnum;
   };
 }
 
+/** 按状态精确匹配：0=正常，1=禁用 */
 export enum PostApiSystemDictQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -5429,6 +5989,7 @@ export interface PostApiSystemJobLogQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemJobLogQueryFieldEnum {
   JobName = "jobName",
   JobGroup = "jobGroup",
@@ -5437,58 +5998,60 @@ export enum PostApiSystemJobLogQueryFieldEnum {
   CreatedAt = "createdAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemJobLogQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemJobLogQueryPayload {
+  /** 过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 日志 ID 列表，批量查询 */
     ids?: string[];
+    /** 任务分组（模糊匹配） */
     jobGroup?: string;
+    /** 任务分组列表，批量查询 */
     jobGroups?: string[];
+    /** 任务名称（模糊匹配） */
     jobName?: string;
+    /** 任务名称列表，批量查询 */
     jobNames?: string[];
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 执行开始时间结束 */
     startTimeEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 执行开始时间起始 */
     startTimeStart?: string;
+    /** 状态：0=成功，1=失败 */
     status?: PostApiSystemJobLogQueryStatusEnum;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemJobLogQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemJobLogQueryOrderEnum;
   };
 }
 
+/** 状态：0=成功，1=失败 */
 export enum PostApiSystemJobLogQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -5502,6 +6065,7 @@ export interface PostApiSystemJobQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemJobQueryFieldEnum {
   Name = "name",
   Group = "group",
@@ -5509,49 +6073,58 @@ export enum PostApiSystemJobQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemJobQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemJobQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 是否允许并发执行 */
     concurrent?: boolean;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 任务分组（模糊匹配） */
     group?: string;
+    /** 任务分组列表，批量查询 */
     groups?: string[];
+    /** 任务 ID 列表，批量查询 */
     ids?: string[];
+    /** 任务名称（模糊匹配） */
     name?: string;
+    /** 任务名称列表，批量查询 */
     names?: string[];
+    /** 状态：0=正常，1=暂停 */
     status?: PostApiSystemJobQueryStatusEnum;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemJobQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemJobQueryOrderEnum;
   };
 }
 
+/** 状态：0=正常，1=暂停 */
 export enum PostApiSystemJobQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -5573,6 +6146,7 @@ export interface PostApiSystemLoginInfoQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemLoginInfoQueryFieldEnum {
   LoginName = "loginName",
   Ipaddr = "ipaddr",
@@ -5580,57 +6154,58 @@ export enum PostApiSystemLoginInfoQueryFieldEnum {
   CreatedAt = "createdAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemLoginInfoQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemLoginInfoQueryPayload {
+  /** 过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 日志 ID 列表，批量查询 */
     ids?: string[];
+    /** IP 地址（模糊匹配） */
     ipaddr?: string;
+    /** 登录账号（模糊匹配） */
     loginName?: string;
+    /** 登录账号列表，批量查询 */
     loginNames?: string[];
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 登录时间结束 */
     loginTimeEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 登录时间起始 */
     loginTimeStart?: string;
+    /** 状态：0=成功，1=失败 */
     status?: PostApiSystemLoginInfoQueryStatusEnum;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemLoginInfoQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemLoginInfoQueryOrderEnum;
   };
 }
 
+/** 状态：0=成功，1=失败 */
 export enum PostApiSystemLoginInfoQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -5794,6 +6369,7 @@ export interface PostApiSystemMenuQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemMenuQueryFieldEnum {
   Name = "name",
   OrderNum = "orderNum",
@@ -5801,45 +6377,53 @@ export enum PostApiSystemMenuQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemMenuQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemMenuQueryPayload {
+  /** 过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 菜单 ID 列表，批量查询 */
     ids?: string[];
+    /** 菜单名称（模糊匹配） */
     name?: string;
+    /** 菜单名称列表，批量查询 */
     names?: string[];
+    /** 父级菜单 ID，null 表示顶级菜单 */
     parentId?: string | null;
+    /** 菜单类型：M=目录，C=菜单，F=按钮 */
     type?: string;
+    /** 菜单类型列表：M=目录，C=菜单，F=按钮 */
     types?: string[];
+    /** 是否可见 */
     visible?: boolean;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemMenuQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemMenuQueryOrderEnum;
   };
 }
@@ -5954,6 +6538,7 @@ export interface PostApiSystemNoticeQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemNoticeQueryFieldEnum {
   Title = "title",
   Type = "type",
@@ -5961,48 +6546,56 @@ export enum PostApiSystemNoticeQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemNoticeQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemNoticeQueryPayload {
+  /** 过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 通知 ID 列表，批量查询 */
     ids?: string[];
+    /** 状态：0=正常，1=关闭 */
     status?: PostApiSystemNoticeQueryStatusEnum;
+    /** 标题（模糊匹配） */
     title?: string;
+    /** 标题列表，批量查询 */
     titles?: string[];
+    /** 类型：1=通知，2=公告 */
     type?: string;
+    /** 类型列表：1=通知，2=公告 */
     types?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemNoticeQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemNoticeQueryOrderEnum;
   };
 }
 
+/** 状态：0=正常，1=关闭 */
 export enum PostApiSystemNoticeQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -6024,54 +6617,63 @@ export interface PostApiSystemOperationLogQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemOperationLogQueryFieldEnum {
   Title = "title",
   Name = "name",
   Time = "time",
 }
 
+/** 排序方向 */
 export enum PostApiSystemOperationLogQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemOperationLogQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 日志 ID 列表，批量查询 */
     ids?: string[];
+    /** 操作人员（模糊匹配） */
     name?: string;
+    /** 操作人员列表，批量查询 */
     names?: string[];
+    /** 状态：0=成功，1=失败 */
     status?: PostApiSystemOperationLogQueryStatusEnum;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 操作时间结束 */
     timeEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 操作时间起始 */
     timeStart?: string;
+    /** 操作模块（模糊匹配） */
     title?: string;
+    /** 操作模块列表，批量查询 */
     titles?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemOperationLogQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemOperationLogQueryOrderEnum;
   };
 }
 
+/** 状态：0=成功，1=失败 */
 export enum PostApiSystemOperationLogQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -6155,6 +6757,7 @@ export interface PostApiSystemPermissionQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemPermissionQueryFieldEnum {
   Code = "code",
   Name = "name",
@@ -6163,36 +6766,51 @@ export enum PostApiSystemPermissionQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemPermissionQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemPermissionQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 权限编码（模糊匹配） */
     code?: string;
+    /** 权限编码列表，批量查询 */
     codes?: string[];
+    /** 权限 ID 列表，批量查询 */
     ids?: string[];
+    /** 模块列表：system/ai/im/knowledge 等 */
     modules?: string[];
+    /** 权限名称（模糊匹配） */
     name?: string;
+    /** 父级权限 ID，null 表示顶级权限 */
     parentId?: string | null;
+    /** 状态：true=启用，false=禁用 */
     status?: boolean;
+    /** 权限类型列表：menu=菜单权限，button=按钮权限，api=接口权限 */
     types?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 1000
    * @default 100
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemPermissionQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemPermissionQueryOrderEnum;
   };
 }
@@ -6325,6 +6943,7 @@ export interface PostApiSystemPostQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemPostQueryFieldEnum {
   Code = "code",
   Name = "name",
@@ -6333,48 +6952,56 @@ export enum PostApiSystemPostQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemPostQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemPostQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 岗位编码（模糊匹配） */
     code?: string;
+    /** 岗位编码列表，批量查询 */
     codes?: string[];
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 岗位 ID 列表，批量查询 */
     ids?: string[];
+    /** 岗位名称（模糊匹配） */
     name?: string;
+    /** 岗位名称列表，批量查询 */
     names?: string[];
+    /** 状态：0=正常，1=禁用 */
     status?: PostApiSystemPostQueryStatusEnum;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemPostQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemPostQueryOrderEnum;
   };
 }
 
+/** 状态：0=正常，1=禁用 */
 export enum PostApiSystemPostQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
@@ -6513,37 +7140,49 @@ export interface PostApiSystemRoleDepartmentQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemRoleDepartmentQueryFieldEnum {
   RoleId = "roleId",
   DepartmentId = "departmentId",
 }
 
+/** 排序方向 */
 export enum PostApiSystemRoleDepartmentQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemRoleDepartmentQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 部门 ID */
     departmentId?: string;
+    /** 部门 ID 列表，批量查询 */
     departmentIds?: string[];
+    /** 角色 ID */
     roleId?: string;
+    /** 角色 ID 列表，批量查询 */
     roleIds?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemRoleDepartmentQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemRoleDepartmentQueryOrderEnum;
   };
 }
@@ -6606,37 +7245,49 @@ export interface PostApiSystemRoleMenuQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemRoleMenuQueryFieldEnum {
   RoleId = "roleId",
   MenuId = "menuId",
 }
 
+/** 排序方向 */
 export enum PostApiSystemRoleMenuQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemRoleMenuQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 菜单 ID */
     menuId?: string;
+    /** 菜单 ID 列表，批量查询 */
     menuIds?: string[];
+    /** 角色 ID */
     roleId?: string;
+    /** 角色 ID 列表，批量查询 */
     roleIds?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemRoleMenuQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemRoleMenuQueryOrderEnum;
   };
 }
@@ -6708,6 +7359,7 @@ export interface PostApiSystemRoleQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemRoleQueryFieldEnum {
   Name = "name",
   Key = "key",
@@ -6716,178 +7368,59 @@ export enum PostApiSystemRoleQueryFieldEnum {
   UpdatedAt = "updatedAt",
 }
 
+/** 排序方向 */
 export enum PostApiSystemRoleQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemRoleQueryPayload {
+  /** 过滤条件 */
   filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间结束 */
     createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
+    /** 创建时间起始 */
     createdAtStart?: string;
+    /** 角色 ID 列表，批量查询 */
     ids?: string[];
+    /** 角色标识（模糊匹配） */
     key?: string;
+    /** 角色标识列表，批量查询 */
     keys?: string[];
+    /** 角色名称（模糊匹配） */
     name?: string;
+    /** 角色名称列表，批量查询 */
     names?: string[];
+    /** 状态：0=正常，1=禁用 */
     status?: PostApiSystemRoleQueryStatusEnum;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemRoleQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemRoleQueryOrderEnum;
   };
 }
 
+/** 状态：0=正常，1=禁用 */
 export enum PostApiSystemRoleQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
-}
-
-export interface PostApiSystemTokenData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PostApiSystemTokenPayload {
-  data: {
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 过期时间 */
-    exp: string;
-    /** 签发时间 */
-    iat?: string;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 是否已撤销 */
-    isRevoked?: boolean;
-    /**
-     * 令牌类型
-     * @maxLength 64
-     */
-    jti: string;
-    /** 撤销时间 */
-    revokedAt?: string | null;
-    /** 权限范围 */
-    scopes: string[];
-    /**
-     * 令牌值
-     * @maxLength 128
-     */
-    sub: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-    /**
-     * 授权用户ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    userId: string;
-  };
-}
-
-export interface PostApiSystemTokenQueryData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export enum PostApiSystemTokenQueryFieldEnum {
-  CreatedAt = "createdAt",
-  Exp = "exp",
-  Iat = "iat",
-}
-
-export enum PostApiSystemTokenQueryOrderEnum {
-  Asc = "asc",
-  Desc = "desc",
-}
-
-export interface PostApiSystemTokenQueryPayload {
-  filter?: {
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    createdAtStart?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    expEnd?: string;
-    /**
-     * @format date-time
-     * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
-     */
-    expStart?: string;
-    ids?: string[];
-    isRevoked?: boolean;
-    userId?: string;
-    userIds?: string[];
-  };
-  /**
-   * @min 1
-   * @max 100
-   * @default 20
-   */
-  limit?: number;
-  /**
-   * @min 0
-   * @max 9007199254740991
-   * @default 0
-   */
-  offset?: number;
-  sort?: {
-    field: PostApiSystemTokenQueryFieldEnum;
-    order: PostApiSystemTokenQueryOrderEnum;
-  };
 }
 
 export interface PostApiSystemUserBatchData {
@@ -6976,37 +7509,49 @@ export interface PostApiSystemUserPostQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemUserPostQueryFieldEnum {
   UserId = "userId",
   PostId = "postId",
 }
 
+/** 排序方向 */
 export enum PostApiSystemUserPostQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemUserPostQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 岗位 ID */
     postId?: string;
+    /** 岗位 ID 列表，批量查询 */
     postIds?: string[];
+    /** 用户 ID */
     userId?: string;
+    /** 用户 ID 列表，批量查询 */
     userIds?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemUserPostQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemUserPostQueryOrderEnum;
   };
 }
@@ -7019,6 +7564,7 @@ export interface PostApiSystemUserQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemUserQueryFieldEnum {
   LoginName = "loginName",
   Name = "name",
@@ -7027,58 +7573,79 @@ export enum PostApiSystemUserQueryFieldEnum {
   LoginDate = "loginDate",
 }
 
+/** 排序方向 */
 export enum PostApiSystemUserQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemUserQueryPayload {
+  /** 过滤条件 */
   filter?: {
     /**
+     * 创建时间结束
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtEnd: string;
     /**
+     * 创建时间起始
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     createdAtStart: string;
+    /** 部门 ID */
     deptId: string;
+    /** 邮箱（模糊匹配） */
     email: string;
+    /** 用户 ID 列表，批量查询 */
     ids: string[];
     /**
+     * 最后登录时间结束
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     loginDateEnd: string;
     /**
+     * 最后登录时间起始
      * @format date-time
      * @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$
      */
     loginDateStart: string;
+    /** 登录名（模糊匹配） */
     loginName: string;
+    /** 登录名列表，批量查询 */
     loginNames: string[];
+    /** 用户名（模糊匹配） */
     name: string;
+    /** 手机号（模糊匹配） */
     phonenumber: string;
+    /** 性别：0=男，1=女，2=未知 */
     sex: string;
+    /** 状态：0=正常，1=禁用 */
     status: string;
+    /** 用户类型：00=系统管理员，01=普通用户 */
     userType: string;
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemUserQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemUserQueryOrderEnum;
   };
 }
@@ -7141,51 +7708,169 @@ export interface PostApiSystemUserRoleQueryData {
   status: number;
 }
 
+/** 排序字段 */
 export enum PostApiSystemUserRoleQueryFieldEnum {
   UserId = "userId",
   RoleId = "roleId",
 }
 
+/** 排序方向 */
 export enum PostApiSystemUserRoleQueryOrderEnum {
   Asc = "asc",
   Desc = "desc",
 }
 
 export interface PostApiSystemUserRoleQueryPayload {
+  /** 过滤条件 */
   filter?: {
+    /** 角色 ID */
     roleId?: string;
+    /** 角色 ID 列表，批量查询 */
     roleIds?: string[];
+    /** 用户 ID */
     userId?: string;
+    /** 用户 ID 列表，批量查询 */
     userIds?: string[];
   };
   /**
+   * 每页数量
    * @min 1
    * @max 100
    * @default 20
    */
   limit?: number;
   /**
+   * 偏移量
    * @min 0
    * @max 9007199254740991
    * @default 0
    */
   offset?: number;
+  /** 排序配置 */
   sort?: {
+    /** 排序字段 */
     field: PostApiSystemUserRoleQueryFieldEnum;
+    /** 排序方向 */
     order: PostApiSystemUserRoleQueryOrderEnum;
   };
+}
+
+export interface PostApiWsMessageGroupData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiWsMessageGroupPayload {
+  atUserIds?: string[];
+  content: any;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  conversationId: string;
+  /** @default "01" */
+  msgType?: string;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  replyToId?: string;
+}
+
+export interface PostApiWsMessagePrivateData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiWsMessagePrivatePayload {
+  content: any;
+  /** @default "01" */
+  msgType?: string;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  replyToId?: string;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  targetUserId: string;
+}
+
+export interface PostApiWsMessageSendData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiWsMessageSendPayload {
+  atUserIds?: string[];
+  content: any;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  conversationId: string;
+  /** @default "01" */
+  msgType?: string;
+  /**
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  replyToId?: string;
+}
+
+export interface PostApiWsNotificationBroadcastData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiWsNotificationBroadcastPayload {
+  content: string;
+  data?: Record<string, any>;
+  title: string;
+  /** @default "info" */
+  type?: PostApiWsNotificationBroadcastTypeEnum;
+  userIds: string[];
+}
+
+/** @default "info" */
+export enum PostApiWsNotificationBroadcastTypeEnum {
+  Info = "info",
+  Success = "success",
+  Warning = "warning",
+  Error = "error",
+}
+
+export interface PostApiWsUsersCheckOnlineData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiWsUsersCheckOnlinePayload {
+  userIds: string[];
 }
 
 export interface PostMcpByIdParams {
   id: string;
 }
 
-export interface PostMcpByIdPayload {
-  id: string | number;
-  jsonrpc: "2.0";
-  method: string;
-  params?: any;
-}
+export type PostMcpByIdPayload = any;
 
 export interface PutApiAiAgentBatchData {
   data: any;
@@ -8089,6 +8774,94 @@ export interface PutApiAiToolGroupByIdPayload {
   };
 }
 
+export interface PutApiAiUserMemoryByIdData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PutApiAiUserMemoryByIdParams {
+  /** 记忆ID */
+  id: string;
+}
+
+/** 更新用户记忆请求体 */
+export interface PutApiAiUserMemoryByIdPayload {
+  /** 更新数据 */
+  data: {
+    /**
+     * 访问次数
+     * @min -2147483648
+     * @max 2147483647
+     */
+    accessCount?: number;
+    /** Agent ID */
+    agentId?: string | null;
+    /** 记忆内容 */
+    content?: string;
+    /** 创建时间 */
+    createdAt?: string;
+    /**
+     * 创建者
+     * @maxLength 64
+     */
+    createdBy?: string;
+    /** 创建者ID */
+    createdById?: string | null;
+    /** 向量嵌入 */
+    embedding?: number[];
+    /** 过期时间 */
+    expireAt?: string | null;
+    /**
+     * 主键ID
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    id?: string;
+    /**
+     * 重要性
+     * @min -2147483648
+     * @max 2147483647
+     */
+    importance?: number;
+    /** 最后访问时间 */
+    lastAccessAt?: string | null;
+    /**
+     * 记忆类型
+     * @maxLength 16
+     */
+    memoryType?: string;
+    /** 元数据 */
+    metadata?: Record<string, any>;
+    /** 会话ID */
+    sessionId?: string | null;
+    /** 状态 */
+    status?: string | null;
+    /** 更新时间 */
+    updatedAt?: string;
+    /**
+     * 更新者
+     * @maxLength 64
+     */
+    updatedBy?: string;
+    /** 更新者ID */
+    updatedById?: string | null;
+    /**
+     * 用户ID
+     * @format uuid
+     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+     */
+    userId?: string;
+  };
+  /**
+   * 是否重新生成向量嵌入
+   * @default false
+   */
+  regenerateEmbedding?: boolean;
+}
+
 export interface PutApiAuthPasswordData {
   data: null;
   message: string;
@@ -8390,20 +9163,27 @@ export interface PutApiKnowledgeNodesByIdParams {
 }
 
 export interface PutApiKnowledgeNodesByIdPayload {
+  /** 颜色（文件夹） */
   color?: string | null;
+  /** 描述 */
   description?: string | null;
+  /** 图标（文件夹） */
   icon?: string | null;
+  /** 是否公开 */
   isPublic?: boolean;
   /**
+   * 节点名称
    * @minLength 1
    * @maxLength 255
    */
   name?: string;
   /**
+   * 排序序号
    * @min -9007199254740991
    * @max 9007199254740991
    */
   orderNum?: number;
+  /** 标签列表 */
   tags?: string[];
 }
 
@@ -8415,26 +9195,38 @@ export interface PutApiKnowledgeNodesByIdPermissionsData {
   status: number;
 }
 
-/** @default "allow" */
+/**
+ * 权限效果：allow=允许，deny=拒绝
+ * @default "allow"
+ */
 export enum PutApiKnowledgeNodesByIdPermissionsEffectEnum {
   Allow = "allow",
   Deny = "deny",
 }
 
 export interface PutApiKnowledgeNodesByIdPermissionsParams {
+  /** 节点 ID */
   id: string;
 }
 
 export interface PutApiKnowledgeNodesByIdPermissionsPayload {
+  /** 权限条目列表 */
   permissions: {
-    /** @default "allow" */
+    /**
+     * 权限效果：allow=允许，deny=拒绝
+     * @default "allow"
+     */
     effect?: PutApiKnowledgeNodesByIdPermissionsEffectEnum;
+    /** 权限类型：read=读取，write=写入，delete=删除，manage=管理 */
     permission: PutApiKnowledgeNodesByIdPermissionsPermissionEnum;
+    /** 主体 ID */
     subjectId: string;
+    /** 主体类型：user=用户，role=角色，dept=部门 */
     subjectType: PutApiKnowledgeNodesByIdPermissionsSubjectTypeEnum;
   }[];
 }
 
+/** 权限类型：read=读取，write=写入，delete=删除，manage=管理 */
 export enum PutApiKnowledgeNodesByIdPermissionsPermissionEnum {
   Read = "read",
   Write = "write",
@@ -8442,6 +9234,7 @@ export enum PutApiKnowledgeNodesByIdPermissionsPermissionEnum {
   Manage = "manage",
 }
 
+/** 主体类型：user=用户，role=角色，dept=部门 */
 export enum PutApiKnowledgeNodesByIdPermissionsSubjectTypeEnum {
   User = "user",
   Role = "role",
@@ -8457,10 +9250,12 @@ export interface PutApiKnowledgeNodesByIdTextData {
 }
 
 export interface PutApiKnowledgeNodesByIdTextParams {
+  /** 文件节点 ID */
   id: string;
 }
 
 export interface PutApiKnowledgeNodesByIdTextPayload {
+  /** 要保存的文本内容 */
   content: string;
 }
 
@@ -8473,9 +9268,12 @@ export interface PutApiKnowledgeNodesOrderData {
 }
 
 export interface PutApiKnowledgeNodesOrderPayload {
+  /** 排序项列表 */
   items: {
+    /** 节点 ID */
     id: string;
     /**
+     * 排序序号
      * @min -9007199254740991
      * @max 9007199254740991
      */
@@ -8665,6 +9463,8 @@ export interface PutApiSystemDepartmentBatchPayload {
     id?: string;
     /** 负责人 */
     leader?: string | null;
+    /** UUID物化路径（用于高效查询祖先/后代） */
+    materializedPath?: string;
     /**
      * 部门名称
      * @maxLength 50
@@ -8736,6 +9536,8 @@ export interface PutApiSystemDepartmentByIdPayload {
     id?: string;
     /** 负责人 */
     leader?: string | null;
+    /** UUID物化路径（用于高效查询祖先/后代） */
+    materializedPath?: string;
     /**
      * 部门名称
      * @maxLength 50
@@ -9673,73 +10475,6 @@ export interface PutApiSystemRoleMenuRoleByRoleIdPayload {
   menuIds: string[];
 }
 
-export interface PutApiSystemTokenByIdData {
-  data: any;
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiSystemTokenByIdParams {
-  id: string;
-}
-
-export interface PutApiSystemTokenByIdPayload {
-  data: {
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /** 过期时间 */
-    exp?: string;
-    /** 签发时间 */
-    iat?: string;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 是否已撤销 */
-    isRevoked?: boolean;
-    /**
-     * 令牌类型
-     * @maxLength 64
-     */
-    jti?: string;
-    /** 撤销时间 */
-    revokedAt?: string | null;
-    /** 权限范围 */
-    scopes?: string[];
-    /**
-     * 令牌值
-     * @maxLength 128
-     */
-    sub?: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-    /**
-     * 授权用户ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    userId?: string;
-  };
-}
-
 export interface PutApiSystemUserBatchData {
   data: any;
   /** @default "ok" */
@@ -9776,6 +10511,7 @@ export interface PutApiSystemUserRoleUserByUserIdPayload {
   roleIds: string[];
 }
 
+/** 主体类型：user=用户，role=角色，dept=部门 */
 export enum SubjectTypeEnum {
   User = "user",
   Role = "role",
@@ -9789,13 +10525,11 @@ export enum TypeEnum {
 
 export namespace Mcp {
   /**
-   * @description Get MCP server information for discovery
-   * @tags mcp
-   * @name GetMcpById
-   * @summary Get MCP Server Info
-   * @request GET:/mcp/{id}
+   * No description
+   * @name DeleteMcpById
+   * @request DELETE:/mcp/{id}
    */
-  export namespace GetMcpById {
+  export namespace DeleteMcpById {
     export type RequestParams = {
       id: string;
     };
@@ -9806,10 +10540,36 @@ export namespace Mcp {
   }
 
   /**
-   * @description Handle MCP protocol JSON-RPC requests
-   * @tags mcp
+   * No description
+   * @name GetMcp
+   * @request GET:/mcp
+   */
+  export namespace GetMcp {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * No description
+   * @name GetMcpByIdInfo
+   * @request GET:/mcp/{id}/info
+   */
+  export namespace GetMcpByIdInfo {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * No description
    * @name PostMcpById
-   * @summary MCP JSON-RPC Endpoint
    * @request POST:/mcp/{id}
    */
   export namespace PostMcpById {
@@ -9843,7 +10603,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除单条Agent消息
+   * @description 根据ID删除单条Agent消息，并更新会话统计。 **参数说明：** - id: 消息UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 自动更新会话的 messageCount **返回值：** - success: true=删除成功，false=消息不存在 **注意事项：** - 删除消息不会重新排列其他消息的 msgSeq - 如需删除某条消息及之后的所有消息，使用 deleteFromSeq **示例：** DELETE /api/ai/agent-message/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, agentMessage
    * @name DeleteApiAiAgentMessageById
    * @summary 删除Agent消息
@@ -9861,7 +10621,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 删除会话中指定msgSeq及之后的所有消息
+   * @description 删除会话中指定 msgSeq 及之后的所有消息，用于"重新生成"功能。 **路径参数：** - sessionId: 会话UUID - msgSeq: 起始消息序号（包含） **删除行为：** - 删除 msgSeq >= 指定值的所有消息 - 更新会话的 messageCount 和 lastMessageAt **返回值：** - deletedCount: 删除的消息数量 **使用场景：** 1. 用户点击"重新生成"，删除AI回复及之后的消息 2. 回退到某个历史节点重新对话 3. 清理错误的对话内容 **示例：** DELETE /api/ai/agent-message/from-seq/session-uuid/10 （删除 msgSeq >= 10 的所有消息）
    * @tags ai, agentMessage
    * @name DeleteApiAiAgentMessageFromSeqBySessionIdByMsgSeq
    * @summary 删除指定序号及之后的消息
@@ -9885,7 +10645,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID软删除Agent会话
+   * @description 根据ID软删除Agent会话（逻辑删除，数据保留）。 **参数说明：** - id: 会话UUID **删除行为：** - 软删除：设置 deletedAt、deletedBy、deletedById - 数据保留在数据库中 - 查询时自动过滤已删除记录 **返回值：** - true: 删除成功 - false: 会话不存在或已删除 **注意事项：** - 删除会话后，关联的消息记录仍然保留 - 如需彻底清理，需要单独删除消息 **示例：** DELETE /api/ai/agent-session/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, agentSession
    * @name DeleteApiAiAgentSessionById
    * @summary 删除Agent会话
@@ -9903,7 +10663,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除API密钥
+   * @description 根据ID删除API密钥（物理删除）。 **路径参数：** - id: API密钥的UUID **注意事项：** - 删除后无法恢复 - 会同时删除关联的MCP服务权限配置 - 建议先撤销再删除，或直接撤销而不删除（保留审计记录） **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/api-key/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, apiKey
    * @name DeleteApiAiApiKeyById
    * @summary 删除API密钥
@@ -9921,7 +10681,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除MCP服务
+   * @description 根据ID删除单个MCP服务（物理删除）。 **路径参数：** - id: MCP服务的UUID **注意事项：** - 删除后无法恢复 - 关联的API Key权限配置会失效 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/mcp-server/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, mcpServer
    * @name DeleteApiAiMcpServerById
    * @summary 删除MCP服务
@@ -9939,7 +10699,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除AI模型
+   * @description 根据ID删除单个AI模型（物理删除）。 **路径参数：** - id: 模型的UUID **注意事项：** - 删除后无法恢复 - 如果模型正在被使用（如智能体引用），建议先禁用而非删除 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/model/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, model
    * @name DeleteApiAiModelById
    * @summary 删除AI模型
@@ -9957,7 +10717,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除AI提供商
+   * @description 根据ID删除单个AI提供商（物理删除）。 **路径参数：** - id: 提供商的UUID **注意事项：** - 删除后无法恢复 - 如果提供商下有关联的模型，需要先删除或迁移模型 - 建议先禁用而非直接删除 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/provider/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, provider
    * @name DeleteApiAiProviderById
    * @summary 删除AI提供商
@@ -9975,7 +10735,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 软删除AI会话
+   * @description 软删除AI会话。 **路径参数：** - id: 会话的UUID **注意事项：** - 软删除，数据保留但标记为已删除 - 会话下的消息不会被删除，但会话不再显示 **返回：** - success: true 表示删除成功 **示例：** DELETE /api/ai/session/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, aiSession
    * @name DeleteApiAiSessionById
    * @summary 删除AI会话
@@ -9993,7 +10753,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 删除会话中指定msgSeq及之后的所有消息
+   * @description 删除会话中指定msgSeq及之后的所有消息，用于重新生成回复。 **路径参数：** - sessionId: 会话的UUID - msgSeq: 起始消息序号 **使用场景：** - 用户对AI回复不满意，想要重新生成 - 删除某条消息及其后续所有消息 **自动处理：** - 更新会话的 messageCount、lastMessageAt、tokenUsage **示例：** DELETE /api/ai/session-message/from-seq/session-uuid/10 （删除序号>=10的所有消息） **返回：** - deletedCount: 删除的消息数量
    * @tags ai, aiSessionMessage
    * @name DeleteApiAiSessionMessageFromSeqBySessionIdByMsgSeq
    * @summary 删除指定序号及之后的消息
@@ -10017,7 +10777,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID删除工具组
+   * @description 根据ID物理删除工具组。 **示例：** DELETE /api/ai/tool-group/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, toolGroup
    * @name DeleteApiAiToolGroupById
    * @summary 删除工具组
@@ -10032,6 +10792,25 @@ export namespace Ai {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = DeleteApiAiToolGroupByIdData;
+  }
+
+  /**
+   * @description 软删除用户记忆（设置状态为禁用）
+   * @tags ai, memory, delete
+   * @name DeleteApiAiUserMemoryById
+   * @summary 删除用户记忆
+   * @request DELETE:/api/ai/user-memory/{id}
+   * @response `200` `DeleteApiAiUserMemoryByIdData` Response for status 200
+   */
+  export namespace DeleteApiAiUserMemoryById {
+    export type RequestParams = {
+      /** 记忆ID */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiAiUserMemoryByIdData;
   }
 
   /**
@@ -10053,7 +10832,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个Agent消息
+   * @description 根据主键ID查询单个Agent消息详情。 **参数说明：** - id: 消息的UUID主键 **返回值：** - 成功：返回消息完整信息（id, sessionId, role, content, contentType, tokenUsage, finishReason等） - 未找到：返回 null **使用场景：** 1. 查看消息详情 2. 获取消息的Token使用情况 3. 验证消息是否存在 **示例：** GET /api/ai/agent-message/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, agentMessage
    * @name GetApiAiAgentMessageById
    * @summary 根据ID查询Agent消息
@@ -10071,7 +10850,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取指定会话的消息历史
+   * @description 获取指定会话的消息历史，支持分页加载更早的消息。 **路径参数：** - sessionId: 会话UUID **查询参数：** - limit: 返回消息数量，1-200，默认50 - beforeSeq: 获取此序号之前的消息（用于加载更早的历史） **返回值：** - 消息数组，按 msgSeq 升序排列 **使用场景：** 1. 进入会话时加载最近消息 2. 滚动加载更早的历史消息 3. 获取上下文用于AI对话 **示例：** ``` GET /api/ai/agent-message/history/session-uuid?limit=50 GET /api/ai/agent-message/history/session-uuid?limit=50&beforeSeq=100 ```
    * @tags ai, agentMessage
    * @name GetApiAiAgentMessageHistoryBySessionId
    * @summary 获取会话历史
@@ -10101,7 +10880,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取Agent消息表的JSON Schema
+   * @description 获取Agent消息表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成消息编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags ai, agentMessage
    * @name GetApiAiAgentMessageSchema
    * @summary 获取Agent消息Schema
@@ -10133,7 +10912,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个Agent会话
+   * @description 根据主键ID查询单个Agent会话详情。 **参数说明：** - id: 会话的UUID主键 **返回值：** - 成功：返回会话完整信息（id, agentId, userId, title, messageCount, tokenUsage, lastMessageAt等） - 未找到或已删除：返回 null **使用场景：** 1. 进入会话详情页 2. 获取会话的统计信息（消息数、Token使用量） 3. 验证会话是否存在 **示例：** GET /api/ai/agent-session/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, agentSession
    * @name GetApiAiAgentSessionById
    * @summary 根据ID查询Agent会话
@@ -10151,7 +10930,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取Agent会话表的JSON Schema
+   * @description 获取Agent会话表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成会话编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags ai, agentSession
    * @name GetApiAiAgentSessionSchema
    * @summary 获取Agent会话Schema
@@ -10167,7 +10946,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个API密钥
+   * @description 根据API密钥ID获取详情，包含关联的MCP服务ID列表。URL参数id为API密钥UUID。返回null表示不存在。
    * @tags ai, apiKey
    * @name GetApiAiApiKeyById
    * @summary 根据ID查询API密钥
@@ -10185,7 +10964,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取API密钥表的JSON Schema
+   * @description 获取API密钥表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags ai, apiKey
    * @name GetApiAiApiKeySchema
    * @summary 获取API密钥Schema
@@ -10201,7 +10980,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个MCP服务
+   * @description 根据主键ID查询单个MCP服务的详细信息。 **路径参数：** - id: MCP服务的UUID **返回：** - 找到时返回完整的MCP服务对象 - 未找到时返回 null **示例：** GET /api/ai/mcp-server/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, mcpServer
    * @name GetApiAiMcpServerById
    * @summary 根据ID查询MCP服务
@@ -10219,7 +10998,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取MCP服务的配置JSON，用于集成到AI工具
+   * @description 获取MCP服务的配置JSON，用于集成到AI工具（如Claude Desktop、Cursor等）。 **路径参数：** - id: MCP服务的UUID **返回：** - endpoint: MCP服务端点URL - config: 配置对象，可直接用于AI工具配置 - configJson: 格式化的JSON字符串 **使用方式：** 将返回的 configJson 复制到AI工具的MCP配置文件中。 如果服务不是公开的，需要替换 <YOUR_API_KEY> 为实际的API Key。 **示例响应：** ```json { "endpoint": "http://localhost:3030/mcp/xxx-uuid", "config": { "mcpServers": { "weather-service": { "url": "http://localhost:3030/mcp/xxx-uuid", "headers": { "Authorization": "Bearer <YOUR_API_KEY>" } } } }, "configJson": "..." } ```
    * @tags ai, mcpServer
    * @name GetApiAiMcpServerByIdConfig
    * @summary 获取MCP配置
@@ -10237,7 +11016,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取MCP服务表的JSON Schema
+   * @description 获取MCP服务表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags ai, mcpServer
    * @name GetApiAiMcpServerSchema
    * @summary 获取MCP服务Schema
@@ -10253,7 +11032,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个AI模型
+   * @description 根据主键ID查询单个AI模型的详细信息。 **路径参数：** - id: 模型的UUID **返回：** - 找到时返回完整的模型对象 - 未找到时返回 null **示例：** GET /api/ai/model/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, model
    * @name GetApiAiModelById
    * @summary 根据ID查询AI模型
@@ -10271,7 +11050,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取AI模型表的JSON Schema
+   * @description 获取AI模型表的JSON Schema定义，用于动态表单生成或数据验证。 **返回：** JSON Schema 对象，包含所有字段的类型定义 **使用场景：** - 前端动态生成表单 - API文档生成 - 数据验证
    * @tags ai, model
    * @name GetApiAiModelSchema
    * @summary 获取AI模型Schema
@@ -10287,7 +11066,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个AI提供商
+   * @description 根据主键ID查询单个AI提供商的详细信息。 **路径参数：** - id: 提供商的UUID **返回：** - 找到时返回完整的提供商对象（包含 baseUrl, token 等敏感信息） - 未找到时返回 null **示例：** GET /api/ai/provider/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, provider
    * @name GetApiAiProviderById
    * @summary 根据ID查询AI提供商
@@ -10305,7 +11084,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取AI提供商表的JSON Schema
+   * @description 获取AI提供商表的JSON Schema定义，用于动态表单生成或数据验证。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags ai, provider
    * @name GetApiAiProviderSchema
    * @summary 获取AI提供商Schema
@@ -10321,7 +11100,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个AI会话
+   * @description 根据主键ID查询单个AI会话的详细信息。 **路径参数：** - id: 会话的UUID **返回：** - 找到时返回完整的会话对象（包含消息统计、token使用量等） - 未找到或已删除时返回 null **示例：** GET /api/ai/session/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, aiSession
    * @name GetApiAiSessionById
    * @summary 根据ID查询AI会话
@@ -10339,7 +11118,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个AI会话消息
+   * @description 根据主键ID查询单条AI会话消息的详细信息。 **路径参数：** - id: 消息的UUID **返回：** - 找到时返回完整的消息对象（包含内容、token使用量等） - 未找到时返回 null **示例：** GET /api/ai/session-message/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, aiSessionMessage
    * @name GetApiAiSessionMessageById
    * @summary 根据ID查询AI会话消息
@@ -10357,7 +11136,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取指定会话的消息历史
+   * @description 获取指定会话的消息历史，支持分页加载更早的消息。 **路径参数：** - sessionId: 会话的UUID **查询参数：** - limit: 返回消息数量，1-200，默认50 - beforeSeq: 获取此序号之前的消息（用于加载更早的历史） **返回：** 消息数组，按序号升序排列 **使用场景：** 1. 初始加载会话消息 2. 滚动加载更早的历史消息 **示例：** ``` GET /api/ai/session-message/history/session-uuid?limit=50 GET /api/ai/session-message/history/session-uuid?limit=20&beforeSeq=100 ```
    * @tags ai, aiSessionMessage
    * @name GetApiAiSessionMessageHistoryBySessionId
    * @summary 获取会话历史
@@ -10387,7 +11166,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取AI会话消息表的JSON Schema
+   * @description 获取AI会话消息表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags ai, aiSessionMessage
    * @name GetApiAiSessionMessageSchema
    * @summary 获取AI会话消息Schema
@@ -10403,7 +11182,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取AI会话表的JSON Schema
+   * @description 获取AI会话表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags ai, aiSession
    * @name GetApiAiSessionSchema
    * @summary 获取AI会话Schema
@@ -10419,7 +11198,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据主键ID查询单个工具组
+   * @description 根据主键ID查询单个工具组详情。 **参数说明：** - id: 工具组的UUID主键 **返回值：** - 成功：返回工具组完整信息 - 未找到：返回 null **示例：** GET /api/ai/tool-group/550e8400-e29b-41d4-a716-446655440000
    * @tags ai, toolGroup
    * @name GetApiAiToolGroupById
    * @summary 根据ID查询工具组
@@ -10437,7 +11216,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 获取工具组表的JSON Schema
+   * @description 获取工具组表的JSON Schema定义。
    * @tags ai, toolGroup
    * @name GetApiAiToolGroupSchema
    * @summary 获取工具组Schema
@@ -10450,6 +11229,25 @@ export namespace Ai {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiAiToolGroupSchemaData;
+  }
+
+  /**
+   * @description 根据ID查询单条用户记忆详情
+   * @tags ai, memory, query
+   * @name GetApiAiUserMemoryById
+   * @summary 查询用户记忆详情
+   * @request GET:/api/ai/user-memory/{id}
+   * @response `200` `GetApiAiUserMemoryByIdData` Response for status 200
+   */
+  export namespace GetApiAiUserMemoryById {
+    export type RequestParams = {
+      /** 记忆ID */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiUserMemoryByIdData;
   }
 
   /**
@@ -10485,7 +11283,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单条Agent消息
+   * @description 创建单条Agent消息记录，自动分配消息序号并更新会话统计。 **必填字段：** - sessionId: 所属会话ID - role: 消息角色，"user" | "assistant" | "system" | "tool" - content: 消息内容 **可选字段：** - contentType: 内容类型，默认 "text" - tokenUsage: Token使用统计 { totalTokens, inputTokens, outputTokens } - finishReason: 完成原因，如 "stop"、"length" - metadata: 元数据 **自动处理：** - msgSeq: 自动分配递增序号 - 更新会话的 messageCount、lastMessageAt、tokenUsage **使用场景：** 1. 用户发送消息 2. AI回复消息 3. 系统消息 **示例：** ```json { "data": { "sessionId": "session-uuid", "role": "user", "content": "你好，请帮我分析这段代码", "contentType": "text" } } ```
    * @tags ai, agentMessage
    * @name PostApiAiAgentMessage
    * @summary 创建Agent消息
@@ -10501,7 +11299,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 批量创建Agent消息
+   * @description 批量创建Agent消息，自动分配递增序号并更新会话统计。 **参数说明：** - sessionId: 目标会话ID - messages: 消息数组（不需要包含 sessionId 和 msgSeq） **自动处理：** - 为每条消息分配递增的 msgSeq - 更新会话的 messageCount、lastMessageAt、tokenUsage **使用场景：** 1. 导入历史对话 2. 一次性添加多轮对话 3. 批量添加系统消息 **示例：** ```json { "sessionId": "session-uuid", "messages": [ { "role": "user", "content": "你好" }, { "role": "assistant", "content": "你好！有什么可以帮助你的？" } ] } ```
    * @tags ai, agentMessage
    * @name PostApiAiAgentMessageBatch
    * @summary 批量创建Agent消息
@@ -10517,7 +11315,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询Agent消息列表
+   * @description 分页查询Agent消息列表。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - sessionId: 按会话ID过滤（获取某会话的所有消息） - sessionIds: 按多个会话ID过滤 - role: 按角色过滤，"user" | "assistant" | "system" | "tool" - roles: 按多个角色过滤 - contentType: 按内容类型过滤 - finishReason: 按完成原因过滤，如 "stop"、"length" - msgSeqStart/msgSeqEnd: 消息序号范围 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: msgSeq | createdAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认50 **使用场景：** 1. 获取会话的消息列表：filter.sessionId = "xxx" 2. 只获取用户消息：filter.role = "user" 3. 按消息序号排序：sort = { field: "msgSeq", order: "asc" } **示例：** ```json { "filter": { "sessionId": "xxx", "roles": ["user", "assistant"] }, "sort": { "field": "msgSeq", "order": "asc" }, "offset": 0, "limit": 50 } ```
    * @tags ai, agentMessage
    * @name PostApiAiAgentMessageQuery
    * @summary 分页查询Agent消息
@@ -10549,7 +11347,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个Agent会话
+   * @description 创建单个Agent会话记录。 **必填字段：** - agentId: 关联的Agent ID - userId: 用户ID **可选字段：** - title: 会话标题（可后续根据首条消息自动生成） - status: 状态 - isArchived: 是否归档，默认 false - isPinned: 是否置顶，默认 false - metadata: 元数据（JSON对象） **自动初始化字段：** - messageCount: 0 - tokenUsage: { totalTokens: 0, promptTokens: 0, completionTokens: 0 } **使用场景：** 1. 用户开始新对话时创建会话 2. 从Agent详情页发起对话 **示例：** ```json { "data": { "agentId": "agent-uuid", "userId": "user-uuid", "title": "新对话" } } ```
    * @tags ai, agentSession
    * @name PostApiAiAgentSession
    * @summary 创建Agent会话
@@ -10565,7 +11363,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询Agent会话列表
+   * @description 分页查询Agent会话列表，用于管理用户与AI Agent的对话会话。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - agentId: 按单个Agent ID过滤 - agentIds: 按多个Agent ID过滤 - userId: 按单个用户ID过滤（查看某用户的所有会话） - userIds: 按多个用户ID过滤 - title: 按会话标题模糊搜索 - status: 按状态过滤 - isArchived: 是否已归档，true/false - isPinned: 是否已置顶，true/false - lastMessageAtStart/lastMessageAtEnd: 最后消息时间范围 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: title | lastMessageAt | createdAt | updatedAt | messageCount - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取当前用户的会话列表：filter.userId = "当前用户ID" 2. 获取置顶会话：filter.isPinned = true 3. 按最后消息时间排序：sort = { field: "lastMessageAt", order: "desc" } **示例：** ```json { "filter": { "userId": "xxx", "isArchived": false }, "sort": { "field": "lastMessageAt", "order": "desc" }, "offset": 0, "limit": 20 } ```
    * @tags ai, agentSession
    * @name PostApiAiAgentSessionQuery
    * @summary 分页查询Agent会话
@@ -10581,7 +11379,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建API密钥并关联MCP服务
+   * @description 创建新的API密钥用于MCP服务访问。accessAll=true表示可访问所有MCP服务，否则需指定mcpServerIds数组。创建成功后返回完整token（仅此一次显示）。示例：{"data":{"name":"我的密钥","accessAll":false,"mcpServerIds":["server-id-1"]}}
    * @tags ai, apiKey
    * @name PostApiAiApiKey
    * @summary 创建API密钥
@@ -10597,7 +11395,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 撤销API密钥
+   * @description 撤销指定的API密钥，使其立即失效。 **路径参数：** - id: API密钥的UUID **注意事项：** - 撤销后密钥立即失效，无法恢复 - 使用该密钥的所有请求将被拒绝 - 建议在密钥泄露或不再需要时使用 **返回：** - true: 撤销成功 - false: 未找到或撤销失败 **示例：** POST /api/ai/api-key/550e8400-e29b-41d4-a716-446655440000/revoke
    * @tags ai, apiKey
    * @name PostApiAiApiKeyByIdRevoke
    * @summary 撤销API密钥
@@ -10615,7 +11413,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询API密钥列表
+   * @description 查询API密钥列表，支持分页和过滤。filter可选字段：name(模糊匹配)、isRevoked(是否已撤销)、status。sort支持createdAt/name/lastUsedAt排序。返回包含关联MCP服务ID列表。示例：{"filter":{"isRevoked":false},"limit":20,"offset":0}
    * @tags ai, apiKey
    * @name PostApiAiApiKeyQuery
    * @summary 分页查询API密钥
@@ -10646,7 +11444,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个MCP服务
+   * @description 创建单个MCP服务配置。MCP服务用于暴露工具给AI调用。 **必填字段：** - name: 服务名称（唯一标识） - description: 服务描述 **可选字段：** - isPublic: 是否公开访问，默认false（需要API Key） - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注 **示例：** ```json { "data": { "name": "weather-service", "description": "天气查询服务", "isPublic": false, "status": "0" } } ```
    * @tags ai, mcpServer
    * @name PostApiAiMcpServer
    * @summary 创建MCP服务
@@ -10662,7 +11460,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询MCP服务列表
+   * @description 分页查询MCP服务列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - name: 按名称模糊搜索 - isPublic: 是否公开访问，true=公开，false=需要API Key - status: 按状态过滤，"0"=正常，"1"=禁用 **排序参数 (sort)：** - field: createdAt | name - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "isPublic": true, "status": "0" }, "sort": { "field": "name", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags ai, mcpServer
    * @name PostApiAiMcpServerQuery
    * @summary 分页查询MCP服务
@@ -10678,7 +11476,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个AI模型
+   * @description 创建单个AI模型配置。 **必填字段：** - name: 模型显示名称 - modelId: 模型标识（如 gpt-4, claude-3-opus） - providerId: 所属提供商ID **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - supportTools: 是否支持工具调用，默认false - supportThinking: 是否支持思考模式，默认false - maxTokens: 最大token数 - temperature: 温度参数 - remark: 备注 **示例：** ```json { "data": { "name": "GPT-4 Turbo", "modelId": "gpt-4-turbo", "providerId": "provider-uuid", "supportTools": true, "maxTokens": 128000 } } ```
    * @tags ai, model
    * @name PostApiAiModel
    * @summary 创建AI模型
@@ -10694,7 +11492,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 批量创建多个AI模型
+   * @description 批量创建多个AI模型配置，适用于初始化或导入场景。 **请求体：** - data: 模型对象数组，每个对象包含 name, modelId, providerId 等字段 **示例：** ```json { "data": [ { "name": "GPT-4", "modelId": "gpt-4", "providerId": "xxx", "supportTools": true }, { "name": "GPT-3.5", "modelId": "gpt-3.5-turbo", "providerId": "xxx", "supportTools": true } ] } ``` **返回：** 创建成功的模型对象数组
    * @tags ai, model
    * @name PostApiAiModelBatch
    * @summary 批量创建AI模型
@@ -10710,7 +11508,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 发送测试消息验证模型是否正常工作
+   * @description 发送测试消息验证AI模型是否正常工作。 **路径参数：** - id: 模型的UUID **请求体：** - message: 测试消息内容，默认为 "Hello, please respond with a brief greeting." **返回：** - success: 是否成功 - response: 模型响应内容 - thinking: 思考过程（如果模型支持） - supportThinking: 是否支持思考模式 - error: 错误信息（失败时） - latencyMs: 响应延迟（毫秒） **示例：** ```json POST /api/ai/model/xxx-uuid/test { "message": "你好，请用中文回复" } ```
    * @tags ai, model
    * @name PostApiAiModelByIdTest
    * @summary 测试AI模型
@@ -10728,7 +11526,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询AI模型列表
+   * @description 分页查询AI模型列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询，如 ["id1", "id2"] - modelIds: 按模型标识列表查询，如 ["gpt-4", "claude-3"] - providerId: 按单个提供商ID过滤 - providerIds: 按多个提供商ID过滤 - name: 按名称模糊搜索 - modelId: 按模型标识模糊搜索 - status: 按状态过滤，"0"=正常，"1"=禁用 - supportTools: 是否支持工具调用，true/false - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | modelId | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "providerId": "xxx", "supportTools": true }, "sort": { "field": "createdAt", "order": "desc" }, "offset": 0, "limit": 20 } ```
    * @tags ai, model
    * @name PostApiAiModelQuery
    * @summary 分页查询AI模型
@@ -10744,7 +11542,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个AI提供商
+   * @description 创建单个AI提供商配置。 **必填字段：** - name: 提供商名称（如 OpenAI, Anthropic, 火山引擎） - baseUrl: API基础URL - token: API密钥/Token **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注 **示例：** ```json { "data": { "name": "OpenAI", "baseUrl": "https://api.openai.com/v1", "token": "sk-xxx", "status": "0" } } ```
    * @tags ai, provider
    * @name PostApiAiProvider
    * @summary 创建AI提供商
@@ -10760,7 +11558,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 批量创建多个AI提供商
+   * @description 批量创建多个AI提供商配置，适用于初始化场景。 **请求体：** - data: 提供商对象数组 **示例：** ```json { "data": [ { "name": "OpenAI", "baseUrl": "https://api.openai.com/v1", "token": "sk-xxx" }, { "name": "Anthropic", "baseUrl": "https://api.anthropic.com", "token": "sk-ant-xxx" } ] } ``` **返回：** 创建成功的提供商对象数组
    * @tags ai, provider
    * @name PostApiAiProviderBatch
    * @summary 批量创建AI提供商
@@ -10776,7 +11574,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询AI提供商列表
+   * @description 分页查询AI提供商列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询，如 ["OpenAI", "Anthropic"] - name: 按名称模糊搜索 - status: 按状态过滤，"0"=正常，"1"=禁用 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "status": "0" }, "sort": { "field": "name", "order": "asc" }, "offset": 0, "limit": 50 } ```
    * @tags ai, provider
    * @name PostApiAiProviderQuery
    * @summary 分页查询AI提供商
@@ -10792,7 +11590,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个AI会话
+   * @description 创建单个AI会话。 **必填字段：** - userId: 所属用户ID **可选字段：** - title: 会话标题（可后续根据首条消息自动生成） - modelId: 使用的模型ID - agentId: 使用的智能体ID - systemPrompt: 系统提示词 - isPinned: 是否置顶，默认false - isArchived: 是否归档，默认false - status: 状态 **示例：** ```json { "data": { "userId": "user-uuid", "title": "新对话", "modelId": "model-uuid" } } ```
    * @tags ai, aiSession
    * @name PostApiAiSession
    * @summary 创建AI会话
@@ -10808,7 +11606,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单条AI会话消息
+   * @description 创建单条AI会话消息，自动分配消息序号并更新会话统计。 **必填字段：** - sessionId: 所属会话ID - role: 消息角色，user=用户消息，assistant=AI回复，system=系统消息 - content: 消息内容 **可选字段：** - contentType: 内容类型，默认text - tokenUsage: token使用量统计 - finishReason: 完成原因（AI回复时） - metadata: 元数据 **自动处理：** - msgSeq: 自动分配递增序号 - 更新会话的 messageCount、lastMessageAt、tokenUsage **示例：** ```json { "data": { "sessionId": "session-uuid", "role": "user", "content": "你好，请介绍一下React" } } ```
    * @tags ai, aiSessionMessage
    * @name PostApiAiSessionMessage
    * @summary 创建AI会话消息
@@ -10824,7 +11622,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 批量创建AI会话消息
+   * @description 批量创建多条AI会话消息，自动分配递增序号并更新会话统计。 **请求体：** - sessionId: 所属会话ID - messages: 消息对象数组（不需要指定 sessionId 和 msgSeq） **使用场景：** - 导入历史对话 - 一次性添加多轮对话 **示例：** ```json { "sessionId": "session-uuid", "messages": [ { "role": "user", "content": "你好" }, { "role": "assistant", "content": "你好！有什么可以帮助你的吗？" } ] } ``` **返回：** 创建成功的消息对象数组
    * @tags ai, aiSessionMessage
    * @name PostApiAiSessionMessageBatch
    * @summary 批量创建AI会话消息
@@ -10840,7 +11638,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询AI会话消息列表
+   * @description 分页查询AI会话消息列表。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - sessionId: 按会话ID过滤（最常用） - sessionIds: 按会话ID列表过滤 - role: 按角色过滤，user=用户消息，assistant=AI回复，system=系统消息 - roles: 按角色列表过滤 - contentType: 按内容类型过滤 - finishReason: 按完成原因过滤 - msgSeqStart/msgSeqEnd: 消息序号范围 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: msgSeq | createdAt - order: asc | desc **常用场景：** 1. 获取某会话的所有消息（按序号升序） 2. 获取最近N条消息 **示例：** ```json { "filter": { "sessionId": "session-uuid" }, "sort": { "field": "msgSeq", "order": "asc" }, "offset": 0, "limit": 50 } ```
    * @tags ai, aiSessionMessage
    * @name PostApiAiSessionMessageQuery
    * @summary 分页查询AI会话消息
@@ -10856,7 +11654,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询AI会话列表
+   * @description 分页查询AI会话列表，自动排除已删除的会话。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - userId: 按用户ID过滤（查询某用户的所有会话） - userIds: 按用户ID列表过滤 - title: 按标题模糊搜索 - isArchived: 是否已归档 - isPinned: 是否已置顶 - status: 按状态过滤 - createdAtStart/createdAtEnd: 创建时间范围 - lastMessageAtStart/lastMessageAtEnd: 最后消息时间范围 **排序参数 (sort)：** - field: title | lastMessageAt | createdAt | updatedAt | messageCount - order: asc | desc **常用场景：** 1. 获取当前用户的会话列表（按最后消息时间倒序） 2. 获取置顶的会话 3. 获取归档的会话 **示例：** ```json { "filter": { "userId": "user-uuid", "isArchived": false }, "sort": { "field": "lastMessageAt", "order": "desc" }, "offset": 0, "limit": 20 } ```
    * @tags ai, aiSession
    * @name PostApiAiSessionQuery
    * @summary 分页查询AI会话
@@ -10872,7 +11670,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个工具组
+   * @description 创建单个工具组记录。 **必填字段：** - name: 工具组名称 **可选字段：** - description: 描述 - icon: 图标 - orderNum: 排序号 - status: 状态 **示例：** ```json { "data": { "name": "代码工具", "description": "代码相关的AI工具", "orderNum": 1 } } ```
    * @tags ai, toolGroup
    * @name PostApiAiToolGroup
    * @summary 创建工具组
@@ -10888,7 +11686,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 批量创建多个工具组
+   * @description 批量创建多个工具组记录。 **示例：** ```json { "data": [ { "name": "代码工具", "orderNum": 1 }, { "name": "文档工具", "orderNum": 2 } ] } ```
    * @tags ai, toolGroup
    * @name PostApiAiToolGroupBatch
    * @summary 批量创建工具组
@@ -10904,7 +11702,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 分页查询工具组列表
+   * @description 分页查询AI工具组列表，工具组用于组织和管理AI可调用的工具。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询 - name: 按名称模糊搜索 - status: 按状态过滤 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | orderNum | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "name": "代码" }, "sort": { "field": "orderNum", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags ai, toolGroup
    * @name PostApiAiToolGroupQuery
    * @summary 分页查询工具组
@@ -10920,7 +11718,55 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID列表批量更新AI智能体
+   * @description 创建一条新的用户记忆，支持自动生成向量嵌入
+   * @tags ai, memory, create
+   * @name PostApiAiUserMemory
+   * @summary 创建用户记忆
+   * @request POST:/api/ai/user-memory
+   * @response `200` `PostApiAiUserMemoryData` Response for status 200
+   */
+  export namespace PostApiAiUserMemory {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiUserMemoryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiUserMemoryData;
+  }
+
+  /**
+   * @description 分页查询用户记忆列表，支持多种过滤条件
+   * @tags ai, memory, query
+   * @name PostApiAiUserMemoryQuery
+   * @summary 分页查询用户记忆
+   * @request POST:/api/ai/user-memory/query
+   * @response `200` `PostApiAiUserMemoryQueryData` Response for status 200
+   */
+  export namespace PostApiAiUserMemoryQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiUserMemoryQueryPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiUserMemoryQueryData;
+  }
+
+  /**
+   * @description 使用向量相似度搜索用户记忆，支持记忆衰减计算
+   * @tags ai, memory, search, semantic
+   * @name PostApiAiUserMemorySemanticSearch
+   * @summary 语义检索用户记忆
+   * @request POST:/api/ai/user-memory/semantic-search
+   * @response `200` `PostApiAiUserMemorySemanticSearchData` Response for status 200
+   */
+  export namespace PostApiAiUserMemorySemanticSearch {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiAiUserMemorySemanticSearchPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiAiUserMemorySemanticSearchData;
+  }
+
+  /**
+   * @description 批量更新多个智能体配置。传入ids数组指定要更新的智能体，data对象包含要更新的字段。只能更新自己创建的智能体，管理员可更新所有。示例：{"ids":["id1","id2"],"data":{"status":"1","temperature":0.8}}
    * @tags ai, agent
    * @name PutApiAiAgentBatch
    * @summary 批量更新AI智能体
@@ -10954,7 +11800,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID更新单个Agent会话
+   * @description 根据ID更新单个Agent会话信息。 **路径参数：** - id: 会话UUID **可更新字段：** - title: 会话标题 - status: 状态 - isArchived: 是否归档 - isPinned: 是否置顶 - metadata: 元数据 **使用场景：** 1. 修改会话标题 2. 更新会话状态 3. 修改元数据 **示例：** ```json // PUT /api/ai/agent-session/550e8400-e29b-41d4-a716-446655440000 { "data": { "title": "关于项目架构的讨论" } } ```
    * @tags ai, agentSession
    * @name PutApiAiAgentSessionById
    * @summary 更新Agent会话
@@ -10972,7 +11818,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 归档指定Agent会话
+   * @description 归档或取消归档指定Agent会话。 **路径参数：** - id: 会话UUID **请求体：** - isArchived: true=归档，false=取消归档 **归档行为：** - 归档后会话不会出现在默认列表中 - 可通过 filter.isArchived = true 查看归档会话 - 归档不会删除会话数据 **使用场景：** 1. 整理会话列表，归档不常用的会话 2. 恢复误归档的会话 **示例：** ```json // PUT /api/ai/agent-session/xxx/archive { "isArchived": true } ```
    * @tags ai, agentSession
    * @name PutApiAiAgentSessionByIdArchive
    * @summary 归档Agent会话
@@ -10990,7 +11836,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 置顶/取消置顶Agent会话
+   * @description 置顶或取消置顶Agent会话。 **路径参数：** - id: 会话UUID **请求体：** - isPinned: true=置顶，false=取消置顶 **置顶行为：** - 置顶会话在列表中优先显示 - 可通过 filter.isPinned = true 只查看置顶会话 **使用场景：** 1. 将重要会话置顶方便快速访问 2. 取消不再重要的会话置顶 **示例：** ```json // PUT /api/ai/agent-session/xxx/pin { "isPinned": true } ```
    * @tags ai, agentSession
    * @name PutApiAiAgentSessionByIdPin
    * @summary 置顶Agent会话
@@ -11008,7 +11854,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 更新API密钥信息和关联的MCP服务
+   * @description 更新API密钥信息和关联的MCP服务。URL参数id为密钥ID。可更新name、accessAll、mcpServerIds、expiresAt、remark。修改accessAll或mcpServerIds会重建MCP关联。示例：{"data":{"name":"新名称","accessAll":true}}
    * @tags ai, apiKey
    * @name PutApiAiApiKeyById
    * @summary 更新API密钥
@@ -11026,7 +11872,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID更新单个MCP服务
+   * @description 根据ID更新单个MCP服务的配置信息。 **路径参数：** - id: MCP服务的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 服务名称 - description: 服务描述 - isPublic: 是否公开访问 - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **示例：** ```json PUT /api/ai/mcp-server/xxx-uuid { "data": { "isPublic": true, "description": "更新后的描述" } } ```
    * @tags ai, mcpServer
    * @name PutApiAiMcpServerById
    * @summary 更新MCP服务
@@ -11044,7 +11890,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID列表批量更新AI模型
+   * @description 根据ID列表批量更新多个AI模型的配置。 **请求体：** - ids: 要更新的模型ID数组 - data: 更新数据对象，包含要修改的字段 **使用场景：** - 批量启用/禁用模型 - 批量修改配置参数 **示例：** ```json { "ids": ["model-id-1", "model-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的模型对象数组
    * @tags ai, model
    * @name PutApiAiModelBatch
    * @summary 批量更新AI模型
@@ -11060,7 +11906,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID更新单个AI模型
+   * @description 根据ID更新单个AI模型的配置信息。 **路径参数：** - id: 模型的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 模型显示名称 - modelId: 模型标识 - status: 状态，"0"=正常，"1"=禁用 - supportTools: 是否支持工具调用 - supportThinking: 是否支持思考模式 - maxTokens: 最大token数 - temperature: 温度参数 - remark: 备注 **示例：** ```json PUT /api/ai/model/xxx-uuid { "data": { "status": "1", "maxTokens": 64000 } } ```
    * @tags ai, model
    * @name PutApiAiModelById
    * @summary 更新AI模型
@@ -11078,7 +11924,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID列表批量更新AI提供商
+   * @description 根据ID列表批量更新多个AI提供商的配置。 **请求体：** - ids: 要更新的提供商ID数组 - data: 更新数据对象 **使用场景：** - 批量启用/禁用提供商 **示例：** ```json { "ids": ["provider-id-1", "provider-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的提供商对象数组
    * @tags ai, provider
    * @name PutApiAiProviderBatch
    * @summary 批量更新AI提供商
@@ -11094,7 +11940,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID更新单个AI提供商
+   * @description 根据ID更新单个AI提供商的配置信息。 **路径参数：** - id: 提供商的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 提供商名称 - baseUrl: API基础URL - token: API密钥（更新密钥时使用） - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **示例：** ```json PUT /api/ai/provider/xxx-uuid { "data": { "token": "sk-new-token", "status": "0" } } ```
    * @tags ai, provider
    * @name PutApiAiProviderById
    * @summary 更新AI提供商
@@ -11112,7 +11958,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 更新单个AI会话
+   * @description 更新单个AI会话的信息。 **路径参数：** - id: 会话的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - title: 会话标题 - modelId: 使用的模型ID - agentId: 使用的智能体ID - systemPrompt: 系统提示词 - isPinned: 是否置顶 - isArchived: 是否归档 - status: 状态 **常用场景：** 1. 重命名会话 2. 置顶/取消置顶 3. 归档会话 4. 切换模型 **示例：** ```json PUT /api/ai/session/xxx-uuid { "data": { "title": "关于React的讨论", "isPinned": true } } ```
    * @tags ai, aiSession
    * @name PutApiAiSessionById
    * @summary 更新AI会话
@@ -11130,7 +11976,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID列表批量更新工具组
+   * @description 根据ID列表批量更新工具组。 **示例：** ```json { "ids": ["id1", "id2"], "data": { "status": "1" } } ```
    * @tags ai, toolGroup
    * @name PutApiAiToolGroupBatch
    * @summary 批量更新工具组
@@ -11146,7 +11992,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID更新单个工具组
+   * @description 根据ID更新单个工具组信息。 **路径参数：** - id: 工具组UUID **示例：** ```json // PUT /api/ai/tool-group/xxx { "data": { "name": "代码工具（更新）", "orderNum": 2 } } ```
    * @tags ai, toolGroup
    * @name PutApiAiToolGroupById
    * @summary 更新工具组
@@ -11161,6 +12007,25 @@ export namespace Ai {
     export type RequestBody = PutApiAiToolGroupByIdPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiAiToolGroupByIdData;
+  }
+
+  /**
+   * @description 更新用户记忆内容、重要性等信息
+   * @tags ai, memory, update
+   * @name PutApiAiUserMemoryById
+   * @summary 更新用户记忆
+   * @request PUT:/api/ai/user-memory/{id}
+   * @response `200` `PutApiAiUserMemoryByIdData` Response for status 200
+   */
+  export namespace PutApiAiUserMemoryById {
+    export type RequestParams = {
+      /** 记忆ID */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = PutApiAiUserMemoryByIdPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiAiUserMemoryByIdData;
   }
 }
 
@@ -11182,7 +12047,7 @@ export namespace Auth {
   }
 
   /**
- * @description 获取当前登录用户的详细信息
+ * @description 获取当前登录用户的详细信息、菜单和权限
  * @tags auth
  * @name GetApiAuthMe
  * @summary 获取当前用户
@@ -11357,6 +12222,102 @@ export namespace Auth {
 }
 
 export namespace Ws {
+  /**
+   * @description 获取当前所有在线用户的 ID 列表。 使用场景： - 显示在线用户列表 - 统计在线用户数 - 判断是否需要发送离线通知 返回说明： - users: 在线用户 ID 列表 - count: 在线用户数量
+   * @tags ws, users, online
+   * @name GetApiWsUsersOnline
+   * @summary 获取在线用户
+   * @request GET:/api/ws/users/online
+   * @response `200` `GetApiWsUsersOnlineData` Response for status 200
+   */
+  export namespace GetApiWsUsersOnline {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiWsUsersOnlineData;
+  }
+
+  /**
+   * @description 发送消息到群聊会话并通过 WebSocket 实时通知在线成员。 参数说明： - conversationId: 群聊会话 ID（必填） - msgType: 消息类型，01=文本，02=链接，03=图片等（默认 01） - content: 消息内容 - replyToId: 回复的消息 ID（可选） - atUserIds: @的用户 ID 列表（可选） 使用场景： - AI Agent 在群聊中回复 - 群公告推送 - 机器人消息 请求示例： { "conversationId": "550e8400-e29b-41d4-a716-446655440000", "msgType": "01", "content": { "text": "这是一条群聊消息" }, "atUserIds": ["user-uuid-1", "user-uuid-2"] }
+   * @tags ws, im, message, group
+   * @name PostApiWsMessageGroup
+   * @summary 发送群聊消息
+   * @request POST:/api/ws/message/group
+   * @response `200` `PostApiWsMessageGroupData` Response for status 200
+   */
+  export namespace PostApiWsMessageGroup {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiWsMessageGroupPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiWsMessageGroupData;
+  }
+
+  /**
+   * @description 发送私聊消息给指定用户，如果会话不存在会自动创建。 参数说明： - targetUserId: 目标用户 ID（必填） - msgType: 消息类型，01=文本，02=链接，03=图片等（默认 01） - content: 消息内容 - replyToId: 回复的消息 ID（可选） 使用场景： - AI Agent 主动联系用户 - 系统私信通知 - 客服系统集成 请求示例： { "targetUserId": "550e8400-e29b-41d4-a716-446655440000", "msgType": "01", "content": { "text": "你好，这是一条私聊消息" } } 返回说明： - isNewConversation: 是否新创建的会话 - conversationId: 会话 ID（可用于后续发送消息）
+   * @tags ws, im, message, private
+   * @name PostApiWsMessagePrivate
+   * @summary 发送单聊消息
+   * @request POST:/api/ws/message/private
+   * @response `200` `PostApiWsMessagePrivateData` Response for status 200
+   */
+  export namespace PostApiWsMessagePrivate {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiWsMessagePrivatePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiWsMessagePrivateData;
+  }
+
+  /**
+   * @description 发送消息到指定会话并通过 WebSocket 实时通知在线用户。 参数说明： - conversationId: 目标会话 ID（必填） - msgType: 消息类型，01=文本，02=链接，03=图片，04=视频，05=音频，06=文件（默认 01） - content: 消息内容，根据 msgType 不同结构不同 - replyToId: 回复的消息 ID（可选） - atUserIds: @的用户 ID 列表（可选） 使用场景： - AI Agent 自动回复用户消息 - 系统通知推送 - 第三方服务集成 请求示例： { "conversationId": "550e8400-e29b-41d4-a716-446655440000", "msgType": "01", "content": { "text": "你好，这是一条消息" } }
+   * @tags ws, im, message
+   * @name PostApiWsMessageSend
+   * @summary 发送消息到会话
+   * @request POST:/api/ws/message/send
+   * @response `200` `PostApiWsMessageSendData` Response for status 200
+   */
+  export namespace PostApiWsMessageSend {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiWsMessageSendPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiWsMessageSendData;
+  }
+
+  /**
+   * @description 向指定用户发送实时通知（不创建 IM 消息记录）。 参数说明： - userIds: 目标用户 ID 列表（必填） - title: 通知标题（必填） - content: 通知内容（必填） - type: 通知类型，info/success/warning/error（默认 info） - data: 附加数据，可包含链接等信息（可选） 使用场景： - 系统公告推送 - 任务完成通知 - 审批提醒 - AI 处理结果通知 请求示例： { "userIds": ["user-uuid-1", "user-uuid-2"], "title": "系统通知", "content": "您有一条新的审批待处理", "type": "info", "data": { "approvalId": "xxx", "link": "/approvals/xxx" } } 返回说明： - notifiedUsers: 实际收到通知的用户数（在线用户） - onlineUsers: 目标用户中在线的用户数
+   * @tags ws, notification, broadcast
+   * @name PostApiWsNotificationBroadcast
+   * @summary 广播通知
+   * @request POST:/api/ws/notification/broadcast
+   * @response `200` `PostApiWsNotificationBroadcastData` Response for status 200
+   */
+  export namespace PostApiWsNotificationBroadcast {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiWsNotificationBroadcastPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiWsNotificationBroadcastData;
+  }
+
+  /**
+   * @description 检查指定用户是否在线。 参数说明： - userIds: 要检查的用户 ID 列表（必填） 使用场景： - 显示用户在线状态 - 判断是否发送推送通知 - 选择消息发送方式（在线用 WS，离线用推送） 请求示例： { "userIds": ["user-uuid-1", "user-uuid-2"] } 返回说明： - status: 用户在线状态映射，key 为用户 ID，value 为是否在线
+   * @tags ws, users, online, check
+   * @name PostApiWsUsersCheckOnline
+   * @summary 检查用户在线状态
+   * @request POST:/api/ws/users/check-online
+   * @response `200` `PostApiWsUsersCheckOnlineData` Response for status 200
+   */
+  export namespace PostApiWsUsersCheckOnline {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiWsUsersCheckOnlinePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiWsUsersCheckOnlineData;
+  }
+
   /**
    * No description
    * @name WsWsMain
@@ -11543,10 +12504,10 @@ export namespace Actions {
 
 export namespace System {
   /**
-   * @description 根据ID删除配置
+   * @description 根据ID物理删除系统配置（永久删除，不可恢复）。 **参数说明：** - id: 配置UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 配置不存在 **注意事项：** - 系统内置配置（isSystem=true）不建议删除 - 删除前确认没有功能依赖此配置 - 建议先备份配置值 **示例：** DELETE /api/system/config/550e8400-e29b-41d4-a716-446655440000
    * @tags system, config
    * @name DeleteApiSystemConfigById
-   * @summary 删除配置
+   * @summary 删除系统配置
    * @request DELETE:/api/system/config/{id}
    * @response `200` `DeleteApiSystemConfigByIdData` Response for status 200
    */
@@ -11579,7 +12540,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除字典
+   * @description 根据ID软删除字典项。 **路径参数：** - id: 字典项的UUID **注意事项：** - 软删除，数据保留但标记为已删除 - 删除后前端下拉框等组件将不再显示该选项 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/system/dict/550e8400-e29b-41d4-a716-446655440000
    * @tags system, dict
    * @name DeleteApiSystemDictById
    * @summary 删除字典
@@ -11597,7 +12558,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据Key删除字典组
+   * @description 根据Key物理删除字典组（永久删除，不可恢复）。 **参数说明：** - key: 字典组键 **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 - 关联的字典项也应一并删除 **返回值：** - true: 删除成功 - false: 字典组不存在 **注意事项：** - 删除前确认没有功能依赖此字典组 - 建议先禁用（status="1"）而非直接删除 **示例：** DELETE /api/system/dict-group/sys_user_sex
    * @tags system, dictGroup
    * @name DeleteApiSystemDictGroupByKey
    * @summary 删除字典组
@@ -11619,7 +12580,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除定时任务
+   * @description 根据ID物理删除定时任务（永久删除，不可恢复）。 **参数说明：** - id: 任务UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 - 任务将停止执行 **返回值：** - true: 删除成功 - false: 任务不存在 **注意事项：** - 删除前建议先暂停任务 - 确认任务不再需要后再删除 - 如需保留配置，建议暂停而非删除 **示例：** DELETE /api/system/job/550e8400-e29b-41d4-a716-446655440000
    * @tags system, job
    * @name DeleteApiSystemJobById
    * @summary 删除定时任务
@@ -11637,7 +12598,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除任务日志
+   * @description 根据ID物理删除任务执行日志（永久删除，不可恢复）。 **参数说明：** - id: 日志UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 日志不存在 **注意事项：** - 任务日志通常需要保留用于问题排查 - 建议设置定期清理策略而非手动删除 **示例：** DELETE /api/system/job-log/550e8400-e29b-41d4-a716-446655440000
    * @tags system, jobLog
    * @name DeleteApiSystemJobLogById
    * @summary 删除任务日志
@@ -11655,7 +12616,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除登录日志
+   * @description 根据ID物理删除登录日志（永久删除，不可恢复）。 **参数说明：** - id: 登录日志UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 日志不存在 **注意事项：** - 登录日志通常需要保留用于审计 - 建议设置定期清理策略而非手动删除 - 删除前确认符合安全合规要求 **示例：** DELETE /api/system/login-info/550e8400-e29b-41d4-a716-446655440000
    * @tags system, loginInfo
    * @name DeleteApiSystemLoginInfoById
    * @summary 删除登录日志
@@ -11673,7 +12634,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除菜单
+   * @description 根据ID删除菜单（物理删除）。 **路径参数：** - id: 菜单的UUID **注意事项：** - 删除后无法恢复 - 删除目录前应先删除其下的子菜单 - 删除菜单会影响已分配该菜单的角色 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/system/menu/550e8400-e29b-41d4-a716-446655440000
    * @tags system, menu
    * @name DeleteApiSystemMenuById
    * @summary 删除菜单
@@ -11691,10 +12652,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除通知
+   * @description 根据ID物理删除通知公告（永久删除，不可恢复）。 **参数说明：** - id: 通知公告UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 通知不存在 **注意事项：** - 删除前建议确认通知已过期或不再需要 - 如需保留历史记录，建议使用 status="1" 关闭而非删除 **示例：** DELETE /api/system/notice/550e8400-e29b-41d4-a716-446655440000
    * @tags system, notice
    * @name DeleteApiSystemNoticeById
-   * @summary 删除通知
+   * @summary 删除通知公告
    * @request DELETE:/api/system/notice/{id}
    * @response `200` `DeleteApiSystemNoticeByIdData` Response for status 200
    */
@@ -11709,7 +12670,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除操作日志
+   * @description 根据ID物理删除操作日志（永久删除，不可恢复）。 **参数说明：** - id: 操作日志UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 日志不存在 **注意事项：** - 操作日志通常需要保留用于审计 - 建议设置定期清理策略而非手动删除 - 删除前确认符合安全合规要求 **示例：** DELETE /api/system/operation-log/550e8400-e29b-41d4-a716-446655440000
    * @tags system, operationLog
    * @name DeleteApiSystemOperationLogById
    * @summary 删除操作日志
@@ -11727,7 +12688,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID删除权限（同时删除子权限）
+   * @description 根据ID删除权限，会递归删除所有子权限。 **路径参数：** - id: 权限UUID，必填 **注意事项：** - 删除操作会递归删除该权限下的所有子权限 - 删除前请确认没有角色关联该权限 - 此操作不可恢复 **返回：** - true: 删除成功 - false: 删除失败（权限不存在） **示例：** DELETE /api/system/permission/550e8400-e29b-41d4-a716-446655440000
    * @tags system, permission
    * @name DeleteApiSystemPermissionById
    * @summary 删除权限
@@ -11745,7 +12706,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除岗位
+   * @description 根据ID软删除岗位（逻辑删除，数据保留）。 **参数说明：** - id: 岗位UUID **删除行为：** - 软删除：设置 deletedAt、deletedBy、deletedById - 数据保留在数据库中，可恢复 - 查询时自动过滤已删除记录 **返回值：** - true: 删除成功 - false: 岗位不存在或已删除 **注意事项：** - 删除前应检查是否有用户关联此岗位 - 已删除的岗位不会出现在查询结果中 **示例：** DELETE /api/system/post/550e8400-e29b-41d4-a716-446655440000
    * @tags system, post
    * @name DeleteApiSystemPostById
    * @summary 删除岗位
@@ -11763,7 +12724,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID软删除角色
+   * @description 根据ID软删除角色。 **路径参数：** - id: 角色的UUID **注意事项：** - 管理员角色（key=admin）不允许删除 - 软删除，数据保留但标记为已删除 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/system/role/550e8400-e29b-41d4-a716-446655440000
    * @tags system, role
    * @name DeleteApiSystemRoleById
    * @summary 删除角色
@@ -11781,7 +12742,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据复合主键删除
+   * @description 根据复合主键删除角色与部门的关联关系。 **路径参数：** - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/role-department/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, roleDepartment
    * @name DeleteApiSystemRoleDepartmentByRoleIdByDepartmentId
    * @summary 删除角色部门关联
@@ -11801,7 +12762,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据复合主键删除
+   * @description 根据复合主键删除角色与菜单的关联关系。 **路径参数：** - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/role-menu/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, roleMenu
    * @name DeleteApiSystemRoleMenuByRoleIdByMenuId
    * @summary 删除角色菜单关联
@@ -11817,24 +12778,6 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = DeleteApiSystemRoleMenuByRoleIdByMenuIdData;
-  }
-
-  /**
-   * @description 根据ID删除令牌
-   * @tags system, token
-   * @name DeleteApiSystemTokenById
-   * @summary 删除令牌
-   * @request DELETE:/api/system/token/{id}
-   * @response `200` `DeleteApiSystemTokenByIdData` Response for status 200
-   */
-  export namespace DeleteApiSystemTokenById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = DeleteApiSystemTokenByIdData;
   }
 
   /**
@@ -11856,7 +12799,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据复合主键删除
+   * @description 根据复合主键删除用户与岗位的关联关系。 **路径参数：** - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/user-post/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, userPost
    * @name DeleteApiSystemUserPostByUserIdByPostId
    * @summary 删除用户岗位关联
@@ -11875,7 +12818,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据复合主键删除
+   * @description 根据复合主键删除用户与角色的关联关系。 **路径参数：** - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/user-role/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, userRole
    * @name DeleteApiSystemUserRoleByUserIdByRoleId
    * @summary 删除用户角色关联
@@ -11931,10 +12874,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个配置
+   * @description 根据主键ID查询单个系统配置详情。 **参数说明：** - id: 配置的UUID主键 **返回值：** - 成功：返回配置完整信息（id, name, key, value, isSystem等） - 未找到：返回 null **使用场景：** 1. 查看配置详情 2. 编辑配置前获取当前数据 3. 验证配置是否存在 **示例：** GET /api/system/config/550e8400-e29b-41d4-a716-446655440000
    * @tags system, config
    * @name GetApiSystemConfigById
-   * @summary 根据ID查询配置
+   * @summary 根据ID查询系统配置
    * @request GET:/api/system/config/{id}
    * @response `200` `GetApiSystemConfigByIdData` Response for status 200
    */
@@ -11949,10 +12892,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取配置表的JSON Schema
+   * @description 获取系统配置表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成配置编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags system, config
    * @name GetApiSystemConfigSchema
-   * @summary 获取配置Schema
+   * @summary 获取系统配置Schema
    * @request GET:/api/system/config/schema
    * @response `200` `GetApiSystemConfigSchemaData` Response for status 200
    */
@@ -11999,7 +12942,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个字典
+   * @description 根据主键ID查询单个字典项的详细信息。 **路径参数：** - id: 字典项的UUID **返回：** - 找到时返回完整的字典对象 - 未找到或已删除时返回 null **示例：** GET /api/system/dict/550e8400-e29b-41d4-a716-446655440000
    * @tags system, dict
    * @name GetApiSystemDictById
    * @summary 根据ID查询字典
@@ -12017,7 +12960,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键Key查询单个字典组
+   * @description 根据主键Key查询单个字典组详情。 **参数说明：** - key: 字典组的唯一键，如 "sys_user_sex"、"sys_normal_disable" **返回值：** - 成功：返回字典组完整信息（key, name, status, remark等） - 未找到：返回 null **使用场景：** 1. 查看字典组详情 2. 编辑字典组前获取当前数据 3. 验证字典组是否存在 **示例：** GET /api/system/dict-group/sys_user_sex
    * @tags system, dictGroup
    * @name GetApiSystemDictGroupByKey
    * @summary 根据Key查询字典组
@@ -12039,7 +12982,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取字典组表的JSON Schema
+   * @description 获取字典组表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成字典组编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags system, dictGroup
    * @name GetApiSystemDictGroupSchema
    * @summary 获取字典组Schema
@@ -12055,7 +12998,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取字典表的JSON Schema
+   * @description 获取字典表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags system, dict
    * @name GetApiSystemDictSchema
    * @summary 获取字典Schema
@@ -12071,7 +13014,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个定时任务
+   * @description 根据主键ID查询单个定时任务详情。 **参数说明：** - id: 定时任务的UUID主键 **返回值：** - 成功：返回任务完整信息（name, group, invokeTarget, cronExpression, misfirePolicy, concurrent, status等） - 未找到：返回 null **使用场景：** 1. 查看任务详情 2. 编辑任务前获取当前配置 3. 验证任务是否存在 **示例：** GET /api/system/job/550e8400-e29b-41d4-a716-446655440000
    * @tags system, job
    * @name GetApiSystemJobById
    * @summary 根据ID查询定时任务
@@ -12089,7 +13032,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个任务日志
+   * @description 根据主键ID查询单个任务执行日志详情。 **参数说明：** - id: 任务日志的UUID主键 **返回值：** - 成功：返回日志完整信息（jobName, jobGroup, invokeTarget, jobMessage, status, exceptionInfo, startTime, stopTime等） - 未找到：返回 null **使用场景：** 1. 查看任务执行详情 2. 分析任务执行失败原因（查看 exceptionInfo） 3. 查看任务执行耗时 **示例：** GET /api/system/job-log/550e8400-e29b-41d4-a716-446655440000
    * @tags system, jobLog
    * @name GetApiSystemJobLogById
    * @summary 根据ID查询任务日志
@@ -12107,7 +13050,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取任务日志表的JSON Schema
+   * @description 获取任务日志表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成查询表单 2. 数据导出时的格式参考 3. API文档生成
    * @tags system, jobLog
    * @name GetApiSystemJobLogSchema
    * @summary 获取任务日志Schema
@@ -12123,7 +13066,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取定时任务表的JSON Schema
+   * @description 获取定时任务表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成任务编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags system, job
    * @name GetApiSystemJobSchema
    * @summary 获取定时任务Schema
@@ -12139,7 +13082,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个登录日志
+   * @description 根据主键ID查询单个登录日志详情。 **参数说明：** - id: 登录日志的UUID主键 **返回值：** - 成功：返回登录日志完整信息（loginName, ipaddr, loginLocation, browser, os, status, msg, loginTime等） - 未找到：返回 null **使用场景：** 1. 查看登录详情（浏览器、操作系统、地理位置等） 2. 分析登录失败原因 3. 安全审计 **示例：** GET /api/system/login-info/550e8400-e29b-41d4-a716-446655440000
    * @tags system, loginInfo
    * @name GetApiSystemLoginInfoById
    * @summary 根据ID查询登录日志
@@ -12157,10 +13100,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取登录信息表的JSON Schema
+   * @description 获取登录日志表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成查询表单 2. 数据导出时的格式参考 3. API文档生成
    * @tags system, loginInfo
    * @name GetApiSystemLoginInfoSchema
-   * @summary 获取登录信息Schema
+   * @summary 获取登录日志Schema
    * @request GET:/api/system/login-info/schema
    * @response `200` `GetApiSystemLoginInfoSchemaData` Response for status 200
    */
@@ -12173,7 +13116,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个菜单
+   * @description 根据主键ID查询单个菜单的详细信息。 **路径参数：** - id: 菜单的UUID **返回：** - 找到时返回完整的菜单对象 - 未找到时返回 null **示例：** GET /api/system/menu/550e8400-e29b-41d4-a716-446655440000
    * @tags system, menu
    * @name GetApiSystemMenuById
    * @summary 根据ID查询菜单
@@ -12191,7 +13134,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取菜单表的JSON Schema
+   * @description 获取菜单表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags system, menu
    * @name GetApiSystemMenuSchema
    * @summary 获取菜单Schema
@@ -12207,10 +13150,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个通知
+   * @description 根据主键ID查询单个通知公告详情。 **参数说明：** - id: 通知公告的UUID主键 **返回值：** - 成功：返回通知完整信息（id, title, type, content, status等） - 未找到：返回 null **使用场景：** 1. 查看通知详情页 2. 编辑通知前获取当前数据 3. 验证通知是否存在 **示例：** GET /api/system/notice/550e8400-e29b-41d4-a716-446655440000
    * @tags system, notice
    * @name GetApiSystemNoticeById
-   * @summary 根据ID查询通知
+   * @summary 根据ID查询通知公告
    * @request GET:/api/system/notice/{id}
    * @response `200` `GetApiSystemNoticeByIdData` Response for status 200
    */
@@ -12225,10 +13168,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取通知表的JSON Schema
+   * @description 获取通知公告表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成通知编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags system, notice
    * @name GetApiSystemNoticeSchema
-   * @summary 获取通知Schema
+   * @summary 获取通知公告Schema
    * @request GET:/api/system/notice/schema
    * @response `200` `GetApiSystemNoticeSchemaData` Response for status 200
    */
@@ -12241,7 +13184,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个操作日志
+   * @description 根据主键ID查询单个操作日志详情。 **参数说明：** - id: 操作日志的UUID主键 **返回值：** - 成功：返回操作日志完整信息（title, method, url, param, result, status, errorMsg, time等） - 未找到：返回 null **使用场景：** 1. 查看操作详情（请求参数、返回结果） 2. 分析操作失败原因 3. 安全审计和问题排查 **示例：** GET /api/system/operation-log/550e8400-e29b-41d4-a716-446655440000
    * @tags system, operationLog
    * @name GetApiSystemOperationLogById
    * @summary 根据ID查询操作日志
@@ -12259,7 +13202,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取操作日志表的JSON Schema
+   * @description 获取操作日志表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成查询表单 2. 数据导出时的格式参考 3. API文档生成
    * @tags system, operationLog
    * @name GetApiSystemOperationLogSchema
    * @summary 获取操作日志Schema
@@ -12275,7 +13218,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个权限
+   * @description 根据权限ID查询单个权限详情。 **路径参数：** - id: 权限UUID，必填 **返回：** - 成功：返回权限对象，包含 id, code, name, type, module, parentId, status, orderNum 等字段 - 未找到：返回 null **示例：** GET /api/system/permission/550e8400-e29b-41d4-a716-446655440000
    * @tags system, permission
    * @name GetApiSystemPermissionById
    * @summary 根据ID查询权限
@@ -12293,7 +13236,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取权限表的JSON Schema
+   * @description 获取权限表的JSON Schema定义，用于动态表单生成和数据验证。 **返回：** - JSON Schema格式的权限表结构定义 **示例：** GET /api/system/permission/schema
    * @tags system, permission
    * @name GetApiSystemPermissionSchema
    * @summary 获取权限Schema
@@ -12309,7 +13252,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取完整的权限树结构
+   * @description 获取完整的权限树结构，按排序号升序排列。 **返回：** - 返回所有权限的扁平列表，按 orderNum 升序排列 - 前端可根据 parentId 构建树形结构 **使用场景：** - 权限管理页面展示权限树 - 角色授权时选择权限 - 菜单配置时关联权限 **返回字段：** - id: 权限ID - code: 权限编码 - name: 权限名称 - type: 权限类型 - module: 所属模块 - parentId: 父级ID（null表示顶级） - status: 状态 - orderNum: 排序号 **示例：** GET /api/system/permission/tree
    * @tags system, permission
    * @name GetApiSystemPermissionTree
    * @summary 获取权限树
@@ -12325,7 +13268,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个岗位
+   * @description 根据主键ID查询单个岗位详情。 **参数说明：** - id: 岗位的UUID主键 **返回值：** - 成功：返回岗位完整信息（id, code, name, sort, status, remark等） - 未找到：返回 null **使用场景：** 1. 查看岗位详情 2. 编辑岗位前获取当前数据 3. 验证岗位是否存在 **示例：** GET /api/system/post/550e8400-e29b-41d4-a716-446655440000
    * @tags system, post
    * @name GetApiSystemPostById
    * @summary 根据ID查询岗位
@@ -12343,7 +13286,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取岗位表的JSON Schema
+   * @description 获取岗位表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags system, post
    * @name GetApiSystemPostSchema
    * @summary 获取岗位Schema
@@ -12359,7 +13302,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据主键ID查询单个角色
+   * @description 根据主键ID查询单个角色的详细信息。 **路径参数：** - id: 角色的UUID **返回：** - 找到时返回完整的角色对象 - 未找到或已删除时返回 null **示例：** GET /api/system/role/550e8400-e29b-41d4-a716-446655440000
    * @tags system, role
    * @name GetApiSystemRoleById
    * @summary 根据ID查询角色
@@ -12377,7 +13320,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据roleId和departmentId查询
+   * @description 根据角色ID和部门ID的复合主键查询关联记录。 **路径参数：** - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **返回：** - 成功：返回关联对象 { roleId, departmentId } - 未找到：返回 null **示例：** GET /api/system/role-department/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, roleDepartment
    * @name GetApiSystemRoleDepartmentByRoleIdByDepartmentId
    * @summary 根据复合主键查询角色部门关联
@@ -12397,10 +13340,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取角色部门表的JSON Schema
+   * @description 获取角色部门关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/role-department/schema
    * @tags system, roleDepartment
    * @name GetApiSystemRoleDepartmentSchema
-   * @summary 获取角色部门Schema
+   * @summary 获取角色部门关联Schema
    * @request GET:/api/system/role-department/schema
    * @response `200` `GetApiSystemRoleDepartmentSchemaData` Response for status 200
    */
@@ -12413,7 +13356,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据roleId和menuId查询
+   * @description 根据角色ID和菜单ID的复合主键查询关联记录。 **路径参数：** - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **返回：** - 成功：返回关联对象 { roleId, menuId } - 未找到：返回 null **示例：** GET /api/system/role-menu/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, roleMenu
    * @name GetApiSystemRoleMenuByRoleIdByMenuId
    * @summary 根据复合主键查询角色菜单关联
@@ -12432,7 +13375,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取指定角色的所有菜单ID
+   * @description 获取指定角色的所有菜单ID列表。 **路径参数：** - roleId: 角色UUID，必填 **返回：** - 菜单ID数组，如 ["menu-id-1", "menu-id-2", "menu-id-3"] **使用场景：** - 角色菜单权限配置页面，获取当前角色已分配的菜单 - 用户登录后获取可访问的菜单列表 **示例：** GET /api/system/role-menu/role/550e8400-e29b-41d4-a716-446655440000 **返回示例：** ```json ["menu-id-1", "menu-id-2", "menu-id-3"] ```
    * @tags system, roleMenu
    * @name GetApiSystemRoleMenuRoleByRoleId
    * @summary 获取角色菜单
@@ -12450,10 +13393,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取角色菜单表的JSON Schema
+   * @description 获取角色菜单关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/role-menu/schema
    * @tags system, roleMenu
    * @name GetApiSystemRoleMenuSchema
-   * @summary 获取角色菜单Schema
+   * @summary 获取角色菜单关联Schema
    * @request GET:/api/system/role-menu/schema
    * @response `200` `GetApiSystemRoleMenuSchemaData` Response for status 200
    */
@@ -12466,7 +13409,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取角色表的JSON Schema
+   * @description 获取角色表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
    * @tags system, role
    * @name GetApiSystemRoleSchema
    * @summary 获取角色Schema
@@ -12479,40 +13422,6 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiSystemRoleSchemaData;
-  }
-
-  /**
-   * @description 根据主键ID查询单个令牌
-   * @tags system, token
-   * @name GetApiSystemTokenById
-   * @summary 根据ID查询令牌
-   * @request GET:/api/system/token/{id}
-   * @response `200` `GetApiSystemTokenByIdData` Response for status 200
-   */
-  export namespace GetApiSystemTokenById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiSystemTokenByIdData;
-  }
-
-  /**
-   * @description 获取Token表的JSON Schema
-   * @tags system, token
-   * @name GetApiSystemTokenSchema
-   * @summary 获取TokenSchema
-   * @request GET:/api/system/token/schema
-   * @response `200` `GetApiSystemTokenSchemaData` Response for status 200
-   */
-  export namespace GetApiSystemTokenSchema {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = GetApiSystemTokenSchemaData;
   }
 
   /**
@@ -12534,7 +13443,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据userId和postId查询
+   * @description 根据用户ID和岗位ID的复合主键查询关联记录。 **路径参数：** - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **返回：** - 成功：返回关联对象 { userId, postId } - 未找到：返回 null **示例：** GET /api/system/user-post/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, userPost
    * @name GetApiSystemUserPostByUserIdByPostId
    * @summary 根据复合主键查询用户岗位关联
@@ -12553,10 +13462,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取用户岗位表的JSON Schema
+   * @description 获取用户岗位关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/user-post/schema
    * @tags system, userPost
    * @name GetApiSystemUserPostSchema
-   * @summary 获取用户岗位Schema
+   * @summary 获取用户岗位关联Schema
    * @request GET:/api/system/user-post/schema
    * @response `200` `GetApiSystemUserPostSchemaData` Response for status 200
    */
@@ -12569,7 +13478,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取指定用户的所有岗位ID
+   * @description 获取指定用户的所有岗位ID列表。 **路径参数：** - userId: 用户UUID，必填 **返回：** - 岗位ID数组，如 ["post-id-1", "post-id-2", "post-id-3"] **使用场景：** - 用户详情页面，显示用户所属岗位 - 用户编辑页面，获取当前用户已分配的岗位 - 权限判断，检查用户是否属于某岗位 **示例：** GET /api/system/user-post/user/550e8400-e29b-41d4-a716-446655440000 **返回示例：** ```json ["post-id-1", "post-id-2", "post-id-3"] ```
    * @tags system, userPost
    * @name GetApiSystemUserPostUserByUserId
    * @summary 获取用户岗位
@@ -12587,7 +13496,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据userId和roleId查询
+   * @description 根据用户ID和角色ID的复合主键查询关联记录。 **路径参数：** - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **返回：** - 成功：返回关联对象 { userId, roleId } - 未找到：返回 null **示例：** GET /api/system/user-role/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
    * @tags system, userRole
    * @name GetApiSystemUserRoleByUserIdByRoleId
    * @summary 根据复合主键查询用户角色关联
@@ -12606,10 +13515,10 @@ export namespace System {
   }
 
   /**
-   * @description 获取用户角色表的JSON Schema
+   * @description 获取用户角色关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/user-role/schema
    * @tags system, userRole
    * @name GetApiSystemUserRoleSchema
-   * @summary 获取用户角色Schema
+   * @summary 获取用户角色关联Schema
    * @request GET:/api/system/user-role/schema
    * @response `200` `GetApiSystemUserRoleSchemaData` Response for status 200
    */
@@ -12622,7 +13531,7 @@ export namespace System {
   }
 
   /**
-   * @description 获取指定用户的所有角色ID
+   * @description 获取指定用户的所有角色ID列表。 **路径参数：** - userId: 用户UUID，必填 **返回：** - 角色ID数组，如 ["role-id-1", "role-id-2", "role-id-3"] **使用场景：** - 用户详情页面，显示用户所属角色 - 用户编辑页面，获取当前用户已分配的角色 - 权限判断，检查用户是否拥有某角色 - 用户登录后获取角色列表 **示例：** GET /api/system/user-role/user/550e8400-e29b-41d4-a716-446655440000 **返回示例：** ```json ["role-id-1", "role-id-2", "role-id-3"] ```
    * @tags system, userRole
    * @name GetApiSystemUserRoleUserByUserId
    * @summary 获取用户角色
@@ -12656,10 +13565,10 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个配置
+   * @description 创建单个系统配置记录。 **必填字段：** - name: 配置名称，如 "系统名称"、"邮件服务器" - key: 配置键，唯一标识，如 "sys.name"、"mail.host" - value: 配置值 **可选字段：** - isSystem: 是否系统内置，默认 false - remark: 备注说明 **配置键命名规范：** - 使用点号分隔层级：module.submodule.key - 系统配置：sys.* - 邮件配置：mail.* - 存储配置：storage.* **使用场景：** 1. 添加新的系统参数 2. 配置第三方服务连接信息 3. 自定义业务参数 **示例：** ```json { "data": { "name": "邮件服务器地址", "key": "mail.host", "value": "smtp.example.com", "isSystem": false, "remark": "SMTP服务器地址" } } ```
    * @tags system, config
    * @name PostApiSystemConfig
-   * @summary 创建配置
+   * @summary 创建系统配置
    * @request POST:/api/system/config
    * @response `200` `PostApiSystemConfigData` Response for status 200
    */
@@ -12672,10 +13581,10 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个配置
+   * @description 批量创建多个系统配置记录。 **参数说明：** - data: 配置数组，每个元素包含 name、key、value 等字段 **使用场景：** 1. 系统初始化时批量创建默认配置 2. 导入配置模板 3. 批量添加某个模块的配置项 **示例：** ```json { "data": [ { "name": "系统名称", "key": "sys.name", "value": "AI管理系统", "isSystem": true }, { "name": "系统Logo", "key": "sys.logo", "value": "/logo.png", "isSystem": true }, { "name": "版权信息", "key": "sys.copyright", "value": "© 2024", "isSystem": true } ] } ```
    * @tags system, config
    * @name PostApiSystemConfigBatch
-   * @summary 批量创建配置
+   * @summary 批量创建系统配置
    * @request POST:/api/system/config/batch
    * @response `200` `PostApiSystemConfigBatchData` Response for status 200
    */
@@ -12688,10 +13597,10 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询配置列表
+   * @description 分页查询系统配置列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按配置名称列表精确查询 - keys: 按配置键列表精确查询，如 ["sys.name", "sys.logo"] - isSystem: 是否系统内置配置，true=内置，false=自定义 - name: 按配置名称模糊搜索 - key: 按配置键模糊搜索，如 "sys" 匹配所有 sys.* 配置 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | key | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有系统内置配置：filter.isSystem = true 2. 搜索包含"邮件"的配置：filter.name = "邮件" 3. 获取所有 sys.* 开头的配置：filter.key = "sys" **示例：** ```json { "filter": { "isSystem": false, "key": "mail" }, "sort": { "field": "key", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, config
    * @name PostApiSystemConfigQuery
-   * @summary 分页查询配置
+   * @summary 分页查询系统配置
    * @request POST:/api/system/config/query
    * @response `200` `PostApiSystemConfigQueryData` Response for status 200
    */
@@ -12752,7 +13661,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个字典
+   * @description 创建单个字典项。 **必填字段：** - group: 字典分组（如 sys_user_status） - label: 显示标签 - value: 字典值 **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - isDefault: 是否默认值，默认false - sort: 排序号，默认0 - remark: 备注 **示例：** ```json { "data": { "group": "sys_user_status", "label": "正常", "value": "0", "isDefault": true, "sort": 1 } } ```
    * @tags system, dict
    * @name PostApiSystemDict
    * @summary 创建字典
@@ -12768,7 +13677,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个字典
+   * @description 批量创建多个字典项，适用于初始化场景。 **请求体：** - data: 字典对象数组 **示例：** ```json { "data": [ { "group": "sys_user_status", "label": "正常", "value": "0", "sort": 1 }, { "group": "sys_user_status", "label": "禁用", "value": "1", "sort": 2 } ] } ``` **返回：** 创建成功的字典对象数组
    * @tags system, dict
    * @name PostApiSystemDictBatch
    * @summary 批量创建字典
@@ -12784,7 +13693,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个字典组
+   * @description 创建单个字典组记录。 **必填字段：** - key: 字典组键，唯一标识，如 "sys_user_sex" - name: 字典组名称，如 "用户性别" **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注说明 **键命名规范：** - 使用下划线分隔：module_entity_field - 系统字典：sys_* - 业务字典：biz_* **使用场景：** 1. 添加新的字典分类 2. 系统初始化时创建默认字典组 **示例：** ```json { "data": { "key": "sys_user_sex", "name": "用户性别", "status": "0", "remark": "用户性别选项" } } ```
    * @tags system, dictGroup
    * @name PostApiSystemDictGroup
    * @summary 创建字典组
@@ -12800,7 +13709,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个字典组
+   * @description 批量创建多个字典组记录。 **参数说明：** - data: 字典组数组，每个元素包含 key、name 等字段 **使用场景：** 1. 系统初始化时批量创建默认字典组 2. 导入字典配置 **示例：** ```json { "data": [ { "key": "sys_user_sex", "name": "用户性别" }, { "key": "sys_normal_disable", "name": "状态" }, { "key": "sys_yes_no", "name": "是否" } ] } ```
    * @tags system, dictGroup
    * @name PostApiSystemDictGroupBatch
    * @summary 批量创建字典组
@@ -12816,7 +13725,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询字典组列表
+   * @description 分页查询字典组列表，字典组用于管理一组相关的字典项。 **过滤参数 (filter)：** - keys: 按字典组键列表精确查询，如 ["sys_user_sex", "sys_normal_disable"] - names: 按字典组名称列表精确查询 - status: 按状态过滤，"0"=正常，"1"=禁用 - key: 按字典组键模糊搜索，如 "sys" 匹配所有系统字典 - name: 按字典组名称模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: key | name | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有正常状态的字典组：filter.status = "0" 2. 搜索系统相关字典：filter.key = "sys" 3. 按键名排序：sort = { field: "key", order: "asc" } **示例：** ```json { "filter": { "status": "0", "key": "sys" }, "sort": { "field": "key", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, dictGroup
    * @name PostApiSystemDictGroupQuery
    * @summary 分页查询字典组
@@ -12832,7 +13741,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询字典列表，自动排除已删除数据
+   * @description 分页查询字典列表，自动排除已删除数据。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - groups: 按分组列表精确查询，如 ["sys_user_status", "sys_normal_disable"] - labels: 按标签列表精确查询 - status: 按状态过滤，"0"=正常，"1"=禁用 - isDefault: 是否默认值 - group: 按分组模糊搜索 - label: 按标签模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: group | label | sort | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例 - 查询某分组的所有字典项：** ```json { "filter": { "groups": ["sys_user_status"] }, "sort": { "field": "sort", "order": "asc" } } ```
    * @tags system, dict
    * @name PostApiSystemDictQuery
    * @summary 分页查询字典
@@ -12848,7 +13757,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个定时任务
+   * @description 创建单个定时任务记录。 **必填字段：** - name: 任务名称，如 "清理临时文件" - group: 任务分组，如 "DEFAULT"、"SYSTEM" - invokeTarget: 调用目标（类名.方法名） - cronExpression: Cron表达式，如 "0 0 2 * * ?" 表示每天凌晨2点 **可选字段：** - misfirePolicy: 错过执行策略（0=默认，1=立即执行，2=执行一次，3=放弃执行） - concurrent: 是否允许并发执行，默认 false - status: 状态，"0"=正常（默认），"1"=暂停 - remark: 备注说明 **Cron表达式示例：** - "0 0 2 * * ?": 每天凌晨2点 - "0 0/30 * * * ?": 每30分钟 - "0 0 10,14,16 * * ?": 每天10点、14点、16点 **示例：** ```json { "data": { "name": "清理临时文件", "group": "SYSTEM", "invokeTarget": "cleanTask.execute", "cronExpression": "0 0 2 * * ?", "misfirePolicy": "1", "concurrent": false, "status": "0" } } ```
    * @tags system, job
    * @name PostApiSystemJob
    * @summary 创建定时任务
@@ -12864,7 +13773,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个定时任务
+   * @description 批量创建多个定时任务记录。 **参数说明：** - data: 任务数组，每个元素包含 name、group、invokeTarget、cronExpression 等字段 **使用场景：** 1. 系统初始化时批量创建默认任务 2. 导入任务配置 3. 批量添加某类任务 **示例：** ```json { "data": [ { "name": "清理日志", "group": "SYSTEM", "invokeTarget": "logTask.clean", "cronExpression": "0 0 3 * * ?" }, { "name": "数据备份", "group": "SYSTEM", "invokeTarget": "backupTask.run", "cronExpression": "0 0 4 * * ?" } ] } ```
    * @tags system, job
    * @name PostApiSystemJobBatch
    * @summary 批量创建定时任务
@@ -12880,7 +13789,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个任务日志
+   * @description 创建单个任务执行日志记录（通常由任务调度器自动调用）。 **必填字段：** - jobName: 任务名称 - jobGroup: 任务分组 - invokeTarget: 调用目标 **可选字段：** - jobMessage: 执行消息 - status: 执行状态，"0"=成功，"1"=失败 - exceptionInfo: 异常信息（失败时记录） - startTime: 开始时间 - stopTime: 结束时间 **使用场景：** 1. 任务执行开始时创建日志 2. 任务执行完成后更新状态 3. 手动记录任务执行情况 **示例：** ```json { "data": { "jobName": "清理临时文件", "jobGroup": "SYSTEM", "invokeTarget": "cleanTask.execute", "status": "0", "jobMessage": "清理完成，删除100个文件", "startTime": "2024-01-01T02:00:00Z", "stopTime": "2024-01-01T02:00:30Z" } } ```
    * @tags system, jobLog
    * @name PostApiSystemJobLog
    * @summary 创建任务日志
@@ -12896,7 +13805,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个任务日志
+   * @description 批量创建多个任务执行日志记录。 **参数说明：** - data: 日志数组，每个元素包含 jobName、jobGroup、invokeTarget 等字段 **使用场景：** 1. 批量导入历史执行记录 2. 批量任务执行后统一记录 **示例：** ```json { "data": [ { "jobName": "任务A", "jobGroup": "DEFAULT", "invokeTarget": "taskA.run", "status": "0" }, { "jobName": "任务B", "jobGroup": "DEFAULT", "invokeTarget": "taskB.run", "status": "0" } ] } ```
    * @tags system, jobLog
    * @name PostApiSystemJobLogBatch
    * @summary 批量创建任务日志
@@ -12912,7 +13821,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询任务日志列表
+   * @description 分页查询定时任务执行日志，用于监控任务执行情况。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - jobNames: 按任务名称列表精确查询 - jobGroups: 按任务分组列表精确查询 - status: 按状态过滤，"0"=成功，"1"=失败 - jobName: 按任务名称模糊搜索 - jobGroup: 按任务分组模糊搜索 - startTimeStart/startTimeEnd: 执行开始时间范围 - createdAtStart/createdAtEnd: 记录创建时间范围 **排序参数 (sort)：** - field: jobName | jobGroup | startTime | stopTime | createdAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 查看某任务的执行历史：filter.jobName = "清理日志" 2. 查看执行失败的任务：filter.status = "1" 3. 查看今日执行记录：设置 startTimeStart/startTimeEnd **示例：** ```json { "filter": { "status": "1", "jobGroup": "SYSTEM" }, "sort": { "field": "startTime", "order": "desc" }, "offset": 0, "limit": 50 } ```
    * @tags system, jobLog
    * @name PostApiSystemJobLogQuery
    * @summary 分页查询任务日志
@@ -12928,7 +13837,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询定时任务列表
+   * @description 分页查询定时任务列表，用于管理系统定时任务。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按任务名称列表精确查询 - groups: 按任务分组列表精确查询，如 ["DEFAULT", "SYSTEM"] - status: 按状态过滤，"0"=正常，"1"=暂停 - concurrent: 是否允许并发，true/false - name: 按任务名称模糊搜索 - group: 按任务分组模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | group | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有正常运行的任务：filter.status = "0" 2. 获取某分组的任务：filter.group = "SYSTEM" 3. 搜索任务名称：filter.name = "清理" **示例：** ```json { "filter": { "status": "0", "group": "DEFAULT" }, "sort": { "field": "name", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, job
    * @name PostApiSystemJobQuery
    * @summary 分页查询定时任务
@@ -12944,7 +13853,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个登录日志
+   * @description 创建单个登录日志记录（通常由系统自动调用）。 **必填字段：** - loginName: 登录账号 - ipaddr: 登录IP地址 - status: 登录状态，"0"=成功，"1"=失败 **可选字段：** - loginLocation: 登录地点（根据IP解析） - browser: 浏览器类型 - os: 操作系统 - msg: 提示消息（失败时记录原因） - loginTime: 登录时间 **使用场景：** 1. 用户登录成功后记录 2. 用户登录失败后记录（含失败原因） 3. 安全审计日志 **示例：** ```json { "data": { "loginName": "admin", "ipaddr": "192.168.1.100", "loginLocation": "内网IP", "browser": "Chrome 120", "os": "Windows 10", "status": "0", "msg": "登录成功", "loginTime": "2024-01-01T10:00:00Z" } } ```
    * @tags system, loginInfo
    * @name PostApiSystemLoginInfo
    * @summary 创建登录日志
@@ -12960,7 +13869,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询登录日志列表
+   * @description 分页查询登录日志列表，用于审计和安全监控。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - loginNames: 按登录账号列表精确查询 - status: 按状态过滤，"0"=成功，"1"=失败 - loginName: 按登录账号模糊搜索 - ipaddr: 按IP地址模糊搜索，如 "192.168" 匹配内网IP - loginTimeStart/loginTimeEnd: 登录时间范围 - createdAtStart/createdAtEnd: 记录创建时间范围 **排序参数 (sort)：** - field: loginName | ipaddr | loginTime | createdAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 查看某用户的登录历史：filter.loginName = "admin" 2. 查看登录失败记录：filter.status = "1" 3. 查看某IP的登录记录：filter.ipaddr = "192.168.1" 4. 查看今日登录记录：设置 loginTimeStart/loginTimeEnd **示例：** ```json { "filter": { "status": "1", "loginName": "admin" }, "sort": { "field": "loginTime", "order": "desc" }, "offset": 0, "limit": 50 } ```
    * @tags system, loginInfo
    * @name PostApiSystemLoginInfoQuery
    * @summary 分页查询登录日志
@@ -12976,7 +13885,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个菜单
+   * @description 创建单个菜单项。 **必填字段：** - name: 菜单名称 - type: 菜单类型，M=目录，C=菜单，F=按钮 **可选字段：** - parentId: 父级菜单ID，null表示顶级 - path: 路由路径（菜单类型需要） - component: 组件路径 - permission: 权限标识（按钮类型需要） - icon: 图标 - orderNum: 排序号，默认0 - visible: 是否可见，默认true - status: 状态，"0"=正常，"1"=禁用 **示例 - 创建目录：** ```json { "data": { "name": "系统管理", "type": "M", "icon": "setting", "orderNum": 1 } } ``` **示例 - 创建菜单：** ```json { "data": { "name": "用户管理", "type": "C", "parentId": "parent-uuid", "path": "/system/users", "component": "system/users/index" } } ```
    * @tags system, menu
    * @name PostApiSystemMenu
    * @summary 创建菜单
@@ -12992,7 +13901,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个菜单
+   * @description 批量创建多个菜单项，适用于初始化场景。 **请求体：** - data: 菜单对象数组 **示例：** ```json { "data": [ { "name": "系统管理", "type": "M", "orderNum": 1 }, { "name": "用户管理", "type": "C", "parentId": "xxx", "path": "/system/users" } ] } ``` **返回：** 创建成功的菜单对象数组
    * @tags system, menu
    * @name PostApiSystemMenuBatch
    * @summary 批量创建菜单
@@ -13008,7 +13917,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询菜单列表
+   * @description 分页查询菜单列表，支持树形结构查询。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询 - types: 按类型列表查询，M=目录，C=菜单，F=按钮 - parentId: 按父级ID过滤，null表示查询顶级菜单 - type: 按单个类型过滤 - visible: 是否可见 - name: 按名称模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | orderNum | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例 - 查询顶级目录：** ```json { "filter": { "parentId": null, "type": "M" }, "sort": { "field": "orderNum", "order": "asc" } } ``` **示例 - 查询某目录下的菜单：** ```json { "filter": { "parentId": "parent-uuid", "types": ["C", "F"] } } ```
    * @tags system, menu
    * @name PostApiSystemMenuQuery
    * @summary 分页查询菜单
@@ -13024,10 +13933,10 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个通知
+   * @description 创建单个通知公告记录。 **必填字段：** - title: 通知标题 - type: 通知类型，"1"=通知，"2"=公告 - content: 通知内容（支持富文本HTML） **可选字段：** - status: 状态，"0"=正常（默认），"1"=关闭 - remark: 备注说明 **审计字段（自动填充）：** - createdBy/updatedBy: 创建人/更新人姓名 - createdAt/updatedAt: 创建/更新时间 **使用场景：** 1. 发布系统通知 2. 发布公司公告 3. 发布维护通知 **示例：** ```json { "data": { "title": "系统维护通知", "type": "1", "content": "<p>系统将于今晚22:00-24:00进行维护升级</p>", "status": "0" } } ```
    * @tags system, notice
    * @name PostApiSystemNotice
-   * @summary 创建通知
+   * @summary 创建通知公告
    * @request POST:/api/system/notice
    * @response `200` `PostApiSystemNoticeData` Response for status 200
    */
@@ -13040,10 +13949,10 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个通知
+   * @description 批量创建多个通知公告记录。 **参数说明：** - data: 通知数组，每个元素包含 title、type、content 等字段 **使用场景：** 1. 批量导入历史通知 2. 系统初始化时创建默认通知 3. 批量发布多条公告 **示例：** ```json { "data": [ { "title": "欢迎使用", "type": "1", "content": "欢迎使用本系统" }, { "title": "使用须知", "type": "2", "content": "请遵守使用规范" } ] } ```
    * @tags system, notice
    * @name PostApiSystemNoticeBatch
-   * @summary 批量创建通知
+   * @summary 批量创建通知公告
    * @request POST:/api/system/notice/batch
    * @response `200` `PostApiSystemNoticeBatchData` Response for status 200
    */
@@ -13056,10 +13965,10 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询通知列表
+   * @description 分页查询通知公告列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - titles: 按标题列表精确查询 - types: 按类型列表精确查询，如 ["1", "2"] - type: 按类型精确匹配，"1"=通知，"2"=公告 - status: 按状态过滤，"0"=正常，"1"=关闭 - title: 按标题模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: title | type | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有公告：filter.type = "2" 2. 搜索标题包含"系统"的通知：filter.title = "系统" 3. 获取最近一周的通知：设置 createdAtStart **示例：** ```json { "filter": { "type": "1", "status": "0" }, "sort": { "field": "createdAt", "order": "desc" }, "offset": 0, "limit": 10 } ```
    * @tags system, notice
    * @name PostApiSystemNoticeQuery
-   * @summary 分页查询通知
+   * @summary 分页查询通知公告
    * @request POST:/api/system/notice/query
    * @response `200` `PostApiSystemNoticeQueryData` Response for status 200
    */
@@ -13072,7 +13981,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个操作日志
+   * @description 创建单个操作日志记录（通常由系统自动调用）。 **必填字段：** - title: 操作模块，如 "用户管理"、"角色管理" - name: 操作人员姓名 - method: 请求方法，如 "POST"、"PUT"、"DELETE" - url: 请求URL **可选字段：** - businessType: 业务类型（0=其它，1=新增，2=修改，3=删除） - param: 请求参数（JSON字符串） - result: 返回结果（JSON字符串） - status: 操作状态，"0"=成功，"1"=失败 - errorMsg: 错误消息 - time: 操作时间 - costTime: 耗时（毫秒） **使用场景：** 1. API请求拦截器自动记录 2. 关键业务操作手动记录 3. 安全审计日志 **示例：** ```json { "data": { "title": "用户管理", "name": "admin", "method": "POST", "url": "/api/system/user", "businessType": 1, "param": "{\"name\":\"张三\"}", "status": "0", "costTime": 150 } } ```
    * @tags system, operationLog
    * @name PostApiSystemOperationLog
    * @summary 创建操作日志
@@ -13088,7 +13997,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询操作日志列表
+   * @description 分页查询操作日志列表，用于审计用户操作行为。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - titles: 按操作模块列表精确查询，如 ["用户管理", "角色管理"] - names: 按操作人员列表精确查询 - status: 按状态过滤，"0"=成功，"1"=失败 - title: 按操作模块模糊搜索，如 "用户" 匹配用户相关操作 - name: 按操作人员模糊搜索 - timeStart/timeEnd: 操作时间范围 **排序参数 (sort)：** - field: title | name | time - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 查看某用户的操作历史：filter.name = "admin" 2. 查看某模块的操作记录：filter.title = "用户管理" 3. 查看操作失败记录：filter.status = "1" 4. 查看今日操作记录：设置 timeStart/timeEnd **示例：** ```json { "filter": { "title": "用户", "status": "0" }, "sort": { "field": "time", "order": "desc" }, "offset": 0, "limit": 50 } ```
    * @tags system, operationLog
    * @name PostApiSystemOperationLogQuery
    * @summary 分页查询操作日志
@@ -13104,7 +14013,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个权限
+   * @description 创建单个权限记录。 **请求体参数 (data)：** - code: 权限编码，必填，如 "system:user:view" - name: 权限名称，必填，如 "查看用户" - type: 权限类型，必填，可选值：menu(菜单), button(按钮), api(接口) - module: 所属模块，必填，如 "system", "ai", "im" - parentId: 父级权限ID，可选，null表示顶级权限 - status: 状态，可选，默认true(启用) - orderNum: 排序号，可选，默认0 - remark: 备注，可选 **示例：** ```json { "data": { "code": "system:user:view", "name": "查看用户", "type": "menu", "module": "system", "parentId": null, "status": true, "orderNum": 1 } } ```
    * @tags system, permission
    * @name PostApiSystemPermission
    * @summary 创建权限
@@ -13120,7 +14029,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询权限列表
+   * @description 分页查询权限列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询，如 ["id1", "id2"] - codes: 按权限编码列表查询，如 ["system:user:view", "system:user:edit"] - types: 按类型列表查询，如 ["menu", "button", "api"] - modules: 按模块列表查询，如 ["system", "ai", "im"] - parentId: 按父级ID查询，null表示查询顶级权限 - status: 按状态过滤，true=启用，false=禁用 - code: 按权限编码模糊搜索 - name: 按权限名称模糊搜索 **排序参数 (sort)：** - field: code | name | orderNum | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-1000，默认100 **示例：** ```json { "filter": { "modules": ["system"], "status": true }, "sort": { "field": "orderNum", "order": "asc" }, "offset": 0, "limit": 100 } ```
    * @tags system, permission
    * @name PostApiSystemPermissionQuery
    * @summary 分页查询权限
@@ -13136,7 +14045,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个岗位
+   * @description 创建单个岗位记录。 **必填字段：** - code: 岗位编码，唯一标识，如 "CEO"、"CTO"、"PM" - name: 岗位名称，如 "首席执行官"、"技术总监" **可选字段：** - sort: 排序号，数字越小越靠前，默认0 - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注说明 **审计字段（自动填充）：** - createdBy/updatedBy: 创建人/更新人姓名 - createdAt/updatedAt: 创建/更新时间 **使用场景：** 1. 新增组织架构中的岗位 2. 初始化系统岗位数据 **示例：** ```json { "data": { "code": "PM", "name": "项目经理", "sort": 10, "status": "0", "remark": "负责项目管理" } } ```
    * @tags system, post
    * @name PostApiSystemPost
    * @summary 创建岗位
@@ -13152,7 +14061,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个岗位
+   * @description 批量创建多个岗位记录，适用于初始化或批量导入场景。 **参数说明：** - data: 岗位数组，每个元素包含 code、name 等字段 **使用场景：** 1. 系统初始化时批量创建岗位 2. 从Excel导入岗位数据 3. 复制其他系统的岗位配置 **示例：** ```json { "data": [ { "code": "CEO", "name": "首席执行官", "sort": 1 }, { "code": "CTO", "name": "技术总监", "sort": 2 }, { "code": "CFO", "name": "财务总监", "sort": 3 } ] } ```
    * @tags system, post
    * @name PostApiSystemPostBatch
    * @summary 批量创建岗位
@@ -13168,7 +14077,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询岗位列表
+   * @description 分页查询岗位列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询，如 ["id1", "id2"] - codes: 按岗位编码列表精确查询，如 ["CEO", "CTO", "PM"] - names: 按岗位名称列表精确查询 - status: 按状态过滤，"0"=正常，"1"=禁用 - code: 按岗位编码模糊搜索，如 "C" 匹配 CEO、CTO - name: 按岗位名称模糊搜索 **排序参数 (sort)：** - field: code | name | sort | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有正常状态的岗位：filter.status = "0" 2. 搜索包含"经理"的岗位：filter.name = "经理" 3. 按排序号升序排列：sort = { field: "sort", order: "asc" } **示例：** ```json { "filter": { "status": "0", "name": "经理" }, "sort": { "field": "sort", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, post
    * @name PostApiSystemPostQuery
    * @summary 分页查询岗位
@@ -13184,7 +14093,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个角色
+   * @description 创建单个角色。 **必填字段：** - name: 角色名称 - key: 角色标识（唯一，如 admin, user, editor） **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - sort: 排序号，默认0 - remark: 备注 **示例：** ```json { "data": { "name": "编辑员", "key": "editor", "status": "0", "sort": 10 } } ```
    * @tags system, role
    * @name PostApiSystemRole
    * @summary 创建角色
@@ -13200,7 +14109,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个角色
+   * @description 批量创建多个角色，适用于初始化场景。 **请求体：** - data: 角色对象数组 **示例：** ```json { "data": [ { "name": "管理员", "key": "admin" }, { "name": "普通用户", "key": "user" } ] } ``` **返回：** 创建成功的角色对象数组
    * @tags system, role
    * @name PostApiSystemRoleBatch
    * @summary 批量创建角色
@@ -13216,7 +14125,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个角色部门关联
+   * @description 创建单个角色与部门的关联关系。 **请求体参数 (data)：** - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **使用场景：** - 为角色配置数据权限范围 - 角色可访问指定部门的数据 **示例：** ```json { "data": { "roleId": "550e8400-e29b-41d4-a716-446655440001", "departmentId": "550e8400-e29b-41d4-a716-446655440002" } } ```
    * @tags system, roleDepartment
    * @name PostApiSystemRoleDepartment
    * @summary 创建角色部门关联
@@ -13232,7 +14141,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个角色部门关联
+   * @description 批量创建多个角色与部门的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **使用场景：** - 为角色一次性配置多个部门的数据权限 - 批量导入角色部门关联 **示例：** ```json { "data": [ { "roleId": "role-1", "departmentId": "dept-1" }, { "roleId": "role-1", "departmentId": "dept-2" }, { "roleId": "role-1", "departmentId": "dept-3" } ] } ```
    * @tags system, roleDepartment
    * @name PostApiSystemRoleDepartmentBatch
    * @summary 批量创建角色部门关联
@@ -13248,7 +14157,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询角色部门关联列表
+   * @description 分页查询角色与部门的关联关系，用于数据权限控制。 **过滤参数 (filter)：** - roleIds: 按角色ID列表查询，如 ["role-id-1", "role-id-2"] - departmentIds: 按部门ID列表查询，如 ["dept-id-1", "dept-id-2"] - roleId: 按单个角色ID精确查询 - departmentId: 按单个部门ID精确查询 **排序参数 (sort)：** - field: roleId | departmentId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某角色关联的所有部门 - 查询某部门关联的所有角色 - 数据权限范围配置 **示例：** ```json { "filter": { "roleId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "departmentId", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, roleDepartment
    * @name PostApiSystemRoleDepartmentQuery
    * @summary 分页查询角色部门关联
@@ -13264,7 +14173,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个角色菜单关联
+   * @description 创建单个角色与菜单的关联关系。 **请求体参数 (data)：** - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **使用场景：** - 为角色分配单个菜单权限 - 动态添加菜单访问权限 **示例：** ```json { "data": { "roleId": "550e8400-e29b-41d4-a716-446655440001", "menuId": "550e8400-e29b-41d4-a716-446655440002" } } ```
    * @tags system, roleMenu
    * @name PostApiSystemRoleMenu
    * @summary 创建角色菜单关联
@@ -13280,7 +14189,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个角色菜单关联
+   * @description 批量创建多个角色与菜单的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **使用场景：** - 为角色一次性分配多个菜单权限 - 批量导入角色菜单关联 **示例：** ```json { "data": [ { "roleId": "role-1", "menuId": "menu-1" }, { "roleId": "role-1", "menuId": "menu-2" }, { "roleId": "role-1", "menuId": "menu-3" } ] } ```
    * @tags system, roleMenu
    * @name PostApiSystemRoleMenuBatch
    * @summary 批量创建角色菜单关联
@@ -13296,7 +14205,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询角色菜单关联列表
+   * @description 分页查询角色与菜单的关联关系，用于菜单权限控制。 **过滤参数 (filter)：** - roleIds: 按角色ID列表查询，如 ["role-id-1", "role-id-2"] - menuIds: 按菜单ID列表查询，如 ["menu-id-1", "menu-id-2"] - roleId: 按单个角色ID精确查询 - menuId: 按单个菜单ID精确查询 **排序参数 (sort)：** - field: roleId | menuId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某角色关联的所有菜单 - 查询某菜单关联的所有角色 - 菜单权限配置 **示例：** ```json { "filter": { "roleId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "menuId", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, roleMenu
    * @name PostApiSystemRoleMenuQuery
    * @summary 分页查询角色菜单关联
@@ -13312,7 +14221,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询角色列表，自动排除已删除数据
+   * @description 分页查询角色列表，自动排除已删除数据。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询 - keys: 按角色标识列表精确查询，如 ["admin", "user"] - status: 按状态过滤，"0"=正常，"1"=禁用 - name: 按名称模糊搜索 - key: 按角色标识模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | key | sort | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "status": "0" }, "sort": { "field": "sort", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, role
    * @name PostApiSystemRoleQuery
    * @summary 分页查询角色
@@ -13325,38 +14234,6 @@ export namespace System {
     export type RequestBody = PostApiSystemRoleQueryPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiSystemRoleQueryData;
-  }
-
-  /**
-   * @description 创建单个令牌
-   * @tags system, token
-   * @name PostApiSystemToken
-   * @summary 创建令牌
-   * @request POST:/api/system/token
-   * @response `200` `PostApiSystemTokenData` Response for status 200
-   */
-  export namespace PostApiSystemToken {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiSystemTokenPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiSystemTokenData;
-  }
-
-  /**
-   * @description 分页查询令牌列表
-   * @tags system, token
-   * @name PostApiSystemTokenQuery
-   * @summary 分页查询令牌
-   * @request POST:/api/system/token/query
-   * @response `200` `PostApiSystemTokenQueryData` Response for status 200
-   */
-  export namespace PostApiSystemTokenQuery {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = PostApiSystemTokenQueryPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PostApiSystemTokenQueryData;
   }
 
   /**
@@ -13410,7 +14287,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个用户岗位关联
+   * @description 创建单个用户与岗位的关联关系。 **请求体参数 (data)：** - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **使用场景：** - 为用户分配单个岗位 - 用户入职时配置岗位 **示例：** ```json { "data": { "userId": "550e8400-e29b-41d4-a716-446655440001", "postId": "550e8400-e29b-41d4-a716-446655440002" } } ```
    * @tags system, userPost
    * @name PostApiSystemUserPost
    * @summary 创建用户岗位关联
@@ -13426,7 +14303,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个用户岗位关联
+   * @description 批量创建多个用户与岗位的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **使用场景：** - 为用户一次性分配多个岗位 - 批量导入用户岗位关联 **示例：** ```json { "data": [ { "userId": "user-1", "postId": "post-1" }, { "userId": "user-1", "postId": "post-2" }, { "userId": "user-2", "postId": "post-1" } ] } ```
    * @tags system, userPost
    * @name PostApiSystemUserPostBatch
    * @summary 批量创建用户岗位关联
@@ -13442,7 +14319,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询用户岗位关联列表
+   * @description 分页查询用户与岗位的关联关系。 **过滤参数 (filter)：** - userIds: 按用户ID列表查询，如 ["user-id-1", "user-id-2"] - postIds: 按岗位ID列表查询，如 ["post-id-1", "post-id-2"] - userId: 按单个用户ID精确查询 - postId: 按单个岗位ID精确查询 **排序参数 (sort)：** - field: userId | postId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某用户关联的所有岗位 - 查询某岗位关联的所有用户 - 用户岗位配置管理 **示例：** ```json { "filter": { "userId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "postId", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, userPost
    * @name PostApiSystemUserPostQuery
    * @summary 分页查询用户岗位关联
@@ -13474,7 +14351,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个用户角色关联
+   * @description 创建单个用户与角色的关联关系。 **请求体参数 (data)：** - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **使用场景：** - 为用户分配单个角色 - 动态添加用户权限 **示例：** ```json { "data": { "userId": "550e8400-e29b-41d4-a716-446655440001", "roleId": "550e8400-e29b-41d4-a716-446655440002" } } ```
    * @tags system, userRole
    * @name PostApiSystemUserRole
    * @summary 创建用户角色关联
@@ -13490,7 +14367,7 @@ export namespace System {
   }
 
   /**
-   * @description 批量创建多个用户角色关联
+   * @description 批量创建多个用户与角色的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **使用场景：** - 为用户一次性分配多个角色 - 批量导入用户角色关联 **示例：** ```json { "data": [ { "userId": "user-1", "roleId": "role-1" }, { "userId": "user-1", "roleId": "role-2" }, { "userId": "user-2", "roleId": "role-1" } ] } ```
    * @tags system, userRole
    * @name PostApiSystemUserRoleBatch
    * @summary 批量创建用户角色关联
@@ -13506,7 +14383,7 @@ export namespace System {
   }
 
   /**
-   * @description 分页查询用户角色关联列表
+   * @description 分页查询用户与角色的关联关系，用于权限控制。 **过滤参数 (filter)：** - userIds: 按用户ID列表查询，如 ["user-id-1", "user-id-2"] - roleIds: 按角色ID列表查询，如 ["role-id-1", "role-id-2"] - userId: 按单个用户ID精确查询 - roleId: 按单个角色ID精确查询 **排序参数 (sort)：** - field: userId | roleId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某用户关联的所有角色 - 查询某角色关联的所有用户 - 用户角色配置管理 **示例：** ```json { "filter": { "userId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "roleId", "order": "asc" }, "offset": 0, "limit": 20 } ```
    * @tags system, userRole
    * @name PostApiSystemUserRoleQuery
    * @summary 分页查询用户角色关联
@@ -13560,10 +14437,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新配置
+   * @description 根据ID列表批量更新系统配置，所有指定的配置将应用相同的更新数据。 **参数说明：** - ids: 要更新的配置ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量修改配置属性 2. 批量添加备注 3. 批量调整 isSystem 标识 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "isSystem": false, "remark": "已迁移为自定义配置" } } ```
    * @tags system, config
    * @name PutApiSystemConfigBatch
-   * @summary 批量更新配置
+   * @summary 批量更新系统配置
    * @request PUT:/api/system/config/batch
    * @response `200` `PutApiSystemConfigBatchData` Response for status 200
    */
@@ -13576,10 +14453,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个配置
+   * @description 根据ID更新单个系统配置信息。 **路径参数：** - id: 配置UUID **可更新字段：** - name: 配置名称 - key: 配置键（建议不要修改已使用的key） - value: 配置值 - isSystem: 是否系统内置 - remark: 备注 **使用场景：** 1. 修改配置值 2. 更新配置说明 3. 调整配置属性 **注意事项：** - 系统内置配置（isSystem=true）修改需谨慎 - 修改 key 可能影响依赖此配置的功能 **示例：** ```json // PUT /api/system/config/550e8400-e29b-41d4-a716-446655440000 { "data": { "value": "新的配置值", "remark": "更新于2024-01-01" } } ```
    * @tags system, config
    * @name PutApiSystemConfigById
-   * @summary 更新配置
+   * @summary 更新系统配置
    * @request PUT:/api/system/config/{id}
    * @response `200` `PutApiSystemConfigByIdData` Response for status 200
    */
@@ -13628,7 +14505,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新字典
+   * @description 根据ID列表批量更新多个字典项。 **请求体：** - ids: 要更新的字典ID数组 - data: 更新数据对象 **使用场景：** - 批量启用/禁用字典项 **示例：** ```json { "ids": ["dict-id-1", "dict-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的字典对象数组
    * @tags system, dict
    * @name PutApiSystemDictBatch
    * @summary 批量更新字典
@@ -13644,7 +14521,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个字典
+   * @description 根据ID更新单个字典项的信息。 **路径参数：** - id: 字典项的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - group: 字典分组 - label: 显示标签 - value: 字典值 - status: 状态 - isDefault: 是否默认值 - sort: 排序号 - remark: 备注 **示例：** ```json PUT /api/system/dict/xxx-uuid { "data": { "label": "已启用", "sort": 1 } } ```
    * @tags system, dict
    * @name PutApiSystemDictById
    * @summary 更新字典
@@ -13662,7 +14539,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据Key列表批量更新字典组
+   * @description 根据Key列表批量更新字典组。 **参数说明：** - keys: 要更新的字典组键数组 - data: 更新的字段数据 **使用场景：** 1. 批量启用/禁用字典组 2. 批量添加备注 **示例：** ```json { "keys": ["sys_user_sex", "sys_normal_disable"], "data": { "status": "1", "remark": "已停用" } } ```
    * @tags system, dictGroup
    * @name PutApiSystemDictGroupBatch
    * @summary 批量更新字典组
@@ -13678,7 +14555,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据Key更新单个字典组
+   * @description 根据Key更新单个字典组信息。 **路径参数：** - key: 字典组键 **可更新字段：** - name: 字典组名称 - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **注意事项：** - key 作为主键不可修改 - 禁用字典组会影响使用该字典的功能 **示例：** ```json // PUT /api/system/dict-group/sys_user_sex { "data": { "name": "性别", "status": "0" } } ```
    * @tags system, dictGroup
    * @name PutApiSystemDictGroupByKey
    * @summary 更新字典组
@@ -13700,7 +14577,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新定时任务
+   * @description 根据ID列表批量更新定时任务，所有指定的任务将应用相同的更新数据。 **参数说明：** - ids: 要更新的任务ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量暂停任务：设置 status = "1" 2. 批量恢复任务：设置 status = "0" 3. 批量修改任务分组 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1", "remark": "维护期间暂停" } } ```
    * @tags system, job
    * @name PutApiSystemJobBatch
    * @summary 批量更新定时任务
@@ -13716,7 +14593,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个定时任务
+   * @description 根据ID更新单个定时任务信息。 **路径参数：** - id: 任务UUID **可更新字段：** - name: 任务名称 - group: 任务分组 - invokeTarget: 调用目标 - cronExpression: Cron表达式 - misfirePolicy: 错过执行策略 - concurrent: 是否允许并发 - status: 状态，"0"=正常，"1"=暂停 - remark: 备注 **使用场景：** 1. 修改任务执行时间（cronExpression） 2. 暂停/恢复任务（status） 3. 调整任务配置 **示例：** ```json // PUT /api/system/job/550e8400-e29b-41d4-a716-446655440000 { "data": { "cronExpression": "0 0 3 * * ?", "status": "0" } } ```
    * @tags system, job
    * @name PutApiSystemJobById
    * @summary 更新定时任务
@@ -13734,7 +14611,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新任务日志
+   * @description 根据ID列表批量更新任务执行日志。 **参数说明：** - ids: 要更新的日志ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量标记日志状态 2. 批量添加备注 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1" } } ```
    * @tags system, jobLog
    * @name PutApiSystemJobLogBatch
    * @summary 批量更新任务日志
@@ -13750,7 +14627,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个任务日志
+   * @description 根据ID更新单个任务执行日志信息。 **路径参数：** - id: 日志UUID **可更新字段：** - jobMessage: 执行消息 - status: 执行状态 - exceptionInfo: 异常信息 - stopTime: 结束时间 **使用场景：** 1. 任务执行完成后更新状态和结束时间 2. 记录任务执行异常信息 **示例：** ```json // PUT /api/system/job-log/550e8400-e29b-41d4-a716-446655440000 { "data": { "status": "1", "exceptionInfo": "连接超时", "stopTime": "2024-01-01T02:01:00Z" } } ```
    * @tags system, jobLog
    * @name PutApiSystemJobLogById
    * @summary 更新任务日志
@@ -13768,7 +14645,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新菜单
+   * @description 根据ID列表批量更新多个菜单。 **请求体：** - ids: 要更新的菜单ID数组 - data: 更新数据对象 **使用场景：** - 批量显示/隐藏菜单 - 批量启用/禁用菜单 **示例：** ```json { "ids": ["menu-id-1", "menu-id-2"], "data": { "visible": false } } ``` **返回：** 更新成功的菜单对象数组
    * @tags system, menu
    * @name PutApiSystemMenuBatch
    * @summary 批量更新菜单
@@ -13784,7 +14661,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个菜单
+   * @description 根据ID更新单个菜单的信息。 **路径参数：** - id: 菜单的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 菜单名称 - type: 菜单类型 - parentId: 父级菜单ID - path: 路由路径 - component: 组件路径 - permission: 权限标识 - icon: 图标 - orderNum: 排序号 - visible: 是否可见 - status: 状态 **示例：** ```json PUT /api/system/menu/xxx-uuid { "data": { "visible": false, "orderNum": 10 } } ```
    * @tags system, menu
    * @name PutApiSystemMenuById
    * @summary 更新菜单
@@ -13802,10 +14679,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新通知
+   * @description 根据ID列表批量更新通知公告，所有指定的通知将应用相同的更新数据。 **参数说明：** - ids: 要更新的通知ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量关闭过期通知：设置 status = "1" 2. 批量修改通知类型 3. 批量添加备注 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1", "remark": "已过期" } } ```
    * @tags system, notice
    * @name PutApiSystemNoticeBatch
-   * @summary 批量更新通知
+   * @summary 批量更新通知公告
    * @request PUT:/api/system/notice/batch
    * @response `200` `PutApiSystemNoticeBatchData` Response for status 200
    */
@@ -13818,10 +14695,10 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个通知
+   * @description 根据ID更新单个通知公告信息。 **路径参数：** - id: 通知公告UUID **可更新字段：** - title: 通知标题 - type: 通知类型，"1"=通知，"2"=公告 - content: 通知内容 - status: 状态，"0"=正常，"1"=关闭 - remark: 备注 **使用场景：** 1. 修改通知内容 2. 关闭过期通知 3. 更改通知类型 **示例：** ```json // PUT /api/system/notice/550e8400-e29b-41d4-a716-446655440000 { "data": { "title": "系统维护通知（已完成）", "status": "1" } } ```
    * @tags system, notice
    * @name PutApiSystemNoticeById
-   * @summary 更新通知
+   * @summary 更新通知公告
    * @request PUT:/api/system/notice/{id}
    * @response `200` `PutApiSystemNoticeByIdData` Response for status 200
    */
@@ -13836,7 +14713,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个权限
+   * @description 根据ID更新权限信息。 **路径参数：** - id: 权限UUID，必填 **请求体参数 (data)：** - code: 权限编码，可选 - name: 权限名称，可选 - type: 权限类型，可选 - module: 所属模块，可选 - parentId: 父级权限ID，可选 - status: 状态，可选 - orderNum: 排序号，可选 - remark: 备注，可选 **示例：** PUT /api/system/permission/550e8400-e29b-41d4-a716-446655440000 ```json { "data": { "name": "用户管理", "status": false, "orderNum": 10 } } ```
    * @tags system, permission
    * @name PutApiSystemPermissionById
    * @summary 更新权限
@@ -13854,7 +14731,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新岗位
+   * @description 根据ID列表批量更新岗位，所有指定的岗位将应用相同的更新数据。 **参数说明：** - ids: 要更新的岗位ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量启用/禁用岗位：设置 status 2. 批量调整排序：设置 sort 3. 批量添加备注 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1", "remark": "已停用" } } ```
    * @tags system, post
    * @name PutApiSystemPostBatch
    * @summary 批量更新岗位
@@ -13870,7 +14747,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个岗位
+   * @description 根据ID更新单个岗位信息。 **路径参数：** - id: 岗位UUID **可更新字段：** - code: 岗位编码 - name: 岗位名称 - sort: 排序号 - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **使用场景：** 1. 修改岗位名称或编码 2. 调整岗位排序 3. 启用/禁用岗位 **示例：** ```json // PUT /api/system/post/550e8400-e29b-41d4-a716-446655440000 { "data": { "name": "高级项目经理", "sort": 5, "status": "0" } } ```
    * @tags system, post
    * @name PutApiSystemPostById
    * @summary 更新岗位
@@ -13888,7 +14765,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID列表批量更新角色
+   * @description 根据ID列表批量更新多个角色。 **请求体：** - ids: 要更新的角色ID数组 - data: 更新数据对象 **注意事项：** - 如果列表中包含管理员角色，会抛出错误 **示例：** ```json { "ids": ["role-id-1", "role-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的角色对象数组
    * @tags system, role
    * @name PutApiSystemRoleBatch
    * @summary 批量更新角色
@@ -13904,7 +14781,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个角色
+   * @description 根据ID更新单个角色的信息。 **路径参数：** - id: 角色的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 角色名称 - key: 角色标识 - status: 状态，"0"=正常，"1"=禁用 - sort: 排序号 - remark: 备注 **注意事项：** - 管理员角色（key=admin）不允许修改 **示例：** ```json PUT /api/system/role/xxx-uuid { "data": { "status": "1", "remark": "已禁用" } } ```
    * @tags system, role
    * @name PutApiSystemRoleById
    * @summary 更新角色
@@ -13922,7 +14799,7 @@ export namespace System {
   }
 
   /**
-   * @description 设置指定角色的菜单列表（全量替换）
+   * @description 设置指定角色的菜单列表，采用全量替换方式。 **路径参数：** - roleId: 角色UUID，必填 **请求体参数：** - menuIds: 菜单ID数组，必填，可为空数组（清空所有菜单权限） **操作逻辑：** 1. 删除该角色的所有现有菜单关联 2. 插入新的菜单关联列表 **使用场景：** - 角色菜单权限配置页面，保存角色的菜单权限 - 批量更新角色的菜单访问权限 **示例：** PUT /api/system/role-menu/role/550e8400-e29b-41d4-a716-446655440000 ```json { "menuIds": ["menu-id-1", "menu-id-2", "menu-id-3"] } ``` **清空菜单权限：** ```json { "menuIds": [] } ```
    * @tags system, roleMenu
    * @name PutApiSystemRoleMenuRoleByRoleId
    * @summary 设置角色菜单
@@ -13937,24 +14814,6 @@ export namespace System {
     export type RequestBody = PutApiSystemRoleMenuRoleByRoleIdPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiSystemRoleMenuRoleByRoleIdData;
-  }
-
-  /**
-   * @description 根据ID更新单个令牌
-   * @tags system, token
-   * @name PutApiSystemTokenById
-   * @summary 更新令牌
-   * @request PUT:/api/system/token/{id}
-   * @response `200` `PutApiSystemTokenByIdData` Response for status 200
-   */
-  export namespace PutApiSystemTokenById {
-    export type RequestParams = {
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiSystemTokenByIdPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiSystemTokenByIdData;
   }
 
   /**
@@ -13992,7 +14851,7 @@ export namespace System {
   }
 
   /**
-   * @description 设置指定用户的角色列表（全量替换）
+   * @description 设置指定用户的角色列表，采用全量替换方式。 **路径参数：** - userId: 用户UUID，必填 **请求体参数：** - roleIds: 角色ID数组，必填，可为空数组（清空所有角色） **操作逻辑：** 1. 删除该用户的所有现有角色关联 2. 插入新的角色关联列表 **使用场景：** - 用户编辑页面，保存用户的角色配置 - 批量更新用户的角色权限 **示例：** PUT /api/system/user-role/user/550e8400-e29b-41d4-a716-446655440000 ```json { "roleIds": ["role-id-1", "role-id-2", "role-id-3"] } ``` **清空角色：** ```json { "roleIds": [] } ```
    * @tags system, userRole
    * @name PutApiSystemUserRoleUserByUserId
    * @summary 设置用户角色
@@ -14012,7 +14871,7 @@ export namespace System {
 
 export namespace Knowledge {
   /**
-   * @description 取消收藏节点
+   * @description 取消收藏知识库节点。 **路径参数：** - nodeId: 节点UUID **返回：** - success: 是否成功（true表示已取消，false表示未找到收藏记录） **示例：** DELETE /api/knowledge/favorites/550e8400-e29b-41d4-a716-446655440000
    * @tags knowledge, favorite
    * @name DeleteApiKnowledgeFavoritesByNodeId
    * @summary 取消收藏
@@ -14021,6 +14880,7 @@ export namespace Knowledge {
    */
   export namespace DeleteApiKnowledgeFavoritesByNodeId {
     export type RequestParams = {
+      /** 节点 ID */
       nodeId: string;
     };
     export type RequestQuery = {};
@@ -14030,7 +14890,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 软删除节点（文件夹会递归删除子节点）
+   * @description 软删除节点（文件夹会递归删除所有子节点）。 **路径参数：** - id: 节点UUID **权限检查：** - 需要对该节点有 delete 权限 **行为：** - 软删除：设置 deletedAt 时间戳，不物理删除 - 文件夹：递归删除所有后代节点（使用物化路径批量更新） **返回：** - success: 是否成功 - deletedCount: 删除的节点数量（包括子节点） **示例：** DELETE /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000
    * @tags knowledge, node, mutation
    * @name DeleteApiKnowledgeNodesById
    * @summary 删除节点
@@ -14048,7 +14908,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 移除节点的权限
+   * @description 移除节点的权限条目。 **路径参数：** - id: 节点UUID - subjectType: "user" | "role" | "dept" - subjectId: 主体ID **查询参数：** - permission: 可选，指定移除的权限类型；不指定则移除该主体的所有权限 **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 **示例：** DELETE /api/knowledge/nodes/node-uuid/permissions/user/user-uuid?permission=write
    * @tags knowledge, permission
    * @name DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId
    * @summary 移除权限
@@ -14057,11 +14917,15 @@ export namespace Knowledge {
    */
   export namespace DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
+      /** 主体 ID */
       subjectId: string;
+      /** 主体类型：user=用户，role=角色，dept=部门 */
       subjectType: DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1SubjectTypeEnum;
     };
     export type RequestQuery = {
+      /** 要移除的特定权限，不指定则移除所有 */
       permission?: DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams1PermissionEnum;
     };
     export type RequestBody = never;
@@ -14071,7 +14935,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 根据主键ID查询单个节点
+   * @description 根据主键ID查询单个节点详情。 **路径参数：** - id: 节点UUID **返回：** - 节点完整信息，包含 id, name, type, path, size, mimeType 等 - 如果节点不存在或无权限，返回 null **权限检查：** - 需要对该节点有 read 权限 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000
    * @tags knowledge, node, query
    * @name GetApiKnowledgeNodesById
    * @summary 根据ID查询节点
@@ -14089,7 +14953,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取指定父节点下的所有子节点
+   * @description 获取指定父节点下的所有子节点。 **路径参数：** - id: 父节点ID，使用 "root" 表示根目录 **查询参数：** - type: 可选，筛选类型 "folder" | "file" **返回：** - data: 子节点数组，按类型和名称排序（文件夹在前） **使用场景：** - 文件管理器目录浏览 - 获取文件夹内容 **示例：** GET /api/knowledge/nodes/root/children?type=folder
    * @tags knowledge, node, query
    * @name GetApiKnowledgeNodesByIdChildren
    * @summary 获取子节点
@@ -14109,7 +14973,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取文件原始内容（不验证类型）
+   * @description 获取文件原始内容（不验证文件类型）。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **返回：** - content: 文件内容（字符串） - mimeType: MIME类型 **使用场景：** - 获取任意文件的原始内容 - 文件预览 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/content
    * @tags knowledge, content
    * @name GetApiKnowledgeNodesByIdContent
    * @summary 获取原始内容
@@ -14118,6 +14982,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdContent {
     export type RequestParams = {
+      /** 文件节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14127,7 +14992,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取文件预签名下载URL
+   * @description 获取文件预签名下载URL（1小时有效）。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **返回：** - url: 预签名下载URL - expiresAt: URL过期时间（ISO 8601） **副作用：** - 自动增加文件下载次数计数 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/download-url
    * @tags knowledge, content
    * @name GetApiKnowledgeNodesByIdDownloadUrl
    * @summary 获取下载URL
@@ -14136,6 +15001,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdDownloadUrl {
     export type RequestParams = {
+      /** 文件节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14145,7 +15011,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取用户对节点的有效权限
+   * @description 获取用户对节点的有效权限（考虑继承和角色）。 **路径参数：** - id: 节点UUID **查询参数：** - userId: 可选，目标用户ID；不指定则查询当前用户 **返回：** - data: 有效权限数组 - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny" - source: "direct" | "inherited" | "role" | "dept"（权限来源） - sourceId: 来源ID（如角色ID） **特殊情况：** - 节点创建者自动拥有所有权限 **示例：** GET /api/knowledge/nodes/node-uuid/effective-permissions?userId=user-uuid
    * @tags knowledge, permission
    * @name GetApiKnowledgeNodesByIdEffectivePermissions
    * @summary 获取有效权限
@@ -14154,9 +15020,11 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdEffectivePermissions {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {
+      /** 用户 ID，不指定则查询当前用户 */
       userId?: string;
     };
     export type RequestBody = never;
@@ -14165,7 +15033,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取节点的完整路径（面包屑）
+   * @description 获取节点的完整路径（面包屑导航）。 **路径参数：** - id: 节点UUID **返回：** - data: 路径节点数组（从根到当前节点） - id: 节点ID - name: 节点名称 - type: 节点类型 **使用场景：** - 面包屑导航 - 显示文件完整路径 **示例响应：** ```json { "data": [ { "id": "root-folder", "name": "文档", "type": "folder" }, { "id": "sub-folder", "name": "项目", "type": "folder" }, { "id": "current-file", "name": "readme.md", "type": "file" } ] } ```
    * @tags knowledge, operations
    * @name GetApiKnowledgeNodesByIdPath
    * @summary 获取节点路径
@@ -14174,6 +15042,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdPath {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14183,7 +15052,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取节点的权限列表
+   * @description 获取节点的权限列表（所有被授权的主体）。 **路径参数：** - id: 节点UUID **权限检查：** - 需要对该节点有 read 权限 **返回：** - permissions: 权限数组 - subjectType: "user" | "role" | "dept" - subjectId: 主体ID - resourceId: 节点ID - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny" **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/permissions
    * @tags knowledge, permission
    * @name GetApiKnowledgeNodesByIdPermissions
    * @summary 获取节点权限
@@ -14192,6 +15061,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdPermissions {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14201,7 +15071,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取文本文件内容
+   * @description 获取文本文件内容（用于在线编辑）。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **限制：** - 仅支持文本类型文件（.txt, .md, .json, .js, .ts 等） **返回：** - id: 节点ID - name: 文件名 - content: 文件内容（UTF-8字符串） - mimeType: MIME类型 - extension: 扩展名 - parentId: 父节点ID **使用场景：** - 在线文本编辑器 - Markdown 预览 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/text
    * @tags knowledge, content
    * @name GetApiKnowledgeNodesByIdText
    * @summary 获取文本内容
@@ -14210,6 +15080,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdText {
     export type RequestParams = {
+      /** 文件节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14219,7 +15090,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取文件的所有历史版本
+   * @description 获取文件的所有历史版本列表。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **限制：** - 仅支持文件类型节点 **返回：** - data: 版本数组，按创建时间倒序 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/versions
    * @tags knowledge, version
    * @name GetApiKnowledgeNodesByIdVersions
    * @summary 获取版本列表
@@ -14228,6 +15099,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeNodesByIdVersions {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14237,7 +15109,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取节点表的JSON Schema
+   * @description 获取知识库节点表的 JSON Schema 定义。 **返回：** - JSON Schema 对象，描述节点数据结构 **使用场景：** - 前端表单动态生成 - API 文档生成 - 数据验证
    * @tags knowledge, node, schema
    * @name GetApiKnowledgeNodesSchema
    * @summary 获取节点Schema
@@ -14253,7 +15125,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取历史版本的下载URL
+   * @description 获取历史版本的预签名下载URL（1小时有效）。 **路径参数：** - id: 版本记录UUID **权限检查：** - 需要对关联的文件节点有 read 权限 **返回：** - url: 预签名下载URL - expiresAt: URL过期时间（ISO 8601） **文件名格式：** - 自动添加版本号后缀，如 "document_v2.pdf" **示例：** GET /api/knowledge/versions/version-uuid/download-url
    * @tags knowledge, version
    * @name GetApiKnowledgeVersionsByIdDownloadUrl
    * @summary 下载历史版本
@@ -14262,6 +15134,7 @@ export namespace Knowledge {
    */
   export namespace GetApiKnowledgeVersionsByIdDownloadUrl {
     export type RequestParams = {
+      /** 版本 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14271,7 +15144,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取版本表的JSON Schema
+   * @description 获取文件版本表的 JSON Schema 定义。 **返回：** - JSON Schema 对象，描述版本数据结构 **使用场景：** - 前端表单动态生成 - API 文档生成
    * @tags knowledge, version
    * @name GetApiKnowledgeVersionsSchema
    * @summary 获取版本Schema
@@ -14287,7 +15160,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 收藏节点
+   * @description 收藏知识库节点（文件或文件夹）。 **请求体参数：** - nodeId: 节点UUID，必填 **行为：** - 如果已收藏，返回现有收藏记录（幂等操作） - 自动获取节点类型（folder/file） **返回：** - 收藏记录完整信息 **示例：** ```json { "nodeId": "550e8400-e29b-41d4-a716-446655440000" } ```
    * @tags knowledge, favorite
    * @name PostApiKnowledgeFavorites
    * @summary 添加收藏
@@ -14303,7 +15176,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 检查节点是否已收藏
+   * @description 批量检查节点是否已收藏。 **请求体参数：** - nodeIds: 节点ID数组，必填 **返回：** - favorites: 收藏状态映射 { nodeId: boolean } **使用场景：** - 文件列表显示收藏状态 - 批量操作前检查 **示例：** ```json { "nodeIds": ["uuid1", "uuid2", "uuid3"] } ``` **响应：** ```json { "favorites": { "uuid1": true, "uuid2": false, "uuid3": true } } ```
    * @tags knowledge, favorite
    * @name PostApiKnowledgeFavoritesCheck
    * @summary 检查收藏状态
@@ -14319,7 +15192,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取当前用户的收藏列表（带节点详情）
+   * @description 获取当前用户的收藏列表（带节点详情）。 **请求体参数：** - type: 节点类型筛选，可选 "folder" | "file" - limit: 每页数量，默认50，最大100 - offset: 偏移量，默认0 **返回：** - data: 收藏项数组，包含节点详情 - favoriteId: 收藏记录ID - nodeId: 节点ID - type: 节点类型 - name: 名称 - parentId: 父节点ID - icon, color, extension, mimeType, size - createdAt: 节点创建时间 - favoritedAt: 收藏时间 - total: 总数 **示例：** ```json { "type": "file", "limit": 20, "offset": 0 } ```
    * @tags knowledge, favorite
    * @name PostApiKnowledgeFavoritesList
    * @summary 获取收藏列表
@@ -14335,7 +15208,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 创建文件夹或文件节点
+   * @description 创建文件夹或文件节点。 **请求体参数：** - type: 节点类型，必填，"folder" | "file" - parentId: 父节点ID，可选，null表示根目录 - name: 名称，必填，1-255字符 - description: 描述，可选 - 文件夹特有：icon, color - 文件特有：extension, mimeType, size, storageKey, bucket, etag, versionId **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的节点完整信息 **示例（创建文件夹）：** ```json { "type": "folder", "parentId": null, "name": "我的文档", "icon": "folder", "color": "#4A90E2" } ```
    * @tags knowledge, node, mutation
    * @name PostApiKnowledgeNodes
    * @summary 创建节点
@@ -14351,7 +15224,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 复制节点到目标文件夹
+   * @description 复制节点到目标文件夹（自动处理重名）。 **路径参数：** - id: 要复制的节点UUID **请求体参数：** - targetParentId: 目标父节点ID，null表示复制到根目录 **权限检查：** - 需要对源节点有 read 权限 - 需要对目标文件夹有 write 权限 **行为：** - 如果目标位置存在同名文件，自动重命名（如 "file (1).txt"） - 复制文件的存储引用，不复制实际文件内容 **返回：** - 复制后的新节点完整信息 **示例：** ```json { "targetParentId": "target-folder-uuid" } ```
    * @tags knowledge, operations
    * @name PostApiKnowledgeNodesByIdCopy
    * @summary 复制节点
@@ -14360,6 +15233,7 @@ export namespace Knowledge {
    */
   export namespace PostApiKnowledgeNodesByIdCopy {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14369,7 +15243,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 移动节点到目标文件夹
+   * @description 移动节点到目标文件夹。 **路径参数：** - id: 要移动的节点UUID **请求体参数：** - targetParentId: 目标父节点ID，null表示移动到根目录 **权限检查：** - 需要对源节点有 write 权限 - 需要对目标文件夹有 write 权限 **限制：** - 不能移动到自身 - 文件夹不能移动到自己的后代节点 **返回：** - 移动后的节点完整信息 **示例：** ```json { "targetParentId": "target-folder-uuid" } ```
    * @tags knowledge, operations
    * @name PostApiKnowledgeNodesByIdMove
    * @summary 移动节点
@@ -14378,6 +15252,7 @@ export namespace Knowledge {
    */
   export namespace PostApiKnowledgeNodesByIdMove {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14387,7 +15262,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 为节点添加权限
+   * @description 为节点添加单个权限条目。 **路径参数：** - id: 节点UUID **请求体参数：** - subjectType: "user" | "role" | "dept" - subjectId: 主体ID - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny"，默认 "allow" **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 **示例：** ```json { "subjectType": "user", "subjectId": "user-uuid", "permission": "write", "effect": "allow" } ```
    * @tags knowledge, permission
    * @name PostApiKnowledgeNodesByIdPermissions
    * @summary 添加权限
@@ -14396,6 +15271,7 @@ export namespace Knowledge {
    */
   export namespace PostApiKnowledgeNodesByIdPermissions {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14405,7 +15281,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 快速共享节点给用户
+   * @description 快速共享节点给多个用户（简化的权限设置）。 **路径参数：** - id: 节点UUID **请求体参数：** - userIds: 用户ID数组 - level: 共享级别 - "read": 只读（read权限） - "edit": 可编辑（read + write权限） - "full": 完全控制（read + write + delete + manage权限） **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 - sharedCount: 实际共享的用户数（排除自己） **示例：** ```json { "userIds": ["user1-uuid", "user2-uuid"], "level": "edit" } ```
    * @tags knowledge, permission
    * @name PostApiKnowledgeNodesByIdQuickShare
    * @summary 快捷共享
@@ -14414,6 +15290,7 @@ export namespace Knowledge {
    */
   export namespace PostApiKnowledgeNodesByIdQuickShare {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14423,7 +15300,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 取消用户对节点的所有权限
+   * @description 取消用户对节点的所有权限（批量撤销）。 **路径参数：** - id: 节点UUID **请求体参数：** - userIds: 用户ID数组 **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 - revokedCount: 撤销的用户数 **示例：** ```json { "userIds": ["user1-uuid", "user2-uuid"] } ```
    * @tags knowledge, permission
    * @name PostApiKnowledgeNodesByIdRevokeShare
    * @summary 取消共享
@@ -14432,6 +15309,7 @@ export namespace Knowledge {
    */
   export namespace PostApiKnowledgeNodesByIdRevokeShare {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14441,7 +15319,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 检查指定父节点下是否存在同名节点
+   * @description 检查指定父节点下是否存在同名节点（批量检查）。 **请求体参数：** - parentId: 父节点ID，可选，null表示根目录 - names: 要检查的名称数组，必填 - type: 节点类型筛选，可选 "folder" | "file" **返回：** - exists: 已存在的节点数组 - name: 文件名 - nodeId: 节点ID - type: 类型 - size: 大小 - updatedAt: 更新时间 **使用场景：** - 上传前检查文件是否存在 - 批量操作前的冲突检测 **示例：** ```json { "parentId": "folder-uuid", "names": ["file1.txt", "file2.txt", "folder1"], "type": "file" } ```
    * @tags knowledge, operations
    * @name PostApiKnowledgeNodesCheckExists
    * @summary 检查节点是否存在
@@ -14457,7 +15335,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 批量软删除多个节点
+   * @description 批量软删除多个节点。 **请求体参数：** - ids: 节点ID数组 **权限检查：** - 逐个检查 delete 权限，无权限的节点会被跳过 **行为：** - 软删除：设置 deletedAt 时间戳 - 文件夹：递归删除所有后代节点 **返回：** - deletedCount: 实际删除的节点数量 **示例：** ```json { "ids": ["uuid1", "uuid2", "uuid3"] } ```
    * @tags knowledge, node, mutation
    * @name PostApiKnowledgeNodesDeleteBatch
    * @summary 批量删除节点
@@ -14473,7 +15351,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 分页查询知识库节点列表，自动筛选当前用户的节点
+   * @description 分页查询知识库节点列表，自动筛选当前用户的节点。 **请求体参数：** - filter: 过滤条件，可选 - ids: 节点ID数组（IN查询） - types: 类型数组 ["folder", "file"] - parentId: 父节点ID，null表示根目录 - type: 单个类型 "folder" | "file" - name: 名称模糊匹配 - extension: 扩展名模糊匹配 - createdAtStart/createdAtEnd: 创建时间范围 - isPublic: 是否公开 - sort: 排序，可选 - field: "name" | "type" | "size" | "orderNum" | "createdAt" | "updatedAt" - order: "asc" | "desc" - offset: 偏移量，默认0 - limit: 每页数量，默认20，最大100 **返回：** - data: 节点数组 - total: 总数 **示例：** ```json { "filter": { "parentId": null, "type": "folder" }, "sort": { "field": "name", "order": "asc" }, "limit": 20, "offset": 0 } ```
    * @tags knowledge, node, query
    * @name PostApiKnowledgeNodesQuery
    * @summary 分页查询节点
@@ -14489,7 +15367,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 全文搜索知识库节点
+   * @description 全文搜索知识库节点（按名称模糊匹配）。 **请求体参数：** - keyword: 搜索关键词，必填，1-100字符 - type: 节点类型筛选，可选 "folder" | "file" - limit: 返回数量限制，默认20，最大50 **返回：** - data: 匹配的节点数组 **使用场景：** - 文件搜索 - 快速定位文件 **示例：** ```json { "keyword": "readme", "type": "file", "limit": 10 } ```
    * @tags knowledge, operations
    * @name PostApiKnowledgeNodesSearch
    * @summary 搜索节点
@@ -14505,7 +15383,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取当前用户共享给他人的节点
+   * @description 获取当前用户共享给他人的节点列表。 **请求体参数：** - type: 节点类型筛选，可选 "folder" | "file" - limit: 每页数量，默认50，最大100 - offset: 偏移量，默认0 **返回：** - data: 共享项数组 - node: 节点完整信息 - sharedTo: 共享对象数组 - subjectType: "user" | "role" | "dept" - subjectId: 对象ID - permission: 权限级别 - total: 总数 **使用场景：** - "我的共享"页面 - 管理已共享的文件 **示例：** ```json { "type": "file", "limit": 20 } ```
    * @tags knowledge, share
    * @name PostApiKnowledgeShareMyShared
    * @summary 获取我共享的资源
@@ -14521,7 +15399,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取他人共享给当前用户的节点，支持文件夹层级浏览
+   * @description 获取他人共享给当前用户的节点，支持文件夹层级浏览。 **请求体参数：** - folderId: 文件夹ID，可选，用于浏览共享文件夹内容 - type: 节点类型筛选，可选 "folder" | "file" - limit: 每页数量，默认50，最大100 - offset: 偏移量，默认0 **返回：** - data: 共享项数组 - node: 节点完整信息 - permissions: 权限数组 ["read", "write", ...] - permissionSource: "direct" | "inherited"（权限来源） - sharedBy: 共享者信息 { userId, userName } - total: 总数 **权限继承：** - 进入共享文件夹后，子节点继承父节点权限 - 直接权限优先于继承权限 **使用场景：** - "收到的共享"页面 - 浏览他人共享的文件夹 **示例：** ```json { "folderId": "shared-folder-uuid", "type": "file", "limit": 20 } ```
    * @tags knowledge, share
    * @name PostApiKnowledgeShareSharedWithMe
    * @summary 获取共享给我的资源
@@ -14537,7 +15415,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 确认文件上传完成并创建节点
+   * @description 确认文件上传完成并创建节点记录。 **请求体参数：** - parentId: 父文件夹ID，可选 - name: 文件名，必填，1-255字符 - storageKey: 存储路径，必填（从 getUrl 返回） - mimeType: MIME类型，必填 - size: 文件大小（字节），必填 - description: 描述，可选 **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的文件节点完整信息 **使用场景：** - 大文件上传完成后调用 - 配合 getUrl 使用 **示例：** ```json { "parentId": "folder-uuid", "name": "document.pdf", "storageKey": "knowledge/user-id/xxx/document.pdf", "mimeType": "application/pdf", "size": 1048576 } ```
    * @tags knowledge, upload
    * @name PostApiKnowledgeUploadConfirm
    * @summary 确认上传
@@ -14553,7 +15431,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 直接上传小文件（Base64）
+   * @description 直接上传小文件（Base64编码），自动检测同名冲突。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，可选，默认 application/octet-stream - description: 描述，可选 **返回：** - success: 是否成功 - node: 创建的节点（成功时） - conflict: 冲突信息（存在同名文件时） - nodeId: 已存在节点ID - name: 文件名 - size: 文件大小 - updatedAt: 更新时间 **使用场景：** - 小文件快速上传（<5MB） - 文本文件创建 **示例：** ```json { "parentId": null, "name": "readme.md", "content": "IyBIZWxsbyBXb3JsZA==", "mimeType": "text/markdown" } ```
    * @tags knowledge, upload
    * @name PostApiKnowledgeUploadDirect
    * @summary 直接上传
@@ -14569,7 +15447,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 上传文件并处理冲突（覆盖/新版本/副本）
+   * @description 上传文件并处理同名冲突，支持覆盖、新版本、副本三种模式。 **请求体参数：** - parentId: 父文件夹ID，可选 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，可选 - description: 描述，可选 - conflictMode: 冲突处理模式，必填 - "overwrite": 覆盖现有文件 - "newVersion": 保存为新版本（保留历史） - "copy": 创建副本（自动重命名） - existingNodeId: 现有节点ID（overwrite/newVersion模式必填） **权限检查：** - overwrite/newVersion: 需要对现有节点有 write 权限 - copy: 需要对父节点有 write 权限 **返回：** - 创建/更新的节点完整信息 **示例（覆盖）：** ```json { "name": "report.xlsx", "content": "...", "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "conflictMode": "overwrite", "existingNodeId": "existing-file-uuid" } ```
    * @tags knowledge, upload
    * @name PostApiKnowledgeUploadForce
    * @summary 强制上传
@@ -14585,7 +15463,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取预签名上传URL
+   * @description 获取预签名上传URL，用于大文件分片上传。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - filename: 文件名，必填，1-255字符 - mimeType: MIME类型，必填 **返回：** - uploadUrl: 预签名上传URL（直接PUT到此URL） - storageKey: 存储路径，用于后续确认上传 - expiresAt: URL过期时间（ISO 8601） **使用场景：** - 大文件上传（>5MB） - 前端直传S3/MinIO **示例：** ```json { "parentId": "folder-uuid", "filename": "large-file.zip", "mimeType": "application/zip" } ```
    * @tags knowledge, upload
    * @name PostApiKnowledgeUploadUrl
    * @summary 获取上传URL
@@ -14601,7 +15479,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 将历史版本恢复为当前版本
+   * @description 将历史版本恢复为当前版本。 **路径参数：** - id: 版本记录UUID **权限检查：** - 需要对关联的文件节点有 write 权限 **行为：** 1. 将当前文件保存为新版本（保留历史） 2. 将历史版本的存储信息更新到主节点 3. 增加版本计数 **返回：** - 更新后的文件节点完整信息 **示例：** POST /api/knowledge/versions/version-uuid/restore
    * @tags knowledge, version
    * @name PostApiKnowledgeVersionsByIdRestore
    * @summary 恢复历史版本
@@ -14610,6 +15488,7 @@ export namespace Knowledge {
    */
   export namespace PostApiKnowledgeVersionsByIdRestore {
     export type RequestParams = {
+      /** 版本 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14619,7 +15498,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 分页查询文件版本列表
+   * @description 分页查询文件版本列表。 **请求体参数：** - filter: 过滤条件，可选 - nodeIds: 节点ID数组（IN查询） - nodeId: 单个节点ID - versionNumber: 版本号模糊匹配 - createdAtStart/createdAtEnd: 创建时间范围 - sort: 排序，可选 - field: "versionNumber" | "size" | "createdAt" - order: "asc" | "desc" - offset: 偏移量，默认0 - limit: 每页数量，默认20，最大100 **返回：** - data: 版本数组 - total: 总数 **示例：** ```json { "filter": { "nodeId": "file-uuid" }, "sort": { "field": "createdAt", "order": "desc" }, "limit": 10 } ```
    * @tags knowledge, version
    * @name PostApiKnowledgeVersionsQuery
    * @summary 分页查询版本
@@ -14635,7 +15514,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 更新节点信息
+   * @description 更新节点信息（重命名、修改描述等）。 **路径参数：** - id: 节点UUID **请求体参数（均可选）：** - name: 新名称，1-255字符 - description: 描述 - icon: 图标（文件夹） - color: 颜色（文件夹） - orderNum: 排序号 - isPublic: 是否公开 - tags: 标签数组 **权限检查：** - 需要对该节点有 write 权限 **返回：** - 更新后的节点完整信息 **示例：** ```json { "name": "新文件名.md", "description": "更新的描述", "tags": ["重要", "工作"] } ```
    * @tags knowledge, node, mutation
    * @name PutApiKnowledgeNodesById
    * @summary 更新节点
@@ -14653,7 +15532,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 设置节点的权限（替换现有权限）
+   * @description 设置节点的权限（替换现有所有权限）。 **路径参数：** - id: 节点UUID **请求体参数：** - permissions: 权限数组 - subjectType: "user" | "role" | "dept" - subjectId: 主体ID - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny"，默认 "allow" **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 **示例：** ```json { "permissions": [ { "subjectType": "user", "subjectId": "user-uuid", "permission": "read" }, { "subjectType": "role", "subjectId": "role-uuid", "permission": "write" } ] } ```
    * @tags knowledge, permission
    * @name PutApiKnowledgeNodesByIdPermissions
    * @summary 设置节点权限
@@ -14662,6 +15541,7 @@ export namespace Knowledge {
    */
   export namespace PutApiKnowledgeNodesByIdPermissions {
     export type RequestParams = {
+      /** 节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14671,7 +15551,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 保存文本文件内容
+   * @description 保存文本文件内容（在线编辑保存）。 **路径参数：** - id: 文件节点UUID **请求体参数：** - content: 文件内容，必填，UTF-8字符串 **权限检查：** - 需要对该节点有 write 权限 **返回：** - 更新后的节点完整信息（包含新的 size） **使用场景：** - 在线文本编辑器保存 - Markdown 编辑保存 **示例：** ```json { "content": "# 标题\n\n这是更新后的内容" } ```
    * @tags knowledge, content
    * @name PutApiKnowledgeNodesByIdText
    * @summary 保存文本内容
@@ -14680,6 +15560,7 @@ export namespace Knowledge {
    */
   export namespace PutApiKnowledgeNodesByIdText {
     export type RequestParams = {
+      /** 文件节点 ID */
       id: string;
     };
     export type RequestQuery = {};
@@ -14689,7 +15570,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 批量更新节点排序
+   * @description 批量更新节点排序号。 **请求体参数：** - items: 排序项数组 - id: 节点UUID - orderNum: 新排序号（整数） **权限检查：** - 逐个检查 write 权限，无权限的节点会被跳过 **返回：** - success: 是否成功 - updatedCount: 实际更新的节点数量 **使用场景：** - 拖拽排序 - 自定义文件顺序 **示例：** ```json { "items": [ { "id": "uuid1", "orderNum": 1 }, { "id": "uuid2", "orderNum": 2 }, { "id": "uuid3", "orderNum": 3 } ] } ```
    * @tags knowledge, operations
    * @name PutApiKnowledgeNodesOrder
    * @summary 更新节点排序
@@ -15370,7 +16251,7 @@ export namespace Im {
 
 export namespace Public {
   /**
-   * @description 上传头像到公开存储，返回可直接访问的URL
+   * @description 上传头像到公开存储，返回可直接访问的永久URL（无需签名）。 **请求体参数：** - category: 头像分类，必填，可选值： - "agent-avatar": AI Agent头像 - "user-avatar": 用户头像 - "group-avatar": 群组头像 - filename: 文件名，必填，1-255字符 - content: 图片内容，必填，Base64编码 - mimeType: MIME类型，必填，支持：image/jpeg, image/png, image/gif, image/webp, image/svg+xml **限制：** - 最大文件大小：2MB - 仅支持图片格式 **返回：** - success: 是否成功 - url: 公开访问URL（永久有效） - key: 存储路径 **示例：** ```json { "category": "user-avatar", "filename": "avatar.png", "content": "iVBORw0KGgoAAAANSUhEUgAA...", "mimeType": "image/png" } ```
    * @tags public, upload, avatar
    * @name PostApiPublicUploadAvatar
    * @summary 上传公开头像
@@ -15388,7 +16269,7 @@ export namespace Public {
 
 export namespace Files {
   /**
-   * @description 获取已上传附件的访问URL
+   * @description 获取已上传AI聊天附件的新预签名URL（7天有效）。 **请求体参数：** - storageKey: 存储路径，必填，上传时返回的storageKey **返回：** - url: 新的预签名下载URL - expiresAt: URL过期时间（ISO 8601格式） **使用场景：** - 原URL过期后重新获取访问链接 - 历史对话中的附件重新加载 **示例：** ```json { "storageKey": "ai-chat/user-id/1234567890-abc123-image.png" } ```
    * @tags files, ai-chat
    * @name PostApiFilesAiChatGetUrl
    * @summary 获取AI聊天附件URL
@@ -15404,7 +16285,7 @@ export namespace Files {
   }
 
   /**
-   * @description 上传文件到存储，返回可访问的URL
+   * @description 上传文件到AI聊天存储，返回可访问的预签名URL（7天有效）。 **请求体参数：** - filename: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，必填，如 "image/png", "application/pdf" **返回：** - url: 预签名下载URL（7天有效） - storageKey: 存储路径，用于后续获取URL - mimeType: 文件MIME类型 - size: 文件大小（字节） **使用场景：** - AI对话中上传图片、文档等附件 - 支持多模态AI模型的文件输入 **示例：** ```json { "filename": "screenshot.png", "content": "iVBORw0KGgoAAAANSUhEUgAA...", "mimeType": "image/png" } ```
    * @tags files, ai-chat
    * @name PostApiFilesAiChatUpload
    * @summary 上传AI聊天附件
@@ -15422,7 +16303,7 @@ export namespace Files {
 
 export namespace Dev {
   /**
-   * @description 获取 monorepo 项目根目录路径
+   * @description 获取 Turborepo monorepo 项目的根目录路径。 **返回：** - root: 项目根目录绝对路径 - name: 项目名称（目录名） **使用场景：** - 开发模式下浏览项目代码结构 - 获取项目基础信息 **示例响应：** ```json { "root": "/home/user/ai-drive-system", "name": "ai-drive-system" } ```
    * @tags dev, project-code
    * @name GetApiDevProjectCodeRoot
    * @summary 获取项目根目录
@@ -15438,7 +16319,7 @@ export namespace Dev {
   }
 
   /**
-   * @description 读取指定目录下的文件和子目录
+   * @description 读取指定目录下的文件和子目录列表。 **请求体参数：** - relativePath: 相对于项目根目录的路径，可选，默认为根目录 "" **返回：** - items: 文件/目录列表，包含 name, path, type, size, extension - currentPath: 当前目录相对路径 **过滤规则：** - 自动忽略：node_modules, .git, .svelte-kit, dist, build 等 - 仅显示代码相关文件：.ts, .js, .svelte, .json, .md 等 **使用场景：** - 开发模式下浏览项目目录结构 - 代码文件导航 **示例：** ```json { "relativePath": "packages/actions/src" } ```
    * @tags dev, project-code
    * @name PostApiDevProjectCodeDirectory
    * @summary 读取目录
@@ -15454,7 +16335,7 @@ export namespace Dev {
   }
 
   /**
-   * @description 读取指定文件的内容
+   * @description 读取指定代码文件的内容。 **请求体参数：** - relativePath: 相对于项目根目录的文件路径，必填 **返回：** - content: 文件内容（UTF-8） - path: 文件相对路径 - name: 文件名 - extension: 文件扩展名 - size: 文件大小（字节） - language: 编程语言（用于语法高亮） **限制：** - 最大文件大小：1MB - 路径必须在项目根目录内（安全检查） **使用场景：** - 开发模式下查看代码文件内容 - 代码审查和分析 **示例：** ```json { "relativePath": "packages/actions/src/core/define.ts" } ```
    * @tags dev, project-code
    * @name PostApiDevProjectCodeFile
    * @summary 读取文件
@@ -15753,29 +16634,54 @@ export class Api<SecurityDataType extends unknown> {
 
   mcp = {
     /**
-     * @description Get MCP server information for discovery
+     * No description
      *
-     * @tags mcp
-     * @name GetMcpById
-     * @summary Get MCP Server Info
-     * @request GET:/mcp/{id}
+     * @name DeleteMcpById
+     * @request DELETE:/mcp/{id}
      */
-    getMcpById: (
-      { id, ...query }: GetMcpByIdParams,
+    deleteMcpById: (
+      { id, ...query }: DeleteMcpByIdParams,
       params: RequestParams = {},
     ) =>
       this.http.request<any, any>({
         path: `/mcp/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @name GetMcp
+     * @request GET:/mcp
+     */
+    getMcp: (params: RequestParams = {}) =>
+      this.http.request<any, any>({
+        path: `/mcp`,
         method: "GET",
         ...params,
       }),
 
     /**
-     * @description Handle MCP protocol JSON-RPC requests
+     * No description
      *
-     * @tags mcp
+     * @name GetMcpByIdInfo
+     * @request GET:/mcp/{id}/info
+     */
+    getMcpByIdInfo: (
+      { id, ...query }: GetMcpByIdInfoParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/mcp/${id}/info`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @name PostMcpById
-     * @summary MCP JSON-RPC Endpoint
      * @request POST:/mcp/{id}
      */
     postMcpById: (
@@ -15813,7 +16719,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除单条Agent消息
+     * @description 根据ID删除单条Agent消息，并更新会话统计。 **参数说明：** - id: 消息UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 自动更新会话的 messageCount **返回值：** - success: true=删除成功，false=消息不存在 **注意事项：** - 删除消息不会重新排列其他消息的 msgSeq - 如需删除某条消息及之后的所有消息，使用 deleteFromSeq **示例：** DELETE /api/ai/agent-message/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, agentMessage
      * @name DeleteApiAiAgentMessageById
@@ -15833,7 +16739,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 删除会话中指定msgSeq及之后的所有消息
+     * @description 删除会话中指定 msgSeq 及之后的所有消息，用于"重新生成"功能。 **路径参数：** - sessionId: 会话UUID - msgSeq: 起始消息序号（包含） **删除行为：** - 删除 msgSeq >= 指定值的所有消息 - 更新会话的 messageCount 和 lastMessageAt **返回值：** - deletedCount: 删除的消息数量 **使用场景：** 1. 用户点击"重新生成"，删除AI回复及之后的消息 2. 回退到某个历史节点重新对话 3. 清理错误的对话内容 **示例：** DELETE /api/ai/agent-message/from-seq/session-uuid/10 （删除 msgSeq >= 10 的所有消息）
      *
      * @tags ai, agentMessage
      * @name DeleteApiAiAgentMessageFromSeqBySessionIdByMsgSeq
@@ -15860,7 +16766,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除Agent会话
+     * @description 根据ID软删除Agent会话（逻辑删除，数据保留）。 **参数说明：** - id: 会话UUID **删除行为：** - 软删除：设置 deletedAt、deletedBy、deletedById - 数据保留在数据库中 - 查询时自动过滤已删除记录 **返回值：** - true: 删除成功 - false: 会话不存在或已删除 **注意事项：** - 删除会话后，关联的消息记录仍然保留 - 如需彻底清理，需要单独删除消息 **示例：** DELETE /api/ai/agent-session/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, agentSession
      * @name DeleteApiAiAgentSessionById
@@ -15880,7 +16786,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除API密钥
+     * @description 根据ID删除API密钥（物理删除）。 **路径参数：** - id: API密钥的UUID **注意事项：** - 删除后无法恢复 - 会同时删除关联的MCP服务权限配置 - 建议先撤销再删除，或直接撤销而不删除（保留审计记录） **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/api-key/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, apiKey
      * @name DeleteApiAiApiKeyById
@@ -15900,7 +16806,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除MCP服务
+     * @description 根据ID删除单个MCP服务（物理删除）。 **路径参数：** - id: MCP服务的UUID **注意事项：** - 删除后无法恢复 - 关联的API Key权限配置会失效 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/mcp-server/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, mcpServer
      * @name DeleteApiAiMcpServerById
@@ -15920,7 +16826,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除AI模型
+     * @description 根据ID删除单个AI模型（物理删除）。 **路径参数：** - id: 模型的UUID **注意事项：** - 删除后无法恢复 - 如果模型正在被使用（如智能体引用），建议先禁用而非删除 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/model/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, model
      * @name DeleteApiAiModelById
@@ -15940,7 +16846,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除AI提供商
+     * @description 根据ID删除单个AI提供商（物理删除）。 **路径参数：** - id: 提供商的UUID **注意事项：** - 删除后无法恢复 - 如果提供商下有关联的模型，需要先删除或迁移模型 - 建议先禁用而非直接删除 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/ai/provider/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, provider
      * @name DeleteApiAiProviderById
@@ -15960,7 +16866,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 软删除AI会话
+     * @description 软删除AI会话。 **路径参数：** - id: 会话的UUID **注意事项：** - 软删除，数据保留但标记为已删除 - 会话下的消息不会被删除，但会话不再显示 **返回：** - success: true 表示删除成功 **示例：** DELETE /api/ai/session/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, aiSession
      * @name DeleteApiAiSessionById
@@ -15980,7 +16886,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 删除会话中指定msgSeq及之后的所有消息
+     * @description 删除会话中指定msgSeq及之后的所有消息，用于重新生成回复。 **路径参数：** - sessionId: 会话的UUID - msgSeq: 起始消息序号 **使用场景：** - 用户对AI回复不满意，想要重新生成 - 删除某条消息及其后续所有消息 **自动处理：** - 更新会话的 messageCount、lastMessageAt、tokenUsage **示例：** DELETE /api/ai/session-message/from-seq/session-uuid/10 （删除序号>=10的所有消息） **返回：** - deletedCount: 删除的消息数量
      *
      * @tags ai, aiSessionMessage
      * @name DeleteApiAiSessionMessageFromSeqBySessionIdByMsgSeq
@@ -16007,7 +16913,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除工具组
+     * @description 根据ID物理删除工具组。 **示例：** DELETE /api/ai/tool-group/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, toolGroup
      * @name DeleteApiAiToolGroupById
@@ -16021,6 +16927,26 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<DeleteApiAiToolGroupByIdData, any>({
         path: `/api/ai/tool-group/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 软删除用户记忆（设置状态为禁用）
+     *
+     * @tags ai, memory, delete
+     * @name DeleteApiAiUserMemoryById
+     * @summary 删除用户记忆
+     * @request DELETE:/api/ai/user-memory/{id}
+     * @response `200` `DeleteApiAiUserMemoryByIdData` Response for status 200
+     */
+    deleteApiAiUserMemoryById: (
+      { id, ...query }: DeleteApiAiUserMemoryByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiAiUserMemoryByIdData, any>({
+        path: `/api/ai/user-memory/${id}`,
         method: "DELETE",
         format: "json",
         ...params,
@@ -16047,7 +16973,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个Agent消息
+     * @description 根据主键ID查询单个Agent消息详情。 **参数说明：** - id: 消息的UUID主键 **返回值：** - 成功：返回消息完整信息（id, sessionId, role, content, contentType, tokenUsage, finishReason等） - 未找到：返回 null **使用场景：** 1. 查看消息详情 2. 获取消息的Token使用情况 3. 验证消息是否存在 **示例：** GET /api/ai/agent-message/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, agentMessage
      * @name GetApiAiAgentMessageById
@@ -16067,7 +16993,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定会话的消息历史
+     * @description 获取指定会话的消息历史，支持分页加载更早的消息。 **路径参数：** - sessionId: 会话UUID **查询参数：** - limit: 返回消息数量，1-200，默认50 - beforeSeq: 获取此序号之前的消息（用于加载更早的历史） **返回值：** - 消息数组，按 msgSeq 升序排列 **使用场景：** 1. 进入会话时加载最近消息 2. 滚动加载更早的历史消息 3. 获取上下文用于AI对话 **示例：** ``` GET /api/ai/agent-message/history/session-uuid?limit=50 GET /api/ai/agent-message/history/session-uuid?limit=50&beforeSeq=100 ```
      *
      * @tags ai, agentMessage
      * @name GetApiAiAgentMessageHistoryBySessionId
@@ -16088,7 +17014,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取Agent消息表的JSON Schema
+     * @description 获取Agent消息表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成消息编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags ai, agentMessage
      * @name GetApiAiAgentMessageSchema
@@ -16122,7 +17048,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个Agent会话
+     * @description 根据主键ID查询单个Agent会话详情。 **参数说明：** - id: 会话的UUID主键 **返回值：** - 成功：返回会话完整信息（id, agentId, userId, title, messageCount, tokenUsage, lastMessageAt等） - 未找到或已删除：返回 null **使用场景：** 1. 进入会话详情页 2. 获取会话的统计信息（消息数、Token使用量） 3. 验证会话是否存在 **示例：** GET /api/ai/agent-session/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, agentSession
      * @name GetApiAiAgentSessionById
@@ -16142,7 +17068,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取Agent会话表的JSON Schema
+     * @description 获取Agent会话表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成会话编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags ai, agentSession
      * @name GetApiAiAgentSessionSchema
@@ -16159,7 +17085,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个API密钥
+     * @description 根据API密钥ID获取详情，包含关联的MCP服务ID列表。URL参数id为API密钥UUID。返回null表示不存在。
      *
      * @tags ai, apiKey
      * @name GetApiAiApiKeyById
@@ -16179,7 +17105,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取API密钥表的JSON Schema
+     * @description 获取API密钥表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags ai, apiKey
      * @name GetApiAiApiKeySchema
@@ -16196,7 +17122,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个MCP服务
+     * @description 根据主键ID查询单个MCP服务的详细信息。 **路径参数：** - id: MCP服务的UUID **返回：** - 找到时返回完整的MCP服务对象 - 未找到时返回 null **示例：** GET /api/ai/mcp-server/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, mcpServer
      * @name GetApiAiMcpServerById
@@ -16216,7 +17142,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取MCP服务的配置JSON，用于集成到AI工具
+     * @description 获取MCP服务的配置JSON，用于集成到AI工具（如Claude Desktop、Cursor等）。 **路径参数：** - id: MCP服务的UUID **返回：** - endpoint: MCP服务端点URL - config: 配置对象，可直接用于AI工具配置 - configJson: 格式化的JSON字符串 **使用方式：** 将返回的 configJson 复制到AI工具的MCP配置文件中。 如果服务不是公开的，需要替换 <YOUR_API_KEY> 为实际的API Key。 **示例响应：** ```json { "endpoint": "http://localhost:3030/mcp/xxx-uuid", "config": { "mcpServers": { "weather-service": { "url": "http://localhost:3030/mcp/xxx-uuid", "headers": { "Authorization": "Bearer <YOUR_API_KEY>" } } } }, "configJson": "..." } ```
      *
      * @tags ai, mcpServer
      * @name GetApiAiMcpServerByIdConfig
@@ -16236,7 +17162,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取MCP服务表的JSON Schema
+     * @description 获取MCP服务表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags ai, mcpServer
      * @name GetApiAiMcpServerSchema
@@ -16253,7 +17179,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个AI模型
+     * @description 根据主键ID查询单个AI模型的详细信息。 **路径参数：** - id: 模型的UUID **返回：** - 找到时返回完整的模型对象 - 未找到时返回 null **示例：** GET /api/ai/model/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, model
      * @name GetApiAiModelById
@@ -16273,7 +17199,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取AI模型表的JSON Schema
+     * @description 获取AI模型表的JSON Schema定义，用于动态表单生成或数据验证。 **返回：** JSON Schema 对象，包含所有字段的类型定义 **使用场景：** - 前端动态生成表单 - API文档生成 - 数据验证
      *
      * @tags ai, model
      * @name GetApiAiModelSchema
@@ -16290,7 +17216,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个AI提供商
+     * @description 根据主键ID查询单个AI提供商的详细信息。 **路径参数：** - id: 提供商的UUID **返回：** - 找到时返回完整的提供商对象（包含 baseUrl, token 等敏感信息） - 未找到时返回 null **示例：** GET /api/ai/provider/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, provider
      * @name GetApiAiProviderById
@@ -16310,7 +17236,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取AI提供商表的JSON Schema
+     * @description 获取AI提供商表的JSON Schema定义，用于动态表单生成或数据验证。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags ai, provider
      * @name GetApiAiProviderSchema
@@ -16327,7 +17253,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个AI会话
+     * @description 根据主键ID查询单个AI会话的详细信息。 **路径参数：** - id: 会话的UUID **返回：** - 找到时返回完整的会话对象（包含消息统计、token使用量等） - 未找到或已删除时返回 null **示例：** GET /api/ai/session/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, aiSession
      * @name GetApiAiSessionById
@@ -16347,7 +17273,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个AI会话消息
+     * @description 根据主键ID查询单条AI会话消息的详细信息。 **路径参数：** - id: 消息的UUID **返回：** - 找到时返回完整的消息对象（包含内容、token使用量等） - 未找到时返回 null **示例：** GET /api/ai/session-message/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, aiSessionMessage
      * @name GetApiAiSessionMessageById
@@ -16367,7 +17293,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定会话的消息历史
+     * @description 获取指定会话的消息历史，支持分页加载更早的消息。 **路径参数：** - sessionId: 会话的UUID **查询参数：** - limit: 返回消息数量，1-200，默认50 - beforeSeq: 获取此序号之前的消息（用于加载更早的历史） **返回：** 消息数组，按序号升序排列 **使用场景：** 1. 初始加载会话消息 2. 滚动加载更早的历史消息 **示例：** ``` GET /api/ai/session-message/history/session-uuid?limit=50 GET /api/ai/session-message/history/session-uuid?limit=20&beforeSeq=100 ```
      *
      * @tags ai, aiSessionMessage
      * @name GetApiAiSessionMessageHistoryBySessionId
@@ -16388,7 +17314,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取AI会话消息表的JSON Schema
+     * @description 获取AI会话消息表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags ai, aiSessionMessage
      * @name GetApiAiSessionMessageSchema
@@ -16405,7 +17331,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取AI会话表的JSON Schema
+     * @description 获取AI会话表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags ai, aiSession
      * @name GetApiAiSessionSchema
@@ -16422,7 +17348,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个工具组
+     * @description 根据主键ID查询单个工具组详情。 **参数说明：** - id: 工具组的UUID主键 **返回值：** - 成功：返回工具组完整信息 - 未找到：返回 null **示例：** GET /api/ai/tool-group/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags ai, toolGroup
      * @name GetApiAiToolGroupById
@@ -16442,7 +17368,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取工具组表的JSON Schema
+     * @description 获取工具组表的JSON Schema定义。
      *
      * @tags ai, toolGroup
      * @name GetApiAiToolGroupSchema
@@ -16453,6 +17379,26 @@ export class Api<SecurityDataType extends unknown> {
     getApiAiToolGroupSchema: (params: RequestParams = {}) =>
       this.http.request<GetApiAiToolGroupSchemaData, any>({
         path: `/api/ai/tool-group/schema`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 根据ID查询单条用户记忆详情
+     *
+     * @tags ai, memory, query
+     * @name GetApiAiUserMemoryById
+     * @summary 查询用户记忆详情
+     * @request GET:/api/ai/user-memory/{id}
+     * @response `200` `GetApiAiUserMemoryByIdData` Response for status 200
+     */
+    getApiAiUserMemoryById: (
+      { id, ...query }: GetApiAiUserMemoryByIdParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<GetApiAiUserMemoryByIdData, any>({
+        path: `/api/ai/user-memory/${id}`,
         method: "GET",
         format: "json",
         ...params,
@@ -16500,7 +17446,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单条Agent消息
+     * @description 创建单条Agent消息记录，自动分配消息序号并更新会话统计。 **必填字段：** - sessionId: 所属会话ID - role: 消息角色，"user" | "assistant" | "system" | "tool" - content: 消息内容 **可选字段：** - contentType: 内容类型，默认 "text" - tokenUsage: Token使用统计 { totalTokens, inputTokens, outputTokens } - finishReason: 完成原因，如 "stop"、"length" - metadata: 元数据 **自动处理：** - msgSeq: 自动分配递增序号 - 更新会话的 messageCount、lastMessageAt、tokenUsage **使用场景：** 1. 用户发送消息 2. AI回复消息 3. 系统消息 **示例：** ```json { "data": { "sessionId": "session-uuid", "role": "user", "content": "你好，请帮我分析这段代码", "contentType": "text" } } ```
      *
      * @tags ai, agentMessage
      * @name PostApiAiAgentMessage
@@ -16522,7 +17468,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建Agent消息
+     * @description 批量创建Agent消息，自动分配递增序号并更新会话统计。 **参数说明：** - sessionId: 目标会话ID - messages: 消息数组（不需要包含 sessionId 和 msgSeq） **自动处理：** - 为每条消息分配递增的 msgSeq - 更新会话的 messageCount、lastMessageAt、tokenUsage **使用场景：** 1. 导入历史对话 2. 一次性添加多轮对话 3. 批量添加系统消息 **示例：** ```json { "sessionId": "session-uuid", "messages": [ { "role": "user", "content": "你好" }, { "role": "assistant", "content": "你好！有什么可以帮助你的？" } ] } ```
      *
      * @tags ai, agentMessage
      * @name PostApiAiAgentMessageBatch
@@ -16544,7 +17490,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询Agent消息列表
+     * @description 分页查询Agent消息列表。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - sessionId: 按会话ID过滤（获取某会话的所有消息） - sessionIds: 按多个会话ID过滤 - role: 按角色过滤，"user" | "assistant" | "system" | "tool" - roles: 按多个角色过滤 - contentType: 按内容类型过滤 - finishReason: 按完成原因过滤，如 "stop"、"length" - msgSeqStart/msgSeqEnd: 消息序号范围 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: msgSeq | createdAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认50 **使用场景：** 1. 获取会话的消息列表：filter.sessionId = "xxx" 2. 只获取用户消息：filter.role = "user" 3. 按消息序号排序：sort = { field: "msgSeq", order: "asc" } **示例：** ```json { "filter": { "sessionId": "xxx", "roles": ["user", "assistant"] }, "sort": { "field": "msgSeq", "order": "asc" }, "offset": 0, "limit": 50 } ```
      *
      * @tags ai, agentMessage
      * @name PostApiAiAgentMessageQuery
@@ -16588,7 +17534,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个Agent会话
+     * @description 创建单个Agent会话记录。 **必填字段：** - agentId: 关联的Agent ID - userId: 用户ID **可选字段：** - title: 会话标题（可后续根据首条消息自动生成） - status: 状态 - isArchived: 是否归档，默认 false - isPinned: 是否置顶，默认 false - metadata: 元数据（JSON对象） **自动初始化字段：** - messageCount: 0 - tokenUsage: { totalTokens: 0, promptTokens: 0, completionTokens: 0 } **使用场景：** 1. 用户开始新对话时创建会话 2. 从Agent详情页发起对话 **示例：** ```json { "data": { "agentId": "agent-uuid", "userId": "user-uuid", "title": "新对话" } } ```
      *
      * @tags ai, agentSession
      * @name PostApiAiAgentSession
@@ -16610,7 +17556,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询Agent会话列表
+     * @description 分页查询Agent会话列表，用于管理用户与AI Agent的对话会话。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - agentId: 按单个Agent ID过滤 - agentIds: 按多个Agent ID过滤 - userId: 按单个用户ID过滤（查看某用户的所有会话） - userIds: 按多个用户ID过滤 - title: 按会话标题模糊搜索 - status: 按状态过滤 - isArchived: 是否已归档，true/false - isPinned: 是否已置顶，true/false - lastMessageAtStart/lastMessageAtEnd: 最后消息时间范围 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: title | lastMessageAt | createdAt | updatedAt | messageCount - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取当前用户的会话列表：filter.userId = "当前用户ID" 2. 获取置顶会话：filter.isPinned = true 3. 按最后消息时间排序：sort = { field: "lastMessageAt", order: "desc" } **示例：** ```json { "filter": { "userId": "xxx", "isArchived": false }, "sort": { "field": "lastMessageAt", "order": "desc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags ai, agentSession
      * @name PostApiAiAgentSessionQuery
@@ -16632,7 +17578,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建API密钥并关联MCP服务
+     * @description 创建新的API密钥用于MCP服务访问。accessAll=true表示可访问所有MCP服务，否则需指定mcpServerIds数组。创建成功后返回完整token（仅此一次显示）。示例：{"data":{"name":"我的密钥","accessAll":false,"mcpServerIds":["server-id-1"]}}
      *
      * @tags ai, apiKey
      * @name PostApiAiApiKey
@@ -16654,7 +17600,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 撤销API密钥
+     * @description 撤销指定的API密钥，使其立即失效。 **路径参数：** - id: API密钥的UUID **注意事项：** - 撤销后密钥立即失效，无法恢复 - 使用该密钥的所有请求将被拒绝 - 建议在密钥泄露或不再需要时使用 **返回：** - true: 撤销成功 - false: 未找到或撤销失败 **示例：** POST /api/ai/api-key/550e8400-e29b-41d4-a716-446655440000/revoke
      *
      * @tags ai, apiKey
      * @name PostApiAiApiKeyByIdRevoke
@@ -16674,7 +17620,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询API密钥列表
+     * @description 查询API密钥列表，支持分页和过滤。filter可选字段：name(模糊匹配)、isRevoked(是否已撤销)、status。sort支持createdAt/name/lastUsedAt排序。返回包含关联MCP服务ID列表。示例：{"filter":{"isRevoked":false},"limit":20,"offset":0}
      *
      * @tags ai, apiKey
      * @name PostApiAiApiKeyQuery
@@ -16713,7 +17659,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个MCP服务
+     * @description 创建单个MCP服务配置。MCP服务用于暴露工具给AI调用。 **必填字段：** - name: 服务名称（唯一标识） - description: 服务描述 **可选字段：** - isPublic: 是否公开访问，默认false（需要API Key） - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注 **示例：** ```json { "data": { "name": "weather-service", "description": "天气查询服务", "isPublic": false, "status": "0" } } ```
      *
      * @tags ai, mcpServer
      * @name PostApiAiMcpServer
@@ -16735,7 +17681,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询MCP服务列表
+     * @description 分页查询MCP服务列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - name: 按名称模糊搜索 - isPublic: 是否公开访问，true=公开，false=需要API Key - status: 按状态过滤，"0"=正常，"1"=禁用 **排序参数 (sort)：** - field: createdAt | name - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "isPublic": true, "status": "0" }, "sort": { "field": "name", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags ai, mcpServer
      * @name PostApiAiMcpServerQuery
@@ -16757,7 +17703,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个AI模型
+     * @description 创建单个AI模型配置。 **必填字段：** - name: 模型显示名称 - modelId: 模型标识（如 gpt-4, claude-3-opus） - providerId: 所属提供商ID **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - supportTools: 是否支持工具调用，默认false - supportThinking: 是否支持思考模式，默认false - maxTokens: 最大token数 - temperature: 温度参数 - remark: 备注 **示例：** ```json { "data": { "name": "GPT-4 Turbo", "modelId": "gpt-4-turbo", "providerId": "provider-uuid", "supportTools": true, "maxTokens": 128000 } } ```
      *
      * @tags ai, model
      * @name PostApiAiModel
@@ -16776,7 +17722,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个AI模型
+     * @description 批量创建多个AI模型配置，适用于初始化或导入场景。 **请求体：** - data: 模型对象数组，每个对象包含 name, modelId, providerId 等字段 **示例：** ```json { "data": [ { "name": "GPT-4", "modelId": "gpt-4", "providerId": "xxx", "supportTools": true }, { "name": "GPT-3.5", "modelId": "gpt-3.5-turbo", "providerId": "xxx", "supportTools": true } ] } ``` **返回：** 创建成功的模型对象数组
      *
      * @tags ai, model
      * @name PostApiAiModelBatch
@@ -16798,7 +17744,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 发送测试消息验证模型是否正常工作
+     * @description 发送测试消息验证AI模型是否正常工作。 **路径参数：** - id: 模型的UUID **请求体：** - message: 测试消息内容，默认为 "Hello, please respond with a brief greeting." **返回：** - success: 是否成功 - response: 模型响应内容 - thinking: 思考过程（如果模型支持） - supportThinking: 是否支持思考模式 - error: 错误信息（失败时） - latencyMs: 响应延迟（毫秒） **示例：** ```json POST /api/ai/model/xxx-uuid/test { "message": "你好，请用中文回复" } ```
      *
      * @tags ai, model
      * @name PostApiAiModelByIdTest
@@ -16821,7 +17767,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询AI模型列表
+     * @description 分页查询AI模型列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询，如 ["id1", "id2"] - modelIds: 按模型标识列表查询，如 ["gpt-4", "claude-3"] - providerId: 按单个提供商ID过滤 - providerIds: 按多个提供商ID过滤 - name: 按名称模糊搜索 - modelId: 按模型标识模糊搜索 - status: 按状态过滤，"0"=正常，"1"=禁用 - supportTools: 是否支持工具调用，true/false - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | modelId | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "providerId": "xxx", "supportTools": true }, "sort": { "field": "createdAt", "order": "desc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags ai, model
      * @name PostApiAiModelQuery
@@ -16843,7 +17789,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个AI提供商
+     * @description 创建单个AI提供商配置。 **必填字段：** - name: 提供商名称（如 OpenAI, Anthropic, 火山引擎） - baseUrl: API基础URL - token: API密钥/Token **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注 **示例：** ```json { "data": { "name": "OpenAI", "baseUrl": "https://api.openai.com/v1", "token": "sk-xxx", "status": "0" } } ```
      *
      * @tags ai, provider
      * @name PostApiAiProvider
@@ -16865,7 +17811,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个AI提供商
+     * @description 批量创建多个AI提供商配置，适用于初始化场景。 **请求体：** - data: 提供商对象数组 **示例：** ```json { "data": [ { "name": "OpenAI", "baseUrl": "https://api.openai.com/v1", "token": "sk-xxx" }, { "name": "Anthropic", "baseUrl": "https://api.anthropic.com", "token": "sk-ant-xxx" } ] } ``` **返回：** 创建成功的提供商对象数组
      *
      * @tags ai, provider
      * @name PostApiAiProviderBatch
@@ -16887,7 +17833,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询AI提供商列表
+     * @description 分页查询AI提供商列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询，如 ["OpenAI", "Anthropic"] - name: 按名称模糊搜索 - status: 按状态过滤，"0"=正常，"1"=禁用 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "status": "0" }, "sort": { "field": "name", "order": "asc" }, "offset": 0, "limit": 50 } ```
      *
      * @tags ai, provider
      * @name PostApiAiProviderQuery
@@ -16909,7 +17855,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个AI会话
+     * @description 创建单个AI会话。 **必填字段：** - userId: 所属用户ID **可选字段：** - title: 会话标题（可后续根据首条消息自动生成） - modelId: 使用的模型ID - agentId: 使用的智能体ID - systemPrompt: 系统提示词 - isPinned: 是否置顶，默认false - isArchived: 是否归档，默认false - status: 状态 **示例：** ```json { "data": { "userId": "user-uuid", "title": "新对话", "modelId": "model-uuid" } } ```
      *
      * @tags ai, aiSession
      * @name PostApiAiSession
@@ -16931,7 +17877,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单条AI会话消息
+     * @description 创建单条AI会话消息，自动分配消息序号并更新会话统计。 **必填字段：** - sessionId: 所属会话ID - role: 消息角色，user=用户消息，assistant=AI回复，system=系统消息 - content: 消息内容 **可选字段：** - contentType: 内容类型，默认text - tokenUsage: token使用量统计 - finishReason: 完成原因（AI回复时） - metadata: 元数据 **自动处理：** - msgSeq: 自动分配递增序号 - 更新会话的 messageCount、lastMessageAt、tokenUsage **示例：** ```json { "data": { "sessionId": "session-uuid", "role": "user", "content": "你好，请介绍一下React" } } ```
      *
      * @tags ai, aiSessionMessage
      * @name PostApiAiSessionMessage
@@ -16953,7 +17899,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建AI会话消息
+     * @description 批量创建多条AI会话消息，自动分配递增序号并更新会话统计。 **请求体：** - sessionId: 所属会话ID - messages: 消息对象数组（不需要指定 sessionId 和 msgSeq） **使用场景：** - 导入历史对话 - 一次性添加多轮对话 **示例：** ```json { "sessionId": "session-uuid", "messages": [ { "role": "user", "content": "你好" }, { "role": "assistant", "content": "你好！有什么可以帮助你的吗？" } ] } ``` **返回：** 创建成功的消息对象数组
      *
      * @tags ai, aiSessionMessage
      * @name PostApiAiSessionMessageBatch
@@ -16975,7 +17921,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询AI会话消息列表
+     * @description 分页查询AI会话消息列表。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - sessionId: 按会话ID过滤（最常用） - sessionIds: 按会话ID列表过滤 - role: 按角色过滤，user=用户消息，assistant=AI回复，system=系统消息 - roles: 按角色列表过滤 - contentType: 按内容类型过滤 - finishReason: 按完成原因过滤 - msgSeqStart/msgSeqEnd: 消息序号范围 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: msgSeq | createdAt - order: asc | desc **常用场景：** 1. 获取某会话的所有消息（按序号升序） 2. 获取最近N条消息 **示例：** ```json { "filter": { "sessionId": "session-uuid" }, "sort": { "field": "msgSeq", "order": "asc" }, "offset": 0, "limit": 50 } ```
      *
      * @tags ai, aiSessionMessage
      * @name PostApiAiSessionMessageQuery
@@ -16997,7 +17943,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询AI会话列表
+     * @description 分页查询AI会话列表，自动排除已删除的会话。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - userId: 按用户ID过滤（查询某用户的所有会话） - userIds: 按用户ID列表过滤 - title: 按标题模糊搜索 - isArchived: 是否已归档 - isPinned: 是否已置顶 - status: 按状态过滤 - createdAtStart/createdAtEnd: 创建时间范围 - lastMessageAtStart/lastMessageAtEnd: 最后消息时间范围 **排序参数 (sort)：** - field: title | lastMessageAt | createdAt | updatedAt | messageCount - order: asc | desc **常用场景：** 1. 获取当前用户的会话列表（按最后消息时间倒序） 2. 获取置顶的会话 3. 获取归档的会话 **示例：** ```json { "filter": { "userId": "user-uuid", "isArchived": false }, "sort": { "field": "lastMessageAt", "order": "desc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags ai, aiSession
      * @name PostApiAiSessionQuery
@@ -17019,7 +17965,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个工具组
+     * @description 创建单个工具组记录。 **必填字段：** - name: 工具组名称 **可选字段：** - description: 描述 - icon: 图标 - orderNum: 排序号 - status: 状态 **示例：** ```json { "data": { "name": "代码工具", "description": "代码相关的AI工具", "orderNum": 1 } } ```
      *
      * @tags ai, toolGroup
      * @name PostApiAiToolGroup
@@ -17041,7 +17987,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个工具组
+     * @description 批量创建多个工具组记录。 **示例：** ```json { "data": [ { "name": "代码工具", "orderNum": 1 }, { "name": "文档工具", "orderNum": 2 } ] } ```
      *
      * @tags ai, toolGroup
      * @name PostApiAiToolGroupBatch
@@ -17063,7 +18009,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询工具组列表
+     * @description 分页查询AI工具组列表，工具组用于组织和管理AI可调用的工具。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询 - name: 按名称模糊搜索 - status: 按状态过滤 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | orderNum | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "name": "代码" }, "sort": { "field": "orderNum", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags ai, toolGroup
      * @name PostApiAiToolGroupQuery
@@ -17085,7 +18031,73 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新AI智能体
+     * @description 创建一条新的用户记忆，支持自动生成向量嵌入
+     *
+     * @tags ai, memory, create
+     * @name PostApiAiUserMemory
+     * @summary 创建用户记忆
+     * @request POST:/api/ai/user-memory
+     * @response `200` `PostApiAiUserMemoryData` Response for status 200
+     */
+    postApiAiUserMemory: (
+      data: PostApiAiUserMemoryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiUserMemoryData, any>({
+        path: `/api/ai/user-memory`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 分页查询用户记忆列表，支持多种过滤条件
+     *
+     * @tags ai, memory, query
+     * @name PostApiAiUserMemoryQuery
+     * @summary 分页查询用户记忆
+     * @request POST:/api/ai/user-memory/query
+     * @response `200` `PostApiAiUserMemoryQueryData` Response for status 200
+     */
+    postApiAiUserMemoryQuery: (
+      data: PostApiAiUserMemoryQueryPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiUserMemoryQueryData, any>({
+        path: `/api/ai/user-memory/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 使用向量相似度搜索用户记忆，支持记忆衰减计算
+     *
+     * @tags ai, memory, search, semantic
+     * @name PostApiAiUserMemorySemanticSearch
+     * @summary 语义检索用户记忆
+     * @request POST:/api/ai/user-memory/semantic-search
+     * @response `200` `PostApiAiUserMemorySemanticSearchData` Response for status 200
+     */
+    postApiAiUserMemorySemanticSearch: (
+      data: PostApiAiUserMemorySemanticSearchPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiAiUserMemorySemanticSearchData, any>({
+        path: `/api/ai/user-memory/semantic-search`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 批量更新多个智能体配置。传入ids数组指定要更新的智能体，data对象包含要更新的字段。只能更新自己创建的智能体，管理员可更新所有。示例：{"ids":["id1","id2"],"data":{"status":"1","temperature":0.8}}
      *
      * @tags ai, agent
      * @name PutApiAiAgentBatch
@@ -17130,7 +18142,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个Agent会话
+     * @description 根据ID更新单个Agent会话信息。 **路径参数：** - id: 会话UUID **可更新字段：** - title: 会话标题 - status: 状态 - isArchived: 是否归档 - isPinned: 是否置顶 - metadata: 元数据 **使用场景：** 1. 修改会话标题 2. 更新会话状态 3. 修改元数据 **示例：** ```json // PUT /api/ai/agent-session/550e8400-e29b-41d4-a716-446655440000 { "data": { "title": "关于项目架构的讨论" } } ```
      *
      * @tags ai, agentSession
      * @name PutApiAiAgentSessionById
@@ -17153,7 +18165,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 归档指定Agent会话
+     * @description 归档或取消归档指定Agent会话。 **路径参数：** - id: 会话UUID **请求体：** - isArchived: true=归档，false=取消归档 **归档行为：** - 归档后会话不会出现在默认列表中 - 可通过 filter.isArchived = true 查看归档会话 - 归档不会删除会话数据 **使用场景：** 1. 整理会话列表，归档不常用的会话 2. 恢复误归档的会话 **示例：** ```json // PUT /api/ai/agent-session/xxx/archive { "isArchived": true } ```
      *
      * @tags ai, agentSession
      * @name PutApiAiAgentSessionByIdArchive
@@ -17176,7 +18188,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 置顶/取消置顶Agent会话
+     * @description 置顶或取消置顶Agent会话。 **路径参数：** - id: 会话UUID **请求体：** - isPinned: true=置顶，false=取消置顶 **置顶行为：** - 置顶会话在列表中优先显示 - 可通过 filter.isPinned = true 只查看置顶会话 **使用场景：** 1. 将重要会话置顶方便快速访问 2. 取消不再重要的会话置顶 **示例：** ```json // PUT /api/ai/agent-session/xxx/pin { "isPinned": true } ```
      *
      * @tags ai, agentSession
      * @name PutApiAiAgentSessionByIdPin
@@ -17199,7 +18211,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 更新API密钥信息和关联的MCP服务
+     * @description 更新API密钥信息和关联的MCP服务。URL参数id为密钥ID。可更新name、accessAll、mcpServerIds、expiresAt、remark。修改accessAll或mcpServerIds会重建MCP关联。示例：{"data":{"name":"新名称","accessAll":true}}
      *
      * @tags ai, apiKey
      * @name PutApiAiApiKeyById
@@ -17222,7 +18234,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个MCP服务
+     * @description 根据ID更新单个MCP服务的配置信息。 **路径参数：** - id: MCP服务的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 服务名称 - description: 服务描述 - isPublic: 是否公开访问 - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **示例：** ```json PUT /api/ai/mcp-server/xxx-uuid { "data": { "isPublic": true, "description": "更新后的描述" } } ```
      *
      * @tags ai, mcpServer
      * @name PutApiAiMcpServerById
@@ -17245,7 +18257,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新AI模型
+     * @description 根据ID列表批量更新多个AI模型的配置。 **请求体：** - ids: 要更新的模型ID数组 - data: 更新数据对象，包含要修改的字段 **使用场景：** - 批量启用/禁用模型 - 批量修改配置参数 **示例：** ```json { "ids": ["model-id-1", "model-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的模型对象数组
      *
      * @tags ai, model
      * @name PutApiAiModelBatch
@@ -17267,7 +18279,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个AI模型
+     * @description 根据ID更新单个AI模型的配置信息。 **路径参数：** - id: 模型的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 模型显示名称 - modelId: 模型标识 - status: 状态，"0"=正常，"1"=禁用 - supportTools: 是否支持工具调用 - supportThinking: 是否支持思考模式 - maxTokens: 最大token数 - temperature: 温度参数 - remark: 备注 **示例：** ```json PUT /api/ai/model/xxx-uuid { "data": { "status": "1", "maxTokens": 64000 } } ```
      *
      * @tags ai, model
      * @name PutApiAiModelById
@@ -17290,7 +18302,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新AI提供商
+     * @description 根据ID列表批量更新多个AI提供商的配置。 **请求体：** - ids: 要更新的提供商ID数组 - data: 更新数据对象 **使用场景：** - 批量启用/禁用提供商 **示例：** ```json { "ids": ["provider-id-1", "provider-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的提供商对象数组
      *
      * @tags ai, provider
      * @name PutApiAiProviderBatch
@@ -17312,7 +18324,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个AI提供商
+     * @description 根据ID更新单个AI提供商的配置信息。 **路径参数：** - id: 提供商的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 提供商名称 - baseUrl: API基础URL - token: API密钥（更新密钥时使用） - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **示例：** ```json PUT /api/ai/provider/xxx-uuid { "data": { "token": "sk-new-token", "status": "0" } } ```
      *
      * @tags ai, provider
      * @name PutApiAiProviderById
@@ -17335,7 +18347,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 更新单个AI会话
+     * @description 更新单个AI会话的信息。 **路径参数：** - id: 会话的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - title: 会话标题 - modelId: 使用的模型ID - agentId: 使用的智能体ID - systemPrompt: 系统提示词 - isPinned: 是否置顶 - isArchived: 是否归档 - status: 状态 **常用场景：** 1. 重命名会话 2. 置顶/取消置顶 3. 归档会话 4. 切换模型 **示例：** ```json PUT /api/ai/session/xxx-uuid { "data": { "title": "关于React的讨论", "isPinned": true } } ```
      *
      * @tags ai, aiSession
      * @name PutApiAiSessionById
@@ -17358,7 +18370,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新工具组
+     * @description 根据ID列表批量更新工具组。 **示例：** ```json { "ids": ["id1", "id2"], "data": { "status": "1" } } ```
      *
      * @tags ai, toolGroup
      * @name PutApiAiToolGroupBatch
@@ -17380,7 +18392,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个工具组
+     * @description 根据ID更新单个工具组信息。 **路径参数：** - id: 工具组UUID **示例：** ```json // PUT /api/ai/tool-group/xxx { "data": { "name": "代码工具（更新）", "orderNum": 2 } } ```
      *
      * @tags ai, toolGroup
      * @name PutApiAiToolGroupById
@@ -17395,6 +18407,29 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PutApiAiToolGroupByIdData, any>({
         path: `/api/ai/tool-group/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 更新用户记忆内容、重要性等信息
+     *
+     * @tags ai, memory, update
+     * @name PutApiAiUserMemoryById
+     * @summary 更新用户记忆
+     * @request PUT:/api/ai/user-memory/{id}
+     * @response `200` `PutApiAiUserMemoryByIdData` Response for status 200
+     */
+    putApiAiUserMemoryById: (
+      { id, ...query }: PutApiAiUserMemoryByIdParams,
+      data: PutApiAiUserMemoryByIdPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiAiUserMemoryByIdData, any>({
+        path: `/api/ai/user-memory/${id}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -17421,7 +18456,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
- * @description 获取当前登录用户的详细信息
+ * @description 获取当前登录用户的详细信息、菜单和权限
  *
  * @tags auth
  * @name GetApiAuthMe
@@ -17617,6 +18652,133 @@ export class Api<SecurityDataType extends unknown> {
   };
   ws = {
     /**
+     * @description 获取当前所有在线用户的 ID 列表。 使用场景： - 显示在线用户列表 - 统计在线用户数 - 判断是否需要发送离线通知 返回说明： - users: 在线用户 ID 列表 - count: 在线用户数量
+     *
+     * @tags ws, users, online
+     * @name GetApiWsUsersOnline
+     * @summary 获取在线用户
+     * @request GET:/api/ws/users/online
+     * @response `200` `GetApiWsUsersOnlineData` Response for status 200
+     */
+    getApiWsUsersOnline: (params: RequestParams = {}) =>
+      this.http.request<GetApiWsUsersOnlineData, any>({
+        path: `/api/ws/users/online`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 发送消息到群聊会话并通过 WebSocket 实时通知在线成员。 参数说明： - conversationId: 群聊会话 ID（必填） - msgType: 消息类型，01=文本，02=链接，03=图片等（默认 01） - content: 消息内容 - replyToId: 回复的消息 ID（可选） - atUserIds: @的用户 ID 列表（可选） 使用场景： - AI Agent 在群聊中回复 - 群公告推送 - 机器人消息 请求示例： { "conversationId": "550e8400-e29b-41d4-a716-446655440000", "msgType": "01", "content": { "text": "这是一条群聊消息" }, "atUserIds": ["user-uuid-1", "user-uuid-2"] }
+     *
+     * @tags ws, im, message, group
+     * @name PostApiWsMessageGroup
+     * @summary 发送群聊消息
+     * @request POST:/api/ws/message/group
+     * @response `200` `PostApiWsMessageGroupData` Response for status 200
+     */
+    postApiWsMessageGroup: (
+      data: PostApiWsMessageGroupPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiWsMessageGroupData, any>({
+        path: `/api/ws/message/group`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 发送私聊消息给指定用户，如果会话不存在会自动创建。 参数说明： - targetUserId: 目标用户 ID（必填） - msgType: 消息类型，01=文本，02=链接，03=图片等（默认 01） - content: 消息内容 - replyToId: 回复的消息 ID（可选） 使用场景： - AI Agent 主动联系用户 - 系统私信通知 - 客服系统集成 请求示例： { "targetUserId": "550e8400-e29b-41d4-a716-446655440000", "msgType": "01", "content": { "text": "你好，这是一条私聊消息" } } 返回说明： - isNewConversation: 是否新创建的会话 - conversationId: 会话 ID（可用于后续发送消息）
+     *
+     * @tags ws, im, message, private
+     * @name PostApiWsMessagePrivate
+     * @summary 发送单聊消息
+     * @request POST:/api/ws/message/private
+     * @response `200` `PostApiWsMessagePrivateData` Response for status 200
+     */
+    postApiWsMessagePrivate: (
+      data: PostApiWsMessagePrivatePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiWsMessagePrivateData, any>({
+        path: `/api/ws/message/private`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 发送消息到指定会话并通过 WebSocket 实时通知在线用户。 参数说明： - conversationId: 目标会话 ID（必填） - msgType: 消息类型，01=文本，02=链接，03=图片，04=视频，05=音频，06=文件（默认 01） - content: 消息内容，根据 msgType 不同结构不同 - replyToId: 回复的消息 ID（可选） - atUserIds: @的用户 ID 列表（可选） 使用场景： - AI Agent 自动回复用户消息 - 系统通知推送 - 第三方服务集成 请求示例： { "conversationId": "550e8400-e29b-41d4-a716-446655440000", "msgType": "01", "content": { "text": "你好，这是一条消息" } }
+     *
+     * @tags ws, im, message
+     * @name PostApiWsMessageSend
+     * @summary 发送消息到会话
+     * @request POST:/api/ws/message/send
+     * @response `200` `PostApiWsMessageSendData` Response for status 200
+     */
+    postApiWsMessageSend: (
+      data: PostApiWsMessageSendPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiWsMessageSendData, any>({
+        path: `/api/ws/message/send`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 向指定用户发送实时通知（不创建 IM 消息记录）。 参数说明： - userIds: 目标用户 ID 列表（必填） - title: 通知标题（必填） - content: 通知内容（必填） - type: 通知类型，info/success/warning/error（默认 info） - data: 附加数据，可包含链接等信息（可选） 使用场景： - 系统公告推送 - 任务完成通知 - 审批提醒 - AI 处理结果通知 请求示例： { "userIds": ["user-uuid-1", "user-uuid-2"], "title": "系统通知", "content": "您有一条新的审批待处理", "type": "info", "data": { "approvalId": "xxx", "link": "/approvals/xxx" } } 返回说明： - notifiedUsers: 实际收到通知的用户数（在线用户） - onlineUsers: 目标用户中在线的用户数
+     *
+     * @tags ws, notification, broadcast
+     * @name PostApiWsNotificationBroadcast
+     * @summary 广播通知
+     * @request POST:/api/ws/notification/broadcast
+     * @response `200` `PostApiWsNotificationBroadcastData` Response for status 200
+     */
+    postApiWsNotificationBroadcast: (
+      data: PostApiWsNotificationBroadcastPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiWsNotificationBroadcastData, any>({
+        path: `/api/ws/notification/broadcast`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 检查指定用户是否在线。 参数说明： - userIds: 要检查的用户 ID 列表（必填） 使用场景： - 显示用户在线状态 - 判断是否发送推送通知 - 选择消息发送方式（在线用 WS，离线用推送） 请求示例： { "userIds": ["user-uuid-1", "user-uuid-2"] } 返回说明： - status: 用户在线状态映射，key 为用户 ID，value 为是否在线
+     *
+     * @tags ws, users, online, check
+     * @name PostApiWsUsersCheckOnline
+     * @summary 检查用户在线状态
+     * @request POST:/api/ws/users/check-online
+     * @response `200` `PostApiWsUsersCheckOnlineData` Response for status 200
+     */
+    postApiWsUsersCheckOnline: (
+      data: PostApiWsUsersCheckOnlinePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiWsUsersCheckOnlineData, any>({
+        path: `/api/ws/users/check-online`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @name WsWsMain
@@ -17809,11 +18971,11 @@ export class Api<SecurityDataType extends unknown> {
   };
   system = {
     /**
-     * @description 根据ID删除配置
+     * @description 根据ID物理删除系统配置（永久删除，不可恢复）。 **参数说明：** - id: 配置UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 配置不存在 **注意事项：** - 系统内置配置（isSystem=true）不建议删除 - 删除前确认没有功能依赖此配置 - 建议先备份配置值 **示例：** DELETE /api/system/config/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, config
      * @name DeleteApiSystemConfigById
-     * @summary 删除配置
+     * @summary 删除系统配置
      * @request DELETE:/api/system/config/{id}
      * @response `200` `DeleteApiSystemConfigByIdData` Response for status 200
      */
@@ -17849,7 +19011,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除字典
+     * @description 根据ID软删除字典项。 **路径参数：** - id: 字典项的UUID **注意事项：** - 软删除，数据保留但标记为已删除 - 删除后前端下拉框等组件将不再显示该选项 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/system/dict/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, dict
      * @name DeleteApiSystemDictById
@@ -17869,7 +19031,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据Key删除字典组
+     * @description 根据Key物理删除字典组（永久删除，不可恢复）。 **参数说明：** - key: 字典组键 **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 - 关联的字典项也应一并删除 **返回值：** - true: 删除成功 - false: 字典组不存在 **注意事项：** - 删除前确认没有功能依赖此字典组 - 建议先禁用（status="1"）而非直接删除 **示例：** DELETE /api/system/dict-group/sys_user_sex
      *
      * @tags system, dictGroup
      * @name DeleteApiSystemDictGroupByKey
@@ -17889,7 +19051,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除定时任务
+     * @description 根据ID物理删除定时任务（永久删除，不可恢复）。 **参数说明：** - id: 任务UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 - 任务将停止执行 **返回值：** - true: 删除成功 - false: 任务不存在 **注意事项：** - 删除前建议先暂停任务 - 确认任务不再需要后再删除 - 如需保留配置，建议暂停而非删除 **示例：** DELETE /api/system/job/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, job
      * @name DeleteApiSystemJobById
@@ -17909,7 +19071,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除任务日志
+     * @description 根据ID物理删除任务执行日志（永久删除，不可恢复）。 **参数说明：** - id: 日志UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 日志不存在 **注意事项：** - 任务日志通常需要保留用于问题排查 - 建议设置定期清理策略而非手动删除 **示例：** DELETE /api/system/job-log/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, jobLog
      * @name DeleteApiSystemJobLogById
@@ -17929,7 +19091,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除登录日志
+     * @description 根据ID物理删除登录日志（永久删除，不可恢复）。 **参数说明：** - id: 登录日志UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 日志不存在 **注意事项：** - 登录日志通常需要保留用于审计 - 建议设置定期清理策略而非手动删除 - 删除前确认符合安全合规要求 **示例：** DELETE /api/system/login-info/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, loginInfo
      * @name DeleteApiSystemLoginInfoById
@@ -17949,7 +19111,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除菜单
+     * @description 根据ID删除菜单（物理删除）。 **路径参数：** - id: 菜单的UUID **注意事项：** - 删除后无法恢复 - 删除目录前应先删除其下的子菜单 - 删除菜单会影响已分配该菜单的角色 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/system/menu/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, menu
      * @name DeleteApiSystemMenuById
@@ -17969,11 +19131,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除通知
+     * @description 根据ID物理删除通知公告（永久删除，不可恢复）。 **参数说明：** - id: 通知公告UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 通知不存在 **注意事项：** - 删除前建议确认通知已过期或不再需要 - 如需保留历史记录，建议使用 status="1" 关闭而非删除 **示例：** DELETE /api/system/notice/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, notice
      * @name DeleteApiSystemNoticeById
-     * @summary 删除通知
+     * @summary 删除通知公告
      * @request DELETE:/api/system/notice/{id}
      * @response `200` `DeleteApiSystemNoticeByIdData` Response for status 200
      */
@@ -17989,7 +19151,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除操作日志
+     * @description 根据ID物理删除操作日志（永久删除，不可恢复）。 **参数说明：** - id: 操作日志UUID **删除行为：** - 物理删除：数据从数据库中永久移除 - 不可恢复：删除后无法找回 **返回值：** - true: 删除成功 - false: 日志不存在 **注意事项：** - 操作日志通常需要保留用于审计 - 建议设置定期清理策略而非手动删除 - 删除前确认符合安全合规要求 **示例：** DELETE /api/system/operation-log/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, operationLog
      * @name DeleteApiSystemOperationLogById
@@ -18009,7 +19171,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID删除权限（同时删除子权限）
+     * @description 根据ID删除权限，会递归删除所有子权限。 **路径参数：** - id: 权限UUID，必填 **注意事项：** - 删除操作会递归删除该权限下的所有子权限 - 删除前请确认没有角色关联该权限 - 此操作不可恢复 **返回：** - true: 删除成功 - false: 删除失败（权限不存在） **示例：** DELETE /api/system/permission/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, permission
      * @name DeleteApiSystemPermissionById
@@ -18029,7 +19191,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除岗位
+     * @description 根据ID软删除岗位（逻辑删除，数据保留）。 **参数说明：** - id: 岗位UUID **删除行为：** - 软删除：设置 deletedAt、deletedBy、deletedById - 数据保留在数据库中，可恢复 - 查询时自动过滤已删除记录 **返回值：** - true: 删除成功 - false: 岗位不存在或已删除 **注意事项：** - 删除前应检查是否有用户关联此岗位 - 已删除的岗位不会出现在查询结果中 **示例：** DELETE /api/system/post/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, post
      * @name DeleteApiSystemPostById
@@ -18049,7 +19211,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID软删除角色
+     * @description 根据ID软删除角色。 **路径参数：** - id: 角色的UUID **注意事项：** - 管理员角色（key=admin）不允许删除 - 软删除，数据保留但标记为已删除 **返回：** - true: 删除成功 - false: 未找到或删除失败 **示例：** DELETE /api/system/role/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, role
      * @name DeleteApiSystemRoleById
@@ -18069,7 +19231,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据复合主键删除
+     * @description 根据复合主键删除角色与部门的关联关系。 **路径参数：** - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/role-department/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, roleDepartment
      * @name DeleteApiSystemRoleDepartmentByRoleIdByDepartmentId
@@ -18096,7 +19258,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据复合主键删除
+     * @description 根据复合主键删除角色与菜单的关联关系。 **路径参数：** - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/role-menu/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, roleMenu
      * @name DeleteApiSystemRoleMenuByRoleIdByMenuId
@@ -18114,26 +19276,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<DeleteApiSystemRoleMenuByRoleIdByMenuIdData, any>({
         path: `/api/system/role-menu/${roleId}/${menuId}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID删除令牌
-     *
-     * @tags system, token
-     * @name DeleteApiSystemTokenById
-     * @summary 删除令牌
-     * @request DELETE:/api/system/token/{id}
-     * @response `200` `DeleteApiSystemTokenByIdData` Response for status 200
-     */
-    deleteApiSystemTokenById: (
-      { id, ...query }: DeleteApiSystemTokenByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<DeleteApiSystemTokenByIdData, any>({
-        path: `/api/system/token/${id}`,
         method: "DELETE",
         format: "json",
         ...params,
@@ -18160,7 +19302,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据复合主键删除
+     * @description 根据复合主键删除用户与岗位的关联关系。 **路径参数：** - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/user-post/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, userPost
      * @name DeleteApiSystemUserPostByUserIdByPostId
@@ -18184,7 +19326,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据复合主键删除
+     * @description 根据复合主键删除用户与角色的关联关系。 **路径参数：** - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **返回：** - true: 删除成功 - false: 删除失败（关联不存在） **示例：** DELETE /api/system/user-role/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, userRole
      * @name DeleteApiSystemUserRoleByUserIdByRoleId
@@ -18254,11 +19396,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个配置
+     * @description 根据主键ID查询单个系统配置详情。 **参数说明：** - id: 配置的UUID主键 **返回值：** - 成功：返回配置完整信息（id, name, key, value, isSystem等） - 未找到：返回 null **使用场景：** 1. 查看配置详情 2. 编辑配置前获取当前数据 3. 验证配置是否存在 **示例：** GET /api/system/config/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, config
      * @name GetApiSystemConfigById
-     * @summary 根据ID查询配置
+     * @summary 根据ID查询系统配置
      * @request GET:/api/system/config/{id}
      * @response `200` `GetApiSystemConfigByIdData` Response for status 200
      */
@@ -18274,11 +19416,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取配置表的JSON Schema
+     * @description 获取系统配置表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成配置编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags system, config
      * @name GetApiSystemConfigSchema
-     * @summary 获取配置Schema
+     * @summary 获取系统配置Schema
      * @request GET:/api/system/config/schema
      * @response `200` `GetApiSystemConfigSchemaData` Response for status 200
      */
@@ -18328,7 +19470,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个字典
+     * @description 根据主键ID查询单个字典项的详细信息。 **路径参数：** - id: 字典项的UUID **返回：** - 找到时返回完整的字典对象 - 未找到或已删除时返回 null **示例：** GET /api/system/dict/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, dict
      * @name GetApiSystemDictById
@@ -18348,7 +19490,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键Key查询单个字典组
+     * @description 根据主键Key查询单个字典组详情。 **参数说明：** - key: 字典组的唯一键，如 "sys_user_sex"、"sys_normal_disable" **返回值：** - 成功：返回字典组完整信息（key, name, status, remark等） - 未找到：返回 null **使用场景：** 1. 查看字典组详情 2. 编辑字典组前获取当前数据 3. 验证字典组是否存在 **示例：** GET /api/system/dict-group/sys_user_sex
      *
      * @tags system, dictGroup
      * @name GetApiSystemDictGroupByKey
@@ -18368,7 +19510,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取字典组表的JSON Schema
+     * @description 获取字典组表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成字典组编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags system, dictGroup
      * @name GetApiSystemDictGroupSchema
@@ -18385,7 +19527,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取字典表的JSON Schema
+     * @description 获取字典表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags system, dict
      * @name GetApiSystemDictSchema
@@ -18402,7 +19544,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个定时任务
+     * @description 根据主键ID查询单个定时任务详情。 **参数说明：** - id: 定时任务的UUID主键 **返回值：** - 成功：返回任务完整信息（name, group, invokeTarget, cronExpression, misfirePolicy, concurrent, status等） - 未找到：返回 null **使用场景：** 1. 查看任务详情 2. 编辑任务前获取当前配置 3. 验证任务是否存在 **示例：** GET /api/system/job/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, job
      * @name GetApiSystemJobById
@@ -18422,7 +19564,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个任务日志
+     * @description 根据主键ID查询单个任务执行日志详情。 **参数说明：** - id: 任务日志的UUID主键 **返回值：** - 成功：返回日志完整信息（jobName, jobGroup, invokeTarget, jobMessage, status, exceptionInfo, startTime, stopTime等） - 未找到：返回 null **使用场景：** 1. 查看任务执行详情 2. 分析任务执行失败原因（查看 exceptionInfo） 3. 查看任务执行耗时 **示例：** GET /api/system/job-log/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, jobLog
      * @name GetApiSystemJobLogById
@@ -18442,7 +19584,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取任务日志表的JSON Schema
+     * @description 获取任务日志表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成查询表单 2. 数据导出时的格式参考 3. API文档生成
      *
      * @tags system, jobLog
      * @name GetApiSystemJobLogSchema
@@ -18459,7 +19601,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取定时任务表的JSON Schema
+     * @description 获取定时任务表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成任务编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags system, job
      * @name GetApiSystemJobSchema
@@ -18476,7 +19618,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个登录日志
+     * @description 根据主键ID查询单个登录日志详情。 **参数说明：** - id: 登录日志的UUID主键 **返回值：** - 成功：返回登录日志完整信息（loginName, ipaddr, loginLocation, browser, os, status, msg, loginTime等） - 未找到：返回 null **使用场景：** 1. 查看登录详情（浏览器、操作系统、地理位置等） 2. 分析登录失败原因 3. 安全审计 **示例：** GET /api/system/login-info/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, loginInfo
      * @name GetApiSystemLoginInfoById
@@ -18496,11 +19638,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取登录信息表的JSON Schema
+     * @description 获取登录日志表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成查询表单 2. 数据导出时的格式参考 3. API文档生成
      *
      * @tags system, loginInfo
      * @name GetApiSystemLoginInfoSchema
-     * @summary 获取登录信息Schema
+     * @summary 获取登录日志Schema
      * @request GET:/api/system/login-info/schema
      * @response `200` `GetApiSystemLoginInfoSchemaData` Response for status 200
      */
@@ -18513,7 +19655,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个菜单
+     * @description 根据主键ID查询单个菜单的详细信息。 **路径参数：** - id: 菜单的UUID **返回：** - 找到时返回完整的菜单对象 - 未找到时返回 null **示例：** GET /api/system/menu/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, menu
      * @name GetApiSystemMenuById
@@ -18533,7 +19675,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取菜单表的JSON Schema
+     * @description 获取菜单表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags system, menu
      * @name GetApiSystemMenuSchema
@@ -18550,11 +19692,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个通知
+     * @description 根据主键ID查询单个通知公告详情。 **参数说明：** - id: 通知公告的UUID主键 **返回值：** - 成功：返回通知完整信息（id, title, type, content, status等） - 未找到：返回 null **使用场景：** 1. 查看通知详情页 2. 编辑通知前获取当前数据 3. 验证通知是否存在 **示例：** GET /api/system/notice/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, notice
      * @name GetApiSystemNoticeById
-     * @summary 根据ID查询通知
+     * @summary 根据ID查询通知公告
      * @request GET:/api/system/notice/{id}
      * @response `200` `GetApiSystemNoticeByIdData` Response for status 200
      */
@@ -18570,11 +19712,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取通知表的JSON Schema
+     * @description 获取通知公告表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成通知编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags system, notice
      * @name GetApiSystemNoticeSchema
-     * @summary 获取通知Schema
+     * @summary 获取通知公告Schema
      * @request GET:/api/system/notice/schema
      * @response `200` `GetApiSystemNoticeSchemaData` Response for status 200
      */
@@ -18587,7 +19729,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个操作日志
+     * @description 根据主键ID查询单个操作日志详情。 **参数说明：** - id: 操作日志的UUID主键 **返回值：** - 成功：返回操作日志完整信息（title, method, url, param, result, status, errorMsg, time等） - 未找到：返回 null **使用场景：** 1. 查看操作详情（请求参数、返回结果） 2. 分析操作失败原因 3. 安全审计和问题排查 **示例：** GET /api/system/operation-log/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, operationLog
      * @name GetApiSystemOperationLogById
@@ -18607,7 +19749,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取操作日志表的JSON Schema
+     * @description 获取操作日志表的JSON Schema定义。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束 **使用场景：** 1. 前端动态生成查询表单 2. 数据导出时的格式参考 3. API文档生成
      *
      * @tags system, operationLog
      * @name GetApiSystemOperationLogSchema
@@ -18624,7 +19766,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个权限
+     * @description 根据权限ID查询单个权限详情。 **路径参数：** - id: 权限UUID，必填 **返回：** - 成功：返回权限对象，包含 id, code, name, type, module, parentId, status, orderNum 等字段 - 未找到：返回 null **示例：** GET /api/system/permission/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, permission
      * @name GetApiSystemPermissionById
@@ -18644,7 +19786,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取权限表的JSON Schema
+     * @description 获取权限表的JSON Schema定义，用于动态表单生成和数据验证。 **返回：** - JSON Schema格式的权限表结构定义 **示例：** GET /api/system/permission/schema
      *
      * @tags system, permission
      * @name GetApiSystemPermissionSchema
@@ -18661,7 +19803,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取完整的权限树结构
+     * @description 获取完整的权限树结构，按排序号升序排列。 **返回：** - 返回所有权限的扁平列表，按 orderNum 升序排列 - 前端可根据 parentId 构建树形结构 **使用场景：** - 权限管理页面展示权限树 - 角色授权时选择权限 - 菜单配置时关联权限 **返回字段：** - id: 权限ID - code: 权限编码 - name: 权限名称 - type: 权限类型 - module: 所属模块 - parentId: 父级ID（null表示顶级） - status: 状态 - orderNum: 排序号 **示例：** GET /api/system/permission/tree
      *
      * @tags system, permission
      * @name GetApiSystemPermissionTree
@@ -18678,7 +19820,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个岗位
+     * @description 根据主键ID查询单个岗位详情。 **参数说明：** - id: 岗位的UUID主键 **返回值：** - 成功：返回岗位完整信息（id, code, name, sort, status, remark等） - 未找到：返回 null **使用场景：** 1. 查看岗位详情 2. 编辑岗位前获取当前数据 3. 验证岗位是否存在 **示例：** GET /api/system/post/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, post
      * @name GetApiSystemPostById
@@ -18698,7 +19840,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取岗位表的JSON Schema
+     * @description 获取岗位表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags system, post
      * @name GetApiSystemPostSchema
@@ -18715,7 +19857,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个角色
+     * @description 根据主键ID查询单个角色的详细信息。 **路径参数：** - id: 角色的UUID **返回：** - 找到时返回完整的角色对象 - 未找到或已删除时返回 null **示例：** GET /api/system/role/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags system, role
      * @name GetApiSystemRoleById
@@ -18735,7 +19877,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据roleId和departmentId查询
+     * @description 根据角色ID和部门ID的复合主键查询关联记录。 **路径参数：** - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **返回：** - 成功：返回关联对象 { roleId, departmentId } - 未找到：返回 null **示例：** GET /api/system/role-department/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, roleDepartment
      * @name GetApiSystemRoleDepartmentByRoleIdByDepartmentId
@@ -18762,11 +19904,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取角色部门表的JSON Schema
+     * @description 获取角色部门关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/role-department/schema
      *
      * @tags system, roleDepartment
      * @name GetApiSystemRoleDepartmentSchema
-     * @summary 获取角色部门Schema
+     * @summary 获取角色部门关联Schema
      * @request GET:/api/system/role-department/schema
      * @response `200` `GetApiSystemRoleDepartmentSchemaData` Response for status 200
      */
@@ -18779,7 +19921,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据roleId和menuId查询
+     * @description 根据角色ID和菜单ID的复合主键查询关联记录。 **路径参数：** - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **返回：** - 成功：返回关联对象 { roleId, menuId } - 未找到：返回 null **示例：** GET /api/system/role-menu/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, roleMenu
      * @name GetApiSystemRoleMenuByRoleIdByMenuId
@@ -18799,7 +19941,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定角色的所有菜单ID
+     * @description 获取指定角色的所有菜单ID列表。 **路径参数：** - roleId: 角色UUID，必填 **返回：** - 菜单ID数组，如 ["menu-id-1", "menu-id-2", "menu-id-3"] **使用场景：** - 角色菜单权限配置页面，获取当前角色已分配的菜单 - 用户登录后获取可访问的菜单列表 **示例：** GET /api/system/role-menu/role/550e8400-e29b-41d4-a716-446655440000 **返回示例：** ```json ["menu-id-1", "menu-id-2", "menu-id-3"] ```
      *
      * @tags system, roleMenu
      * @name GetApiSystemRoleMenuRoleByRoleId
@@ -18819,11 +19961,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取角色菜单表的JSON Schema
+     * @description 获取角色菜单关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/role-menu/schema
      *
      * @tags system, roleMenu
      * @name GetApiSystemRoleMenuSchema
-     * @summary 获取角色菜单Schema
+     * @summary 获取角色菜单关联Schema
      * @request GET:/api/system/role-menu/schema
      * @response `200` `GetApiSystemRoleMenuSchemaData` Response for status 200
      */
@@ -18836,7 +19978,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取角色表的JSON Schema
+     * @description 获取角色表的JSON Schema定义。 **返回：** JSON Schema 对象 **使用场景：** - 前端动态生成表单 - API文档生成
      *
      * @tags system, role
      * @name GetApiSystemRoleSchema
@@ -18847,43 +19989,6 @@ export class Api<SecurityDataType extends unknown> {
     getApiSystemRoleSchema: (params: RequestParams = {}) =>
       this.http.request<GetApiSystemRoleSchemaData, any>({
         path: `/api/system/role/schema`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据主键ID查询单个令牌
-     *
-     * @tags system, token
-     * @name GetApiSystemTokenById
-     * @summary 根据ID查询令牌
-     * @request GET:/api/system/token/{id}
-     * @response `200` `GetApiSystemTokenByIdData` Response for status 200
-     */
-    getApiSystemTokenById: (
-      { id, ...query }: GetApiSystemTokenByIdParams,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<GetApiSystemTokenByIdData, any>({
-        path: `/api/system/token/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 获取Token表的JSON Schema
-     *
-     * @tags system, token
-     * @name GetApiSystemTokenSchema
-     * @summary 获取TokenSchema
-     * @request GET:/api/system/token/schema
-     * @response `200` `GetApiSystemTokenSchemaData` Response for status 200
-     */
-    getApiSystemTokenSchema: (params: RequestParams = {}) =>
-      this.http.request<GetApiSystemTokenSchemaData, any>({
-        path: `/api/system/token/schema`,
         method: "GET",
         format: "json",
         ...params,
@@ -18910,7 +20015,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据userId和postId查询
+     * @description 根据用户ID和岗位ID的复合主键查询关联记录。 **路径参数：** - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **返回：** - 成功：返回关联对象 { userId, postId } - 未找到：返回 null **示例：** GET /api/system/user-post/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, userPost
      * @name GetApiSystemUserPostByUserIdByPostId
@@ -18930,11 +20035,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取用户岗位表的JSON Schema
+     * @description 获取用户岗位关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/user-post/schema
      *
      * @tags system, userPost
      * @name GetApiSystemUserPostSchema
-     * @summary 获取用户岗位Schema
+     * @summary 获取用户岗位关联Schema
      * @request GET:/api/system/user-post/schema
      * @response `200` `GetApiSystemUserPostSchemaData` Response for status 200
      */
@@ -18947,7 +20052,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定用户的所有岗位ID
+     * @description 获取指定用户的所有岗位ID列表。 **路径参数：** - userId: 用户UUID，必填 **返回：** - 岗位ID数组，如 ["post-id-1", "post-id-2", "post-id-3"] **使用场景：** - 用户详情页面，显示用户所属岗位 - 用户编辑页面，获取当前用户已分配的岗位 - 权限判断，检查用户是否属于某岗位 **示例：** GET /api/system/user-post/user/550e8400-e29b-41d4-a716-446655440000 **返回示例：** ```json ["post-id-1", "post-id-2", "post-id-3"] ```
      *
      * @tags system, userPost
      * @name GetApiSystemUserPostUserByUserId
@@ -18967,7 +20072,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据userId和roleId查询
+     * @description 根据用户ID和角色ID的复合主键查询关联记录。 **路径参数：** - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **返回：** - 成功：返回关联对象 { userId, roleId } - 未找到：返回 null **示例：** GET /api/system/user-role/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d4-a716-446655440002
      *
      * @tags system, userRole
      * @name GetApiSystemUserRoleByUserIdByRoleId
@@ -18987,11 +20092,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取用户角色表的JSON Schema
+     * @description 获取用户角色关联表的JSON Schema定义。 **返回：** - JSON Schema格式的表结构定义 **示例：** GET /api/system/user-role/schema
      *
      * @tags system, userRole
      * @name GetApiSystemUserRoleSchema
-     * @summary 获取用户角色Schema
+     * @summary 获取用户角色关联Schema
      * @request GET:/api/system/user-role/schema
      * @response `200` `GetApiSystemUserRoleSchemaData` Response for status 200
      */
@@ -19004,7 +20109,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定用户的所有角色ID
+     * @description 获取指定用户的所有角色ID列表。 **路径参数：** - userId: 用户UUID，必填 **返回：** - 角色ID数组，如 ["role-id-1", "role-id-2", "role-id-3"] **使用场景：** - 用户详情页面，显示用户所属角色 - 用户编辑页面，获取当前用户已分配的角色 - 权限判断，检查用户是否拥有某角色 - 用户登录后获取角色列表 **示例：** GET /api/system/user-role/user/550e8400-e29b-41d4-a716-446655440000 **返回示例：** ```json ["role-id-1", "role-id-2", "role-id-3"] ```
      *
      * @tags system, userRole
      * @name GetApiSystemUserRoleUserByUserId
@@ -19041,11 +20146,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个配置
+     * @description 创建单个系统配置记录。 **必填字段：** - name: 配置名称，如 "系统名称"、"邮件服务器" - key: 配置键，唯一标识，如 "sys.name"、"mail.host" - value: 配置值 **可选字段：** - isSystem: 是否系统内置，默认 false - remark: 备注说明 **配置键命名规范：** - 使用点号分隔层级：module.submodule.key - 系统配置：sys.* - 邮件配置：mail.* - 存储配置：storage.* **使用场景：** 1. 添加新的系统参数 2. 配置第三方服务连接信息 3. 自定义业务参数 **示例：** ```json { "data": { "name": "邮件服务器地址", "key": "mail.host", "value": "smtp.example.com", "isSystem": false, "remark": "SMTP服务器地址" } } ```
      *
      * @tags system, config
      * @name PostApiSystemConfig
-     * @summary 创建配置
+     * @summary 创建系统配置
      * @request POST:/api/system/config
      * @response `200` `PostApiSystemConfigData` Response for status 200
      */
@@ -19063,11 +20168,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个配置
+     * @description 批量创建多个系统配置记录。 **参数说明：** - data: 配置数组，每个元素包含 name、key、value 等字段 **使用场景：** 1. 系统初始化时批量创建默认配置 2. 导入配置模板 3. 批量添加某个模块的配置项 **示例：** ```json { "data": [ { "name": "系统名称", "key": "sys.name", "value": "AI管理系统", "isSystem": true }, { "name": "系统Logo", "key": "sys.logo", "value": "/logo.png", "isSystem": true }, { "name": "版权信息", "key": "sys.copyright", "value": "© 2024", "isSystem": true } ] } ```
      *
      * @tags system, config
      * @name PostApiSystemConfigBatch
-     * @summary 批量创建配置
+     * @summary 批量创建系统配置
      * @request POST:/api/system/config/batch
      * @response `200` `PostApiSystemConfigBatchData` Response for status 200
      */
@@ -19085,11 +20190,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询配置列表
+     * @description 分页查询系统配置列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按配置名称列表精确查询 - keys: 按配置键列表精确查询，如 ["sys.name", "sys.logo"] - isSystem: 是否系统内置配置，true=内置，false=自定义 - name: 按配置名称模糊搜索 - key: 按配置键模糊搜索，如 "sys" 匹配所有 sys.* 配置 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | key | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有系统内置配置：filter.isSystem = true 2. 搜索包含"邮件"的配置：filter.name = "邮件" 3. 获取所有 sys.* 开头的配置：filter.key = "sys" **示例：** ```json { "filter": { "isSystem": false, "key": "mail" }, "sort": { "field": "key", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, config
      * @name PostApiSystemConfigQuery
-     * @summary 分页查询配置
+     * @summary 分页查询系统配置
      * @request POST:/api/system/config/query
      * @response `200` `PostApiSystemConfigQueryData` Response for status 200
      */
@@ -19173,7 +20278,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个字典
+     * @description 创建单个字典项。 **必填字段：** - group: 字典分组（如 sys_user_status） - label: 显示标签 - value: 字典值 **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - isDefault: 是否默认值，默认false - sort: 排序号，默认0 - remark: 备注 **示例：** ```json { "data": { "group": "sys_user_status", "label": "正常", "value": "0", "isDefault": true, "sort": 1 } } ```
      *
      * @tags system, dict
      * @name PostApiSystemDict
@@ -19195,7 +20300,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个字典
+     * @description 批量创建多个字典项，适用于初始化场景。 **请求体：** - data: 字典对象数组 **示例：** ```json { "data": [ { "group": "sys_user_status", "label": "正常", "value": "0", "sort": 1 }, { "group": "sys_user_status", "label": "禁用", "value": "1", "sort": 2 } ] } ``` **返回：** 创建成功的字典对象数组
      *
      * @tags system, dict
      * @name PostApiSystemDictBatch
@@ -19217,7 +20322,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个字典组
+     * @description 创建单个字典组记录。 **必填字段：** - key: 字典组键，唯一标识，如 "sys_user_sex" - name: 字典组名称，如 "用户性别" **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注说明 **键命名规范：** - 使用下划线分隔：module_entity_field - 系统字典：sys_* - 业务字典：biz_* **使用场景：** 1. 添加新的字典分类 2. 系统初始化时创建默认字典组 **示例：** ```json { "data": { "key": "sys_user_sex", "name": "用户性别", "status": "0", "remark": "用户性别选项" } } ```
      *
      * @tags system, dictGroup
      * @name PostApiSystemDictGroup
@@ -19239,7 +20344,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个字典组
+     * @description 批量创建多个字典组记录。 **参数说明：** - data: 字典组数组，每个元素包含 key、name 等字段 **使用场景：** 1. 系统初始化时批量创建默认字典组 2. 导入字典配置 **示例：** ```json { "data": [ { "key": "sys_user_sex", "name": "用户性别" }, { "key": "sys_normal_disable", "name": "状态" }, { "key": "sys_yes_no", "name": "是否" } ] } ```
      *
      * @tags system, dictGroup
      * @name PostApiSystemDictGroupBatch
@@ -19261,7 +20366,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询字典组列表
+     * @description 分页查询字典组列表，字典组用于管理一组相关的字典项。 **过滤参数 (filter)：** - keys: 按字典组键列表精确查询，如 ["sys_user_sex", "sys_normal_disable"] - names: 按字典组名称列表精确查询 - status: 按状态过滤，"0"=正常，"1"=禁用 - key: 按字典组键模糊搜索，如 "sys" 匹配所有系统字典 - name: 按字典组名称模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: key | name | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有正常状态的字典组：filter.status = "0" 2. 搜索系统相关字典：filter.key = "sys" 3. 按键名排序：sort = { field: "key", order: "asc" } **示例：** ```json { "filter": { "status": "0", "key": "sys" }, "sort": { "field": "key", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, dictGroup
      * @name PostApiSystemDictGroupQuery
@@ -19283,7 +20388,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询字典列表，自动排除已删除数据
+     * @description 分页查询字典列表，自动排除已删除数据。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - groups: 按分组列表精确查询，如 ["sys_user_status", "sys_normal_disable"] - labels: 按标签列表精确查询 - status: 按状态过滤，"0"=正常，"1"=禁用 - isDefault: 是否默认值 - group: 按分组模糊搜索 - label: 按标签模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: group | label | sort | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例 - 查询某分组的所有字典项：** ```json { "filter": { "groups": ["sys_user_status"] }, "sort": { "field": "sort", "order": "asc" } } ```
      *
      * @tags system, dict
      * @name PostApiSystemDictQuery
@@ -19305,7 +20410,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个定时任务
+     * @description 创建单个定时任务记录。 **必填字段：** - name: 任务名称，如 "清理临时文件" - group: 任务分组，如 "DEFAULT"、"SYSTEM" - invokeTarget: 调用目标（类名.方法名） - cronExpression: Cron表达式，如 "0 0 2 * * ?" 表示每天凌晨2点 **可选字段：** - misfirePolicy: 错过执行策略（0=默认，1=立即执行，2=执行一次，3=放弃执行） - concurrent: 是否允许并发执行，默认 false - status: 状态，"0"=正常（默认），"1"=暂停 - remark: 备注说明 **Cron表达式示例：** - "0 0 2 * * ?": 每天凌晨2点 - "0 0/30 * * * ?": 每30分钟 - "0 0 10,14,16 * * ?": 每天10点、14点、16点 **示例：** ```json { "data": { "name": "清理临时文件", "group": "SYSTEM", "invokeTarget": "cleanTask.execute", "cronExpression": "0 0 2 * * ?", "misfirePolicy": "1", "concurrent": false, "status": "0" } } ```
      *
      * @tags system, job
      * @name PostApiSystemJob
@@ -19322,7 +20427,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个定时任务
+     * @description 批量创建多个定时任务记录。 **参数说明：** - data: 任务数组，每个元素包含 name、group、invokeTarget、cronExpression 等字段 **使用场景：** 1. 系统初始化时批量创建默认任务 2. 导入任务配置 3. 批量添加某类任务 **示例：** ```json { "data": [ { "name": "清理日志", "group": "SYSTEM", "invokeTarget": "logTask.clean", "cronExpression": "0 0 3 * * ?" }, { "name": "数据备份", "group": "SYSTEM", "invokeTarget": "backupTask.run", "cronExpression": "0 0 4 * * ?" } ] } ```
      *
      * @tags system, job
      * @name PostApiSystemJobBatch
@@ -19339,7 +20444,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个任务日志
+     * @description 创建单个任务执行日志记录（通常由任务调度器自动调用）。 **必填字段：** - jobName: 任务名称 - jobGroup: 任务分组 - invokeTarget: 调用目标 **可选字段：** - jobMessage: 执行消息 - status: 执行状态，"0"=成功，"1"=失败 - exceptionInfo: 异常信息（失败时记录） - startTime: 开始时间 - stopTime: 结束时间 **使用场景：** 1. 任务执行开始时创建日志 2. 任务执行完成后更新状态 3. 手动记录任务执行情况 **示例：** ```json { "data": { "jobName": "清理临时文件", "jobGroup": "SYSTEM", "invokeTarget": "cleanTask.execute", "status": "0", "jobMessage": "清理完成，删除100个文件", "startTime": "2024-01-01T02:00:00Z", "stopTime": "2024-01-01T02:00:30Z" } } ```
      *
      * @tags system, jobLog
      * @name PostApiSystemJobLog
@@ -19356,7 +20461,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个任务日志
+     * @description 批量创建多个任务执行日志记录。 **参数说明：** - data: 日志数组，每个元素包含 jobName、jobGroup、invokeTarget 等字段 **使用场景：** 1. 批量导入历史执行记录 2. 批量任务执行后统一记录 **示例：** ```json { "data": [ { "jobName": "任务A", "jobGroup": "DEFAULT", "invokeTarget": "taskA.run", "status": "0" }, { "jobName": "任务B", "jobGroup": "DEFAULT", "invokeTarget": "taskB.run", "status": "0" } ] } ```
      *
      * @tags system, jobLog
      * @name PostApiSystemJobLogBatch
@@ -19373,7 +20478,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询任务日志列表
+     * @description 分页查询定时任务执行日志，用于监控任务执行情况。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - jobNames: 按任务名称列表精确查询 - jobGroups: 按任务分组列表精确查询 - status: 按状态过滤，"0"=成功，"1"=失败 - jobName: 按任务名称模糊搜索 - jobGroup: 按任务分组模糊搜索 - startTimeStart/startTimeEnd: 执行开始时间范围 - createdAtStart/createdAtEnd: 记录创建时间范围 **排序参数 (sort)：** - field: jobName | jobGroup | startTime | stopTime | createdAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 查看某任务的执行历史：filter.jobName = "清理日志" 2. 查看执行失败的任务：filter.status = "1" 3. 查看今日执行记录：设置 startTimeStart/startTimeEnd **示例：** ```json { "filter": { "status": "1", "jobGroup": "SYSTEM" }, "sort": { "field": "startTime", "order": "desc" }, "offset": 0, "limit": 50 } ```
      *
      * @tags system, jobLog
      * @name PostApiSystemJobLogQuery
@@ -19395,7 +20500,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询定时任务列表
+     * @description 分页查询定时任务列表，用于管理系统定时任务。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按任务名称列表精确查询 - groups: 按任务分组列表精确查询，如 ["DEFAULT", "SYSTEM"] - status: 按状态过滤，"0"=正常，"1"=暂停 - concurrent: 是否允许并发，true/false - name: 按任务名称模糊搜索 - group: 按任务分组模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | group | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有正常运行的任务：filter.status = "0" 2. 获取某分组的任务：filter.group = "SYSTEM" 3. 搜索任务名称：filter.name = "清理" **示例：** ```json { "filter": { "status": "0", "group": "DEFAULT" }, "sort": { "field": "name", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, job
      * @name PostApiSystemJobQuery
@@ -19417,7 +20522,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个登录日志
+     * @description 创建单个登录日志记录（通常由系统自动调用）。 **必填字段：** - loginName: 登录账号 - ipaddr: 登录IP地址 - status: 登录状态，"0"=成功，"1"=失败 **可选字段：** - loginLocation: 登录地点（根据IP解析） - browser: 浏览器类型 - os: 操作系统 - msg: 提示消息（失败时记录原因） - loginTime: 登录时间 **使用场景：** 1. 用户登录成功后记录 2. 用户登录失败后记录（含失败原因） 3. 安全审计日志 **示例：** ```json { "data": { "loginName": "admin", "ipaddr": "192.168.1.100", "loginLocation": "内网IP", "browser": "Chrome 120", "os": "Windows 10", "status": "0", "msg": "登录成功", "loginTime": "2024-01-01T10:00:00Z" } } ```
      *
      * @tags system, loginInfo
      * @name PostApiSystemLoginInfo
@@ -19434,7 +20539,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询登录日志列表
+     * @description 分页查询登录日志列表，用于审计和安全监控。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - loginNames: 按登录账号列表精确查询 - status: 按状态过滤，"0"=成功，"1"=失败 - loginName: 按登录账号模糊搜索 - ipaddr: 按IP地址模糊搜索，如 "192.168" 匹配内网IP - loginTimeStart/loginTimeEnd: 登录时间范围 - createdAtStart/createdAtEnd: 记录创建时间范围 **排序参数 (sort)：** - field: loginName | ipaddr | loginTime | createdAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 查看某用户的登录历史：filter.loginName = "admin" 2. 查看登录失败记录：filter.status = "1" 3. 查看某IP的登录记录：filter.ipaddr = "192.168.1" 4. 查看今日登录记录：设置 loginTimeStart/loginTimeEnd **示例：** ```json { "filter": { "status": "1", "loginName": "admin" }, "sort": { "field": "loginTime", "order": "desc" }, "offset": 0, "limit": 50 } ```
      *
      * @tags system, loginInfo
      * @name PostApiSystemLoginInfoQuery
@@ -19456,7 +20561,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个菜单
+     * @description 创建单个菜单项。 **必填字段：** - name: 菜单名称 - type: 菜单类型，M=目录，C=菜单，F=按钮 **可选字段：** - parentId: 父级菜单ID，null表示顶级 - path: 路由路径（菜单类型需要） - component: 组件路径 - permission: 权限标识（按钮类型需要） - icon: 图标 - orderNum: 排序号，默认0 - visible: 是否可见，默认true - status: 状态，"0"=正常，"1"=禁用 **示例 - 创建目录：** ```json { "data": { "name": "系统管理", "type": "M", "icon": "setting", "orderNum": 1 } } ``` **示例 - 创建菜单：** ```json { "data": { "name": "用户管理", "type": "C", "parentId": "parent-uuid", "path": "/system/users", "component": "system/users/index" } } ```
      *
      * @tags system, menu
      * @name PostApiSystemMenu
@@ -19478,7 +20583,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个菜单
+     * @description 批量创建多个菜单项，适用于初始化场景。 **请求体：** - data: 菜单对象数组 **示例：** ```json { "data": [ { "name": "系统管理", "type": "M", "orderNum": 1 }, { "name": "用户管理", "type": "C", "parentId": "xxx", "path": "/system/users" } ] } ``` **返回：** 创建成功的菜单对象数组
      *
      * @tags system, menu
      * @name PostApiSystemMenuBatch
@@ -19500,7 +20605,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询菜单列表
+     * @description 分页查询菜单列表，支持树形结构查询。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询 - types: 按类型列表查询，M=目录，C=菜单，F=按钮 - parentId: 按父级ID过滤，null表示查询顶级菜单 - type: 按单个类型过滤 - visible: 是否可见 - name: 按名称模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | orderNum | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例 - 查询顶级目录：** ```json { "filter": { "parentId": null, "type": "M" }, "sort": { "field": "orderNum", "order": "asc" } } ``` **示例 - 查询某目录下的菜单：** ```json { "filter": { "parentId": "parent-uuid", "types": ["C", "F"] } } ```
      *
      * @tags system, menu
      * @name PostApiSystemMenuQuery
@@ -19522,11 +20627,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个通知
+     * @description 创建单个通知公告记录。 **必填字段：** - title: 通知标题 - type: 通知类型，"1"=通知，"2"=公告 - content: 通知内容（支持富文本HTML） **可选字段：** - status: 状态，"0"=正常（默认），"1"=关闭 - remark: 备注说明 **审计字段（自动填充）：** - createdBy/updatedBy: 创建人/更新人姓名 - createdAt/updatedAt: 创建/更新时间 **使用场景：** 1. 发布系统通知 2. 发布公司公告 3. 发布维护通知 **示例：** ```json { "data": { "title": "系统维护通知", "type": "1", "content": "<p>系统将于今晚22:00-24:00进行维护升级</p>", "status": "0" } } ```
      *
      * @tags system, notice
      * @name PostApiSystemNotice
-     * @summary 创建通知
+     * @summary 创建通知公告
      * @request POST:/api/system/notice
      * @response `200` `PostApiSystemNoticeData` Response for status 200
      */
@@ -19544,11 +20649,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个通知
+     * @description 批量创建多个通知公告记录。 **参数说明：** - data: 通知数组，每个元素包含 title、type、content 等字段 **使用场景：** 1. 批量导入历史通知 2. 系统初始化时创建默认通知 3. 批量发布多条公告 **示例：** ```json { "data": [ { "title": "欢迎使用", "type": "1", "content": "欢迎使用本系统" }, { "title": "使用须知", "type": "2", "content": "请遵守使用规范" } ] } ```
      *
      * @tags system, notice
      * @name PostApiSystemNoticeBatch
-     * @summary 批量创建通知
+     * @summary 批量创建通知公告
      * @request POST:/api/system/notice/batch
      * @response `200` `PostApiSystemNoticeBatchData` Response for status 200
      */
@@ -19566,11 +20671,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询通知列表
+     * @description 分页查询通知公告列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - titles: 按标题列表精确查询 - types: 按类型列表精确查询，如 ["1", "2"] - type: 按类型精确匹配，"1"=通知，"2"=公告 - status: 按状态过滤，"0"=正常，"1"=关闭 - title: 按标题模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: title | type | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有公告：filter.type = "2" 2. 搜索标题包含"系统"的通知：filter.title = "系统" 3. 获取最近一周的通知：设置 createdAtStart **示例：** ```json { "filter": { "type": "1", "status": "0" }, "sort": { "field": "createdAt", "order": "desc" }, "offset": 0, "limit": 10 } ```
      *
      * @tags system, notice
      * @name PostApiSystemNoticeQuery
-     * @summary 分页查询通知
+     * @summary 分页查询通知公告
      * @request POST:/api/system/notice/query
      * @response `200` `PostApiSystemNoticeQueryData` Response for status 200
      */
@@ -19588,7 +20693,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个操作日志
+     * @description 创建单个操作日志记录（通常由系统自动调用）。 **必填字段：** - title: 操作模块，如 "用户管理"、"角色管理" - name: 操作人员姓名 - method: 请求方法，如 "POST"、"PUT"、"DELETE" - url: 请求URL **可选字段：** - businessType: 业务类型（0=其它，1=新增，2=修改，3=删除） - param: 请求参数（JSON字符串） - result: 返回结果（JSON字符串） - status: 操作状态，"0"=成功，"1"=失败 - errorMsg: 错误消息 - time: 操作时间 - costTime: 耗时（毫秒） **使用场景：** 1. API请求拦截器自动记录 2. 关键业务操作手动记录 3. 安全审计日志 **示例：** ```json { "data": { "title": "用户管理", "name": "admin", "method": "POST", "url": "/api/system/user", "businessType": 1, "param": "{\"name\":\"张三\"}", "status": "0", "costTime": 150 } } ```
      *
      * @tags system, operationLog
      * @name PostApiSystemOperationLog
@@ -19605,7 +20710,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询操作日志列表
+     * @description 分页查询操作日志列表，用于审计用户操作行为。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - titles: 按操作模块列表精确查询，如 ["用户管理", "角色管理"] - names: 按操作人员列表精确查询 - status: 按状态过滤，"0"=成功，"1"=失败 - title: 按操作模块模糊搜索，如 "用户" 匹配用户相关操作 - name: 按操作人员模糊搜索 - timeStart/timeEnd: 操作时间范围 **排序参数 (sort)：** - field: title | name | time - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 查看某用户的操作历史：filter.name = "admin" 2. 查看某模块的操作记录：filter.title = "用户管理" 3. 查看操作失败记录：filter.status = "1" 4. 查看今日操作记录：设置 timeStart/timeEnd **示例：** ```json { "filter": { "title": "用户", "status": "0" }, "sort": { "field": "time", "order": "desc" }, "offset": 0, "limit": 50 } ```
      *
      * @tags system, operationLog
      * @name PostApiSystemOperationLogQuery
@@ -19627,7 +20732,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个权限
+     * @description 创建单个权限记录。 **请求体参数 (data)：** - code: 权限编码，必填，如 "system:user:view" - name: 权限名称，必填，如 "查看用户" - type: 权限类型，必填，可选值：menu(菜单), button(按钮), api(接口) - module: 所属模块，必填，如 "system", "ai", "im" - parentId: 父级权限ID，可选，null表示顶级权限 - status: 状态，可选，默认true(启用) - orderNum: 排序号，可选，默认0 - remark: 备注，可选 **示例：** ```json { "data": { "code": "system:user:view", "name": "查看用户", "type": "menu", "module": "system", "parentId": null, "status": true, "orderNum": 1 } } ```
      *
      * @tags system, permission
      * @name PostApiSystemPermission
@@ -19649,7 +20754,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询权限列表
+     * @description 分页查询权限列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询，如 ["id1", "id2"] - codes: 按权限编码列表查询，如 ["system:user:view", "system:user:edit"] - types: 按类型列表查询，如 ["menu", "button", "api"] - modules: 按模块列表查询，如 ["system", "ai", "im"] - parentId: 按父级ID查询，null表示查询顶级权限 - status: 按状态过滤，true=启用，false=禁用 - code: 按权限编码模糊搜索 - name: 按权限名称模糊搜索 **排序参数 (sort)：** - field: code | name | orderNum | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-1000，默认100 **示例：** ```json { "filter": { "modules": ["system"], "status": true }, "sort": { "field": "orderNum", "order": "asc" }, "offset": 0, "limit": 100 } ```
      *
      * @tags system, permission
      * @name PostApiSystemPermissionQuery
@@ -19671,7 +20776,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个岗位
+     * @description 创建单个岗位记录。 **必填字段：** - code: 岗位编码，唯一标识，如 "CEO"、"CTO"、"PM" - name: 岗位名称，如 "首席执行官"、"技术总监" **可选字段：** - sort: 排序号，数字越小越靠前，默认0 - status: 状态，"0"=正常（默认），"1"=禁用 - remark: 备注说明 **审计字段（自动填充）：** - createdBy/updatedBy: 创建人/更新人姓名 - createdAt/updatedAt: 创建/更新时间 **使用场景：** 1. 新增组织架构中的岗位 2. 初始化系统岗位数据 **示例：** ```json { "data": { "code": "PM", "name": "项目经理", "sort": 10, "status": "0", "remark": "负责项目管理" } } ```
      *
      * @tags system, post
      * @name PostApiSystemPost
@@ -19693,7 +20798,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个岗位
+     * @description 批量创建多个岗位记录，适用于初始化或批量导入场景。 **参数说明：** - data: 岗位数组，每个元素包含 code、name 等字段 **使用场景：** 1. 系统初始化时批量创建岗位 2. 从Excel导入岗位数据 3. 复制其他系统的岗位配置 **示例：** ```json { "data": [ { "code": "CEO", "name": "首席执行官", "sort": 1 }, { "code": "CTO", "name": "技术总监", "sort": 2 }, { "code": "CFO", "name": "财务总监", "sort": 3 } ] } ```
      *
      * @tags system, post
      * @name PostApiSystemPostBatch
@@ -19715,7 +20820,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询岗位列表
+     * @description 分页查询岗位列表，支持多种过滤和排序方式。 **过滤参数 (filter)：** - ids: 按ID列表精确查询，如 ["id1", "id2"] - codes: 按岗位编码列表精确查询，如 ["CEO", "CTO", "PM"] - names: 按岗位名称列表精确查询 - status: 按状态过滤，"0"=正常，"1"=禁用 - code: 按岗位编码模糊搜索，如 "C" 匹配 CEO、CTO - name: 按岗位名称模糊搜索 **排序参数 (sort)：** - field: code | name | sort | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** 1. 获取所有正常状态的岗位：filter.status = "0" 2. 搜索包含"经理"的岗位：filter.name = "经理" 3. 按排序号升序排列：sort = { field: "sort", order: "asc" } **示例：** ```json { "filter": { "status": "0", "name": "经理" }, "sort": { "field": "sort", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, post
      * @name PostApiSystemPostQuery
@@ -19737,7 +20842,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个角色
+     * @description 创建单个角色。 **必填字段：** - name: 角色名称 - key: 角色标识（唯一，如 admin, user, editor） **可选字段：** - status: 状态，"0"=正常（默认），"1"=禁用 - sort: 排序号，默认0 - remark: 备注 **示例：** ```json { "data": { "name": "编辑员", "key": "editor", "status": "0", "sort": 10 } } ```
      *
      * @tags system, role
      * @name PostApiSystemRole
@@ -19759,7 +20864,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个角色
+     * @description 批量创建多个角色，适用于初始化场景。 **请求体：** - data: 角色对象数组 **示例：** ```json { "data": [ { "name": "管理员", "key": "admin" }, { "name": "普通用户", "key": "user" } ] } ``` **返回：** 创建成功的角色对象数组
      *
      * @tags system, role
      * @name PostApiSystemRoleBatch
@@ -19781,7 +20886,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个角色部门关联
+     * @description 创建单个角色与部门的关联关系。 **请求体参数 (data)：** - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **使用场景：** - 为角色配置数据权限范围 - 角色可访问指定部门的数据 **示例：** ```json { "data": { "roleId": "550e8400-e29b-41d4-a716-446655440001", "departmentId": "550e8400-e29b-41d4-a716-446655440002" } } ```
      *
      * @tags system, roleDepartment
      * @name PostApiSystemRoleDepartment
@@ -19803,7 +20908,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个角色部门关联
+     * @description 批量创建多个角色与部门的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - roleId: 角色UUID，必填 - departmentId: 部门UUID，必填 **使用场景：** - 为角色一次性配置多个部门的数据权限 - 批量导入角色部门关联 **示例：** ```json { "data": [ { "roleId": "role-1", "departmentId": "dept-1" }, { "roleId": "role-1", "departmentId": "dept-2" }, { "roleId": "role-1", "departmentId": "dept-3" } ] } ```
      *
      * @tags system, roleDepartment
      * @name PostApiSystemRoleDepartmentBatch
@@ -19825,7 +20930,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询角色部门关联列表
+     * @description 分页查询角色与部门的关联关系，用于数据权限控制。 **过滤参数 (filter)：** - roleIds: 按角色ID列表查询，如 ["role-id-1", "role-id-2"] - departmentIds: 按部门ID列表查询，如 ["dept-id-1", "dept-id-2"] - roleId: 按单个角色ID精确查询 - departmentId: 按单个部门ID精确查询 **排序参数 (sort)：** - field: roleId | departmentId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某角色关联的所有部门 - 查询某部门关联的所有角色 - 数据权限范围配置 **示例：** ```json { "filter": { "roleId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "departmentId", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, roleDepartment
      * @name PostApiSystemRoleDepartmentQuery
@@ -19847,7 +20952,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个角色菜单关联
+     * @description 创建单个角色与菜单的关联关系。 **请求体参数 (data)：** - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **使用场景：** - 为角色分配单个菜单权限 - 动态添加菜单访问权限 **示例：** ```json { "data": { "roleId": "550e8400-e29b-41d4-a716-446655440001", "menuId": "550e8400-e29b-41d4-a716-446655440002" } } ```
      *
      * @tags system, roleMenu
      * @name PostApiSystemRoleMenu
@@ -19869,7 +20974,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个角色菜单关联
+     * @description 批量创建多个角色与菜单的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - roleId: 角色UUID，必填 - menuId: 菜单UUID，必填 **使用场景：** - 为角色一次性分配多个菜单权限 - 批量导入角色菜单关联 **示例：** ```json { "data": [ { "roleId": "role-1", "menuId": "menu-1" }, { "roleId": "role-1", "menuId": "menu-2" }, { "roleId": "role-1", "menuId": "menu-3" } ] } ```
      *
      * @tags system, roleMenu
      * @name PostApiSystemRoleMenuBatch
@@ -19891,7 +20996,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询角色菜单关联列表
+     * @description 分页查询角色与菜单的关联关系，用于菜单权限控制。 **过滤参数 (filter)：** - roleIds: 按角色ID列表查询，如 ["role-id-1", "role-id-2"] - menuIds: 按菜单ID列表查询，如 ["menu-id-1", "menu-id-2"] - roleId: 按单个角色ID精确查询 - menuId: 按单个菜单ID精确查询 **排序参数 (sort)：** - field: roleId | menuId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某角色关联的所有菜单 - 查询某菜单关联的所有角色 - 菜单权限配置 **示例：** ```json { "filter": { "roleId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "menuId", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, roleMenu
      * @name PostApiSystemRoleMenuQuery
@@ -19913,7 +21018,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询角色列表，自动排除已删除数据
+     * @description 分页查询角色列表，自动排除已删除数据。 **过滤参数 (filter)：** - ids: 按ID列表精确查询 - names: 按名称列表精确查询 - keys: 按角色标识列表精确查询，如 ["admin", "user"] - status: 按状态过滤，"0"=正常，"1"=禁用 - name: 按名称模糊搜索 - key: 按角色标识模糊搜索 - createdAtStart/createdAtEnd: 创建时间范围 **排序参数 (sort)：** - field: name | key | sort | createdAt | updatedAt - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **示例：** ```json { "filter": { "status": "0" }, "sort": { "field": "sort", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, role
      * @name PostApiSystemRoleQuery
@@ -19927,50 +21032,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PostApiSystemRoleQueryData, any>({
         path: `/api/system/role/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 创建单个令牌
-     *
-     * @tags system, token
-     * @name PostApiSystemToken
-     * @summary 创建令牌
-     * @request POST:/api/system/token
-     * @response `200` `PostApiSystemTokenData` Response for status 200
-     */
-    postApiSystemToken: (
-      data: PostApiSystemTokenPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiSystemTokenData, any>({
-        path: `/api/system/token`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 分页查询令牌列表
-     *
-     * @tags system, token
-     * @name PostApiSystemTokenQuery
-     * @summary 分页查询令牌
-     * @request POST:/api/system/token/query
-     * @response `200` `PostApiSystemTokenQueryData` Response for status 200
-     */
-    postApiSystemTokenQuery: (
-      data: PostApiSystemTokenQueryPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PostApiSystemTokenQueryData, any>({
-        path: `/api/system/token/query`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -20033,7 +21094,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个用户岗位关联
+     * @description 创建单个用户与岗位的关联关系。 **请求体参数 (data)：** - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **使用场景：** - 为用户分配单个岗位 - 用户入职时配置岗位 **示例：** ```json { "data": { "userId": "550e8400-e29b-41d4-a716-446655440001", "postId": "550e8400-e29b-41d4-a716-446655440002" } } ```
      *
      * @tags system, userPost
      * @name PostApiSystemUserPost
@@ -20055,7 +21116,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个用户岗位关联
+     * @description 批量创建多个用户与岗位的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - userId: 用户UUID，必填 - postId: 岗位UUID，必填 **使用场景：** - 为用户一次性分配多个岗位 - 批量导入用户岗位关联 **示例：** ```json { "data": [ { "userId": "user-1", "postId": "post-1" }, { "userId": "user-1", "postId": "post-2" }, { "userId": "user-2", "postId": "post-1" } ] } ```
      *
      * @tags system, userPost
      * @name PostApiSystemUserPostBatch
@@ -20077,7 +21138,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询用户岗位关联列表
+     * @description 分页查询用户与岗位的关联关系。 **过滤参数 (filter)：** - userIds: 按用户ID列表查询，如 ["user-id-1", "user-id-2"] - postIds: 按岗位ID列表查询，如 ["post-id-1", "post-id-2"] - userId: 按单个用户ID精确查询 - postId: 按单个岗位ID精确查询 **排序参数 (sort)：** - field: userId | postId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某用户关联的所有岗位 - 查询某岗位关联的所有用户 - 用户岗位配置管理 **示例：** ```json { "filter": { "userId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "postId", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, userPost
      * @name PostApiSystemUserPostQuery
@@ -20121,7 +21182,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个用户角色关联
+     * @description 创建单个用户与角色的关联关系。 **请求体参数 (data)：** - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **使用场景：** - 为用户分配单个角色 - 动态添加用户权限 **示例：** ```json { "data": { "userId": "550e8400-e29b-41d4-a716-446655440001", "roleId": "550e8400-e29b-41d4-a716-446655440002" } } ```
      *
      * @tags system, userRole
      * @name PostApiSystemUserRole
@@ -20143,7 +21204,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量创建多个用户角色关联
+     * @description 批量创建多个用户与角色的关联关系。 **请求体参数 (data)：** - 数组，每个元素包含： - userId: 用户UUID，必填 - roleId: 角色UUID，必填 **使用场景：** - 为用户一次性分配多个角色 - 批量导入用户角色关联 **示例：** ```json { "data": [ { "userId": "user-1", "roleId": "role-1" }, { "userId": "user-1", "roleId": "role-2" }, { "userId": "user-2", "roleId": "role-1" } ] } ```
      *
      * @tags system, userRole
      * @name PostApiSystemUserRoleBatch
@@ -20165,7 +21226,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询用户角色关联列表
+     * @description 分页查询用户与角色的关联关系，用于权限控制。 **过滤参数 (filter)：** - userIds: 按用户ID列表查询，如 ["user-id-1", "user-id-2"] - roleIds: 按角色ID列表查询，如 ["role-id-1", "role-id-2"] - userId: 按单个用户ID精确查询 - roleId: 按单个角色ID精确查询 **排序参数 (sort)：** - field: userId | roleId - order: asc | desc **分页参数：** - offset: 起始位置，默认0 - limit: 每页数量，1-100，默认20 **使用场景：** - 查询某用户关联的所有角色 - 查询某角色关联的所有用户 - 用户角色配置管理 **示例：** ```json { "filter": { "userId": "550e8400-e29b-41d4-a716-446655440000" }, "sort": { "field": "roleId", "order": "asc" }, "offset": 0, "limit": 20 } ```
      *
      * @tags system, userRole
      * @name PostApiSystemUserRoleQuery
@@ -20239,11 +21300,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新配置
+     * @description 根据ID列表批量更新系统配置，所有指定的配置将应用相同的更新数据。 **参数说明：** - ids: 要更新的配置ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量修改配置属性 2. 批量添加备注 3. 批量调整 isSystem 标识 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "isSystem": false, "remark": "已迁移为自定义配置" } } ```
      *
      * @tags system, config
      * @name PutApiSystemConfigBatch
-     * @summary 批量更新配置
+     * @summary 批量更新系统配置
      * @request PUT:/api/system/config/batch
      * @response `200` `PutApiSystemConfigBatchData` Response for status 200
      */
@@ -20261,11 +21322,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个配置
+     * @description 根据ID更新单个系统配置信息。 **路径参数：** - id: 配置UUID **可更新字段：** - name: 配置名称 - key: 配置键（建议不要修改已使用的key） - value: 配置值 - isSystem: 是否系统内置 - remark: 备注 **使用场景：** 1. 修改配置值 2. 更新配置说明 3. 调整配置属性 **注意事项：** - 系统内置配置（isSystem=true）修改需谨慎 - 修改 key 可能影响依赖此配置的功能 **示例：** ```json // PUT /api/system/config/550e8400-e29b-41d4-a716-446655440000 { "data": { "value": "新的配置值", "remark": "更新于2024-01-01" } } ```
      *
      * @tags system, config
      * @name PutApiSystemConfigById
-     * @summary 更新配置
+     * @summary 更新系统配置
      * @request PUT:/api/system/config/{id}
      * @response `200` `PutApiSystemConfigByIdData` Response for status 200
      */
@@ -20329,7 +21390,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新字典
+     * @description 根据ID列表批量更新多个字典项。 **请求体：** - ids: 要更新的字典ID数组 - data: 更新数据对象 **使用场景：** - 批量启用/禁用字典项 **示例：** ```json { "ids": ["dict-id-1", "dict-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的字典对象数组
      *
      * @tags system, dict
      * @name PutApiSystemDictBatch
@@ -20351,7 +21412,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个字典
+     * @description 根据ID更新单个字典项的信息。 **路径参数：** - id: 字典项的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - group: 字典分组 - label: 显示标签 - value: 字典值 - status: 状态 - isDefault: 是否默认值 - sort: 排序号 - remark: 备注 **示例：** ```json PUT /api/system/dict/xxx-uuid { "data": { "label": "已启用", "sort": 1 } } ```
      *
      * @tags system, dict
      * @name PutApiSystemDictById
@@ -20374,7 +21435,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据Key列表批量更新字典组
+     * @description 根据Key列表批量更新字典组。 **参数说明：** - keys: 要更新的字典组键数组 - data: 更新的字段数据 **使用场景：** 1. 批量启用/禁用字典组 2. 批量添加备注 **示例：** ```json { "keys": ["sys_user_sex", "sys_normal_disable"], "data": { "status": "1", "remark": "已停用" } } ```
      *
      * @tags system, dictGroup
      * @name PutApiSystemDictGroupBatch
@@ -20396,7 +21457,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据Key更新单个字典组
+     * @description 根据Key更新单个字典组信息。 **路径参数：** - key: 字典组键 **可更新字段：** - name: 字典组名称 - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **注意事项：** - key 作为主键不可修改 - 禁用字典组会影响使用该字典的功能 **示例：** ```json // PUT /api/system/dict-group/sys_user_sex { "data": { "name": "性别", "status": "0" } } ```
      *
      * @tags system, dictGroup
      * @name PutApiSystemDictGroupByKey
@@ -20419,7 +21480,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新定时任务
+     * @description 根据ID列表批量更新定时任务，所有指定的任务将应用相同的更新数据。 **参数说明：** - ids: 要更新的任务ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量暂停任务：设置 status = "1" 2. 批量恢复任务：设置 status = "0" 3. 批量修改任务分组 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1", "remark": "维护期间暂停" } } ```
      *
      * @tags system, job
      * @name PutApiSystemJobBatch
@@ -20436,7 +21497,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个定时任务
+     * @description 根据ID更新单个定时任务信息。 **路径参数：** - id: 任务UUID **可更新字段：** - name: 任务名称 - group: 任务分组 - invokeTarget: 调用目标 - cronExpression: Cron表达式 - misfirePolicy: 错过执行策略 - concurrent: 是否允许并发 - status: 状态，"0"=正常，"1"=暂停 - remark: 备注 **使用场景：** 1. 修改任务执行时间（cronExpression） 2. 暂停/恢复任务（status） 3. 调整任务配置 **示例：** ```json // PUT /api/system/job/550e8400-e29b-41d4-a716-446655440000 { "data": { "cronExpression": "0 0 3 * * ?", "status": "0" } } ```
      *
      * @tags system, job
      * @name PutApiSystemJobById
@@ -20456,7 +21517,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新任务日志
+     * @description 根据ID列表批量更新任务执行日志。 **参数说明：** - ids: 要更新的日志ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量标记日志状态 2. 批量添加备注 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1" } } ```
      *
      * @tags system, jobLog
      * @name PutApiSystemJobLogBatch
@@ -20473,7 +21534,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个任务日志
+     * @description 根据ID更新单个任务执行日志信息。 **路径参数：** - id: 日志UUID **可更新字段：** - jobMessage: 执行消息 - status: 执行状态 - exceptionInfo: 异常信息 - stopTime: 结束时间 **使用场景：** 1. 任务执行完成后更新状态和结束时间 2. 记录任务执行异常信息 **示例：** ```json // PUT /api/system/job-log/550e8400-e29b-41d4-a716-446655440000 { "data": { "status": "1", "exceptionInfo": "连接超时", "stopTime": "2024-01-01T02:01:00Z" } } ```
      *
      * @tags system, jobLog
      * @name PutApiSystemJobLogById
@@ -20493,7 +21554,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新菜单
+     * @description 根据ID列表批量更新多个菜单。 **请求体：** - ids: 要更新的菜单ID数组 - data: 更新数据对象 **使用场景：** - 批量显示/隐藏菜单 - 批量启用/禁用菜单 **示例：** ```json { "ids": ["menu-id-1", "menu-id-2"], "data": { "visible": false } } ``` **返回：** 更新成功的菜单对象数组
      *
      * @tags system, menu
      * @name PutApiSystemMenuBatch
@@ -20515,7 +21576,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个菜单
+     * @description 根据ID更新单个菜单的信息。 **路径参数：** - id: 菜单的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 菜单名称 - type: 菜单类型 - parentId: 父级菜单ID - path: 路由路径 - component: 组件路径 - permission: 权限标识 - icon: 图标 - orderNum: 排序号 - visible: 是否可见 - status: 状态 **示例：** ```json PUT /api/system/menu/xxx-uuid { "data": { "visible": false, "orderNum": 10 } } ```
      *
      * @tags system, menu
      * @name PutApiSystemMenuById
@@ -20538,11 +21599,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新通知
+     * @description 根据ID列表批量更新通知公告，所有指定的通知将应用相同的更新数据。 **参数说明：** - ids: 要更新的通知ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量关闭过期通知：设置 status = "1" 2. 批量修改通知类型 3. 批量添加备注 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1", "remark": "已过期" } } ```
      *
      * @tags system, notice
      * @name PutApiSystemNoticeBatch
-     * @summary 批量更新通知
+     * @summary 批量更新通知公告
      * @request PUT:/api/system/notice/batch
      * @response `200` `PutApiSystemNoticeBatchData` Response for status 200
      */
@@ -20560,11 +21621,11 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个通知
+     * @description 根据ID更新单个通知公告信息。 **路径参数：** - id: 通知公告UUID **可更新字段：** - title: 通知标题 - type: 通知类型，"1"=通知，"2"=公告 - content: 通知内容 - status: 状态，"0"=正常，"1"=关闭 - remark: 备注 **使用场景：** 1. 修改通知内容 2. 关闭过期通知 3. 更改通知类型 **示例：** ```json // PUT /api/system/notice/550e8400-e29b-41d4-a716-446655440000 { "data": { "title": "系统维护通知（已完成）", "status": "1" } } ```
      *
      * @tags system, notice
      * @name PutApiSystemNoticeById
-     * @summary 更新通知
+     * @summary 更新通知公告
      * @request PUT:/api/system/notice/{id}
      * @response `200` `PutApiSystemNoticeByIdData` Response for status 200
      */
@@ -20583,7 +21644,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个权限
+     * @description 根据ID更新权限信息。 **路径参数：** - id: 权限UUID，必填 **请求体参数 (data)：** - code: 权限编码，可选 - name: 权限名称，可选 - type: 权限类型，可选 - module: 所属模块，可选 - parentId: 父级权限ID，可选 - status: 状态，可选 - orderNum: 排序号，可选 - remark: 备注，可选 **示例：** PUT /api/system/permission/550e8400-e29b-41d4-a716-446655440000 ```json { "data": { "name": "用户管理", "status": false, "orderNum": 10 } } ```
      *
      * @tags system, permission
      * @name PutApiSystemPermissionById
@@ -20606,7 +21667,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新岗位
+     * @description 根据ID列表批量更新岗位，所有指定的岗位将应用相同的更新数据。 **参数说明：** - ids: 要更新的岗位ID数组 - data: 更新的字段数据 **使用场景：** 1. 批量启用/禁用岗位：设置 status 2. 批量调整排序：设置 sort 3. 批量添加备注 **示例：** ```json { "ids": ["id1", "id2", "id3"], "data": { "status": "1", "remark": "已停用" } } ```
      *
      * @tags system, post
      * @name PutApiSystemPostBatch
@@ -20628,7 +21689,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个岗位
+     * @description 根据ID更新单个岗位信息。 **路径参数：** - id: 岗位UUID **可更新字段：** - code: 岗位编码 - name: 岗位名称 - sort: 排序号 - status: 状态，"0"=正常，"1"=禁用 - remark: 备注 **使用场景：** 1. 修改岗位名称或编码 2. 调整岗位排序 3. 启用/禁用岗位 **示例：** ```json // PUT /api/system/post/550e8400-e29b-41d4-a716-446655440000 { "data": { "name": "高级项目经理", "sort": 5, "status": "0" } } ```
      *
      * @tags system, post
      * @name PutApiSystemPostById
@@ -20651,7 +21712,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID列表批量更新角色
+     * @description 根据ID列表批量更新多个角色。 **请求体：** - ids: 要更新的角色ID数组 - data: 更新数据对象 **注意事项：** - 如果列表中包含管理员角色，会抛出错误 **示例：** ```json { "ids": ["role-id-1", "role-id-2"], "data": { "status": "1" } } ``` **返回：** 更新成功的角色对象数组
      *
      * @tags system, role
      * @name PutApiSystemRoleBatch
@@ -20673,7 +21734,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个角色
+     * @description 根据ID更新单个角色的信息。 **路径参数：** - id: 角色的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 角色名称 - key: 角色标识 - status: 状态，"0"=正常，"1"=禁用 - sort: 排序号 - remark: 备注 **注意事项：** - 管理员角色（key=admin）不允许修改 **示例：** ```json PUT /api/system/role/xxx-uuid { "data": { "status": "1", "remark": "已禁用" } } ```
      *
      * @tags system, role
      * @name PutApiSystemRoleById
@@ -20696,7 +21757,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 设置指定角色的菜单列表（全量替换）
+     * @description 设置指定角色的菜单列表，采用全量替换方式。 **路径参数：** - roleId: 角色UUID，必填 **请求体参数：** - menuIds: 菜单ID数组，必填，可为空数组（清空所有菜单权限） **操作逻辑：** 1. 删除该角色的所有现有菜单关联 2. 插入新的菜单关联列表 **使用场景：** - 角色菜单权限配置页面，保存角色的菜单权限 - 批量更新角色的菜单访问权限 **示例：** PUT /api/system/role-menu/role/550e8400-e29b-41d4-a716-446655440000 ```json { "menuIds": ["menu-id-1", "menu-id-2", "menu-id-3"] } ``` **清空菜单权限：** ```json { "menuIds": [] } ```
      *
      * @tags system, roleMenu
      * @name PutApiSystemRoleMenuRoleByRoleId
@@ -20711,29 +21772,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PutApiSystemRoleMenuRoleByRoleIdData, any>({
         path: `/api/system/role-menu/role/${roleId}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 根据ID更新单个令牌
-     *
-     * @tags system, token
-     * @name PutApiSystemTokenById
-     * @summary 更新令牌
-     * @request PUT:/api/system/token/{id}
-     * @response `200` `PutApiSystemTokenByIdData` Response for status 200
-     */
-    putApiSystemTokenById: (
-      { id, ...query }: PutApiSystemTokenByIdParams,
-      data: PutApiSystemTokenByIdPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiSystemTokenByIdData, any>({
-        path: `/api/system/token/${id}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -20779,7 +21817,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 设置指定用户的角色列表（全量替换）
+     * @description 设置指定用户的角色列表，采用全量替换方式。 **路径参数：** - userId: 用户UUID，必填 **请求体参数：** - roleIds: 角色ID数组，必填，可为空数组（清空所有角色） **操作逻辑：** 1. 删除该用户的所有现有角色关联 2. 插入新的角色关联列表 **使用场景：** - 用户编辑页面，保存用户的角色配置 - 批量更新用户的角色权限 **示例：** PUT /api/system/user-role/user/550e8400-e29b-41d4-a716-446655440000 ```json { "roleIds": ["role-id-1", "role-id-2", "role-id-3"] } ``` **清空角色：** ```json { "roleIds": [] } ```
      *
      * @tags system, userRole
      * @name PutApiSystemUserRoleUserByUserId
@@ -20803,7 +21841,7 @@ export class Api<SecurityDataType extends unknown> {
   };
   knowledge = {
     /**
-     * @description 取消收藏节点
+     * @description 取消收藏知识库节点。 **路径参数：** - nodeId: 节点UUID **返回：** - success: 是否成功（true表示已取消，false表示未找到收藏记录） **示例：** DELETE /api/knowledge/favorites/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags knowledge, favorite
      * @name DeleteApiKnowledgeFavoritesByNodeId
@@ -20823,7 +21861,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 软删除节点（文件夹会递归删除子节点）
+     * @description 软删除节点（文件夹会递归删除所有子节点）。 **路径参数：** - id: 节点UUID **权限检查：** - 需要对该节点有 delete 权限 **行为：** - 软删除：设置 deletedAt 时间戳，不物理删除 - 文件夹：递归删除所有后代节点（使用物化路径批量更新） **返回：** - success: 是否成功 - deletedCount: 删除的节点数量（包括子节点） **示例：** DELETE /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags knowledge, node, mutation
      * @name DeleteApiKnowledgeNodesById
@@ -20843,7 +21881,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 移除节点的权限
+     * @description 移除节点的权限条目。 **路径参数：** - id: 节点UUID - subjectType: "user" | "role" | "dept" - subjectId: 主体ID **查询参数：** - permission: 可选，指定移除的权限类型；不指定则移除该主体的所有权限 **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 **示例：** DELETE /api/knowledge/nodes/node-uuid/permissions/user/user-uuid?permission=write
      *
      * @tags knowledge, permission
      * @name DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectId
@@ -20872,7 +21910,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据主键ID查询单个节点
+     * @description 根据主键ID查询单个节点详情。 **路径参数：** - id: 节点UUID **返回：** - 节点完整信息，包含 id, name, type, path, size, mimeType 等 - 如果节点不存在或无权限，返回 null **权限检查：** - 需要对该节点有 read 权限 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags knowledge, node, query
      * @name GetApiKnowledgeNodesById
@@ -20892,7 +21930,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取指定父节点下的所有子节点
+     * @description 获取指定父节点下的所有子节点。 **路径参数：** - id: 父节点ID，使用 "root" 表示根目录 **查询参数：** - type: 可选，筛选类型 "folder" | "file" **返回：** - data: 子节点数组，按类型和名称排序（文件夹在前） **使用场景：** - 文件管理器目录浏览 - 获取文件夹内容 **示例：** GET /api/knowledge/nodes/root/children?type=folder
      *
      * @tags knowledge, node, query
      * @name GetApiKnowledgeNodesByIdChildren
@@ -20913,7 +21951,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取文件原始内容（不验证类型）
+     * @description 获取文件原始内容（不验证文件类型）。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **返回：** - content: 文件内容（字符串） - mimeType: MIME类型 **使用场景：** - 获取任意文件的原始内容 - 文件预览 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/content
      *
      * @tags knowledge, content
      * @name GetApiKnowledgeNodesByIdContent
@@ -20933,7 +21971,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取文件预签名下载URL
+     * @description 获取文件预签名下载URL（1小时有效）。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **返回：** - url: 预签名下载URL - expiresAt: URL过期时间（ISO 8601） **副作用：** - 自动增加文件下载次数计数 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/download-url
      *
      * @tags knowledge, content
      * @name GetApiKnowledgeNodesByIdDownloadUrl
@@ -20953,7 +21991,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取用户对节点的有效权限
+     * @description 获取用户对节点的有效权限（考虑继承和角色）。 **路径参数：** - id: 节点UUID **查询参数：** - userId: 可选，目标用户ID；不指定则查询当前用户 **返回：** - data: 有效权限数组 - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny" - source: "direct" | "inherited" | "role" | "dept"（权限来源） - sourceId: 来源ID（如角色ID） **特殊情况：** - 节点创建者自动拥有所有权限 **示例：** GET /api/knowledge/nodes/node-uuid/effective-permissions?userId=user-uuid
      *
      * @tags knowledge, permission
      * @name GetApiKnowledgeNodesByIdEffectivePermissions
@@ -20974,7 +22012,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取节点的完整路径（面包屑）
+     * @description 获取节点的完整路径（面包屑导航）。 **路径参数：** - id: 节点UUID **返回：** - data: 路径节点数组（从根到当前节点） - id: 节点ID - name: 节点名称 - type: 节点类型 **使用场景：** - 面包屑导航 - 显示文件完整路径 **示例响应：** ```json { "data": [ { "id": "root-folder", "name": "文档", "type": "folder" }, { "id": "sub-folder", "name": "项目", "type": "folder" }, { "id": "current-file", "name": "readme.md", "type": "file" } ] } ```
      *
      * @tags knowledge, operations
      * @name GetApiKnowledgeNodesByIdPath
@@ -20994,7 +22032,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取节点的权限列表
+     * @description 获取节点的权限列表（所有被授权的主体）。 **路径参数：** - id: 节点UUID **权限检查：** - 需要对该节点有 read 权限 **返回：** - permissions: 权限数组 - subjectType: "user" | "role" | "dept" - subjectId: 主体ID - resourceId: 节点ID - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny" **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/permissions
      *
      * @tags knowledge, permission
      * @name GetApiKnowledgeNodesByIdPermissions
@@ -21014,7 +22052,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取文本文件内容
+     * @description 获取文本文件内容（用于在线编辑）。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **限制：** - 仅支持文本类型文件（.txt, .md, .json, .js, .ts 等） **返回：** - id: 节点ID - name: 文件名 - content: 文件内容（UTF-8字符串） - mimeType: MIME类型 - extension: 扩展名 - parentId: 父节点ID **使用场景：** - 在线文本编辑器 - Markdown 预览 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/text
      *
      * @tags knowledge, content
      * @name GetApiKnowledgeNodesByIdText
@@ -21034,7 +22072,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取文件的所有历史版本
+     * @description 获取文件的所有历史版本列表。 **路径参数：** - id: 文件节点UUID **权限检查：** - 需要对该节点有 read 权限 **限制：** - 仅支持文件类型节点 **返回：** - data: 版本数组，按创建时间倒序 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000/versions
      *
      * @tags knowledge, version
      * @name GetApiKnowledgeNodesByIdVersions
@@ -21054,7 +22092,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取节点表的JSON Schema
+     * @description 获取知识库节点表的 JSON Schema 定义。 **返回：** - JSON Schema 对象，描述节点数据结构 **使用场景：** - 前端表单动态生成 - API 文档生成 - 数据验证
      *
      * @tags knowledge, node, schema
      * @name GetApiKnowledgeNodesSchema
@@ -21071,7 +22109,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取历史版本的下载URL
+     * @description 获取历史版本的预签名下载URL（1小时有效）。 **路径参数：** - id: 版本记录UUID **权限检查：** - 需要对关联的文件节点有 read 权限 **返回：** - url: 预签名下载URL - expiresAt: URL过期时间（ISO 8601） **文件名格式：** - 自动添加版本号后缀，如 "document_v2.pdf" **示例：** GET /api/knowledge/versions/version-uuid/download-url
      *
      * @tags knowledge, version
      * @name GetApiKnowledgeVersionsByIdDownloadUrl
@@ -21091,7 +22129,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取版本表的JSON Schema
+     * @description 获取文件版本表的 JSON Schema 定义。 **返回：** - JSON Schema 对象，描述版本数据结构 **使用场景：** - 前端表单动态生成 - API 文档生成
      *
      * @tags knowledge, version
      * @name GetApiKnowledgeVersionsSchema
@@ -21108,7 +22146,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 收藏节点
+     * @description 收藏知识库节点（文件或文件夹）。 **请求体参数：** - nodeId: 节点UUID，必填 **行为：** - 如果已收藏，返回现有收藏记录（幂等操作） - 自动获取节点类型（folder/file） **返回：** - 收藏记录完整信息 **示例：** ```json { "nodeId": "550e8400-e29b-41d4-a716-446655440000" } ```
      *
      * @tags knowledge, favorite
      * @name PostApiKnowledgeFavorites
@@ -21130,7 +22168,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 检查节点是否已收藏
+     * @description 批量检查节点是否已收藏。 **请求体参数：** - nodeIds: 节点ID数组，必填 **返回：** - favorites: 收藏状态映射 { nodeId: boolean } **使用场景：** - 文件列表显示收藏状态 - 批量操作前检查 **示例：** ```json { "nodeIds": ["uuid1", "uuid2", "uuid3"] } ``` **响应：** ```json { "favorites": { "uuid1": true, "uuid2": false, "uuid3": true } } ```
      *
      * @tags knowledge, favorite
      * @name PostApiKnowledgeFavoritesCheck
@@ -21152,7 +22190,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取当前用户的收藏列表（带节点详情）
+     * @description 获取当前用户的收藏列表（带节点详情）。 **请求体参数：** - type: 节点类型筛选，可选 "folder" | "file" - limit: 每页数量，默认50，最大100 - offset: 偏移量，默认0 **返回：** - data: 收藏项数组，包含节点详情 - favoriteId: 收藏记录ID - nodeId: 节点ID - type: 节点类型 - name: 名称 - parentId: 父节点ID - icon, color, extension, mimeType, size - createdAt: 节点创建时间 - favoritedAt: 收藏时间 - total: 总数 **示例：** ```json { "type": "file", "limit": 20, "offset": 0 } ```
      *
      * @tags knowledge, favorite
      * @name PostApiKnowledgeFavoritesList
@@ -21174,7 +22212,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建文件夹或文件节点
+     * @description 创建文件夹或文件节点。 **请求体参数：** - type: 节点类型，必填，"folder" | "file" - parentId: 父节点ID，可选，null表示根目录 - name: 名称，必填，1-255字符 - description: 描述，可选 - 文件夹特有：icon, color - 文件特有：extension, mimeType, size, storageKey, bucket, etag, versionId **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的节点完整信息 **示例（创建文件夹）：** ```json { "type": "folder", "parentId": null, "name": "我的文档", "icon": "folder", "color": "#4A90E2" } ```
      *
      * @tags knowledge, node, mutation
      * @name PostApiKnowledgeNodes
@@ -21196,7 +22234,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 复制节点到目标文件夹
+     * @description 复制节点到目标文件夹（自动处理重名）。 **路径参数：** - id: 要复制的节点UUID **请求体参数：** - targetParentId: 目标父节点ID，null表示复制到根目录 **权限检查：** - 需要对源节点有 read 权限 - 需要对目标文件夹有 write 权限 **行为：** - 如果目标位置存在同名文件，自动重命名（如 "file (1).txt"） - 复制文件的存储引用，不复制实际文件内容 **返回：** - 复制后的新节点完整信息 **示例：** ```json { "targetParentId": "target-folder-uuid" } ```
      *
      * @tags knowledge, operations
      * @name PostApiKnowledgeNodesByIdCopy
@@ -21219,7 +22257,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 移动节点到目标文件夹
+     * @description 移动节点到目标文件夹。 **路径参数：** - id: 要移动的节点UUID **请求体参数：** - targetParentId: 目标父节点ID，null表示移动到根目录 **权限检查：** - 需要对源节点有 write 权限 - 需要对目标文件夹有 write 权限 **限制：** - 不能移动到自身 - 文件夹不能移动到自己的后代节点 **返回：** - 移动后的节点完整信息 **示例：** ```json { "targetParentId": "target-folder-uuid" } ```
      *
      * @tags knowledge, operations
      * @name PostApiKnowledgeNodesByIdMove
@@ -21242,7 +22280,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 为节点添加权限
+     * @description 为节点添加单个权限条目。 **路径参数：** - id: 节点UUID **请求体参数：** - subjectType: "user" | "role" | "dept" - subjectId: 主体ID - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny"，默认 "allow" **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 **示例：** ```json { "subjectType": "user", "subjectId": "user-uuid", "permission": "write", "effect": "allow" } ```
      *
      * @tags knowledge, permission
      * @name PostApiKnowledgeNodesByIdPermissions
@@ -21265,7 +22303,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 快速共享节点给用户
+     * @description 快速共享节点给多个用户（简化的权限设置）。 **路径参数：** - id: 节点UUID **请求体参数：** - userIds: 用户ID数组 - level: 共享级别 - "read": 只读（read权限） - "edit": 可编辑（read + write权限） - "full": 完全控制（read + write + delete + manage权限） **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 - sharedCount: 实际共享的用户数（排除自己） **示例：** ```json { "userIds": ["user1-uuid", "user2-uuid"], "level": "edit" } ```
      *
      * @tags knowledge, permission
      * @name PostApiKnowledgeNodesByIdQuickShare
@@ -21288,7 +22326,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 取消用户对节点的所有权限
+     * @description 取消用户对节点的所有权限（批量撤销）。 **路径参数：** - id: 节点UUID **请求体参数：** - userIds: 用户ID数组 **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 - revokedCount: 撤销的用户数 **示例：** ```json { "userIds": ["user1-uuid", "user2-uuid"] } ```
      *
      * @tags knowledge, permission
      * @name PostApiKnowledgeNodesByIdRevokeShare
@@ -21311,7 +22349,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 检查指定父节点下是否存在同名节点
+     * @description 检查指定父节点下是否存在同名节点（批量检查）。 **请求体参数：** - parentId: 父节点ID，可选，null表示根目录 - names: 要检查的名称数组，必填 - type: 节点类型筛选，可选 "folder" | "file" **返回：** - exists: 已存在的节点数组 - name: 文件名 - nodeId: 节点ID - type: 类型 - size: 大小 - updatedAt: 更新时间 **使用场景：** - 上传前检查文件是否存在 - 批量操作前的冲突检测 **示例：** ```json { "parentId": "folder-uuid", "names": ["file1.txt", "file2.txt", "folder1"], "type": "file" } ```
      *
      * @tags knowledge, operations
      * @name PostApiKnowledgeNodesCheckExists
@@ -21333,7 +22371,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量软删除多个节点
+     * @description 批量软删除多个节点。 **请求体参数：** - ids: 节点ID数组 **权限检查：** - 逐个检查 delete 权限，无权限的节点会被跳过 **行为：** - 软删除：设置 deletedAt 时间戳 - 文件夹：递归删除所有后代节点 **返回：** - deletedCount: 实际删除的节点数量 **示例：** ```json { "ids": ["uuid1", "uuid2", "uuid3"] } ```
      *
      * @tags knowledge, node, mutation
      * @name PostApiKnowledgeNodesDeleteBatch
@@ -21355,7 +22393,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询知识库节点列表，自动筛选当前用户的节点
+     * @description 分页查询知识库节点列表，自动筛选当前用户的节点。 **请求体参数：** - filter: 过滤条件，可选 - ids: 节点ID数组（IN查询） - types: 类型数组 ["folder", "file"] - parentId: 父节点ID，null表示根目录 - type: 单个类型 "folder" | "file" - name: 名称模糊匹配 - extension: 扩展名模糊匹配 - createdAtStart/createdAtEnd: 创建时间范围 - isPublic: 是否公开 - sort: 排序，可选 - field: "name" | "type" | "size" | "orderNum" | "createdAt" | "updatedAt" - order: "asc" | "desc" - offset: 偏移量，默认0 - limit: 每页数量，默认20，最大100 **返回：** - data: 节点数组 - total: 总数 **示例：** ```json { "filter": { "parentId": null, "type": "folder" }, "sort": { "field": "name", "order": "asc" }, "limit": 20, "offset": 0 } ```
      *
      * @tags knowledge, node, query
      * @name PostApiKnowledgeNodesQuery
@@ -21377,7 +22415,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 全文搜索知识库节点
+     * @description 全文搜索知识库节点（按名称模糊匹配）。 **请求体参数：** - keyword: 搜索关键词，必填，1-100字符 - type: 节点类型筛选，可选 "folder" | "file" - limit: 返回数量限制，默认20，最大50 **返回：** - data: 匹配的节点数组 **使用场景：** - 文件搜索 - 快速定位文件 **示例：** ```json { "keyword": "readme", "type": "file", "limit": 10 } ```
      *
      * @tags knowledge, operations
      * @name PostApiKnowledgeNodesSearch
@@ -21399,7 +22437,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取当前用户共享给他人的节点
+     * @description 获取当前用户共享给他人的节点列表。 **请求体参数：** - type: 节点类型筛选，可选 "folder" | "file" - limit: 每页数量，默认50，最大100 - offset: 偏移量，默认0 **返回：** - data: 共享项数组 - node: 节点完整信息 - sharedTo: 共享对象数组 - subjectType: "user" | "role" | "dept" - subjectId: 对象ID - permission: 权限级别 - total: 总数 **使用场景：** - "我的共享"页面 - 管理已共享的文件 **示例：** ```json { "type": "file", "limit": 20 } ```
      *
      * @tags knowledge, share
      * @name PostApiKnowledgeShareMyShared
@@ -21421,7 +22459,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取他人共享给当前用户的节点，支持文件夹层级浏览
+     * @description 获取他人共享给当前用户的节点，支持文件夹层级浏览。 **请求体参数：** - folderId: 文件夹ID，可选，用于浏览共享文件夹内容 - type: 节点类型筛选，可选 "folder" | "file" - limit: 每页数量，默认50，最大100 - offset: 偏移量，默认0 **返回：** - data: 共享项数组 - node: 节点完整信息 - permissions: 权限数组 ["read", "write", ...] - permissionSource: "direct" | "inherited"（权限来源） - sharedBy: 共享者信息 { userId, userName } - total: 总数 **权限继承：** - 进入共享文件夹后，子节点继承父节点权限 - 直接权限优先于继承权限 **使用场景：** - "收到的共享"页面 - 浏览他人共享的文件夹 **示例：** ```json { "folderId": "shared-folder-uuid", "type": "file", "limit": 20 } ```
      *
      * @tags knowledge, share
      * @name PostApiKnowledgeShareSharedWithMe
@@ -21443,7 +22481,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 确认文件上传完成并创建节点
+     * @description 确认文件上传完成并创建节点记录。 **请求体参数：** - parentId: 父文件夹ID，可选 - name: 文件名，必填，1-255字符 - storageKey: 存储路径，必填（从 getUrl 返回） - mimeType: MIME类型，必填 - size: 文件大小（字节），必填 - description: 描述，可选 **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的文件节点完整信息 **使用场景：** - 大文件上传完成后调用 - 配合 getUrl 使用 **示例：** ```json { "parentId": "folder-uuid", "name": "document.pdf", "storageKey": "knowledge/user-id/xxx/document.pdf", "mimeType": "application/pdf", "size": 1048576 } ```
      *
      * @tags knowledge, upload
      * @name PostApiKnowledgeUploadConfirm
@@ -21465,7 +22503,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 直接上传小文件（Base64）
+     * @description 直接上传小文件（Base64编码），自动检测同名冲突。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，可选，默认 application/octet-stream - description: 描述，可选 **返回：** - success: 是否成功 - node: 创建的节点（成功时） - conflict: 冲突信息（存在同名文件时） - nodeId: 已存在节点ID - name: 文件名 - size: 文件大小 - updatedAt: 更新时间 **使用场景：** - 小文件快速上传（<5MB） - 文本文件创建 **示例：** ```json { "parentId": null, "name": "readme.md", "content": "IyBIZWxsbyBXb3JsZA==", "mimeType": "text/markdown" } ```
      *
      * @tags knowledge, upload
      * @name PostApiKnowledgeUploadDirect
@@ -21487,7 +22525,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 上传文件并处理冲突（覆盖/新版本/副本）
+     * @description 上传文件并处理同名冲突，支持覆盖、新版本、副本三种模式。 **请求体参数：** - parentId: 父文件夹ID，可选 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，可选 - description: 描述，可选 - conflictMode: 冲突处理模式，必填 - "overwrite": 覆盖现有文件 - "newVersion": 保存为新版本（保留历史） - "copy": 创建副本（自动重命名） - existingNodeId: 现有节点ID（overwrite/newVersion模式必填） **权限检查：** - overwrite/newVersion: 需要对现有节点有 write 权限 - copy: 需要对父节点有 write 权限 **返回：** - 创建/更新的节点完整信息 **示例（覆盖）：** ```json { "name": "report.xlsx", "content": "...", "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "conflictMode": "overwrite", "existingNodeId": "existing-file-uuid" } ```
      *
      * @tags knowledge, upload
      * @name PostApiKnowledgeUploadForce
@@ -21509,7 +22547,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取预签名上传URL
+     * @description 获取预签名上传URL，用于大文件分片上传。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - filename: 文件名，必填，1-255字符 - mimeType: MIME类型，必填 **返回：** - uploadUrl: 预签名上传URL（直接PUT到此URL） - storageKey: 存储路径，用于后续确认上传 - expiresAt: URL过期时间（ISO 8601） **使用场景：** - 大文件上传（>5MB） - 前端直传S3/MinIO **示例：** ```json { "parentId": "folder-uuid", "filename": "large-file.zip", "mimeType": "application/zip" } ```
      *
      * @tags knowledge, upload
      * @name PostApiKnowledgeUploadUrl
@@ -21531,7 +22569,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 将历史版本恢复为当前版本
+     * @description 将历史版本恢复为当前版本。 **路径参数：** - id: 版本记录UUID **权限检查：** - 需要对关联的文件节点有 write 权限 **行为：** 1. 将当前文件保存为新版本（保留历史） 2. 将历史版本的存储信息更新到主节点 3. 增加版本计数 **返回：** - 更新后的文件节点完整信息 **示例：** POST /api/knowledge/versions/version-uuid/restore
      *
      * @tags knowledge, version
      * @name PostApiKnowledgeVersionsByIdRestore
@@ -21551,7 +22589,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 分页查询文件版本列表
+     * @description 分页查询文件版本列表。 **请求体参数：** - filter: 过滤条件，可选 - nodeIds: 节点ID数组（IN查询） - nodeId: 单个节点ID - versionNumber: 版本号模糊匹配 - createdAtStart/createdAtEnd: 创建时间范围 - sort: 排序，可选 - field: "versionNumber" | "size" | "createdAt" - order: "asc" | "desc" - offset: 偏移量，默认0 - limit: 每页数量，默认20，最大100 **返回：** - data: 版本数组 - total: 总数 **示例：** ```json { "filter": { "nodeId": "file-uuid" }, "sort": { "field": "createdAt", "order": "desc" }, "limit": 10 } ```
      *
      * @tags knowledge, version
      * @name PostApiKnowledgeVersionsQuery
@@ -21573,7 +22611,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 更新节点信息
+     * @description 更新节点信息（重命名、修改描述等）。 **路径参数：** - id: 节点UUID **请求体参数（均可选）：** - name: 新名称，1-255字符 - description: 描述 - icon: 图标（文件夹） - color: 颜色（文件夹） - orderNum: 排序号 - isPublic: 是否公开 - tags: 标签数组 **权限检查：** - 需要对该节点有 write 权限 **返回：** - 更新后的节点完整信息 **示例：** ```json { "name": "新文件名.md", "description": "更新的描述", "tags": ["重要", "工作"] } ```
      *
      * @tags knowledge, node, mutation
      * @name PutApiKnowledgeNodesById
@@ -21596,7 +22634,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 设置节点的权限（替换现有权限）
+     * @description 设置节点的权限（替换现有所有权限）。 **路径参数：** - id: 节点UUID **请求体参数：** - permissions: 权限数组 - subjectType: "user" | "role" | "dept" - subjectId: 主体ID - permission: "read" | "write" | "delete" | "manage" - effect: "allow" | "deny"，默认 "allow" **权限检查：** - 需要是节点创建者或有 manage 权限 **返回：** - success: 是否成功 **示例：** ```json { "permissions": [ { "subjectType": "user", "subjectId": "user-uuid", "permission": "read" }, { "subjectType": "role", "subjectId": "role-uuid", "permission": "write" } ] } ```
      *
      * @tags knowledge, permission
      * @name PutApiKnowledgeNodesByIdPermissions
@@ -21619,7 +22657,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 保存文本文件内容
+     * @description 保存文本文件内容（在线编辑保存）。 **路径参数：** - id: 文件节点UUID **请求体参数：** - content: 文件内容，必填，UTF-8字符串 **权限检查：** - 需要对该节点有 write 权限 **返回：** - 更新后的节点完整信息（包含新的 size） **使用场景：** - 在线文本编辑器保存 - Markdown 编辑保存 **示例：** ```json { "content": "# 标题\n\n这是更新后的内容" } ```
      *
      * @tags knowledge, content
      * @name PutApiKnowledgeNodesByIdText
@@ -21642,7 +22680,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 批量更新节点排序
+     * @description 批量更新节点排序号。 **请求体参数：** - items: 排序项数组 - id: 节点UUID - orderNum: 新排序号（整数） **权限检查：** - 逐个检查 write 权限，无权限的节点会被跳过 **返回：** - success: 是否成功 - updatedCount: 实际更新的节点数量 **使用场景：** - 拖拽排序 - 自定义文件顺序 **示例：** ```json { "items": [ { "id": "uuid1", "orderNum": 1 }, { "id": "uuid2", "orderNum": 2 }, { "id": "uuid3", "orderNum": 3 } ] } ```
      *
      * @tags knowledge, operations
      * @name PutApiKnowledgeNodesOrder
@@ -22488,7 +23526,7 @@ export class Api<SecurityDataType extends unknown> {
   };
   public = {
     /**
-     * @description 上传头像到公开存储，返回可直接访问的URL
+     * @description 上传头像到公开存储，返回可直接访问的永久URL（无需签名）。 **请求体参数：** - category: 头像分类，必填，可选值： - "agent-avatar": AI Agent头像 - "user-avatar": 用户头像 - "group-avatar": 群组头像 - filename: 文件名，必填，1-255字符 - content: 图片内容，必填，Base64编码 - mimeType: MIME类型，必填，支持：image/jpeg, image/png, image/gif, image/webp, image/svg+xml **限制：** - 最大文件大小：2MB - 仅支持图片格式 **返回：** - success: 是否成功 - url: 公开访问URL（永久有效） - key: 存储路径 **示例：** ```json { "category": "user-avatar", "filename": "avatar.png", "content": "iVBORw0KGgoAAAANSUhEUgAA...", "mimeType": "image/png" } ```
      *
      * @tags public, upload, avatar
      * @name PostApiPublicUploadAvatar
@@ -22511,7 +23549,7 @@ export class Api<SecurityDataType extends unknown> {
   };
   files = {
     /**
-     * @description 获取已上传附件的访问URL
+     * @description 获取已上传AI聊天附件的新预签名URL（7天有效）。 **请求体参数：** - storageKey: 存储路径，必填，上传时返回的storageKey **返回：** - url: 新的预签名下载URL - expiresAt: URL过期时间（ISO 8601格式） **使用场景：** - 原URL过期后重新获取访问链接 - 历史对话中的附件重新加载 **示例：** ```json { "storageKey": "ai-chat/user-id/1234567890-abc123-image.png" } ```
      *
      * @tags files, ai-chat
      * @name PostApiFilesAiChatGetUrl
@@ -22533,7 +23571,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 上传文件到存储，返回可访问的URL
+     * @description 上传文件到AI聊天存储，返回可访问的预签名URL（7天有效）。 **请求体参数：** - filename: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，必填，如 "image/png", "application/pdf" **返回：** - url: 预签名下载URL（7天有效） - storageKey: 存储路径，用于后续获取URL - mimeType: 文件MIME类型 - size: 文件大小（字节） **使用场景：** - AI对话中上传图片、文档等附件 - 支持多模态AI模型的文件输入 **示例：** ```json { "filename": "screenshot.png", "content": "iVBORw0KGgoAAAANSUhEUgAA...", "mimeType": "image/png" } ```
      *
      * @tags files, ai-chat
      * @name PostApiFilesAiChatUpload
@@ -22556,7 +23594,7 @@ export class Api<SecurityDataType extends unknown> {
   };
   dev = {
     /**
-     * @description 获取 monorepo 项目根目录路径
+     * @description 获取 Turborepo monorepo 项目的根目录路径。 **返回：** - root: 项目根目录绝对路径 - name: 项目名称（目录名） **使用场景：** - 开发模式下浏览项目代码结构 - 获取项目基础信息 **示例响应：** ```json { "root": "/home/user/ai-drive-system", "name": "ai-drive-system" } ```
      *
      * @tags dev, project-code
      * @name GetApiDevProjectCodeRoot
@@ -22573,7 +23611,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 读取指定目录下的文件和子目录
+     * @description 读取指定目录下的文件和子目录列表。 **请求体参数：** - relativePath: 相对于项目根目录的路径，可选，默认为根目录 "" **返回：** - items: 文件/目录列表，包含 name, path, type, size, extension - currentPath: 当前目录相对路径 **过滤规则：** - 自动忽略：node_modules, .git, .svelte-kit, dist, build 等 - 仅显示代码相关文件：.ts, .js, .svelte, .json, .md 等 **使用场景：** - 开发模式下浏览项目目录结构 - 代码文件导航 **示例：** ```json { "relativePath": "packages/actions/src" } ```
      *
      * @tags dev, project-code
      * @name PostApiDevProjectCodeDirectory
@@ -22595,7 +23633,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 读取指定文件的内容
+     * @description 读取指定代码文件的内容。 **请求体参数：** - relativePath: 相对于项目根目录的文件路径，必填 **返回：** - content: 文件内容（UTF-8） - path: 文件相对路径 - name: 文件名 - extension: 文件扩展名 - size: 文件大小（字节） - language: 编程语言（用于语法高亮） **限制：** - 最大文件大小：1MB - 路径必须在项目根目录内（安全检查） **使用场景：** - 开发模式下查看代码文件内容 - 代码审查和分析 **示例：** ```json { "relativePath": "packages/actions/src/core/define.ts" } ```
      *
      * @tags dev, project-code
      * @name PostApiDevProjectCodeFile

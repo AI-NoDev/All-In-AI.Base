@@ -42,7 +42,35 @@ export const publicUploadAvatar = defineAction({
   meta: {
     name: 'public.uploadAvatar',
     displayName: '上传公开头像',
-    description: '上传头像到公开存储，返回可直接访问的URL',
+    description: `上传头像到公开存储，返回可直接访问的永久URL（无需签名）。
+
+**请求体参数：**
+- category: 头像分类，必填，可选值：
+  - "agent-avatar": AI Agent头像
+  - "user-avatar": 用户头像
+  - "group-avatar": 群组头像
+- filename: 文件名，必填，1-255字符
+- content: 图片内容，必填，Base64编码
+- mimeType: MIME类型，必填，支持：image/jpeg, image/png, image/gif, image/webp, image/svg+xml
+
+**限制：**
+- 最大文件大小：2MB
+- 仅支持图片格式
+
+**返回：**
+- success: 是否成功
+- url: 公开访问URL（永久有效）
+- key: 存储路径
+
+**示例：**
+\`\`\`json
+{
+  "category": "user-avatar",
+  "filename": "avatar.png",
+  "content": "iVBORw0KGgoAAAANSUhEUgAA...",
+  "mimeType": "image/png"
+}
+\`\`\``,
     tags: ['public', 'upload', 'avatar'],
     method: 'POST',
     path: '/api/public/upload/avatar',

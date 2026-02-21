@@ -29,4 +29,8 @@ export class ActionError extends Error {
   static conflict(message: string): ActionError {
     return new ActionError(message, 409);
   }
+
+  static internal(message: string): ActionError {
+    return new ActionError(message, 500);
+  }
 }
