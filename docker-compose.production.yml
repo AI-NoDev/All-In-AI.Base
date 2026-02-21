@@ -18,6 +18,21 @@ services:
       retries: 5
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: ai-drive-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis123}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   minio:
     image: minio/minio:latest
     container_name: ai-drive-minio
@@ -69,6 +84,7 @@ services:
       - "3030:3000"
     environment:
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/allinai
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis123}@redis:6379
       PORT: 3000
       JWT_SECRET: ${JWT_SECRET}
       # 服务端基础URL（用于MCP等）
@@ -82,6 +98,8 @@ services:
       S3_REGION: us-east-1
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
       minio-init:
         condition: service_completed_successfully
@@ -102,6 +120,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
   minio_data:
     driver: local

@@ -72,6 +72,20 @@ function createSystemConfigStore() {
     return item?.value ?? defaultValue;
   }
 
+  /**
+   * 获取站点名称
+   * 优先级：系统配置 > 环境变量 > 默认值
+   */
+  function getSiteName(): string {
+    const configValue = get('sys.site.name', '');
+    if (configValue) return configValue;
+    
+    const envValue = import.meta.env.VITE_WEB_SITE_NAME;
+    if (envValue) return envValue;
+    
+    return 'All In AI System';
+  }
+
   function getAll(): ConfigItem[] {
     return configs;
   }
@@ -89,6 +103,7 @@ function createSystemConfigStore() {
     get isLoading() { return isLoading; },
     load,
     get,
+    getSiteName,
     getAll,
     clear,
   };

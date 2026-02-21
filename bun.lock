@@ -125,9 +125,9 @@
     "packages/actions": {
       "name": "@qiyu-allinai/actions",
       "dependencies": {
-        "@aws-sdk/client-s3": "^3.975.0",
-        "@aws-sdk/s3-request-presigner": "^3.975.0",
+        "@qiyu-allinai/cache": "workspace:*",
         "@qiyu-allinai/db": "workspace:*",
+        "@qiyu-allinai/storage": "workspace:*",
         "ai": "^6.0.66",
         "drizzle-orm": "^0.45.1",
         "zod": "^4.3.6",
@@ -173,6 +173,17 @@
       "devDependencies": {
         "@types/bun": "latest",
         "swagger-typescript-api": "^13.2.18",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
+    "packages/cache": {
+      "name": "@qiyu-allinai/cache",
+      "version": "1.0.0",
+      "devDependencies": {
+        "@types/bun": "latest",
+        "bun-types": "latest",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -285,6 +296,21 @@
       "devDependencies": {
         "@inlang/paraglide-js": "^2.10.0",
         "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
+    "packages/storage": {
+      "name": "@qiyu-allinai/storage",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aws-sdk/client-s3": "^3.975.0",
+        "@aws-sdk/s3-request-presigner": "^3.975.0",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
+        "bun-types": "latest",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -825,6 +851,8 @@
 
     "@qiyu-allinai/api": ["@qiyu-allinai/api@workspace:packages/api"],
 
+    "@qiyu-allinai/cache": ["@qiyu-allinai/cache@workspace:packages/cache"],
+
     "@qiyu-allinai/db": ["@qiyu-allinai/db@workspace:packages/db"],
 
     "@qiyu-allinai/docs": ["@qiyu-allinai/docs@workspace:apps/docs"],
@@ -838,6 +866,8 @@
     "@qiyu-allinai/i18n": ["@qiyu-allinai/i18n@workspace:packages/i18n"],
 
     "@qiyu-allinai/server": ["@qiyu-allinai/server@workspace:apps/server"],
+
+    "@qiyu-allinai/storage": ["@qiyu-allinai/storage@workspace:packages/storage"],
 
     "@qiyu-allinai/zod-visual-editor": ["@qiyu-allinai/zod-visual-editor@workspace:packages/zod-visual-editor"],
 

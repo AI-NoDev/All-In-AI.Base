@@ -15,7 +15,43 @@
   import { imStore } from '@/lib/stores/im.svelte';
   import { aiChatStore } from '@/lib/stores/ai-chat.svelte';
   import { actionsStore } from '@/lib/stores/actions.svelte';
-  import { pages, routePermissionMap } from '@/lib/generated-pages';
+  import { systemConfigStore } from '@/lib/stores/system-config.svelte';
+  import { pages, routePermissionMap, routeTitles } from '@/lib/generated-pages';
+
+  /**
+   * 根据当前路径获取页面标题
+   * 支持动态路由参数匹配
+   */
+  function getPageTitle(pathname: string): string {
+    // 首先尝试精确匹配
+    if (routeTitles[pathname]) {
+      return routeTitles[pathname];
+    }
+
+    // 尝试匹配动态路由
+    for (const pageMeta of pages) {
+      if (!pageMeta.title) continue;
+      
+      // 将路由模式转换为正则表达式
+      const pattern = pageMeta.path
+        .replace(/\[([^\]]+)\]/g, '[^/]+')
+        .replace(/\//g, '\\/');
+      
+      const regex = new RegExp(`^${pattern}$`);
+      if (regex.test(pathname)) {
+        return pageMeta.title;
+      }
+    }
+
+    return '';
+  }
+
+  // 动态页面标题
+  let pageTitle = $derived.by(() => {
+    const title = getPageTitle(page.url.pathname);
+    const siteName = systemConfigStore.getSiteName();
+    return title ? `${title} - ${siteName}` : siteName;
+  });
 
   let { children } = $props();
   let isChecking = $state(true);
@@ -137,6 +173,10 @@
     goto('/dashboard');
   }
 </script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 
 {#if isChecking}
   <div class="flex min-h-svh items-center justify-center">

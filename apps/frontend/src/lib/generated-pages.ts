@@ -183,6 +183,13 @@ export const pages: PageMeta[] = [
     "order": 30
   },
   {
+    "path": "/dashboard/ai/user-memory",
+    "title": "记忆管理",
+    "icon": "mdi:head-lightbulb-outline",
+    "group": "智能体",
+    "order": 50
+  },
+  {
     "path": "/dashboard/ai/mcp-servers",
     "title": "MCP发布",
     "icon": "mdi:api",
@@ -316,6 +323,7 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/operation-logs': "操作日志",
   '/dashboard/system/login-logs': "登录日志",
   '/dashboard/ai/agents': "智能体管理",
+  '/dashboard/ai/user-memory': "记忆管理",
   '/dashboard/ai/mcp-servers': "MCP发布",
   '/dashboard/ai/api-keys': "API 密钥",
   '/dashboard/preferences': "个性化",
@@ -433,6 +441,13 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "mdi:robot",
       "group": "智能体",
       "order": 30
+    },
+    {
+      "path": "/dashboard/ai/user-memory",
+      "title": "记忆管理",
+      "icon": "mdi:head-lightbulb-outline",
+      "group": "智能体",
+      "order": 50
     },
     {
       "path": "/dashboard/ai/mcp-servers",

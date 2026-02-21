@@ -2,7 +2,17 @@
   import { page } from '$app/state';
   import { Button } from '$lib/components/ui/button';
   import { goto } from '$app/navigation';
+  import { systemConfigStore } from '@/lib/stores/system-config.svelte';
+
+  const pageTitle = $derived(
+    page.status === 404 ? '页面未找到' : `错误 ${page.status}`
+  );
+  const siteName = systemConfigStore.getSiteName();
 </script>
+
+<svelte:head>
+  <title>{pageTitle} - {siteName}</title>
+</svelte:head>
 
 <div class="flex min-h-screen flex-col items-center justify-center bg-background px-4">
   <div class="text-center space-y-6">

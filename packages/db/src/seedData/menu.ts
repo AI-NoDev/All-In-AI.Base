@@ -57,6 +57,7 @@ const MENU_IDS = {
   AI_AGENTS: '20000000-0000-4000-8000-000000000005',
   AI_API_KEYS: '20000000-0000-4000-8000-000000000006',
   AI_MCP_SERVERS: '20000000-0000-4000-8000-000000000007',
+  AI_USER_MEMORY: '20000000-0000-4000-8000-000000000008',
   
   // 系统管理
   USERS: '20000000-0000-4000-8000-000000000010',
@@ -419,6 +420,23 @@ export const menuSeeds: MenuSeed[] = [
     perms: 'ai:mcp:read',
     icon: 'tdesign:server',
     remark: 'MCP 服务器管理',
+  },
+  {
+    id: MENU_IDS.AI_USER_MEMORY,
+    name: '记忆管理',
+    parentId: MENU_IDS.AI,
+    orderNum: 5,
+    path: '/dashboard/ai/user-memory',
+    type: MENU_TYPE.MENU,
+    visible: true,
+    isCache: true,
+    isFrame: false,
+    isSystem: true,
+    linkUrl: null,
+    linkTarget: null,
+    perms: 'ai:memory:read',
+    icon: 'mdi:head-lightbulb-outline',
+    remark: '用户记忆管理',
   },
 
   // ============ 服务器监控 ============

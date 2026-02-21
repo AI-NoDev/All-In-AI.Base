@@ -14,12 +14,15 @@
   import loginImg from '@/lib/assets/login-img.png';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { systemConfigStore } from '@/lib/stores/system-config.svelte';
 
   let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
   const id = $props.id();
 
   let loginName = $state('');
   let password = $state('');
+
+  const siteName = systemConfigStore.getSiteName();
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
@@ -30,6 +33,10 @@
     }
   }
 </script>
+
+<svelte:head>
+  <title>登录 - {siteName}</title>
+</svelte:head>
 
 <div class="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
   <div class="w-full max-w-sm md:max-w-3xl">
