@@ -71,6 +71,7 @@ export function createMcpRoutes(): Elysia {
           }
           // Generate new session ID for fresh start
           sessionId = crypto.randomUUID();
+          console.log(`[MCP:${adapter.name}] Created new session ID: ${sessionId}`);
         }
 
         const session = await getOrCreateSession(params.id, sessionId, userContext);

@@ -12,10 +12,10 @@ import type { McpAdapter, JsonRpcRequest, JsonRpcResponse, McpSession } from "..
  * - When client receives HTTP 404 with session ID, it MUST start new session
  * - Server MAY terminate session at any time, responding with 404
  * 
- * Solution: For Coze, we operate in "stateless-like" mode:
- * - Each initialize request gets a fresh session
- * - Very short session timeout (2 minutes)
- * - Always accept requests without session ID for initialize
+ * Solution: For Coze, we operate in fully stateless mode:
+ * - Every request creates a fresh session
+ * - No session persistence between requests
+ * - This avoids all session termination issues
  */
 export const cozeAdapter: McpAdapter = {
   name: "coze",
@@ -45,15 +45,10 @@ export const cozeAdapter: McpAdapter = {
     return isCoze;
   },
 
-  getSessionId(request: Request): string | null {
-    // Coze may use different header names (case-insensitive check)
-    const headers = request.headers;
-    return (
-      headers.get("mcp-session-id") ||
-      headers.get("Mcp-Session-Id") ||
-      headers.get("x-mcp-session-id") ||
-      headers.get("x-coze-session-id")
-    );
+  getSessionId(_request: Request): string | null {
+    // Always return null to force new session for each request
+    // This is the key fix - Coze doesn't handle session persistence well
+    return null;
   },
 
   setSessionId(headers: Record<string, string>, sessionId: string): void {
@@ -79,36 +74,10 @@ export const cozeAdapter: McpAdapter = {
     return response;
   },
 
-  shouldReinitialize(request: Request, session: McpSession | undefined): boolean {
-    // For Coze, we need to be more aggressive about reinitialization
-    
-    // 1. No existing session - always initialize
-    if (!session) {
-      console.log(`[MCP:Coze] No session found, will initialize new session`);
-      return true;
-    }
-    
-    // 2. Check for explicit reinit header
-    const reinitHeader = request.headers.get("x-coze-reinit");
-    if (reinitHeader === "true") {
-      console.log(`[MCP:Coze] Reinit header set, will reinitialize`);
-      return true;
-    }
-    
-    // 3. Very short session timeout for Coze (2 minutes)
-    // This helps avoid the "session terminated" error
-    const cozeTimeout = 2 * 60 * 1000; // 2 minutes
-    const sessionAge = Date.now() - session.lastActivity;
-    
-    if (sessionAge > cozeTimeout) {
-      console.log(`[MCP:Coze] Session expired (${Math.round(sessionAge / 1000)}s old), will reinitialize`);
-      return true;
-    }
-    
-    // 4. Update last activity to keep session alive
-    session.lastActivity = Date.now();
-    
-    return false;
+  shouldReinitialize(_request: Request, _session: McpSession | undefined): boolean {
+    // Always reinitialize for Coze - fully stateless mode
+    // This completely avoids the "session terminated (404)" error
+    return true;
   },
 };
 
