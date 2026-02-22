@@ -28,6 +28,8 @@
   "batchDelete": "批量删除",
   "create": "创建",
   "update": "更新",
+  "manage": "管理",
+  "confirmDelete": "确认删除",
   "actions_add": "新增",
   "actions_edit": "编辑",
   "actions_delete": "删除",

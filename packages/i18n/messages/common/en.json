@@ -28,6 +28,8 @@
   "batchDelete": "Batch Delete",
   "create": "Create",
   "update": "Update",
+  "manage": "Manage",
+  "confirmDelete": "Confirm Delete",
   "actions_add": "Add",
   "actions_edit": "Edit",
   "actions_delete": "Delete",

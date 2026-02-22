@@ -9,6 +9,7 @@ export * from './jobLog';
 export * from './loginInfo';
 export * from './menu';
 export * from './notice';
+export * from './noticeRead';
 export * from './operationLog';
 export * from './post';
 export * from './role';
@@ -30,6 +31,7 @@ import { jobLogActions } from './jobLog';
 import { loginInfoActions } from './loginInfo';
 import { menuActions } from './menu';
 import { noticeActions } from './notice';
+import { noticeReadActions } from './noticeRead';
 import { operationLogActions } from './operationLog';
 import { postActions } from './post';
 import { roleActions } from './role';
@@ -51,6 +53,7 @@ export const systemActions = [
   ...loginInfoActions,
   ...menuActions,
   ...noticeActions,
+  ...noticeReadActions,
   ...operationLogActions,
   ...postActions,
   ...roleActions,

@@ -90,15 +90,15 @@
   let dictForm = $state({ group: '', label: '', value: '', sort: 0, cssClass: '', listClass: '', isDefault: false, status: '0', remark: '' });
   let groupForm = $state({ key: '', name: '', status: '0', remark: '' });
 
-  let statusOptions = $derived([{ value: '0', label: t('status.normal') }, { value: '1', label: t('status.disabled') }]);
+  let statusOptions = $derived([{ value: '0', label: t('common.status.normal') }, { value: '1', label: t('common.status.disabled') }]);
 
   let columns = $derived([
     { key: 'label', title: t('page.system.dictLabel'), width: 160, render: labelRender },
     { key: 'value', title: t('page.system.dictValue'), width: 160, render: valueRender },
-    { key: 'sort', title: t('fields.sort'), width: 80 },
+    { key: 'sort', title: t('common.fields.sort'), width: 80 },
     { key: 'isDefault', title: t('page.system.dictDefault'), width: 80, render: defaultRender },
-    { key: 'status', title: t('fields.status'), width: 80, render: statusRender },
-    { key: 'id', title: t('fields.actions'), width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+    { key: 'status', title: t('common.fields.status'), width: 80, render: statusRender },
+    { key: 'id', title: t('common.fields.actions'), width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
   ]);
 
   function toggleSelectAll() { selectedIds = selectedIds.size === dicts.length ? new Set() : new Set(dicts.map(d => d.id)); }
@@ -141,7 +141,7 @@
       }
       groupDialogOpen = false;
       loadGroups();
-    } catch (err) { console.error('Failed to save dict group:', err); alert(t('tips.saveFailed')); }
+    } catch (err) { console.error('Failed to save dict group:', err); alert(t('common.tips.saveFailed')); }
     finally { saving = false; }
   }
 
@@ -153,7 +153,7 @@
       if (selectedGroup === key) selectedGroup = null;
       loadGroups();
       loadDicts();
-    } catch (err) { console.error('Failed to delete dict group:', err); alert(t('tips.deleteFailed')); }
+    } catch (err) { console.error('Failed to delete dict group:', err); alert(t('common.tips.deleteFailed')); }
   }
 
   function openCreateDict() {
@@ -182,7 +182,7 @@
       }
       dialogOpen = false;
       loadDicts();
-    } catch (err) { console.error('Failed to save dict:', err); alert(t('tips.saveFailed')); }
+    } catch (err) { console.error('Failed to save dict:', err); alert(t('common.tips.saveFailed')); }
     finally { saving = false; }
   }
 
@@ -192,7 +192,7 @@
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemDictById({ id });
       loadDicts();
-    } catch (err) { console.error('Failed to delete dict:', err); alert(t('tips.deleteFailed')); }
+    } catch (err) { console.error('Failed to delete dict:', err); alert(t('common.tips.deleteFailed')); }
   }
 
   async function handleBatchDelete() {
@@ -204,7 +204,7 @@
       await Promise.all(Array.from(selectedIds).map(id => api.system.deleteApiSystemDictById({ id })));
       selectedIds = new Set();
       loadDicts();
-    } catch (err) { console.error('Failed to delete dicts:', err); alert(t('tips.deleteFailed')); }
+    } catch (err) { console.error('Failed to delete dicts:', err); alert(t('common.tips.deleteFailed')); }
     finally { deleting = false; }
   }
 
@@ -220,11 +220,11 @@
 {/snippet}
 
 {#snippet defaultRender({ row })}
-  <Badge variant={row.isDefault ? 'default' : 'outline'}>{row.isDefault ? t('status.yes') : t('status.no')}</Badge>
+  <Badge variant={row.isDefault ? 'default' : 'outline'}>{row.isDefault ? t('common.status.yes') : t('common.status.no')}</Badge>
 {/snippet}
 
 {#snippet statusRender({ value })}
-  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? t('status.normal') : t('status.disabled')}</Badge>
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? t('common.status.normal') : t('common.status.disabled')}</Badge>
 {/snippet}
 
 {#snippet actionsRender({ row })}
@@ -271,10 +271,10 @@
   <div class="flex-1 flex flex-col min-h-0 pl-4">
     <div class="py-3 flex items-center justify-between border-b border-border">
       <div class="flex gap-2">
-        <Button size="sm" onclick={openCreateDict} disabled={!selectedGroup}><Icon icon="tdesign:add" class="mr-1 size-4" />{t('actions.add')}</Button>
+        <Button size="sm" onclick={openCreateDict} disabled={!selectedGroup}><Icon icon="tdesign:add" class="mr-1 size-4" />{t('common.actions.add')}</Button>
         {#if selectedIds.size > 0}
           <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
-            <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />{t('actions.delete')}({selectedIds.size})
+            <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />{t('common.actions.delete')}({selectedIds.size})
           </Button>
         {/if}
       </div>
@@ -312,20 +312,20 @@
         <Input bind:value={groupForm.name} placeholder={t('page.system.groupNamePlaceholder')} />
       </div>
       <div class="grid gap-2">
-        <Label>{t('fields.status')}</Label>
+        <Label>{t('common.fields.status')}</Label>
         <Select.Root type="single" bind:value={groupForm.status}>
           <Select.Trigger>{statusOptions.find(o => o.value === groupForm.status)?.label}</Select.Trigger>
           <Select.Content>{#each statusOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
         </Select.Root>
       </div>
       <div class="grid gap-2">
-        <Label>{t('fields.remark')}</Label>
-        <Input bind:value={groupForm.remark} placeholder={t('tips.inputPlaceholder')} />
+        <Label>{t('common.fields.remark')}</Label>
+        <Input bind:value={groupForm.remark} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => groupDialogOpen = false}>{t('actions.cancel')}</Button>
-      <Button onclick={handleSaveGroup} disabled={saving}>{saving ? t('tips.saving') : t('actions.save')}</Button>
+      <Button variant="outline" onclick={() => groupDialogOpen = false}>{t('common.actions.cancel')}</Button>
+      <Button onclick={handleSaveGroup} disabled={saving}>{saving ? t('common.tips.saving') : t('common.actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -347,11 +347,11 @@
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
-          <Label>{t('fields.sort')}</Label>
+          <Label>{t('common.fields.sort')}</Label>
           <Input bind:value={dictForm.sort} type="number" />
         </div>
         <div class="grid gap-2">
-          <Label>{t('fields.status')}</Label>
+          <Label>{t('common.fields.status')}</Label>
           <Select.Root type="single" bind:value={dictForm.status}>
             <Select.Trigger>{statusOptions.find(o => o.value === dictForm.status)?.label}</Select.Trigger>
             <Select.Content>{#each statusOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
@@ -363,13 +363,13 @@
         <Label>{t('page.system.setAsDefault')}</Label>
       </div>
       <div class="grid gap-2">
-        <Label>{t('fields.remark')}</Label>
-        <Input bind:value={dictForm.remark} placeholder={t('tips.inputPlaceholder')} />
+        <Label>{t('common.fields.remark')}</Label>
+        <Input bind:value={dictForm.remark} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => dialogOpen = false}>{t('actions.cancel')}</Button>
-      <Button onclick={handleSaveDict} disabled={saving}>{saving ? t('tips.saving') : t('actions.save')}</Button>
+      <Button variant="outline" onclick={() => dialogOpen = false}>{t('common.actions.cancel')}</Button>
+      <Button onclick={handleSaveDict} disabled={saving}>{saving ? t('common.tips.saving') : t('common.actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

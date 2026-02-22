@@ -1,9 +1,8 @@
 import adapter from '@sveltejs/adapter-static';
-import { mdsvex } from 'mdsvex';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	extensions: ['.svelte', '.svx', '.md'],
+	extensions: ['.svelte'],
 	kit: {
 		adapter: adapter({
 			fallback: 'index.html'
@@ -14,14 +13,7 @@ const config = {
 		prerender: {
 			entries: []
 		}
-	},
-	preprocess: mdsvex({ 
-		extensions: ['.svx', '.md'],
-		layout: {
-			// zh: "./src/docs/zh/layout.svelte",
-			// article: "./src/docs/en/layout.svelte"
-		}
-	 })
+	}
 };
 
 export default config;

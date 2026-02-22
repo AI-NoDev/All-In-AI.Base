@@ -2852,6 +2852,344 @@
         "operationId": "postApiSystemUserByIdReset-password"
       }
     },
+    "/api/system/user/preferences": {
+      "get": {
+        "summary": "获取用户偏好设置",
+        "description": "获取当前用户的偏好设置",
+        "tags": [
+          "system",
+          "user",
+          "preferences"
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiSystemUserPreferences"
+      },
+      "put": {
+        "summary": "更新用户偏好设置",
+        "description": "更新当前用户的偏好设置",
+        "tags": [
+          "system",
+          "user",
+          "preferences"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "preferences": {
+                    "type": "object",
+                    "properties": {
+                      "theme": {
+                        "type": "string",
+                        "enum": [
+                          "light",
+                          "dark"
+                        ]
+                      },
+                      "themeColor": {
+                        "type": "string",
+                        "enum": [
+                          "slate",
+                          "zinc",
+                          "neutral",
+                          "stone",
+                          "blue",
+                          "green",
+                          "violet",
+                          "orange",
+                          "rose"
+                        ]
+                      },
+                      "language": {
+                        "type": "string",
+                        "enum": [
+                          "zh-CN",
+                          "en"
+                        ]
+                      },
+                      "fontSize": {
+                        "type": "number",
+                        "minimum": 10,
+                        "maximum": 24
+                      },
+                      "radius": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "defaultTextModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "defaultImageModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "defaultObjectModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "preferences"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "preferences": {
+                    "type": "object",
+                    "properties": {
+                      "theme": {
+                        "type": "string",
+                        "enum": [
+                          "light",
+                          "dark"
+                        ]
+                      },
+                      "themeColor": {
+                        "type": "string",
+                        "enum": [
+                          "slate",
+                          "zinc",
+                          "neutral",
+                          "stone",
+                          "blue",
+                          "green",
+                          "violet",
+                          "orange",
+                          "rose"
+                        ]
+                      },
+                      "language": {
+                        "type": "string",
+                        "enum": [
+                          "zh-CN",
+                          "en"
+                        ]
+                      },
+                      "fontSize": {
+                        "type": "number",
+                        "minimum": 10,
+                        "maximum": 24
+                      },
+                      "radius": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "defaultTextModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "defaultImageModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "defaultObjectModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "preferences"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "preferences": {
+                    "type": "object",
+                    "properties": {
+                      "theme": {
+                        "type": "string",
+                        "enum": [
+                          "light",
+                          "dark"
+                        ]
+                      },
+                      "themeColor": {
+                        "type": "string",
+                        "enum": [
+                          "slate",
+                          "zinc",
+                          "neutral",
+                          "stone",
+                          "blue",
+                          "green",
+                          "violet",
+                          "orange",
+                          "rose"
+                        ]
+                      },
+                      "language": {
+                        "type": "string",
+                        "enum": [
+                          "zh-CN",
+                          "en"
+                        ]
+                      },
+                      "fontSize": {
+                        "type": "number",
+                        "minimum": 10,
+                        "maximum": 24
+                      },
+                      "radius": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 2
+                      },
+                      "defaultTextModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "defaultImageModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "defaultObjectModelId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "preferences"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "putApiSystemUserPreferences"
+      }
+    },
     "/api/system/config/query": {
       "post": {
         "summary": "分页查询系统配置",
@@ -17510,290 +17848,6 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Response for status 200",
@@ -17880,311 +17934,6 @@
           "system",
           "notice"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    },
-                    "required": [
-                      "createdBy",
-                      "updatedBy",
-                      "title",
-                      "type",
-                      "content"
-                    ]
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    },
-                    "required": [
-                      "createdBy",
-                      "updatedBy",
-                      "title",
-                      "type",
-                      "content"
-                    ]
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    },
-                    "required": [
-                      "createdBy",
-                      "updatedBy",
-                      "title",
-                      "type",
-                      "content"
-                    ]
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Response for status 200",
@@ -18224,320 +17973,6 @@
           "system",
           "notice"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                          "description": "主键ID"
-                        },
-                        "createdById": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                              "description": "创建者ID"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "createdBy": {
-                          "type": "string",
-                          "maxLength": 64,
-                          "description": "创建者"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "description": "创建时间"
-                        },
-                        "updatedById": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                              "description": "更新者ID"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "updatedBy": {
-                          "type": "string",
-                          "maxLength": 64,
-                          "description": "更新者"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "description": "更新时间"
-                        },
-                        "title": {
-                          "type": "string",
-                          "maxLength": 50,
-                          "description": "公告标题"
-                        },
-                        "type": {
-                          "type": "string",
-                          "maxLength": 1,
-                          "description": "公告类型"
-                        },
-                        "content": {
-                          "type": "string",
-                          "description": "公告内容"
-                        },
-                        "status": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 1,
-                              "description": "状态"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "createdBy",
-                        "updatedBy",
-                        "title",
-                        "type",
-                        "content"
-                      ]
-                    }
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                          "description": "主键ID"
-                        },
-                        "createdById": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                              "description": "创建者ID"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "createdBy": {
-                          "type": "string",
-                          "maxLength": 64,
-                          "description": "创建者"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "description": "创建时间"
-                        },
-                        "updatedById": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                              "description": "更新者ID"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "updatedBy": {
-                          "type": "string",
-                          "maxLength": 64,
-                          "description": "更新者"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "description": "更新时间"
-                        },
-                        "title": {
-                          "type": "string",
-                          "maxLength": 50,
-                          "description": "公告标题"
-                        },
-                        "type": {
-                          "type": "string",
-                          "maxLength": 1,
-                          "description": "公告类型"
-                        },
-                        "content": {
-                          "type": "string",
-                          "description": "公告内容"
-                        },
-                        "status": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 1,
-                              "description": "状态"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "createdBy",
-                        "updatedBy",
-                        "title",
-                        "type",
-                        "content"
-                      ]
-                    }
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                          "description": "主键ID"
-                        },
-                        "createdById": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                              "description": "创建者ID"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "createdBy": {
-                          "type": "string",
-                          "maxLength": 64,
-                          "description": "创建者"
-                        },
-                        "createdAt": {
-                          "type": "string",
-                          "description": "创建时间"
-                        },
-                        "updatedById": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                              "description": "更新者ID"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "updatedBy": {
-                          "type": "string",
-                          "maxLength": 64,
-                          "description": "更新者"
-                        },
-                        "updatedAt": {
-                          "type": "string",
-                          "description": "更新时间"
-                        },
-                        "title": {
-                          "type": "string",
-                          "maxLength": 50,
-                          "description": "公告标题"
-                        },
-                        "type": {
-                          "type": "string",
-                          "maxLength": 1,
-                          "description": "公告类型"
-                        },
-                        "content": {
-                          "type": "string",
-                          "description": "公告内容"
-                        },
-                        "status": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "minLength": 1,
-                              "maxLength": 1,
-                              "description": "状态"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "createdBy",
-                        "updatedBy",
-                        "title",
-                        "type",
-                        "content"
-                      ]
-                    }
-                  }
-                },
-                "required": [
-                  "data"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Response for status 200",
@@ -18575,311 +18010,6 @@
           "system",
           "notice"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "ids",
-                  "data"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "ids",
-                  "data"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                        "description": "主键ID"
-                      },
-                      "createdById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "创建者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "createdBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "创建者"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "description": "创建时间"
-                      },
-                      "updatedById": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
-                            "description": "更新者ID"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "updatedBy": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "description": "更新者"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "description": "更新时间"
-                      },
-                      "title": {
-                        "type": "string",
-                        "maxLength": 50,
-                        "description": "公告标题"
-                      },
-                      "type": {
-                        "type": "string",
-                        "maxLength": 1,
-                        "description": "公告类型"
-                      },
-                      "content": {
-                        "type": "string",
-                        "description": "公告内容"
-                      },
-                      "status": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1,
-                            "description": "状态"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "ids",
-                  "data"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Response for status 200",
@@ -18948,6 +18078,572 @@
           }
         },
         "operationId": "getApiSystemNoticeSchema"
+      }
+    },
+    "/api/system/notice/my": {
+      "post": {
+        "summary": "获取我的通知",
+        "description": "获取当前用户可见的通知列表，支持按已读状态过滤。\n\n**过滤参数 (filter)：**\n- type: 按类型过滤，\"1\"=通知，\"2\"=公告\n- isRead: 按已读状态过滤，true=已读，false=未读\n\n**排序参数 (sort)：**\n- field: publishedAt | createdAt\n- order: asc | desc\n\n**返回数据：**\n- 包含 isRead 和 readAt 字段表示已读状态",
+        "tags": [
+          "system",
+          "notice"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "description": "类型：1=通知，2=公告",
+                        "type": "string"
+                      },
+                      "isRead": {
+                        "description": "是否已读",
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "sort": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "enum": [
+                          "publishedAt",
+                          "createdAt"
+                        ],
+                        "description": "排序字段"
+                      },
+                      "order": {
+                        "type": "string",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ],
+                        "description": "排序方向"
+                      }
+                    },
+                    "required": [
+                      "field",
+                      "order"
+                    ]
+                  },
+                  "offset": {
+                    "default": 0,
+                    "description": "偏移量",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "limit": {
+                    "default": 20,
+                    "description": "每页数量",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "description": "类型：1=通知，2=公告",
+                        "type": "string"
+                      },
+                      "isRead": {
+                        "description": "是否已读",
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "sort": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "enum": [
+                          "publishedAt",
+                          "createdAt"
+                        ],
+                        "description": "排序字段"
+                      },
+                      "order": {
+                        "type": "string",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ],
+                        "description": "排序方向"
+                      }
+                    },
+                    "required": [
+                      "field",
+                      "order"
+                    ]
+                  },
+                  "offset": {
+                    "default": 0,
+                    "description": "偏移量",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "limit": {
+                    "default": 20,
+                    "description": "每页数量",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "description": "类型：1=通知，2=公告",
+                        "type": "string"
+                      },
+                      "isRead": {
+                        "description": "是否已读",
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "sort": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string",
+                        "enum": [
+                          "publishedAt",
+                          "createdAt"
+                        ],
+                        "description": "排序字段"
+                      },
+                      "order": {
+                        "type": "string",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ],
+                        "description": "排序方向"
+                      }
+                    },
+                    "required": [
+                      "field",
+                      "order"
+                    ]
+                  },
+                  "offset": {
+                    "default": 0,
+                    "description": "偏移量",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "limit": {
+                    "default": 20,
+                    "description": "每页数量",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiSystemNoticeMy"
+      }
+    },
+    "/api/system/notice/{id}/publish": {
+      "post": {
+        "summary": "发布通知",
+        "description": "将草稿状态的通知发布，发布后用户可见",
+        "tags": [
+          "system",
+          "notice"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "通知 ID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiSystemNoticeByIdPublish"
+      }
+    },
+    "/api/system/notice/{id}/withdraw": {
+      "post": {
+        "summary": "撤回通知",
+        "description": "撤回已发布的通知，撤回后用户不可见",
+        "tags": [
+          "system",
+          "notice"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "通知 ID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiSystemNoticeByIdWithdraw"
+      }
+    },
+    "/api/system/notice-read/mark": {
+      "post": {
+        "summary": "标记通知为已读",
+        "description": "将指定通知标记为当前用户已读",
+        "tags": [
+          "system",
+          "noticeRead"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "noticeId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                    "description": "通知 ID"
+                  }
+                },
+                "required": [
+                  "noticeId"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "noticeId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                    "description": "通知 ID"
+                  }
+                },
+                "required": [
+                  "noticeId"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "noticeId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                    "description": "通知 ID"
+                  }
+                },
+                "required": [
+                  "noticeId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiSystemNotice-readMark"
+      }
+    },
+    "/api/system/notice-read/mark-many": {
+      "post": {
+        "summary": "批量标记通知为已读",
+        "description": "将多个通知标记为当前用户已读",
+        "tags": [
+          "system",
+          "noticeRead"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "noticeIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "description": "通知 ID 列表"
+                  }
+                },
+                "required": [
+                  "noticeIds"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "noticeIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "description": "通知 ID 列表"
+                  }
+                },
+                "required": [
+                  "noticeIds"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "noticeIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "description": "通知 ID 列表"
+                  }
+                },
+                "required": [
+                  "noticeIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postApiSystemNotice-readMark-many"
+      }
+    },
+    "/api/system/notice-read/unread-count": {
+      "get": {
+        "summary": "获取未读通知数量",
+        "description": "获取当前用户的未读通知数量",
+        "tags": [
+          "system",
+          "noticeRead"
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "data": {},
+                    "status": {
+                      "default": 200,
+                      "type": "number"
+                    },
+                    "message": {
+                      "default": "ok",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getApiSystemNotice-readUnread-count"
       }
     },
     "/api/system/operation-log/query": {
@@ -46330,8 +46026,7 @@
         "description": "创建一条新的用户记忆，支持自动生成向量嵌入",
         "tags": [
           "ai",
-          "memory",
-          "create"
+          "memory"
         ],
         "requestBody": {
           "description": "创建用户记忆请求体",
@@ -46922,8 +46617,7 @@
         "description": "根据ID查询单条用户记忆详情",
         "tags": [
           "ai",
-          "memory",
-          "query"
+          "memory"
         ],
         "parameters": [
           {
@@ -46971,8 +46665,7 @@
         "description": "更新用户记忆内容、重要性等信息",
         "tags": [
           "ai",
-          "memory",
-          "update"
+          "memory"
         ],
         "parameters": [
           {
@@ -47554,8 +47247,7 @@
         "description": "软删除用户记忆（设置状态为禁用）",
         "tags": [
           "ai",
-          "memory",
-          "delete"
+          "memory"
         ],
         "parameters": [
           {
@@ -47605,8 +47297,7 @@
         "description": "分页查询用户记忆列表，支持多种过滤条件",
         "tags": [
           "ai",
-          "memory",
-          "query"
+          "memory"
         ],
         "requestBody": {
           "description": "用户记忆分页查询请求体",
@@ -48104,9 +47795,7 @@
         "description": "使用向量相似度搜索用户记忆，支持记忆衰减计算",
         "tags": [
           "ai",
-          "memory",
-          "search",
-          "semantic"
+          "memory"
         ],
         "requestBody": {
           "description": "语义检索请求体",
@@ -69599,25 +69288,26 @@
                 "properties": {
                   "conversationId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "目标会话 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容，根据 msgType 不同结构不同"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   },
                   "atUserIds": {
+                    "description": "@的用户 ID 列表",
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      "description": "用户 ID"
                     }
                   }
                 },
@@ -69634,25 +69324,26 @@
                 "properties": {
                   "conversationId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "目标会话 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容，根据 msgType 不同结构不同"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   },
                   "atUserIds": {
+                    "description": "@的用户 ID 列表",
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      "description": "用户 ID"
                     }
                   }
                 },
@@ -69669,25 +69360,26 @@
                 "properties": {
                   "conversationId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "目标会话 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容，根据 msgType 不同结构不同"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   },
                   "atUserIds": {
+                    "description": "@的用户 ID 列表",
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      "description": "用户 ID"
                     }
                   }
                 },
@@ -69750,18 +69442,19 @@
                 "properties": {
                   "targetUserId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "目标用户 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -69777,18 +69470,19 @@
                 "properties": {
                   "targetUserId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "目标用户 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -69804,18 +69498,19 @@
                 "properties": {
                   "targetUserId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "目标用户 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -69877,25 +69572,26 @@
                 "properties": {
                   "conversationId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "群聊会话 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   },
                   "atUserIds": {
+                    "description": "@的用户 ID 列表",
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      "description": "用户 ID"
                     }
                   }
                 },
@@ -69912,25 +69608,26 @@
                 "properties": {
                   "conversationId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "群聊会话 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   },
                   "atUserIds": {
+                    "description": "@的用户 ID 列表",
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      "description": "用户 ID"
                     }
                   }
                 },
@@ -69947,25 +69644,26 @@
                 "properties": {
                   "conversationId": {
                     "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "群聊会话 ID"
                   },
                   "msgType": {
                     "default": "01",
+                    "description": "消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件",
                     "type": "string"
                   },
-                  "content": {},
+                  "content": {
+                    "description": "消息内容"
+                  },
                   "replyToId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    "description": "回复的消息 ID",
+                    "type": "string"
                   },
                   "atUserIds": {
+                    "description": "@的用户 ID 列表",
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      "description": "用户 ID"
                     }
                   }
                 },
@@ -70029,18 +69727,21 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    }
+                      "description": "用户 ID"
+                    },
+                    "description": "目标用户 ID 列表"
                   },
                   "title": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "通知标题"
                   },
                   "content": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "通知内容"
                   },
                   "type": {
                     "default": "info",
+                    "description": "通知类型",
                     "type": "string",
                     "enum": [
                       "info",
@@ -70050,6 +69751,7 @@
                     ]
                   },
                   "data": {
+                    "description": "附加数据，可包含链接等信息",
                     "type": "object",
                     "propertyNames": {
                       "type": "string"
@@ -70073,18 +69775,21 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    }
+                      "description": "用户 ID"
+                    },
+                    "description": "目标用户 ID 列表"
                   },
                   "title": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "通知标题"
                   },
                   "content": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "通知内容"
                   },
                   "type": {
                     "default": "info",
+                    "description": "通知类型",
                     "type": "string",
                     "enum": [
                       "info",
@@ -70094,6 +69799,7 @@
                     ]
                   },
                   "data": {
+                    "description": "附加数据，可包含链接等信息",
                     "type": "object",
                     "propertyNames": {
                       "type": "string"
@@ -70117,18 +69823,21 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    }
+                      "description": "用户 ID"
+                    },
+                    "description": "目标用户 ID 列表"
                   },
                   "title": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "通知标题"
                   },
                   "content": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "通知内容"
                   },
                   "type": {
                     "default": "info",
+                    "description": "通知类型",
                     "type": "string",
                     "enum": [
                       "info",
@@ -70138,6 +69847,7 @@
                     ]
                   },
                   "data": {
+                    "description": "附加数据，可包含链接等信息",
                     "type": "object",
                     "propertyNames": {
                       "type": "string"
@@ -70247,9 +69957,9 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    }
+                      "description": "用户 ID"
+                    },
+                    "description": "要检查的用户 ID 列表"
                   }
                 },
                 "required": [
@@ -70266,9 +69976,9 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    }
+                      "description": "用户 ID"
+                    },
+                    "description": "要检查的用户 ID 列表"
                   }
                 },
                 "required": [
@@ -70285,9 +69995,9 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    }
+                      "description": "用户 ID"
+                    },
+                    "description": "要检查的用户 ID 列表"
                   }
                 },
                 "required": [

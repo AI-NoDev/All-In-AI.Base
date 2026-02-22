@@ -236,6 +236,20 @@ export const pages: PageMeta[] = [
     "order": 200
   },
   {
+    "path": "/dashboard/dev-docs",
+    "title": "nav.title.devDocs",
+    "icon": "mdi:book-open-page-variant",
+    "group": "nav.group.settings",
+    "order": 201
+  },
+  {
+    "path": "/dashboard/api-docs",
+    "title": "nav.title.apiDocs",
+    "icon": "mdi:api",
+    "group": "nav.group.dev",
+    "order": 302
+  },
+  {
     "path": "/dashboard/account",
     "title": "nav.title.account",
     "icon": "tdesign:user-circle",
@@ -308,6 +322,9 @@ export const pages: PageMeta[] = [
     "hidden": true
   },
   {
+    "path": "/docs/[...slug]"
+  },
+  {
     "path": "/login",
     "title": "nav.title.login",
     "hidden": true
@@ -342,6 +359,8 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/server-monitor/overview': "nav.title.serverMonitor",
   '/dashboard/system-config': "nav.title.systemConfig",
   '/dashboard/dev/project-code': "nav.title.projectCode",
+  '/dashboard/dev-docs': "nav.title.devDocs",
+  '/dashboard/api-docs': "nav.title.apiDocs",
   '/dashboard/account': "nav.title.account",
   '/dashboard/files': "nav.title.fileManagement",
   '/dashboard/files/[folderId]/create-text-file': "nav.title.createTextFile",
@@ -585,6 +604,13 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "tdesign:setting",
       "group": "nav.group.settings",
       "order": 101
+    },
+    {
+      "path": "/dashboard/dev-docs",
+      "title": "nav.title.devDocs",
+      "icon": "mdi:book-open-page-variant",
+      "group": "nav.group.settings",
+      "order": 201
     }
   ],
   "nav.group.dev": [
@@ -595,6 +621,13 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "tdesign:code",
       "group": "nav.group.dev",
       "order": 200
+    },
+    {
+      "path": "/dashboard/api-docs",
+      "title": "nav.title.apiDocs",
+      "icon": "mdi:api",
+      "group": "nav.group.dev",
+      "order": 302
     }
   ],
   "default": [
@@ -632,6 +665,9 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "title": "nav.title.notifications",
       "icon": "tdesign:notification",
       "hidden": true
+    },
+    {
+      "path": "/docs/[...slug]"
     },
     {
       "path": "/login",

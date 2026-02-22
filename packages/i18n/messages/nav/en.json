@@ -48,5 +48,7 @@
   "userMenu_logout": "Log Out",
   "aiAssistant": "AI Assistant",
   "title_account": "Account",
-  "title_notifications": "Notifications"
+  "title_notifications": "Notifications",
+  "title_devDocs": "Dev Docs",
+  "title_apiDocs": "API Docs"
 }

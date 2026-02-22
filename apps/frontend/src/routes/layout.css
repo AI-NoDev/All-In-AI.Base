@@ -2,6 +2,8 @@
 
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
+
 /* 扫描 workspace 包中的 Tailwind 类 */
 @source "../../../../packages/actions-flow-editor/dist";
 @source "../../../../packages/zod-visual-editor/dist";

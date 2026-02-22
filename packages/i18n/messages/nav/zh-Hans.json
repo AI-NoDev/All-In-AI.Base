@@ -48,5 +48,7 @@
   "userMenu_logout": "退出登录",
   "aiAssistant": "AI 助手",
   "title_account": "账户",
-  "title_notifications": "通知"
+  "title_notifications": "通知",
+  "title_devDocs": "开发文档",
+  "title_apiDocs": "API 文档"
 }

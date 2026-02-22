@@ -1,0 +1,17 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "title_documentation": "开发文档",
+  "title_home": "首页",
+  "title_gettingStarted": "快速开始",
+  "title_projectStructure": "项目结构",
+  "title_actions": "Action 开发",
+  "title_components": "组件开发",
+  "group_guide": "指南",
+  "group_backend": "后端",
+  "group_frontend": "前端",
+  "description_home": "AI Drive System 开发文档",
+  "description_gettingStarted": "环境搭建与项目启动",
+  "description_projectStructure": "了解项目目录结构",
+  "description_actions": "后端 Action 开发指南",
+  "description_components": "前端组件开发指南"
+}

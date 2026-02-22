@@ -1,0 +1,17 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "title_documentation": "Documentation",
+  "title_home": "Home",
+  "title_gettingStarted": "Getting Started",
+  "title_projectStructure": "Project Structure",
+  "title_actions": "Action Development",
+  "title_components": "Component Development",
+  "group_guide": "Guide",
+  "group_backend": "Backend",
+  "group_frontend": "Frontend",
+  "description_home": "AI Drive System Documentation",
+  "description_gettingStarted": "Environment setup and project startup",
+  "description_projectStructure": "Understanding project directory structure",
+  "description_actions": "Backend Action development guide",
+  "description_components": "Frontend component development guide"
+}

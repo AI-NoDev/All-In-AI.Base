@@ -6,9 +6,11 @@
   import * as Avatar from '$lib/components/ui/avatar';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Skeleton } from '$lib/components/ui/skeleton';
+  import { Badge } from '$lib/components/ui/badge';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { notificationStore } from '@/lib/stores/notification.svelte';
   import { i18n, t } from '@/lib/stores/i18n.svelte';
   import { tabsStore } from '@/lib/stores/tabs.svelte';
 
@@ -107,6 +109,11 @@
           <DropdownMenu.Item onclick={handleNotifications}>
             <NotificationIcon />
             {t('nav.userMenu_notifications')}
+            {#if notificationStore.unreadCount > 0}
+              <Badge variant="destructive" class="ml-auto h-5 min-w-5 px-1.5 text-xs">
+                {notificationStore.unreadCount > 99 ? '99+' : notificationStore.unreadCount}
+              </Badge>
+            {/if}
           </DropdownMenu.Item>
         </DropdownMenu.Group>
         <DropdownMenu.Separator />

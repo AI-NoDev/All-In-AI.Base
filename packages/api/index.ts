@@ -1378,6 +1378,14 @@ export interface GetApiSystemNoticeByIdParams {
   id: string;
 }
 
+export interface GetApiSystemNoticeReadUnreadCountData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
 export interface GetApiSystemNoticeSchemaData {
   data: any;
   /** @default "ok" */
@@ -1571,6 +1579,14 @@ export interface GetApiSystemUserPostUserByUserIdData {
 
 export interface GetApiSystemUserPostUserByUserIdParams {
   userId: string;
+}
+
+export interface GetApiSystemUserPreferencesData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
 }
 
 export interface GetApiSystemUserRoleByUserIdByRoleIdData {
@@ -6436,47 +6452,38 @@ export interface PostApiSystemNoticeBatchData {
   status: number;
 }
 
-export interface PostApiSystemNoticeBatchPayload {
-  data: {
-    /** 公告内容 */
-    content: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 状态 */
-    status?: string | null;
-    /**
-     * 公告标题
-     * @maxLength 50
-     */
-    title: string;
-    /**
-     * 公告类型
-     * @maxLength 1
-     */
-    type: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  }[];
+export interface PostApiSystemNoticeByIdPublishData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiSystemNoticeByIdPublishParams {
+  /**
+   * 通知 ID
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  id: string;
+}
+
+export interface PostApiSystemNoticeByIdWithdrawData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiSystemNoticeByIdWithdrawParams {
+  /**
+   * 通知 ID
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  id: string;
 }
 
 export interface PostApiSystemNoticeData {
@@ -6487,46 +6494,52 @@ export interface PostApiSystemNoticeData {
   status: number;
 }
 
-export interface PostApiSystemNoticePayload {
-  data: {
-    /** 公告内容 */
-    content: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 状态 */
-    status?: string | null;
-    /**
-     * 公告标题
-     * @maxLength 50
-     */
-    title: string;
-    /**
-     * 公告类型
-     * @maxLength 1
-     */
-    type: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy: string;
-    /** 更新者ID */
-    updatedById?: string | null;
+export interface PostApiSystemNoticeMyData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+/** 排序字段 */
+export enum PostApiSystemNoticeMyFieldEnum {
+  PublishedAt = "publishedAt",
+  CreatedAt = "createdAt",
+}
+
+/** 排序方向 */
+export enum PostApiSystemNoticeMyOrderEnum {
+  Asc = "asc",
+  Desc = "desc",
+}
+
+export interface PostApiSystemNoticeMyPayload {
+  filter?: {
+    /** 是否已读 */
+    isRead?: boolean;
+    /** 类型：1=通知，2=公告 */
+    type?: string;
+  };
+  /**
+   * 每页数量
+   * @min 1
+   * @max 100
+   * @default 20
+   */
+  limit?: number;
+  /**
+   * 偏移量
+   * @min 0
+   * @max 9007199254740991
+   * @default 0
+   */
+  offset?: number;
+  sort?: {
+    /** 排序字段 */
+    field: PostApiSystemNoticeMyFieldEnum;
+    /** 排序方向 */
+    order: PostApiSystemNoticeMyOrderEnum;
   };
 }
 
@@ -6599,6 +6612,36 @@ export interface PostApiSystemNoticeQueryPayload {
 export enum PostApiSystemNoticeQueryStatusEnum {
   Value0 = "0",
   Value1 = "1",
+}
+
+export interface PostApiSystemNoticeReadMarkData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiSystemNoticeReadMarkManyData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiSystemNoticeReadMarkManyPayload {
+  /** 通知 ID 列表 */
+  noticeIds: string[];
+}
+
+export interface PostApiSystemNoticeReadMarkPayload {
+  /**
+   * 通知 ID
+   * @format uuid
+   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   */
+  noticeId: string;
 }
 
 export interface PostApiSystemOperationLogData {
@@ -7764,19 +7807,18 @@ export interface PostApiWsMessageGroupData {
 }
 
 export interface PostApiWsMessageGroupPayload {
+  /** @的用户 ID 列表 */
   atUserIds?: string[];
+  /** 消息内容 */
   content: any;
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
+  /** 群聊会话 ID */
   conversationId: string;
-  /** @default "01" */
-  msgType?: string;
   /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   * 消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件
+   * @default "01"
    */
+  msgType?: string;
+  /** 回复的消息 ID */
   replyToId?: string;
 }
 
@@ -7789,18 +7831,16 @@ export interface PostApiWsMessagePrivateData {
 }
 
 export interface PostApiWsMessagePrivatePayload {
+  /** 消息内容 */
   content: any;
-  /** @default "01" */
+  /**
+   * 消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件
+   * @default "01"
+   */
   msgType?: string;
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
+  /** 回复的消息 ID */
   replyToId?: string;
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
+  /** 目标用户 ID */
   targetUserId: string;
 }
 
@@ -7813,19 +7853,18 @@ export interface PostApiWsMessageSendData {
 }
 
 export interface PostApiWsMessageSendPayload {
+  /** @的用户 ID 列表 */
   atUserIds?: string[];
+  /** 消息内容，根据 msgType 不同结构不同 */
   content: any;
-  /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-   */
+  /** 目标会话 ID */
   conversationId: string;
-  /** @default "01" */
-  msgType?: string;
   /**
-   * @format uuid
-   * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+   * 消息类型：01=文本，02=链接，03=图片，04=视频，05=音频，06=文件
+   * @default "01"
    */
+  msgType?: string;
+  /** 回复的消息 ID */
   replyToId?: string;
 }
 
@@ -7838,15 +7877,25 @@ export interface PostApiWsNotificationBroadcastData {
 }
 
 export interface PostApiWsNotificationBroadcastPayload {
+  /** 通知内容 */
   content: string;
+  /** 附加数据，可包含链接等信息 */
   data?: Record<string, any>;
+  /** 通知标题 */
   title: string;
-  /** @default "info" */
+  /**
+   * 通知类型
+   * @default "info"
+   */
   type?: PostApiWsNotificationBroadcastTypeEnum;
+  /** 目标用户 ID 列表 */
   userIds: string[];
 }
 
-/** @default "info" */
+/**
+ * 通知类型
+ * @default "info"
+ */
 export enum PostApiWsNotificationBroadcastTypeEnum {
   Info = "info",
   Success = "success",
@@ -7863,6 +7912,7 @@ export interface PostApiWsUsersCheckOnlineData {
 }
 
 export interface PostApiWsUsersCheckOnlinePayload {
+  /** 要检查的用户 ID 列表 */
   userIds: string[];
 }
 
@@ -10022,50 +10072,6 @@ export interface PutApiSystemNoticeBatchData {
   status: number;
 }
 
-export interface PutApiSystemNoticeBatchPayload {
-  data: {
-    /** 公告内容 */
-    content?: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 状态 */
-    status?: string | null;
-    /**
-     * 公告标题
-     * @maxLength 50
-     */
-    title?: string;
-    /**
-     * 公告类型
-     * @maxLength 1
-     */
-    type?: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  };
-  ids: string[];
-}
-
 export interface PutApiSystemNoticeByIdData {
   data: any;
   /** @default "ok" */
@@ -10076,49 +10082,6 @@ export interface PutApiSystemNoticeByIdData {
 
 export interface PutApiSystemNoticeByIdParams {
   id: string;
-}
-
-export interface PutApiSystemNoticeByIdPayload {
-  data: {
-    /** 公告内容 */
-    content?: string;
-    /** 创建时间 */
-    createdAt?: string;
-    /**
-     * 创建者
-     * @maxLength 64
-     */
-    createdBy?: string;
-    /** 创建者ID */
-    createdById?: string | null;
-    /**
-     * 主键ID
-     * @format uuid
-     * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
-     */
-    id?: string;
-    /** 状态 */
-    status?: string | null;
-    /**
-     * 公告标题
-     * @maxLength 50
-     */
-    title?: string;
-    /**
-     * 公告类型
-     * @maxLength 1
-     */
-    type?: string;
-    /** 更新时间 */
-    updatedAt?: string;
-    /**
-     * 更新者
-     * @maxLength 64
-     */
-    updatedBy?: string;
-    /** 更新者ID */
-    updatedById?: string | null;
-  };
 }
 
 export interface PutApiSystemPermissionByIdData {
@@ -10495,6 +10458,58 @@ export interface PutApiSystemUserByIdParams {
   id: string;
 }
 
+export interface PutApiSystemUserPreferencesData {
+  data: any;
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export enum PutApiSystemUserPreferencesLanguageEnum {
+  ZhCN = "zh-CN",
+  En = "en",
+}
+
+export interface PutApiSystemUserPreferencesPayload {
+  preferences: {
+    defaultImageModelId?: string | null;
+    defaultObjectModelId?: string | null;
+    defaultTextModelId?: string | null;
+    /**
+     * @min 10
+     * @max 24
+     */
+    fontSize?: number;
+    language?: PutApiSystemUserPreferencesLanguageEnum;
+    /**
+     * @min 0
+     * @max 2
+     */
+    radius?: number;
+    theme?: PutApiSystemUserPreferencesThemeEnum;
+    themeColor?: PutApiSystemUserPreferencesThemeColorEnum;
+    [key: string]: any;
+  };
+}
+
+export enum PutApiSystemUserPreferencesThemeColorEnum {
+  Slate = "slate",
+  Zinc = "zinc",
+  Neutral = "neutral",
+  Stone = "stone",
+  Blue = "blue",
+  Green = "green",
+  Violet = "violet",
+  Orange = "orange",
+  Rose = "rose",
+}
+
+export enum PutApiSystemUserPreferencesThemeEnum {
+  Light = "light",
+  Dark = "dark",
+}
+
 export interface PutApiSystemUserRoleUserByUserIdData {
   data: any;
   /** @default "ok" */
@@ -10796,7 +10811,7 @@ export namespace Ai {
 
   /**
    * @description 软删除用户记忆（设置状态为禁用）
-   * @tags ai, memory, delete
+   * @tags ai, memory
    * @name DeleteApiAiUserMemoryById
    * @summary 删除用户记忆
    * @request DELETE:/api/ai/user-memory/{id}
@@ -11233,7 +11248,7 @@ export namespace Ai {
 
   /**
    * @description 根据ID查询单条用户记忆详情
-   * @tags ai, memory, query
+   * @tags ai, memory
    * @name GetApiAiUserMemoryById
    * @summary 查询用户记忆详情
    * @request GET:/api/ai/user-memory/{id}
@@ -11719,7 +11734,7 @@ export namespace Ai {
 
   /**
    * @description 创建一条新的用户记忆，支持自动生成向量嵌入
-   * @tags ai, memory, create
+   * @tags ai, memory
    * @name PostApiAiUserMemory
    * @summary 创建用户记忆
    * @request POST:/api/ai/user-memory
@@ -11735,7 +11750,7 @@ export namespace Ai {
 
   /**
    * @description 分页查询用户记忆列表，支持多种过滤条件
-   * @tags ai, memory, query
+   * @tags ai, memory
    * @name PostApiAiUserMemoryQuery
    * @summary 分页查询用户记忆
    * @request POST:/api/ai/user-memory/query
@@ -11751,7 +11766,7 @@ export namespace Ai {
 
   /**
    * @description 使用向量相似度搜索用户记忆，支持记忆衰减计算
-   * @tags ai, memory, search, semantic
+   * @tags ai, memory
    * @name PostApiAiUserMemorySemanticSearch
    * @summary 语义检索用户记忆
    * @request POST:/api/ai/user-memory/semantic-search
@@ -12011,7 +12026,7 @@ export namespace Ai {
 
   /**
    * @description 更新用户记忆内容、重要性等信息
-   * @tags ai, memory, update
+   * @tags ai, memory
    * @name PutApiAiUserMemoryById
    * @summary 更新用户记忆
    * @request PUT:/api/ai/user-memory/{id}
@@ -13168,6 +13183,22 @@ export namespace System {
   }
 
   /**
+   * @description 获取当前用户的未读通知数量
+   * @tags system, noticeRead
+   * @name GetApiSystemNoticeReadUnreadCount
+   * @summary 获取未读通知数量
+   * @request GET:/api/system/notice-read/unread-count
+   * @response `200` `GetApiSystemNoticeReadUnreadCountData` Response for status 200
+   */
+  export namespace GetApiSystemNoticeReadUnreadCount {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemNoticeReadUnreadCountData;
+  }
+
+  /**
    * @description 获取通知公告表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成通知编辑表单 2. 数据导入时的格式验证 3. API文档生成
    * @tags system, notice
    * @name GetApiSystemNoticeSchema
@@ -13493,6 +13524,22 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiSystemUserPostUserByUserIdData;
+  }
+
+  /**
+   * @description 获取当前用户的偏好设置
+   * @tags system, user, preferences
+   * @name GetApiSystemUserPreferences
+   * @summary 获取用户偏好设置
+   * @request GET:/api/system/user/preferences
+   * @response `200` `GetApiSystemUserPreferencesData` Response for status 200
+   */
+  export namespace GetApiSystemUserPreferences {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiSystemUserPreferencesData;
   }
 
   /**
@@ -13943,7 +13990,7 @@ export namespace System {
   export namespace PostApiSystemNotice {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiSystemNoticePayload;
+    export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiSystemNoticeData;
   }
@@ -13959,9 +14006,71 @@ export namespace System {
   export namespace PostApiSystemNoticeBatch {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PostApiSystemNoticeBatchPayload;
+    export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiSystemNoticeBatchData;
+  }
+
+  /**
+   * @description 将草稿状态的通知发布，发布后用户可见
+   * @tags system, notice
+   * @name PostApiSystemNoticeByIdPublish
+   * @summary 发布通知
+   * @request POST:/api/system/notice/{id}/publish
+   * @response `200` `PostApiSystemNoticeByIdPublishData` Response for status 200
+   */
+  export namespace PostApiSystemNoticeByIdPublish {
+    export type RequestParams = {
+      /**
+       * 通知 ID
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemNoticeByIdPublishData;
+  }
+
+  /**
+   * @description 撤回已发布的通知，撤回后用户不可见
+   * @tags system, notice
+   * @name PostApiSystemNoticeByIdWithdraw
+   * @summary 撤回通知
+   * @request POST:/api/system/notice/{id}/withdraw
+   * @response `200` `PostApiSystemNoticeByIdWithdrawData` Response for status 200
+   */
+  export namespace PostApiSystemNoticeByIdWithdraw {
+    export type RequestParams = {
+      /**
+       * 通知 ID
+       * @format uuid
+       * @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$
+       */
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemNoticeByIdWithdrawData;
+  }
+
+  /**
+   * @description 获取当前用户可见的通知列表，支持按已读状态过滤。 **过滤参数 (filter)：** - type: 按类型过滤，"1"=通知，"2"=公告 - isRead: 按已读状态过滤，true=已读，false=未读 **排序参数 (sort)：** - field: publishedAt | createdAt - order: asc | desc **返回数据：** - 包含 isRead 和 readAt 字段表示已读状态
+   * @tags system, notice
+   * @name PostApiSystemNoticeMy
+   * @summary 获取我的通知
+   * @request POST:/api/system/notice/my
+   * @response `200` `PostApiSystemNoticeMyData` Response for status 200
+   */
+  export namespace PostApiSystemNoticeMy {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiSystemNoticeMyPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemNoticeMyData;
   }
 
   /**
@@ -13978,6 +14087,38 @@ export namespace System {
     export type RequestBody = PostApiSystemNoticeQueryPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PostApiSystemNoticeQueryData;
+  }
+
+  /**
+   * @description 将指定通知标记为当前用户已读
+   * @tags system, noticeRead
+   * @name PostApiSystemNoticeReadMark
+   * @summary 标记通知为已读
+   * @request POST:/api/system/notice-read/mark
+   * @response `200` `PostApiSystemNoticeReadMarkData` Response for status 200
+   */
+  export namespace PostApiSystemNoticeReadMark {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiSystemNoticeReadMarkPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemNoticeReadMarkData;
+  }
+
+  /**
+   * @description 将多个通知标记为当前用户已读
+   * @tags system, noticeRead
+   * @name PostApiSystemNoticeReadMarkMany
+   * @summary 批量标记通知为已读
+   * @request POST:/api/system/notice-read/mark-many
+   * @response `200` `PostApiSystemNoticeReadMarkManyData` Response for status 200
+   */
+  export namespace PostApiSystemNoticeReadMarkMany {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiSystemNoticeReadMarkManyPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiSystemNoticeReadMarkManyData;
   }
 
   /**
@@ -14689,7 +14830,7 @@ export namespace System {
   export namespace PutApiSystemNoticeBatch {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = PutApiSystemNoticeBatchPayload;
+    export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiSystemNoticeBatchData;
   }
@@ -14707,7 +14848,7 @@ export namespace System {
       id: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = PutApiSystemNoticeByIdPayload;
+    export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiSystemNoticeByIdData;
   }
@@ -14848,6 +14989,22 @@ export namespace System {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiSystemUserByIdData;
+  }
+
+  /**
+   * @description 更新当前用户的偏好设置
+   * @tags system, user, preferences
+   * @name PutApiSystemUserPreferences
+   * @summary 更新用户偏好设置
+   * @request PUT:/api/system/user/preferences
+   * @response `200` `PutApiSystemUserPreferencesData` Response for status 200
+   */
+  export namespace PutApiSystemUserPreferences {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PutApiSystemUserPreferencesPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PutApiSystemUserPreferencesData;
   }
 
   /**
@@ -16935,7 +17092,7 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 软删除用户记忆（设置状态为禁用）
      *
-     * @tags ai, memory, delete
+     * @tags ai, memory
      * @name DeleteApiAiUserMemoryById
      * @summary 删除用户记忆
      * @request DELETE:/api/ai/user-memory/{id}
@@ -17387,7 +17544,7 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 根据ID查询单条用户记忆详情
      *
-     * @tags ai, memory, query
+     * @tags ai, memory
      * @name GetApiAiUserMemoryById
      * @summary 查询用户记忆详情
      * @request GET:/api/ai/user-memory/{id}
@@ -18033,7 +18190,7 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 创建一条新的用户记忆，支持自动生成向量嵌入
      *
-     * @tags ai, memory, create
+     * @tags ai, memory
      * @name PostApiAiUserMemory
      * @summary 创建用户记忆
      * @request POST:/api/ai/user-memory
@@ -18055,7 +18212,7 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 分页查询用户记忆列表，支持多种过滤条件
      *
-     * @tags ai, memory, query
+     * @tags ai, memory
      * @name PostApiAiUserMemoryQuery
      * @summary 分页查询用户记忆
      * @request POST:/api/ai/user-memory/query
@@ -18077,7 +18234,7 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 使用向量相似度搜索用户记忆，支持记忆衰减计算
      *
-     * @tags ai, memory, search, semantic
+     * @tags ai, memory
      * @name PostApiAiUserMemorySemanticSearch
      * @summary 语义检索用户记忆
      * @request POST:/api/ai/user-memory/semantic-search
@@ -18417,7 +18574,7 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * @description 更新用户记忆内容、重要性等信息
      *
-     * @tags ai, memory, update
+     * @tags ai, memory
      * @name PutApiAiUserMemoryById
      * @summary 更新用户记忆
      * @request PUT:/api/ai/user-memory/{id}
@@ -19712,6 +19869,23 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 获取当前用户的未读通知数量
+     *
+     * @tags system, noticeRead
+     * @name GetApiSystemNoticeReadUnreadCount
+     * @summary 获取未读通知数量
+     * @request GET:/api/system/notice-read/unread-count
+     * @response `200` `GetApiSystemNoticeReadUnreadCountData` Response for status 200
+     */
+    getApiSystemNoticeReadUnreadCount: (params: RequestParams = {}) =>
+      this.http.request<GetApiSystemNoticeReadUnreadCountData, any>({
+        path: `/api/system/notice-read/unread-count`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 获取通知公告表的JSON Schema定义，用于动态表单生成或数据验证。 **返回内容：** - 字段名称和类型 - 必填/可选标识 - 字段约束（长度、格式等） **使用场景：** 1. 前端动态生成通知编辑表单 2. 数据导入时的格式验证 3. API文档生成
      *
      * @tags system, notice
@@ -20066,6 +20240,23 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<GetApiSystemUserPostUserByUserIdData, any>({
         path: `/api/system/user-post/user/${userId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取当前用户的偏好设置
+     *
+     * @tags system, user, preferences
+     * @name GetApiSystemUserPreferences
+     * @summary 获取用户偏好设置
+     * @request GET:/api/system/user/preferences
+     * @response `200` `GetApiSystemUserPreferencesData` Response for status 200
+     */
+    getApiSystemUserPreferences: (params: RequestParams = {}) =>
+      this.http.request<GetApiSystemUserPreferencesData, any>({
+        path: `/api/system/user/preferences`,
         method: "GET",
         format: "json",
         ...params,
@@ -20635,15 +20826,10 @@ export class Api<SecurityDataType extends unknown> {
      * @request POST:/api/system/notice
      * @response `200` `PostApiSystemNoticeData` Response for status 200
      */
-    postApiSystemNotice: (
-      data: PostApiSystemNoticePayload,
-      params: RequestParams = {},
-    ) =>
+    postApiSystemNotice: (params: RequestParams = {}) =>
       this.http.request<PostApiSystemNoticeData, any>({
         path: `/api/system/notice`,
         method: "POST",
-        body: data,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -20657,12 +20843,69 @@ export class Api<SecurityDataType extends unknown> {
      * @request POST:/api/system/notice/batch
      * @response `200` `PostApiSystemNoticeBatchData` Response for status 200
      */
-    postApiSystemNoticeBatch: (
-      data: PostApiSystemNoticeBatchPayload,
-      params: RequestParams = {},
-    ) =>
+    postApiSystemNoticeBatch: (params: RequestParams = {}) =>
       this.http.request<PostApiSystemNoticeBatchData, any>({
         path: `/api/system/notice/batch`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 将草稿状态的通知发布，发布后用户可见
+     *
+     * @tags system, notice
+     * @name PostApiSystemNoticeByIdPublish
+     * @summary 发布通知
+     * @request POST:/api/system/notice/{id}/publish
+     * @response `200` `PostApiSystemNoticeByIdPublishData` Response for status 200
+     */
+    postApiSystemNoticeByIdPublish: (
+      { id, ...query }: PostApiSystemNoticeByIdPublishParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemNoticeByIdPublishData, any>({
+        path: `/api/system/notice/${id}/publish`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 撤回已发布的通知，撤回后用户不可见
+     *
+     * @tags system, notice
+     * @name PostApiSystemNoticeByIdWithdraw
+     * @summary 撤回通知
+     * @request POST:/api/system/notice/{id}/withdraw
+     * @response `200` `PostApiSystemNoticeByIdWithdrawData` Response for status 200
+     */
+    postApiSystemNoticeByIdWithdraw: (
+      { id, ...query }: PostApiSystemNoticeByIdWithdrawParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemNoticeByIdWithdrawData, any>({
+        path: `/api/system/notice/${id}/withdraw`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 获取当前用户可见的通知列表，支持按已读状态过滤。 **过滤参数 (filter)：** - type: 按类型过滤，"1"=通知，"2"=公告 - isRead: 按已读状态过滤，true=已读，false=未读 **排序参数 (sort)：** - field: publishedAt | createdAt - order: asc | desc **返回数据：** - 包含 isRead 和 readAt 字段表示已读状态
+     *
+     * @tags system, notice
+     * @name PostApiSystemNoticeMy
+     * @summary 获取我的通知
+     * @request POST:/api/system/notice/my
+     * @response `200` `PostApiSystemNoticeMyData` Response for status 200
+     */
+    postApiSystemNoticeMy: (
+      data: PostApiSystemNoticeMyPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemNoticeMyData, any>({
+        path: `/api/system/notice/my`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -20685,6 +20928,50 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PostApiSystemNoticeQueryData, any>({
         path: `/api/system/notice/query`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 将指定通知标记为当前用户已读
+     *
+     * @tags system, noticeRead
+     * @name PostApiSystemNoticeReadMark
+     * @summary 标记通知为已读
+     * @request POST:/api/system/notice-read/mark
+     * @response `200` `PostApiSystemNoticeReadMarkData` Response for status 200
+     */
+    postApiSystemNoticeReadMark: (
+      data: PostApiSystemNoticeReadMarkPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemNoticeReadMarkData, any>({
+        path: `/api/system/notice-read/mark`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 将多个通知标记为当前用户已读
+     *
+     * @tags system, noticeRead
+     * @name PostApiSystemNoticeReadMarkMany
+     * @summary 批量标记通知为已读
+     * @request POST:/api/system/notice-read/mark-many
+     * @response `200` `PostApiSystemNoticeReadMarkManyData` Response for status 200
+     */
+    postApiSystemNoticeReadMarkMany: (
+      data: PostApiSystemNoticeReadMarkManyPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiSystemNoticeReadMarkManyData, any>({
+        path: `/api/system/notice-read/mark-many`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -21607,15 +21894,10 @@ export class Api<SecurityDataType extends unknown> {
      * @request PUT:/api/system/notice/batch
      * @response `200` `PutApiSystemNoticeBatchData` Response for status 200
      */
-    putApiSystemNoticeBatch: (
-      data: PutApiSystemNoticeBatchPayload,
-      params: RequestParams = {},
-    ) =>
+    putApiSystemNoticeBatch: (params: RequestParams = {}) =>
       this.http.request<PutApiSystemNoticeBatchData, any>({
         path: `/api/system/notice/batch`,
         method: "PUT",
-        body: data,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -21631,14 +21913,11 @@ export class Api<SecurityDataType extends unknown> {
      */
     putApiSystemNoticeById: (
       { id, ...query }: PutApiSystemNoticeByIdParams,
-      data: PutApiSystemNoticeByIdPayload,
       params: RequestParams = {},
     ) =>
       this.http.request<PutApiSystemNoticeByIdData, any>({
         path: `/api/system/notice/${id}`,
         method: "PUT",
-        body: data,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -21812,6 +22091,28 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<PutApiSystemUserByIdData, any>({
         path: `/api/system/user/${id}`,
         method: "PUT",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 更新当前用户的偏好设置
+     *
+     * @tags system, user, preferences
+     * @name PutApiSystemUserPreferences
+     * @summary 更新用户偏好设置
+     * @request PUT:/api/system/user/preferences
+     * @response `200` `PutApiSystemUserPreferencesData` Response for status 200
+     */
+    putApiSystemUserPreferences: (
+      data: PutApiSystemUserPreferencesPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PutApiSystemUserPreferencesData, any>({
+        path: `/api/system/user/preferences`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

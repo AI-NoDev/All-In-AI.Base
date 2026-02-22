@@ -5,6 +5,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { tabsStore } from '@/lib/stores/tabs.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { notificationStore } from '@/lib/stores/notification.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { i18n, t } from '@/lib/stores/i18n.svelte';
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';
@@ -49,12 +50,11 @@
   let loaded = $state(false);
 
   onMount(() => {
-    const timer = setTimeout(() => {
-      loaded = true;
-    }, 800);
-
+    loaded = true;
+    // Start polling for notification count
+    notificationStore.startPolling();
     return () => {
-      clearTimeout(timer);
+      notificationStore.stopPolling();
     };
   });
 
@@ -65,6 +65,10 @@
 
   function isContactsPage(path: string): boolean {
     return path === '/dashboard/contacts';
+  }
+
+  function isNotificationsPage(path: string): boolean {
+    return path === '/dashboard/notifications';
   }
 
   /**
@@ -102,6 +106,11 @@
                 {#if isContactsPage(item.path) && imStore.totalUnreadCount > 0}
                   <Badge variant="destructive" class="ml-auto h-5 min-w-5 px-1.5 text-xs">
                     {imStore.totalUnreadCount > 99 ? '99+' : imStore.totalUnreadCount}
+                  </Badge>
+                {/if}
+                {#if isNotificationsPage(item.path) && notificationStore.unreadCount > 0}
+                  <Badge variant="destructive" class="ml-auto h-5 min-w-5 px-1.5 text-xs">
+                    {notificationStore.unreadCount > 99 ? '99+' : notificationStore.unreadCount}
                   </Badge>
                 {/if}
               </Sidebar.MenuButton>

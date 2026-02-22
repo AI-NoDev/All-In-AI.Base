@@ -13,6 +13,7 @@ async function mergeMessages(locale: string) {
     'validation', 
     'schemaEditor', 
     'nav',
+    'docs',
   ];
   
   // Nested subdirs (db/xxx, page/xxx)
