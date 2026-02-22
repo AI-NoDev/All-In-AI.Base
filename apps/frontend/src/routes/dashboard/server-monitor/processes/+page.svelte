@@ -8,6 +8,7 @@
   import { toast } from 'svelte-sonner';
   import { getContext } from 'svelte';
   import * as Alert from '$lib/components/ui/alert';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   const monitorData = getContext('monitor-data');
   const API_BASE = monitorData.API_BASE;
@@ -57,18 +58,18 @@
   }
 
   async function killProcessById(pid: number) {
-    if (!confirm(`确定要终止进程 ${pid} 吗？`)) return;
+    if (!confirm(t('page.monitor.killProcessConfirm').replace('${pid}', String(pid)))) return;
     try {
       const res = await fetch(`${API_BASE}/api/monitor/processes/${pid}/kill`, { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        toast.success('进程已终止');
+        toast.success(t('page.monitor.processKilled'));
         await loadProcesses();
       } else {
-        toast.error('终止进程失败');
+        toast.error(t('page.monitor.processKillFailed'));
       }
     } catch (e) {
-      toast.error('终止进程失败');
+      toast.error(t('page.monitor.processKillFailed'));
     }
   }
 
@@ -83,17 +84,17 @@
   });
 
   const sortOptions = [
-    { value: 'cpu', label: '按 CPU' },
-    { value: 'memory', label: '按内存' }
+    { value: 'cpu', label: t('page.monitor.sortByCpu') },
+    { value: 'memory', label: t('page.monitor.sortByMemory') }
   ];
 
   const columns = [
-    { key: 'pid', title: 'PID', width: 80, render: pidRender },
-    { key: 'name', title: '进程名', width: 200, render: nameRender },
+    { key: 'pid', title: t('page.monitor.pid'), width: 80, render: pidRender },
+    { key: 'name', title: t('page.monitor.processName'), width: 200, render: nameRender },
     { key: 'cpu', title: 'CPU %', width: 96, align: 'right' as const, render: cpuRender },
-    { key: 'memory', title: '内存 %', width: 96, align: 'right' as const, render: memoryRender },
-    { key: 'memoryBytes', title: '内存', width: 112, align: 'right' as const, render: memoryBytesRender },
-    { key: 'pid', title: '操作', width: 80, fixed: 'right' as const, render: actionsRender },
+    { key: 'memory', title: t('page.monitor.memory') + ' %', width: 96, align: 'right' as const, render: memoryRender },
+    { key: 'memoryBytes', title: t('page.monitor.memory'), width: 112, align: 'right' as const, render: memoryBytesRender },
+    { key: 'pid', title: t('page.monitor.actions'), width: 80, fixed: 'right' as const, render: actionsRender },
   ];
 </script>
 
@@ -126,12 +127,12 @@
 {#if unavailableMessage}
   <Alert.Root variant="default" class="mb-4">
     <Icon icon="tdesign:info-circle" class="size-4" />
-    <Alert.Title>功能不可用</Alert.Title>
+    <Alert.Title>{t('page.monitor.featureUnavailable')}</Alert.Title>
     <Alert.Description>{unavailableMessage}</Alert.Description>
   </Alert.Root>
 {:else}
   <div class="flex justify-between items-center mb-4">
-    <p class="text-sm text-muted-foreground">共 {processes.length} 个进程</p>
+    <p class="text-sm text-muted-foreground">{t('page.monitor.totalProcesses').replace('${count}', String(processes.length))}</p>
     <Select.Root type="single" bind:value={processSortBy}>
       <Select.Trigger class="w-32">
         {sortOptions.find(o => o.value === processSortBy)?.label}

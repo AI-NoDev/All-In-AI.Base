@@ -11,6 +11,7 @@ import type { ModelSelect, ModelInsert } from './utils';
 export const modelCreateMany = defineAction({
   meta: {
     name: 'ai.model.createMany',
+    ignoreTools: true,
     displayName: '批量创建AI模型',
     description: `批量创建多个AI模型配置，适用于初始化或导入场景。
 

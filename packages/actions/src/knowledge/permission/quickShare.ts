@@ -9,6 +9,7 @@ import { nodeIdParamsSchema, quickShareBodySchema, quickShareOutputSchema } from
 
 export const permissionQuickShare = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.quickShare',
     displayName: '快捷共享',
     description: `快速共享节点给多个用户（简化的权限设置）。

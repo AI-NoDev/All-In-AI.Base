@@ -11,6 +11,7 @@ import { shareQueryBodySchema, mySharedOutputSchema } from './schemas';
 
 export const shareGetMyShared = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.share.getMyShared',
     displayName: '获取我共享的资源',
     description: `获取当前用户共享给他人的节点列表。

@@ -47,6 +47,7 @@
   import { Input } from '$lib/components/ui/input';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { SelectByDictGroup } from '@/lib/components/common';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Option { id: string; name: string; }
   interface DeptOption { id: string; name: string; parentId: string | null; }
@@ -89,7 +90,7 @@
 
   async function handleSubmit() {
     if (!form.loginName || !form.password || !form.name) {
-      alert('请填写必填项');
+      alert(t('validation.required'));
       return;
     }
     submitting = true;
@@ -118,7 +119,7 @@
       goto('/dashboard/system/users');
     } catch (err) {
       console.error('Failed to create user:', err);
-      alert('创建失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       submitting = false;
     }
@@ -133,8 +134,8 @@
 
 <div class="flex flex-col gap-6 px-4 lg:px-6">
   <div>
-    <h2 class="text-lg font-semibold">新增用户</h2>
-    <p class="text-sm text-muted-foreground">创建新的系统用户</p>
+    <h2 class="text-lg font-semibold">{t('page.system.user.addUser')}</h2>
+    <p class="text-sm text-muted-foreground">{t('page.system.user.createDesc')}</p>
   </div>
 
   {#if loading}
@@ -144,15 +145,15 @@
   {:else}
     <div class="grid grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">用户名称 <span class="text-destructive">*</span></label>
-        <Input placeholder="请输入用户名称" bind:value={form.name} />
+        <label class="text-sm font-medium">{t('page.system.user.userName')} <span class="text-destructive">*</span></label>
+        <Input placeholder={t('common.tips.inputPlaceholder')} bind:value={form.name} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">归属部门</label>
+        <label class="text-sm font-medium">{t('page.system.user.department')}</label>
         <Select.Root type="single" bind:value={form.deptId}>
-          <Select.Trigger>{departments.find(d => d.id === form.deptId)?.name || '请选择'}</Select.Trigger>
+          <Select.Trigger>{departments.find(d => d.id === form.deptId)?.name || t('common.tips.selectPlaceholder')}</Select.Trigger>
           <Select.Content>
-            <Select.Item value="">无</Select.Item>
+            <Select.Item value="">{t('common.none')}</Select.Item>
             {#each departments as dept}
               <Select.Item value={dept.id}>{dept.name}</Select.Item>
             {/each}
@@ -160,33 +161,33 @@
         </Select.Root>
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">手机号码</label>
-        <Input placeholder="请输入手机号码" bind:value={form.phonenumber} />
+        <label class="text-sm font-medium">{t('page.system.user.phone')}</label>
+        <Input placeholder={t('common.tips.inputPlaceholder')} bind:value={form.phonenumber} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">邮箱</label>
-        <Input type="email" placeholder="请输入邮箱" bind:value={form.email} />
+        <label class="text-sm font-medium">{t('page.system.user.email')}</label>
+        <Input type="email" placeholder={t('common.tips.inputPlaceholder')} bind:value={form.email} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">登录账号 <span class="text-destructive">*</span></label>
-        <Input placeholder="请输入登录账号" bind:value={form.loginName} />
+        <label class="text-sm font-medium">{t('page.system.user.loginName')} <span class="text-destructive">*</span></label>
+        <Input placeholder={t('common.tips.inputPlaceholder')} bind:value={form.loginName} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">登录密码 <span class="text-destructive">*</span></label>
-        <Input type="password" placeholder="请输入登录密码" bind:value={form.password} />
+        <label class="text-sm font-medium">{t('page.system.user.loginPassword')} <span class="text-destructive">*</span></label>
+        <Input type="password" placeholder={t('common.tips.inputPlaceholder')} bind:value={form.password} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">用户性别</label>
+        <label class="text-sm font-medium">{t('page.system.user.sex')}</label>
         <SelectByDictGroup groupKey="sys_user_sex" bind:value={form.sex} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">用户状态</label>
+        <label class="text-sm font-medium">{t('common.fields.status')}</label>
         <SelectByDictGroup groupKey="sys_normal_disable" bind:value={form.status} />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">岗位</label>
+        <label class="text-sm font-medium">{t('page.system.user.post')}</label>
         <Select.Root type="multiple" bind:value={form.postIds}>
-          <Select.Trigger>{form.postIds.length > 0 ? `已选 ${form.postIds.length} 个` : '请选择'}</Select.Trigger>
+          <Select.Trigger>{form.postIds.length > 0 ? t('page.system.user.selected').replace('${count}', String(form.postIds.length)) : t('common.tips.selectPlaceholder')}</Select.Trigger>
           <Select.Content>
             {#each posts as post}
               <Select.Item value={post.id}>{post.name}</Select.Item>
@@ -195,9 +196,9 @@
         </Select.Root>
       </div>
       <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium">角色</label>
+        <label class="text-sm font-medium">{t('page.system.user.role')}</label>
         <Select.Root type="multiple" bind:value={form.roleIds}>
-          <Select.Trigger>{form.roleIds.length > 0 ? `已选 ${form.roleIds.length} 个` : '请选择'}</Select.Trigger>
+          <Select.Trigger>{form.roleIds.length > 0 ? t('page.system.user.selected').replace('${count}', String(form.roleIds.length)) : t('common.tips.selectPlaceholder')}</Select.Trigger>
           <Select.Content>
             {#each roles as role}
               <Select.Item value={role.id}>{role.name}</Select.Item>
@@ -209,12 +210,12 @@
   {/if}
 
   <div class="flex justify-end gap-2">
-    <Button variant="outline" onclick={handleCancel} disabled={submitting}>取消</Button>
+    <Button variant="outline" onclick={handleCancel} disabled={submitting}>{t('common.actions.cancel')}</Button>
     <Button onclick={handleSubmit} disabled={loading || submitting}>
       {#if submitting}
         <Icon icon="tdesign:loading" class="mr-1 size-4 animate-spin" />
       {/if}
-      确定
+      {t('common.actions.confirm')}
     </Button>
   </div>
 </div>

@@ -46,6 +46,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { 
     PostApiSystemUserQueryFieldEnum, 
     PostApiSystemUserQueryOrderEnum,
@@ -245,7 +246,7 @@
 
   async function handleBatchDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedIds.size} 个用户吗？`)) return;
+    if (!confirm(t('page.system.user.batchDeleteConfirm', { count: selectedIds.size.toString() }))) return;
     
     deleting = true;
     try {
@@ -256,7 +257,7 @@
       loadUsers();
     } catch (err) {
       console.error('Failed to delete users:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       deleting = false;
     }
@@ -265,24 +266,24 @@
   async function handleDelete(id: string) {
     const user = users.find(u => u.id === id);
     if (user && isSystemAdmin(user)) {
-      alert('系统管理员用户不能删除');
+      alert(t('page.system.user.sysAdminNoDelete'));
       return;
     }
     
-    if (!confirm('确定要删除该用户吗？')) return;
+    if (!confirm(t('page.system.user.deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemUserById({ id });
       loadUsers();
     } catch (err) {
       console.error('Failed to delete user:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     }
   }
 
   async function handleContact(user: User) {
     if (user.id === authStore.user?.id) {
-      alert('不能和自己发起会话');
+      alert(t('page.system.user.cannotChatSelf'));
       return;
     }
     
@@ -298,29 +299,29 @@
       }
     } catch (err) {
       console.error('Failed to create conversation:', err);
-      alert('创建会话失败');
+      alert(t('page.system.user.createConversationFailed'));
     }
   }
 
   async function handleResetPassword(user: User) {
     if (isSystemAdmin(user)) {
-      alert('系统管理员用户不能重置密码');
+      alert(t('page.system.user.sysAdminNoEdit'));
       return;
     }
     
-    if (!confirm(`确定要重置用户 "${user.loginName}" 的密码吗？`)) return;
+    if (!confirm(t('page.system.user.resetPasswordConfirm', { loginName: user.loginName }))) return;
     
     try {
       const api = authStore.createApi(true);
       const res = await api.system.postApiSystemUserByIdResetPassword({ id: user.id });
       if (res.data?.success) {
-        alert('密码重置成功');
+        alert(t('common.tips.operationSuccess'));
       } else {
-        alert('密码重置失败');
+        alert(t('common.tips.operationFailed'));
       }
     } catch (err) {
       console.error('Failed to reset password:', err);
-      alert('密码重置失败');
+      alert(t('common.tips.operationFailed'));
     }
   }
 

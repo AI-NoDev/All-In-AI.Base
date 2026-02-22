@@ -2,6 +2,7 @@
   import Icon from '@iconify/svelte';
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface DeptNode {
     id: string;
@@ -28,7 +29,7 @@
 
 <div class="w-56 shrink-0 flex flex-col pr-4 border-r border-border">
   <div class="py-3 px-2">
-    <h3 class="text-base font-semibold">部门列表</h3>
+    <h3 class="text-base font-semibold">{t('page.system.user.deptList')}</h3>
   </div>
   <div class="flex-1 min-h-0">
     <ScrollArea class="h-full">
@@ -45,7 +46,7 @@
             onclick={() => onSelectDept(null)}
           >
             <Icon icon="tdesign:tree-square-dot" class="size-4" />
-            <span>全部部门</span>
+            <span>{t('page.system.user.allDepts')}</span>
           </button>
           {#snippet renderTree(nodes: DeptNode[], level: number = 0)}
             {#each nodes as node}

@@ -15,7 +15,7 @@ export const userMemorySemanticSearch = defineAction({
     name: 'ai.userMemory.semanticSearch',
     displayName: '语义检索用户记忆',
     description: '使用向量相似度搜索用户记忆，支持记忆衰减计算',
-    tags: ['ai', 'memory', 'search', 'semantic'],
+    tags: ['ai', 'memory'],
     method: 'POST',
     path: '/api/ai/user-memory/semantic-search',
   },

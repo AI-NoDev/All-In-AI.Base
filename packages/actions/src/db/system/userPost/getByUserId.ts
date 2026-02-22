@@ -9,6 +9,7 @@ import { userPost } from '@qiyu-allinai/db/entities/system';
 
 export const userPostGetByUserId = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userPost.getByUserId',
     displayName: '获取用户岗位',
     description: `获取指定用户的所有岗位ID列表。

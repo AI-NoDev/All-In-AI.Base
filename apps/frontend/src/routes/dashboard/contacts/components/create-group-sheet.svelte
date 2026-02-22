@@ -9,6 +9,7 @@
   import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
   import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface DeptNode {
     id: string;
@@ -152,7 +153,7 @@
 
   async function handleCreate() {
     if (selectedUserIds.size === 0) {
-      alert('请至少选择一个成员');
+      alert(t('page.im.selectAtLeastOneMember'));
       return;
     }
 
@@ -170,7 +171,7 @@
       }
     } catch (e) {
       console.error('Failed to create group:', e);
-      alert('创建群聊失败');
+      alert(t('page.im.createGroupFailed'));
     } finally {
       isCreating = false;
     }
@@ -202,15 +203,15 @@
 <Sheet.Root bind:open onOpenChange={onOpenChange}>
   <Sheet.Content class="sm:max-w-3xl p-0 flex flex-col">
     <Sheet.Header class="p-6 pb-4 border-b shrink-0">
-      <Sheet.Title>创建群聊</Sheet.Title>
-      <Sheet.Description>选择成员创建新的群聊会话</Sheet.Description>
+      <Sheet.Title>{t('page.im.createGroupChat')}</Sheet.Title>
+      <Sheet.Description>{t('page.im.selectMembersDesc')}</Sheet.Description>
     </Sheet.Header>
 
     <div class="flex-1 flex min-h-0">
       <!-- 左侧：部门树 -->
       <div class="w-48 border-r flex flex-col">
         <div class="p-3 border-b">
-          <span class="text-sm font-medium">部门</span>
+          <span class="text-sm font-medium">{t('page.im.department')}</span>
         </div>
         <div class="flex-1 min-h-0">
           <ScrollArea class="h-full">
@@ -219,7 +220,7 @@
                 class="w-full text-left px-2 py-1.5 rounded text-sm hover:bg-accent {selectedDeptId === null ? 'bg-accent font-medium' : ''}"
                 onclick={() => selectDept(null)}
               >
-                全部用户
+                {t('page.im.allUsers')}
               </button>
               {#each departments as dept}
                 {@render deptNode(dept, 0)}
@@ -233,7 +234,7 @@
       <div class="flex-1 flex flex-col min-w-0">
         <div class="p-2 border-b">
           <Input 
-            placeholder="搜索用户..." 
+            placeholder={t('page.im.searchUsers')}
             class="h-8" 
             bind:value={searchQuery}
           />
@@ -243,11 +244,11 @@
             <div class="p-2 space-y-1">
               {#if isLoading}
                 <div class="py-8 text-center text-muted-foreground text-sm">
-                  加载中...
+                  {t('common.tips.loading')}
                 </div>
               {:else if filteredUsers.length === 0}
                 <div class="py-8 text-center text-muted-foreground text-sm">
-                  暂无用户
+                  {t('page.im.noUsers')}
                 </div>
               {:else}
                 {#each filteredUsers as user}
@@ -277,7 +278,7 @@
       <!-- 右侧：已选成员 -->
       <div class="w-56 border-l flex flex-col">
         <div class="p-3 border-b flex items-center justify-between">
-          <span class="text-sm font-medium">已选成员</span>
+          <span class="text-sm font-medium">{t('page.im.selectedMembers')}</span>
           <Badge variant="secondary">{selectedUserIds.size}</Badge>
         </div>
         <div class="flex-1 min-h-0">
@@ -285,7 +286,7 @@
             <div class="p-2 space-y-1">
               {#if selectedUsers.length === 0}
                 <div class="py-4 text-center text-muted-foreground text-sm">
-                  请选择成员
+                  {t('page.im.pleaseSelectMembers')}
                 </div>
               {:else}
                 {#each selectedUsers as user}
@@ -315,23 +316,23 @@
     <!-- 底部：群名和操作 -->
     <div class="p-4 border-t space-y-4 shrink-0">
       <div class="space-y-2">
-        <Label for="groupName">群聊名称</Label>
+        <Label for="groupName">{t('page.im.groupChatName')}</Label>
         <Input 
           id="groupName"
           placeholder={defaultGroupName()}
           bind:value={groupName}
         />
         <p class="text-xs text-muted-foreground">
-          留空将使用默认名称：{defaultGroupName()}
+          {t('page.im.defaultGroupNameHint')}{defaultGroupName()}
         </p>
       </div>
       <div class="flex justify-end gap-2">
-        <Button variant="outline" onclick={handleClose}>取消</Button>
+        <Button variant="outline" onclick={handleClose}>{t('common.actions_cancel')}</Button>
         <Button onclick={handleCreate} disabled={isCreating || selectedUserIds.size === 0}>
           {#if isCreating}
-            创建中...
+            {t('page.im.creatingGroup')}
           {:else}
-            创建群聊 ({selectedUserIds.size + 1}人)
+            {t('page.im.createGroupWithCount').replace('${count}', String(selectedUserIds.size + 1))}
           {/if}
         </Button>
       </div>

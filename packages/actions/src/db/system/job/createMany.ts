@@ -11,6 +11,7 @@ import type { JobSelect, JobInsert } from './utils';
 export const jobCreateMany = defineAction({
   meta: {
     name: 'system.job.createMany',
+    ignoreTools: true,
     displayName: '批量创建定时任务',
     description: `批量创建多个定时任务记录。
 

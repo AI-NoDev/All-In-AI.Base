@@ -11,6 +11,7 @@ import type { MenuSelect, MenuInsert } from './utils';
 export const menuCreateMany = defineAction({
   meta: {
     name: 'system.menu.createMany',
+    ignoreTools: true,
     displayName: '批量创建菜单',
     description: `批量创建多个菜单项，适用于初始化场景。
 

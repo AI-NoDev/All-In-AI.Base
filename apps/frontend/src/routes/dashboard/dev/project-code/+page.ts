@@ -13,10 +13,10 @@ export const load = () => {
 };
 
 export const _meta = {
-  title: '项目代码',
+  title: 'nav.title.projectCode',
   permission: 'dev:project-code:view',
   icon: 'tdesign:code',
-  group: '开发模式',
+  group: 'nav.group.dev',
   order: 200,
   hidden: !dev,
 };

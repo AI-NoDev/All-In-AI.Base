@@ -11,6 +11,7 @@ import type { DictSelect, DictInsert } from './utils';
 export const dictCreateMany = defineAction({
   meta: {
     name: 'system.dict.createMany',
+    ignoreTools: true,
     displayName: '批量创建字典',
     description: `批量创建多个字典项，适用于初始化场景。
 

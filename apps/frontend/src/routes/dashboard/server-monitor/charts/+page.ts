@@ -1,7 +1,7 @@
 
 export const _meta = {
-  title: '图表监控',
+  title: 'nav.title.chartMonitor',
   icon: 'tdesign:chart',
-  group: '服务器监控',
+  group: 'nav.group.monitor',
   hidden: true,
 };

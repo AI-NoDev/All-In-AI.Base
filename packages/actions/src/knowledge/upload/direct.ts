@@ -12,6 +12,7 @@ import { uploadDirectBodySchema } from './schemas';
 
 export const uploadDirect = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.upload.direct',
     displayName: '直接上传',
     description: `直接上传小文件（Base64编码），自动检测同名冲突。

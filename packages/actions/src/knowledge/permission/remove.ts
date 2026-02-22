@@ -10,6 +10,7 @@ import { removePermissionParamsSchema, removePermissionQuerySchema, successOutpu
 
 export const permissionRemove = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.remove',
     displayName: '移除权限',
     description: `移除节点的权限条目。

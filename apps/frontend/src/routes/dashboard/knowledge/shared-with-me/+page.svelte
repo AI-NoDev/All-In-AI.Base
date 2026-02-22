@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { Button } from '$lib/components/ui/button';
   import * as Table from '$lib/components/ui/table';
   import {
@@ -39,7 +40,7 @@
   let loading = $state(true);
   let folders = $state<GenericFolder[]>([]);
   let files = $state<GenericFile[]>([]);
-  let pathStack = $state<PathItem[]>([{ id: null, name: '收到的共享' }]);
+  let pathStack = $state<PathItem[]>([{ id: null, name: t('page.knowledge.sharedWithMe') }]);
   let currentFolderId = $state<string | null>(null);
   let favoritedFolderIds = $state<Set<string>>(new Set());
   let favoritedFileIds = $state<Set<string>>(new Set());
@@ -87,7 +88,7 @@
       
       await loadFavoriteStatus();
     } catch (err) {
-      console.error('加载共享数据失败:', err);
+      console.error(t('page.knowledge.loadSharedFailed'), err);
       folders = [];
       files = [];
     } finally {
@@ -109,7 +110,7 @@
       favoritedFolderIds = new Set(folders.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
       favoritedFileIds = new Set(files.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
     } catch (err) {
-      console.error('加载收藏状态失败:', err);
+      console.error(t('page.knowledge.loadFavoriteStatusFailed'), err);
     }
   }
 
@@ -123,7 +124,7 @@
         favoritedFolderIds = new Set([...favoritedFolderIds, folder.id]);
       }
     } catch (err) {
-      console.error('切换收藏状态失败:', err);
+      console.error(t('page.knowledge.toggleFavoriteFailed'), err);
     }
   }
 
@@ -137,7 +138,7 @@
         favoritedFileIds = new Set([...favoritedFileIds, file.id]);
       }
     } catch (err) {
-      console.error('切换收藏状态失败:', err);
+      console.error(t('page.knowledge.toggleFavoriteFailed'), err);
     }
   }
 
@@ -176,7 +177,7 @@
         window.open(res.data.url, '_blank');
       }
     } catch (err) {
-      console.error('获取下载链接失败:', err);
+      console.error(t('page.knowledge.getDownloadUrlFailed'), err);
     }
   }
 
@@ -196,14 +197,14 @@
       {#if currentFolderId === null}
         <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
           <Icon icon="tdesign:user-transmit" class="size-16 mb-4 opacity-50" />
-          <p class="text-lg">还没有人与您共享文件</p>
-          <p class="text-sm">当有人共享文件给您时，会显示在这里</p>
+          <p class="text-lg">{t('page.knowledge.noSharedFiles')}</p>
+          <p class="text-sm">{t('page.knowledge.sharedFilesHint')}</p>
         </div>
       {:else}
         <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
           <Icon icon="tdesign:folder-open" class="size-16 mb-4 opacity-50" />
-          <p class="text-lg">此文件夹为空</p>
-          <p class="text-sm">该文件夹中没有任何文件或子文件夹</p>
+          <p class="text-lg">{t('page.knowledge.folderEmpty')}</p>
+          <p class="text-sm">{t('page.knowledge.folderEmptyHint')}</p>
         </div>
       {/if}
     {:else}
@@ -223,19 +224,19 @@
         onToggleFileFavorite={toggleFileFavorite}
       >
         {#snippet extraHeaderColumns()}
-          <Table.Head class="text-left">共享者</Table.Head>
-          <Table.Head class="text-left w-20">权限</Table.Head>
+          <Table.Head class="text-left">{t('page.knowledge.sharedBy')}</Table.Head>
+          <Table.Head class="text-left w-20">{t('page.knowledge.sharePermission')}</Table.Head>
         {/snippet}
         {#snippet extraFolderColumns(folder)}
           <Table.Cell class="text-sm text-muted-foreground">{folder.sharedBy || '-'}</Table.Cell>
           <Table.Cell class="text-sm">
-            <span class="px-2 py-0.5 rounded bg-muted text-xs">{folder.permission === 'write' ? '可编辑' : '只读'}</span>
+            <span class="px-2 py-0.5 rounded bg-muted text-xs">{folder.permission === 'write' ? t('page.knowledge.canEdit') : t('page.knowledge.readOnly')}</span>
           </Table.Cell>
         {/snippet}
         {#snippet extraFileColumns(file)}
           <Table.Cell class="text-sm text-muted-foreground">{file.sharedBy || '-'}</Table.Cell>
           <Table.Cell class="text-sm">
-            <span class="px-2 py-0.5 rounded bg-muted text-xs">{file.permission === 'write' ? '可编辑' : '只读'}</span>
+            <span class="px-2 py-0.5 rounded bg-muted text-xs">{file.permission === 'write' ? t('page.knowledge.canEdit') : t('page.knowledge.readOnly')}</span>
           </Table.Cell>
         {/snippet}
       </KnowledgeFileList>

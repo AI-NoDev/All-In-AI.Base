@@ -9,6 +9,7 @@ import { roleMenu } from '@qiyu-allinai/db/entities/system';
 
 export const roleMenuGetByRoleId = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleMenu.getByRoleId',
     displayName: '获取角色菜单',
     description: `获取指定角色的所有菜单ID列表。

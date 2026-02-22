@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '登录日志',
+  title: 'nav.title.loginLogs',
   icon: 'tdesign:login',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 17,
   permission: 'system:loginlog:view'
 };

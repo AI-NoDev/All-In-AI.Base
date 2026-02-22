@@ -8,6 +8,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { aiChatStore, type AIAgent } from '@/lib/stores/ai-chat.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   // 模型选择 Dialog 状态
   let modelDialogOpen = $state(false);
@@ -143,7 +144,7 @@
   >
     <Icon icon="mdi:chip" class="size-3" />
     <span class="max-w-[120px] truncate">
-      {aiChatStore.selectedModel?.name || '选择模型'}
+      {aiChatStore.selectedModel?.name || t('page.ai.chat_selectModel')}
     </span>
     <Icon icon="mdi:chevron-down" class="size-3" />
   </button>
@@ -176,7 +177,7 @@
       onclick={openAgentDialog}
     >
       <Icon icon="mdi:robot" class="size-3" />
-      <span>智能体</span>
+      <span>{t('page.ai.chat_agent')}</span>
       <Icon icon="mdi:chevron-down" class="size-3" />
     </button>
   {/if}
@@ -186,14 +187,14 @@
 <Dialog.Root bind:open={modelDialogOpen}>
   <Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
     <Dialog.Header>
-      <Dialog.Title>选择模型</Dialog.Title>
-      <Dialog.Description>选择一个 AI 模型进行对话</Dialog.Description>
+      <Dialog.Title>{t('page.ai.chat_selectModelTitle')}</Dialog.Title>
+      <Dialog.Description>{t('page.ai.chat_selectModelDesc')}</Dialog.Description>
     </Dialog.Header>
     
     <div class="flex gap-4 h-[400px]">
       <!-- 左侧：Provider 列表 -->
       <div class="w-40 shrink-0 border-r pr-4">
-        <div class="text-xs text-muted-foreground mb-2">提供商</div>
+        <div class="text-xs text-muted-foreground mb-2">{t('page.ai.chat_provider')}</div>
         <ScrollArea class="h-[360px]">
           <div class="space-y-1">
             {#each aiChatStore.providers as provider}
@@ -210,12 +211,12 @@
 
       <!-- 右侧：Model 列表 -->
       <div class="flex-1 min-w-0">
-        <div class="text-xs text-muted-foreground mb-2">模型</div>
+        <div class="text-xs text-muted-foreground mb-2">{t('page.ai.chat_model')}</div>
         <ScrollArea class="h-[360px]">
           <div class="space-y-1 p-1">
             {#if modelsInProvider.length === 0}
               <div class="flex items-center justify-center h-32 text-muted-foreground text-sm">
-                该提供商暂无可用模型
+                {t('page.ai.chat_noModelsInProvider')}
               </div>
             {:else}
               {#each modelsInProvider as model}
@@ -236,7 +237,7 @@
     </div>
 
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => modelDialogOpen = false}>取消</Button>
+      <Button variant="outline" onclick={() => modelDialogOpen = false}>{t('page.ai.chat_cancel')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -245,15 +246,15 @@
 <Dialog.Root bind:open={agentDialogOpen}>
   <Dialog.Content class="sm:max-w-4xl max-h-[90vh]" interactOutsideBehavior="ignore">
     <Dialog.Header>
-      <Dialog.Title>选择智能体</Dialog.Title>
-      <Dialog.Description>选择一个智能体来辅助对话，或直接与模型对话</Dialog.Description>
+      <Dialog.Title>{t('page.ai.chat_selectAgentTitle')}</Dialog.Title>
+      <Dialog.Description>{t('page.ai.chat_selectAgentDesc')}</Dialog.Description>
     </Dialog.Header>
     
     <!-- 搜索框 -->
     <div class="relative">
       <Icon icon="mdi:magnify" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
       <Input 
-        placeholder="搜索智能体..." 
+        placeholder={t('page.ai.chat_searchAgent')} 
         class="pl-9"
         bind:value={agentSearchQuery}
       />
@@ -273,12 +274,12 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
-                <h3 class="font-medium text-sm">不使用智能体</h3>
+                <h3 class="font-medium text-sm">{t('page.ai.chat_noAgent')}</h3>
                 {#if !aiChatStore.selectedAgentId}
                   <Icon icon="mdi:check-circle" class="size-4 text-primary" />
                 {/if}
               </div>
-              <p class="text-xs text-muted-foreground mt-1">直接与模型对话</p>
+              <p class="text-xs text-muted-foreground mt-1">{t('page.ai.chat_noAgentDesc')}</p>
             </div>
           </div>
         </button>
@@ -314,7 +315,7 @@
                     {/if}
                   </div>
                   <p class="text-xs text-muted-foreground line-clamp-1 mt-1">
-                    {agent.description || '暂无描述'}
+                    {agent.description || t('page.ai.chat_noDescription')}
                   </p>
                 </div>
               </div>
@@ -347,14 +348,14 @@
             {#if agentLoading}
               <Icon icon="mdi:loading" class="size-4 animate-spin mr-1" />
             {/if}
-            加载更多 ({agentList.length}/{agentTotal})
+            {t('page.ai.chat_loadMore')} ({agentList.length}/{agentTotal})
           </Button>
         </div>
       {/if}
     </ScrollArea>
 
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => agentDialogOpen = false}>取消</Button>
+      <Button variant="outline" onclick={() => agentDialogOpen = false}>{t('page.ai.chat_cancel')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

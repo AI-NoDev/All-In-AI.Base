@@ -9,6 +9,7 @@ import { agentMessage, agentSession } from '@qiyu-allinai/db/entities/ai';
 
 export const agentMessageDeleteFromSeq = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentMessage.deleteFromSeq',
     displayName: '删除指定序号及之后的消息',
     description: `删除会话中指定 msgSeq 及之后的所有消息，用于"重新生成"功能。

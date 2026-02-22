@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import * as Select from '$lib/components/ui/select';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface DictItem {
     id: string;
@@ -31,10 +32,13 @@
   let {
     groupKey,
     value = $bindable(''),
-    placeholder = '请选择',
+    placeholder,
     disabled = false,
     class: className = '',
   }: Props = $props();
+
+  // Use i18n for default placeholder
+  const computedPlaceholder = $derived(placeholder ?? t('common.tips.selectPlaceholder'));
 
   let items = $state<DictItem[]>([]);
   let loading = $state(true);
@@ -73,7 +77,7 @@
 
   // 获取当前选中项的显示文本
   let displayText = $derived(() => {
-    if (!value) return placeholder;
+    if (!value) return computedPlaceholder;
     const item = items.find(i => i.value === value);
     return item?.label || value;
   });
@@ -93,7 +97,7 @@
 <Select.Root type="single" bind:value {disabled}>
   <Select.Trigger class={className}>
     {#if loading}
-      加载中...
+      {t('common.tips.loading')}
     {:else}
       {displayText()}
     {/if}
@@ -102,7 +106,7 @@
     {#each items as item (item.id)}
       <Select.Item value={item.value}>{item.label}</Select.Item>
     {:else}
-      <div class="px-2 py-1.5 text-sm text-muted-foreground">暂无数据</div>
+      <div class="px-2 py-1.5 text-sm text-muted-foreground">{t('common.tips.noData')}</div>
     {/each}
   </Select.Content>
 </Select.Root>

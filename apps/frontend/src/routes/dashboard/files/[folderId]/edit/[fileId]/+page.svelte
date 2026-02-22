@@ -7,6 +7,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { MarkdownEditor } from '@/lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface FileData {
     id: string;
@@ -46,14 +47,14 @@
         content = fileData.content;
       }
     } catch (err) {
-      console.error('加载文件失败:', err);
+      console.error(t('page.knowledge.loadFileFailed') + ':', err);
       const message = (err as { error?: { message?: string } })?.error?.message;
       if (message === 'error.files.notTextFile') {
-        error = '该文件不是纯文本文件，无法编辑';
+        error = t('page.knowledge.notTextFile');
       } else if (message === 'error.files.notFound') {
-        error = '文件不存在';
+        error = t('page.knowledge.fileNotFound');
       } else {
-        error = '加载文件失败';
+        error = t('page.knowledge.loadFileFailed');
       }
     } finally {
       loading = false;
@@ -74,15 +75,15 @@
       hasChanges = false;
       fileData = { ...fileData, content };
     } catch (err) {
-      console.error('保存失败:', err);
-      alert('保存失败');
+      console.error(t('page.knowledge.saveFailed') + ':', err);
+      alert(t('page.knowledge.saveFailed'));
     } finally {
       saving = false;
     }
   }
 
   function handleBack() {
-    if (hasChanges && !confirm('有未保存的更改，确定要离开吗？')) {
+    if (hasChanges && !confirm(t('page.knowledge.confirmLeaveUnsaved'))) {
       return;
     }
     goto('/dashboard/files');
@@ -100,21 +101,21 @@
       {:else if fileData}
         <span class="text-lg font-medium">{fileData.name}</span>
         {#if hasChanges}
-          <span class="text-xs text-muted-foreground">(未保存)</span>
+          <span class="text-xs text-muted-foreground">({t('page.knowledge.unsavedChanges')})</span>
         {/if}
       {:else}
-        <span class="text-lg font-medium text-muted-foreground">编辑文件</span>
+        <span class="text-lg font-medium text-muted-foreground">{t('page.knowledge.editFile')}</span>
       {/if}
     </div>
     <div class="flex items-center gap-2">
       <Button variant="outline" onclick={handleBack} disabled={saving}>
-        {hasChanges ? '放弃更改' : '返回'}
+        {hasChanges ? t('page.knowledge.discardChanges') : t('common.actions_back')}
       </Button>
       <Button onclick={handleSave} disabled={saving || !hasChanges || !fileData}>
         {#if saving}
           <Icon icon="tdesign:loading" class="mr-2 size-4 animate-spin" />
         {/if}
-        保存
+        {t('common.actions_save')}
       </Button>
     </div>
   </div>
@@ -130,13 +131,13 @@
         <Icon icon="tdesign:file-blocked" class="size-16 mb-4 opacity-50" />
         <p class="text-lg">{error}</p>
         <Button variant="outline" class="mt-4" onclick={handleBack}>
-          返回文件列表
+          {t('page.knowledge.backToList')}
         </Button>
       </div>
     {:else if fileData}
       <MarkdownEditor
         value={content}
-        placeholder="请输入内容..."
+        placeholder={t('page.knowledge.inputPlaceholder')}
         height={600}
         mode="ir"
         onInput={handleContentChange}

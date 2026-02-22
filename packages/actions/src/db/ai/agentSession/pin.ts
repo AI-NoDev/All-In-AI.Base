@@ -11,6 +11,7 @@ import type { AgentSessionSelect } from './utils';
 
 export const agentSessionPin = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.pin',
     displayName: '置顶Agent会话',
     description: `置顶或取消置顶Agent会话。

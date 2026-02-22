@@ -11,6 +11,7 @@ import type { RoleDepartmentSelect, RoleDepartmentInsert } from './utils';
 export const roleDepartmentCreateMany = defineAction({
   meta: {
     name: 'system.roleDepartment.createMany',
+    ignoreTools: true,
     displayName: '批量创建角色部门关联',
     description: `批量创建多个角色与部门的关联关系。
 

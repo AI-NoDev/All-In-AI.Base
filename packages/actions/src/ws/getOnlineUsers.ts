@@ -15,6 +15,7 @@ import type { WsConnectionManager } from './utils';
 
 export const wsGetOnlineUsers = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ws.users.online',
     displayName: '获取在线用户',
     description: `获取当前所有在线用户的 ID 列表。

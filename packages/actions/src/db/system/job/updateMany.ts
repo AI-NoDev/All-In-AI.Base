@@ -12,6 +12,7 @@ import type { JobSelect, JobInsert } from './utils';
 export const jobUpdateMany = defineAction({
   meta: {
     name: 'system.job.updateMany',
+    ignoreTools: true,
     displayName: '批量更新定时任务',
     description: `根据ID列表批量更新定时任务，所有指定的任务将应用相同的更新数据。
 

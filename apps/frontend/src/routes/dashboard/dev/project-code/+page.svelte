@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { FileIcon } from '@qiyu-allinai/file-icons';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { mode } from 'mode-watcher';
@@ -194,7 +195,7 @@
   <div class="w-72 border-r flex flex-col bg-muted/30">
     <div class="p-3 border-b font-medium flex items-center gap-2">
       <FileIcon type="src" isFolder size={18} />
-      <span class="truncate">{projectName || '项目代码'}</span>
+      <span class="truncate">{projectName || t('nav.title_projectCode')}</span>
     </div>
     
     <div class="flex-1 min-h-0">
@@ -202,7 +203,7 @@
         <div class="p-2">
           {#if loading}
             <div class="flex items-center justify-center py-8 text-muted-foreground">
-              加载中...
+              {t('common.tips.loading')}
             </div>
           {:else}
             {#each rootItems as node}
@@ -230,7 +231,7 @@
         <ScrollArea class="h-full" orientation="both">
           {#if fileLoading}
             <div class="flex items-center justify-center py-8 text-muted-foreground">
-              加载中...
+              {t('common.tips.loading')}
             </div>
           {:else}
             <div class="code-container flex text-sm">

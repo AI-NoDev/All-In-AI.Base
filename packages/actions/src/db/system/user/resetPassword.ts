@@ -12,6 +12,7 @@ import { checkIsSystemAdmin, hashPassword, generateSalt, getInitPassword } from 
 
 export const userResetPassword = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.user.resetPassword',
     displayName: '重置密码',
     description: '重置用户密码为初始密码',

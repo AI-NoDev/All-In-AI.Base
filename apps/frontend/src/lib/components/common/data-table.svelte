@@ -4,6 +4,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { Checkbox } from '$lib/components/ui/checkbox';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Column<T> {
     key: keyof T | string;
@@ -33,7 +34,7 @@
     columns,
     data,
     loading = false,
-    emptyText = '暂无数据',
+    emptyText = '',
     rowKey = 'id' as keyof T,
     onRowClick,
     class: className = '',
@@ -130,7 +131,7 @@
           {:else}
             <Table.Row>
               <Table.Cell colspan={columns.length + (selectable ? 1 : 0)} class="h-24 text-center text-muted-foreground">
-                {emptyText}
+                {emptyText || t('common.tips.noData')}
               </Table.Cell>
             </Table.Row>
           {/each}

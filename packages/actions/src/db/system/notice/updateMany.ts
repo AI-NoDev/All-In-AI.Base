@@ -12,6 +12,7 @@ import type { NoticeSelect, NoticeInsert } from './utils';
 export const noticeUpdateMany = defineAction({
   meta: {
     name: 'system.notice.updateMany',
+    ignoreTools: true,
     displayName: '批量更新通知公告',
     description: `根据ID列表批量更新通知公告，所有指定的通知将应用相同的更新数据。
 

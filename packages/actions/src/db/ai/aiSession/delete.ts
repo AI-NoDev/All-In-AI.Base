@@ -9,6 +9,7 @@ import { aiSession } from '@qiyu-allinai/db/entities/ai';
 
 export const aiSessionDelete = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSession.delete',
     displayName: '删除AI会话',
     description: `软删除AI会话。

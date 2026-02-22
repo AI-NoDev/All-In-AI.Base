@@ -7,6 +7,7 @@
   import { Label } from '$lib/components/ui/label';
   import { MarkdownEditor } from '@/lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface FormData {
     name: string;
@@ -45,8 +46,8 @@
 
       goto('/dashboard/files');
     } catch (err) {
-      console.error('保存失败:', err);
-      alert('保存失败');
+      console.error(t('page.knowledge.saveFailed') + ':', err);
+      alert(t('page.knowledge.saveFailed'));
     } finally {
       saving = false;
     }
@@ -63,28 +64,28 @@
       <Button variant="ghost" size="sm" class="h-8 w-8 p-0" onclick={handleCancel}>
         <Icon icon="tdesign:chevron-left" class="size-5" />
       </Button>
-      <span class="text-lg font-medium">新建文档</span>
+      <span class="text-lg font-medium">{t('page.knowledge.newDocument')}</span>
     </div>
     <div class="flex items-center gap-2">
       <Button variant="outline" onclick={handleCancel} disabled={saving}>
-        取消
+        {t('common.actions_cancel')}
       </Button>
       <Button onclick={handleSave} disabled={saving || !form.name.trim()}>
         {#if saving}
           <Icon icon="tdesign:loading" class="mr-2 size-4 animate-spin" />
         {/if}
-        保存
+        {t('common.actions_save')}
       </Button>
     </div>
   </div>
 
   <div class="space-y-2">
-    <Label for="filename">文件名</Label>
+    <Label for="filename">{t('page.knowledge.fileNameLabel')}</Label>
     <div class="flex items-center gap-2">
       <Input
         id="filename"
         bind:value={form.name}
-        placeholder="请输入文件名"
+        placeholder={t('page.knowledge.fileNamePlaceholder')}
         class="max-w-md"
       />
       <span class="text-muted-foreground">.md</span>
@@ -92,10 +93,10 @@
   </div>
 
   <div class="space-y-2">
-    <Label>文件内容</Label>
+    <Label>{t('page.knowledge.fileContentLabel')}</Label>
     <MarkdownEditor
       value={form.content}
-      placeholder="请输入 Markdown 内容..."
+      placeholder={t('page.knowledge.markdownPlaceholder')}
       height={500}
       mode="ir"
       onInput={handleContentChange}

@@ -9,6 +9,7 @@ import { userRole } from '@qiyu-allinai/db/entities/system';
 
 export const userRoleGetByUserId = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userRole.getByUserId',
     displayName: '获取用户角色',
     description: `获取指定用户的所有角色ID列表。

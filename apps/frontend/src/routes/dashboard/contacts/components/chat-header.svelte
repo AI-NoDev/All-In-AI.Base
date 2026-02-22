@@ -6,6 +6,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Props {
     onDissolve: (convId: string) => void;
@@ -15,8 +16,8 @@
 
   function getConversationName(conv: { name: string | null; type: string }): string {
     if (conv.name) return conv.name;
-    if (conv.type === '1') return '私聊';
-    return '群聊';
+    if (conv.type === '1') return t('page.im.privateChat');
+    return t('page.im.groupChat');
   }
 
   function getInitials(name: string | null): string {
@@ -54,14 +55,14 @@
         <div class="font-medium flex items-center gap-2">
           {getConversationName(imStore.selectedConversation)}
           {#if isGroupDissolved(imStore.selectedConversation)}
-            <Badge variant="destructive" class="text-xs">已解散</Badge>
+            <Badge variant="destructive" class="text-xs">{t('page.im.groupDissolved')}</Badge>
           {/if}
         </div>
         <div class="text-xs text-muted-foreground">
           {#if imStore.selectedConversation.type === '2'}
-            {imStore.selectedConversation.memberCount} 人
+            {t('page.im.memberCount').replace('${count}', String(imStore.selectedConversation.memberCount))}
           {:else}
-            私聊
+            {t('page.im.privateChat')}
           {/if}
         </div>
       </div>
@@ -76,7 +77,7 @@
         <DropdownMenu.Content align="end">
           <DropdownMenu.Item onclick={() => handleHideConversation(imStore.selectedConversation!.id)}>
             <Icon icon="tdesign:delete" class="mr-2 size-4" />
-            隐藏会话
+            {t('page.im.hideConversation')}
           </DropdownMenu.Item>
           {#if imStore.selectedConversation.type === '2' && isGroupOwner(imStore.selectedConversation) && !isGroupDissolved(imStore.selectedConversation)}
             <DropdownMenu.Separator />
@@ -85,7 +86,7 @@
               onclick={() => onDissolve(imStore.selectedConversation!.id)}
             >
               <Icon icon="tdesign:poweroff" class="mr-2 size-4" />
-              解散群聊
+              {t('page.im.dissolveGroup')}
             </DropdownMenu.Item>
           {/if}
         </DropdownMenu.Content>

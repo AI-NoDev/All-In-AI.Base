@@ -24,6 +24,16 @@
       "require": "./paraglide/messages.js",
       "default": "./paraglide/messages.js"
     },
+    "./messages/zh-Hans.json": {
+      "import": "./messages/zh-Hans.json",
+      "require": "./messages/zh-Hans.json",
+      "default": "./messages/zh-Hans.json"
+    },
+    "./messages/en.json": {
+      "import": "./messages/en.json",
+      "require": "./messages/en.json",
+      "default": "./messages/en.json"
+    },
     "./server": {
       "import": "./paraglide/server.js",
       "require": "./paraglide/server.js",

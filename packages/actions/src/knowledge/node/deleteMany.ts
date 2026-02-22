@@ -11,6 +11,7 @@ import { assertNodePermission } from '../utils';
 export const nodeDeleteMany = defineAction({
   meta: {
     name: 'knowledge.node.deleteMany',
+    ignoreTools: true,
     displayName: '批量删除节点',
     description: `批量软删除多个节点。
 

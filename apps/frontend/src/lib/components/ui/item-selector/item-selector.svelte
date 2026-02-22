@@ -5,6 +5,7 @@
   import { ScrollArea } from '../scroll-area/index.js';
   import { Button } from '../button/index.js';
   import { Badge } from '../badge/index.js';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Item {
     id: string;
@@ -33,13 +34,18 @@
     items,
     selected = $bindable(),
     mode = 'multiple',
-    placeholder = '请选择',
-    searchPlaceholder = '搜索...',
-    emptyText = '暂无数据',
+    placeholder,
+    searchPlaceholder,
+    emptyText,
     showSelectAll = true,
     maxHeight = '300px',
     onSelect,
   }: Props = $props();
+
+  // Use i18n defaults
+  let actualPlaceholder = $derived(placeholder ?? t('common.tips.selectPlaceholder'));
+  let actualSearchPlaceholder = $derived(searchPlaceholder ?? t('common.actions.search') + '...');
+  let actualEmptyText = $derived(emptyText ?? t('common.tips.noData'));
 
   let searchQuery = $state('');
 
@@ -120,7 +126,7 @@
     <Icon icon="tdesign:search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
     <Input 
       bind:value={searchQuery}
-      placeholder={searchPlaceholder}
+      placeholder={actualSearchPlaceholder}
       class="pl-9"
     />
     {#if searchQuery}
@@ -138,14 +144,14 @@
     <div class="flex items-center justify-between">
       <div class="flex gap-2">
         <Button size="sm" variant="outline" onclick={selectAll} disabled={selectableItems.length === 0}>
-          全选
+          {t('common.actions.selectAll')}
         </Button>
         <Button size="sm" variant="outline" onclick={deselectAll} disabled={selectedSet.size === 0}>
-          取消全选
+          {t('common.actions.deselectAll')}
         </Button>
       </div>
       <span class="text-sm text-muted-foreground">
-        已选 {selectedSet.size} / {items.length}
+        {t('common.selector.selected')} {selectedSet.size} / {items.length}
       </span>
     </div>
   {/if}
@@ -203,10 +209,10 @@
         <div class="py-8 text-center text-muted-foreground">
           {#if searchQuery}
             <Icon icon="tdesign:search-error" class="size-8 mx-auto mb-2 opacity-50" />
-            <p>未找到匹配 "{searchQuery}" 的结果</p>
+            <p>{t('common.selector.noMatch')} "{searchQuery}"</p>
           {:else}
             <Icon icon="tdesign:inbox" class="size-8 mx-auto mb-2 opacity-50" />
-            <p>{emptyText}</p>
+            <p>{actualEmptyText}</p>
           {/if}
         </div>
       {/each}

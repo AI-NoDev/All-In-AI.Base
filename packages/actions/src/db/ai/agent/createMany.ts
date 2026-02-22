@@ -11,6 +11,7 @@ import type { AgentSelect, AgentInsert } from './utils';
 export const agentCreateMany = defineAction({
   meta: {
     name: 'ai.agent.createMany',
+    ignoreTools: true,
     displayName: '批量创建AI智能体',
     description: '批量创建多个AI智能体',
     tags: ['ai', 'agent'],

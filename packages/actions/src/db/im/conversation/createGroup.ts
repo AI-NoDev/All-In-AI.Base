@@ -11,6 +11,7 @@ import { CONVERSATION_TYPE, type ConversationSelect, type ConversationInsert } f
 
 export const conversationCreateGroup = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'im.conversation.createGroup',
     displayName: '创建群聊',
     description: '创建群聊会话并添加成员',

@@ -12,6 +12,7 @@ import type { ToolGroupSelect, ToolGroupInsert } from './utils';
 export const toolGroupUpdateMany = defineAction({
   meta: {
     name: 'ai.toolGroup.updateMany',
+    ignoreTools: true,
     displayName: '批量更新工具组',
     description: `根据ID列表批量更新工具组。
 

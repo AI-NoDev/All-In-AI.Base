@@ -11,6 +11,7 @@ import type { AISessionSelect } from './utils';
 
 export const aiSessionUpdate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSession.update',
     displayName: '更新AI会话',
     description: `更新单个AI会话的信息。

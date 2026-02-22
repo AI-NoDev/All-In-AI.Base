@@ -12,6 +12,7 @@ import { versionIdParamsSchema, downloadUrlOutputSchema } from './schemas';
 
 export const versionDownload = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.version.download',
     displayName: '下载历史版本',
     description: `获取历史版本的预签名下载URL（1小时有效）。

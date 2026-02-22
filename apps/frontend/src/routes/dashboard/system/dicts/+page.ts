@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '字典管理',
+  title: 'nav.title.dicts',
   icon: 'tdesign:book',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 15,
   permission: 'system:dict:view'
 };

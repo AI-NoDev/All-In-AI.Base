@@ -12,6 +12,7 @@ import type { JobLogSelect, JobLogInsert } from './utils';
 export const jobLogUpdateMany = defineAction({
   meta: {
     name: 'system.jobLog.updateMany',
+    ignoreTools: true,
     displayName: '批量更新任务日志',
     description: `根据ID列表批量更新任务执行日志。
 

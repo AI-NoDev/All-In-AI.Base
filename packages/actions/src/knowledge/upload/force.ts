@@ -12,6 +12,7 @@ import { uploadForceBodySchema } from './schemas';
 
 export const uploadForce = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.upload.force',
     displayName: '强制上传',
     description: `上传文件并处理同名冲突，支持覆盖、新版本、副本三种模式。

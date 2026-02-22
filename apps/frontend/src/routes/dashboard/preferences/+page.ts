@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '个性化',
+  title: 'nav.title.preferences',
   icon: 'tdesign:palette',
-  group: '系统设置',
+  group: 'nav.group.settings',
   order: 100,
   permission: 'settings:preferences:view'
 };

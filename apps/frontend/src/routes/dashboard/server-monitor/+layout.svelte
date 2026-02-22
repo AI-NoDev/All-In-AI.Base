@@ -7,6 +7,7 @@
   import { wsStore } from '$lib/stores/websocket.svelte';
   import { initMonitorChannel, destroyMonitorChannel, onMetrics, type MetricsSnapshot } from '$lib/stores/ws-channels/monitor.svelte';
   import { setContext } from 'svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   let { children } = $props();
 
@@ -112,10 +113,10 @@
 <div class="flex-1 flex flex-col min-h-0 p-4 lg:p-6 space-y-4 overflow-hidden">
   <Tabs.Root value={activeTab} onValueChange={handleTabChange} class="flex flex-col flex-1 min-h-0">
     <Tabs.List>
-      <Tabs.Trigger value="overview">概览</Tabs.Trigger>
-      <Tabs.Trigger value="charts">图表</Tabs.Trigger>
-      <Tabs.Trigger value="processes">进程</Tabs.Trigger>
-      <Tabs.Trigger value="ports">端口</Tabs.Trigger>
+      <Tabs.Trigger value="overview">{t('page.monitor.overview')}</Tabs.Trigger>
+      <Tabs.Trigger value="charts">{t('page.monitor.charts')}</Tabs.Trigger>
+      <Tabs.Trigger value="processes">{t('page.monitor.processes')}</Tabs.Trigger>
+      <Tabs.Trigger value="ports">{t('page.monitor.ports')}</Tabs.Trigger>
     </Tabs.List>
 
     <div class="mt-4 flex-1 flex flex-col min-h-0 overflow-hidden">

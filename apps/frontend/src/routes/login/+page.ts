@@ -1,4 +1,4 @@
 export const _meta = {
-  title: '登录',
+  title: 'nav.title.login',
   hidden: true
 };

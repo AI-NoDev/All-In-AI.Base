@@ -1,6 +1,6 @@
 export const _meta = {
-  title: '会话文件',
+  title: 'nav.title.conversationFiles',
   icon: 'tdesign:file',
-  group: '沟通',
+  group: 'nav.group.communication',
   order: 6,
 };

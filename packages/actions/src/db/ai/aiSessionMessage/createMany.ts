@@ -12,6 +12,7 @@ import type { AISessionMessageSelect, AISessionMessageInsert, TokenUsage } from 
 export const aiSessionMessageCreateMany = defineAction({
   meta: {
     name: 'ai.aiSessionMessage.createMany',
+    ignoreTools: true,
     displayName: '批量创建AI会话消息',
     description: `批量创建多条AI会话消息，自动分配递增序号并更新会话统计。
 

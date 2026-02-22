@@ -11,6 +11,7 @@ import type { ToolGroupSelect, ToolGroupInsert } from './utils';
 export const toolGroupCreateMany = defineAction({
   meta: {
     name: 'ai.toolGroup.createMany',
+    ignoreTools: true,
     displayName: '批量创建工具组',
     description: `批量创建多个工具组记录。
 

@@ -12,6 +12,7 @@ import { uploadConfirmBodySchema } from './schemas';
 
 export const uploadConfirm = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.upload.confirm',
     displayName: '确认上传',
     description: `确认文件上传完成并创建节点记录。

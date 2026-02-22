@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { AgentList, AgentDialog } from './components';
 
   interface Agent {
@@ -119,7 +120,7 @@
 
   async function handleSaveAgent() {
     if (!agentForm.name.trim() || !agentForm.providerId || !agentForm.modelId) {
-      alert('请填写必填项');
+      alert(t('page.ai.agent_fillRequired'));
       return;
     }
     saving = true;
@@ -147,21 +148,21 @@
       loadAgents();
     } catch (err) {
       console.error('Failed to save agent:', err);
-      alert('保存失败');
+      alert(t('page.ai.agent_saveFailed'));
     } finally {
       saving = false;
     }
   }
 
   async function handleDeleteAgent(id: string) {
-    if (!confirm('确定要删除该智能体吗？')) return;
+    if (!confirm(t('page.ai.agent_deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.ai.deleteApiAiAgentById({ id });
       loadAgents();
     } catch (err) {
       console.error('Failed to delete agent:', err);
-      alert('删除失败');
+      alert(t('page.ai.agent_deleteFailed'));
     }
   }
 

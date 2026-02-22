@@ -1,7 +1,7 @@
 
 export const _meta = {
-  title: '进程管理',
+  title: 'nav.title.processManagement',
   icon: 'tdesign:task',
-  group: '服务器监控',
+  group: 'nav.group.monitor',
   hidden: true,
 };

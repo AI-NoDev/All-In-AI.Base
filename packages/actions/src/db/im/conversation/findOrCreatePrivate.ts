@@ -11,6 +11,7 @@ import { CONVERSATION_TYPE, type ConversationSelect, type ConversationInsert } f
 
 export const conversationFindOrCreatePrivate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'im.conversation.findOrCreatePrivate',
     displayName: '查找或创建私聊',
     description: '查找两个用户之间的私聊会话，如果不存在则创建',

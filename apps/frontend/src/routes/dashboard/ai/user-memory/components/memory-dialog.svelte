@@ -6,6 +6,7 @@
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Slider } from '$lib/components/ui/slider';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface UserMemory {
     id: string;
@@ -56,30 +57,30 @@
 
   let { open, editing, form = $bindable(), users, agents, saving, onOpenChange, onSave }: Props = $props();
 
-  const memoryTypes = [
-    { value: 'STM', label: '短期记忆 (STM)' },
-    { value: 'LTM', label: '长期记忆 (LTM)' },
-    { value: 'PREFERENCE', label: '偏好 (PREFERENCE)' },
-    { value: 'FACT', label: '事实 (FACT)' },
-    { value: 'EPISODIC', label: '情景记忆 (EPISODIC)' }
-  ];
+  const memoryTypes = $derived([
+    { value: 'STM', label: t('page.ai.memory_typeSTMFull') },
+    { value: 'LTM', label: t('page.ai.memory_typeLTMFull') },
+    { value: 'PREFERENCE', label: t('page.ai.memory_typePREFERENCEFull') },
+    { value: 'FACT', label: t('page.ai.memory_typeFACTFull') },
+    { value: 'EPISODIC', label: t('page.ai.memory_typeEPISODICFull') }
+  ]);
 </script>
 
 <Dialog.Root {open} onOpenChange={onOpenChange}>
   <Dialog.Content class="max-w-lg">
     <Dialog.Header>
-      <Dialog.Title>{editing ? '编辑记忆' : '新增记忆'}</Dialog.Title>
+      <Dialog.Title>{editing ? t('page.ai.memory_editMemory') : t('page.ai.memory_addMemory')}</Dialog.Title>
       <Dialog.Description>
-        {editing ? '修改用户记忆信息' : '创建新的用户记忆'}
+        {editing ? t('page.ai.memory_editDesc') : t('page.ai.memory_createDesc')}
       </Dialog.Description>
     </Dialog.Header>
     
     <div class="space-y-4 py-4">
       <div class="space-y-2">
-        <Label for="userId">用户 *</Label>
+        <Label for="userId">{t('page.ai.memory_userRequired')}</Label>
         <Select.Root type="single" name="userId" bind:value={form.userId}>
           <Select.Trigger class="w-full">
-            {users.find(u => u.id === form.userId)?.nickName || '请选择用户'}
+            {users.find(u => u.id === form.userId)?.nickName || t('page.ai.memory_selectUser')}
           </Select.Trigger>
           <Select.Content>
             {#each users as user}
@@ -90,13 +91,13 @@
       </div>
 
       <div class="space-y-2">
-        <Label for="agentId">来源智能体</Label>
+        <Label for="agentId">{t('page.ai.memory_sourceAgent')}</Label>
         <Select.Root type="single" name="agentId" bind:value={form.agentId}>
           <Select.Trigger class="w-full">
-            {agents.find(a => a.id === form.agentId)?.name || '无（外部来源）'}
+            {agents.find(a => a.id === form.agentId)?.name || t('page.ai.memory_noAgent')}
           </Select.Trigger>
           <Select.Content>
-            <Select.Item value="">无（外部来源）</Select.Item>
+            <Select.Item value="">{t('page.ai.memory_noAgent')}</Select.Item>
             {#each agents as agent}
               <Select.Item value={agent.id}>{agent.name}</Select.Item>
             {/each}
@@ -105,10 +106,10 @@
       </div>
 
       <div class="space-y-2">
-        <Label for="memoryType">记忆类型 *</Label>
+        <Label for="memoryType">{t('page.ai.memory_typeRequired')}</Label>
         <Select.Root type="single" name="memoryType" bind:value={form.memoryType}>
           <Select.Trigger class="w-full">
-            {memoryTypes.find(t => t.value === form.memoryType)?.label || '请选择类型'}
+            {memoryTypes.find(t => t.value === form.memoryType)?.label || t('page.ai.memory_selectType')}
           </Select.Trigger>
           <Select.Content>
             {#each memoryTypes as type}
@@ -119,17 +120,17 @@
       </div>
 
       <div class="space-y-2">
-        <Label for="content">内容 *</Label>
+        <Label for="content">{t('page.ai.memory_contentRequired')}</Label>
         <Textarea
           id="content"
           bind:value={form.content}
-          placeholder="记忆内容..."
+          placeholder={t('page.ai.memory_contentPlaceholder')}
           rows={4}
         />
       </div>
 
       <div class="space-y-2">
-        <Label>重要度: {form.importance}</Label>
+        <Label>{t('page.ai.memory_importanceLabel').replace('${value}', String(form.importance))}</Label>
         <Slider
           type="single"
           value={form.importance}
@@ -138,21 +139,21 @@
           max={10}
           step={1}
         />
-        <p class="text-xs text-muted-foreground">1-10，数值越高越重要</p>
+        <p class="text-xs text-muted-foreground">{t('page.ai.memory_importanceHint')}</p>
       </div>
 
       <div class="space-y-2">
-        <Label for="expiresAt">过期时间</Label>
+        <Label for="expiresAt">{t('page.ai.memory_expiresAt')}</Label>
         <Input
           id="expiresAt"
           type="datetime-local"
           bind:value={form.expiresAt}
         />
-        <p class="text-xs text-muted-foreground">留空表示永不过期</p>
+        <p class="text-xs text-muted-foreground">{t('page.ai.memory_expiresAtHint')}</p>
       </div>
 
       <div class="space-y-2">
-        <Label for="metadata">元数据 (JSON)</Label>
+        <Label for="metadata">{t('page.ai.memory_metadata')}</Label>
         <Textarea
           id="metadata"
           bind:value={form.metadata}
@@ -164,9 +165,9 @@
     </div>
 
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => onOpenChange(false)}>取消</Button>
+      <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.cancel')}</Button>
       <Button onclick={onSave} disabled={saving}>
-        {saving ? '保存中...' : '保存'}
+        {saving ? t('common.saving') : t('common.save')}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

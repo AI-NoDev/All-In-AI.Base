@@ -10,6 +10,7 @@ type CasbinRuleInsert = typeof casbinRule.$inferInsert;
 export const casbinRuleGetRolePermissions = defineAction({
   meta: {
     name: 'system.casbinRule.getRolePermissions',
+    ignoreTools: true,
     displayName: '获取角色权限',
     description: '获取指定角色的所有权限标识',
     tags: ['system', 'casbinRule'],

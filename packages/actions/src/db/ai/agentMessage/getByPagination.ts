@@ -11,6 +11,7 @@ import type { AgentMessageSelect } from './utils';
 
 export const agentMessageGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentMessage.getByPagination',
     displayName: '分页查询Agent消息',
     description: `分页查询Agent消息列表。

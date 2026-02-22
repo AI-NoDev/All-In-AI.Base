@@ -41,6 +41,7 @@ function getPublicUrl(key: string): string {
 export const publicUploadAvatar = defineAction({
   meta: {
     name: 'public.uploadAvatar',
+    ignoreTools: true,
     displayName: '上传公开头像',
     description: `上传头像到公开存储，返回可直接访问的永久URL（无需签名）。
 

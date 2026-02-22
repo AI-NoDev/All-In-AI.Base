@@ -11,6 +11,7 @@ import { hashPassword, generateSalt, sanitizeUser, type UserSelect, type UserIns
 export const userCreateMany = defineAction({
   meta: {
     name: 'system.user.createMany',
+    ignoreTools: true,
     displayName: '批量创建用户',
     description: '批量创建多个用户',
     tags: ['system', 'user'],

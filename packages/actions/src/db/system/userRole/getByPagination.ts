@@ -11,6 +11,7 @@ import type { UserRoleSelect } from './utils';
 
 export const userRoleGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userRole.getByPagination',
     displayName: '分页查询用户角色关联',
     description: `分页查询用户与角色的关联关系，用于权限控制。

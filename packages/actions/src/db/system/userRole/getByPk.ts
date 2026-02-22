@@ -11,6 +11,7 @@ import type { UserRoleSelect } from './utils';
 
 export const userRoleGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userRole.getByPk',
     displayName: '根据复合主键查询用户角色关联',
     description: `根据用户ID和角色ID的复合主键查询关联记录。

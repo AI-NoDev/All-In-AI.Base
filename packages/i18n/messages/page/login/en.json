@@ -1,0 +1,23 @@
+{
+  "title": "Login",
+  "welcome": "Welcome Back",
+  "subtitle": "Login to your account",
+  "username": "Username",
+  "usernamePlaceholder": "Enter username",
+  "password": "Password",
+  "passwordPlaceholder": "Enter password",
+  "forgotPassword": "Forgot password?",
+  "submit": "Login",
+  "submitting": "Logging in...",
+  "otherMethods": "Or login with",
+  "appleLogin": "Login with Apple",
+  "googleLogin": "Login with Google",
+  "metaLogin": "Login with Meta",
+  "noAccount": "Don't have an account?",
+  "register": "Register",
+  "terms": "By clicking continue, you agree to our",
+  "termsOfService": "Terms of Service",
+  "and": "and",
+  "privacyPolicy": "Privacy Policy",
+  "background": "Login background"
+}

@@ -11,6 +11,7 @@ import type { UserPostSelect } from './utils';
 
 export const userPostGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userPost.getByPk',
     displayName: '根据复合主键查询用户岗位关联',
     description: `根据用户ID和岗位ID的复合主键查询关联记录。

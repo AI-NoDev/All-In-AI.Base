@@ -11,6 +11,7 @@ import type { RoleMenuSelect } from './utils';
 
 export const roleMenuGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleMenu.getByPk',
     displayName: '根据复合主键查询角色菜单关联',
     description: `根据角色ID和菜单ID的复合主键查询关联记录。

@@ -5,6 +5,7 @@
   import * as Alert from '$lib/components/ui/alert';
   import { aiChatStore } from '@/lib/stores/ai-chat.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
   import ModelAgentSelector from './model-agent-selector.svelte';
 
   // 附件类型
@@ -94,7 +95,7 @@
       return res.data.url;
     }
     
-    throw new Error('上传失败');
+    throw new Error(t('page.ai.chat_uploadFailed'));
   }
 
   async function handleFileSelect(e: Event) {
@@ -146,7 +147,7 @@
           console.error('Upload failed:', err);
           attachments = attachments.map(a => 
             a.id === attachmentId 
-              ? { ...a, uploading: false, error: '上传失败' }
+              ? { ...a, uploading: false, error: t('page.ai.chat_uploadFailed') }
               : a
           );
         });
@@ -167,20 +168,20 @@
   async function handleSendMessage() {
     if ((!messageInput.trim() && attachments.length === 0) || aiChatStore.isSending) return;
     if (!aiChatStore.selectedModelId && !aiChatStore.selectedAgentId) {
-      alert('请先选择一个模型或智能体');
+      alert(t('page.ai.chat_selectModelOrAgent'));
       return;
     }
     
     // 检查是否有正在上传的附件
     if (hasUploadingAttachments) {
-      alert('请等待附件上传完成');
+      alert(t('page.ai.chat_waitUpload'));
       return;
     }
     
     // 检查是否有上传失败的附件
     const failedAttachments = attachments.filter(a => a.error);
     if (failedAttachments.length > 0) {
-      alert('部分附件上传失败，请移除后重试');
+      alert(t('page.ai.chat_uploadFailedRetry'));
       return;
     }
 
@@ -231,9 +232,9 @@
     <Alert.Root variant="default" class="py-2">
       <Icon icon="mdi:alert-circle-outline" class="size-4" />
       <Alert.Description class="flex items-center justify-between">
-        <span class="text-xs">智能体默认模型与当前选择不同</span>
+        <span class="text-xs">{t('page.ai.chat_agentModelMismatch')}</span>
         <Button variant="link" size="sm" class="h-auto p-0 text-xs" onclick={handleUseAgentModel}>
-          使用智能体模型
+          {t('page.ai.chat_useAgentModel')}
         </Button>
       </Alert.Description>
     </Alert.Root>
@@ -250,7 +251,7 @@
           {#if attachment.type === 'image'}
             <img 
               src={attachment.previewUrl} 
-              alt="附件预览" 
+              alt={t('page.ai.chat_attachmentPreview')} 
               class="h-16 w-16 object-cover rounded border {attachment.uploading ? 'opacity-50' : ''}"
             />
           {:else if attachment.type === 'audio'}
@@ -288,7 +289,7 @@
             type="button"
             class="absolute -top-1 -right-1 size-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             onclick={() => removeAttachment(attachment.id)}
-            aria-label="移除附件"
+            aria-label={t('page.ai.chat_removeAttachment')}
           >
             <Icon icon="mdi:close" class="size-3" />
           </button>
@@ -314,14 +315,14 @@
         variant="ghost"
         onclick={handleAttachmentClick}
         disabled={aiChatStore.isSending}
-        title="添加附件"
+        title={t('common.actions.upload')}
       >
         <Icon icon="mdi:plus" class="size-4" />
       </Button>
     {/if}
     
     <Textarea 
-      placeholder="输入消息... (Enter 发送, Shift+Enter 换行)" 
+      placeholder={t('page.ai.chatInputPlaceholder')} 
       class="flex-1 min-h-[40px] max-h-32 resize-none text-sm" 
       bind:value={messageInput}
       onkeydown={handleKeyDown}
@@ -333,7 +334,7 @@
         size="sm" 
         variant="destructive"
         onclick={onAbort}
-        title="中断生成"
+        title={t('common.actions.stop')}
       >
         <Icon icon="mdi:stop" class="size-4" />
       </Button>
@@ -342,7 +343,7 @@
         size="sm" 
         onclick={handleSendMessage} 
         disabled={(!messageInput.trim() && attachments.length === 0) || hasUploadingAttachments || attachments.some(a => a.error)}
-        title={hasUploadingAttachments ? '等待附件上传完成' : attachments.some(a => a.error) ? '请移除上传失败的附件' : '发送消息'}
+        title={hasUploadingAttachments ? t('page.ai.chat_waitUploadTitle') : attachments.some(a => a.error) ? t('page.ai.chat_removeFailedTitle') : t('page.ai.chat_sendMessage')}
       >
         <Icon icon="tdesign:send" class="size-4" />
       </Button>

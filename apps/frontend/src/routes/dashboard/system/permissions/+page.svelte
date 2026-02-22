@@ -9,6 +9,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Permission {
     id: string;
@@ -48,29 +49,20 @@
     status: true,
   });
 
-  const typeOptions = [
-    { value: 'module', label: '模块', variant: 'default' as const },
-    { value: 'resource', label: '资源', variant: 'secondary' as const },
-    { value: 'action', label: '操作', variant: 'outline' as const },
-  ];
+  let typeOptions = $derived([
+    { value: 'module', label: t('page.system.perm_typeModule'), variant: 'default' as const },
+    { value: 'resource', label: t('page.system.perm_typeResource'), variant: 'secondary' as const },
+    { value: 'action', label: t('page.system.perm_typeAction'), variant: 'outline' as const },
+  ]);
 
-  const columns = [
-    { key: 'name', title: '权限名称', width: 320, render: nameRender },
-    { key: 'code', title: '权限标识', width: 192, render: codeRender },
-    { key: 'type', title: '类型', width: 96, render: typeRender },
-    { key: 'orderNum', title: '排序', width: 80 },
-    { key: 'status', title: '状态', width: 80, render: statusRender },
-    { key: 'id', title: '操作', width: 128, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
-  ];
-
-  const actionLabels: Record<string, string> = {
-    read: '查看',
-    write: '编辑',
-    delete: '删除',
-    manage: '管理',
-    export: '导出',
-    import: '导入',
-  };
+  let columns = $derived([
+    { key: 'name', title: t('page.system.permissionName'), width: 320, render: nameRender },
+    { key: 'code', title: t('page.system.permissionCode'), width: 192, render: codeRender },
+    { key: 'type', title: t('page.system.perm_type'), width: 96, render: typeRender },
+    { key: 'orderNum', title: t('common.fields.sort'), width: 80 },
+    { key: 'status', title: t('common.fields.status'), width: 80, render: statusRender },
+    { key: 'id', title: t('common.fields.actions'), width: 128, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ]);
 
   function buildTree(flatList: Permission[]): Permission[] {
     const map = new Map<string, Permission>();
@@ -181,7 +173,7 @@
 
   async function handleSave() {
     if (!form.code.trim() || !form.name.trim()) {
-      alert('请填写必填项');
+      alert(t('page.system.fillRequired'));
       return;
     }
     saving = true;
@@ -207,21 +199,21 @@
       loadPermissions();
     } catch (err) {
       console.error('Failed to save permission:', err);
-      alert('保存失败');
+      alert(t('common.tips.saveFailed'));
     } finally {
       saving = false;
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('确定要删除该权限吗？删除后子权限也会被删除。')) return;
+    if (!confirm(t('page.system.perm_deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemPermissionById({ id });
       loadPermissions();
     } catch (err) {
       console.error('Failed to delete permission:', err);
-      alert('删除失败');
+      alert(t('page.system.deleteFailed'));
     }
   }
 
@@ -255,7 +247,7 @@
 {/snippet}
 
 {#snippet statusRender({ row })}
-  <Badge variant={row.status ? 'default' : 'secondary'}>{row.status ? '启用' : '禁用'}</Badge>
+  <Badge variant={row.status ? 'default' : 'secondary'}>{row.status ? t('common.status.enabled') : t('common.status.disabled')}</Badge>
 {/snippet}
 
 {#snippet actionsRender({ row })}
@@ -280,7 +272,7 @@
       <div class="flex items-center justify-between">
         <div class="flex gap-2">
           <Button size="sm" onclick={() => openCreate()}>
-            <Icon icon="tdesign:add" class="mr-1 size-4" />新增模块
+            <Icon icon="tdesign:add" class="mr-1 size-4" />{t('page.system.perm_addModule')}
           </Button>
         </div>
         <div class="flex gap-1">
@@ -304,20 +296,20 @@
 <Dialog.Root bind:open={dialogOpen}>
   <Dialog.Content class="sm:max-w-md">
     <Dialog.Header>
-      <Dialog.Title>{editingPermission ? '编辑权限' : '新增权限'}</Dialog.Title>
+      <Dialog.Title>{editingPermission ? t('page.system.perm_editPermission') : t('page.system.perm_addPermission')}</Dialog.Title>
     </Dialog.Header>
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
-        <Label>权限标识 *</Label>
-        <Input bind:value={form.code} placeholder="如：system:user:read" />
+        <Label>{t('page.system.permissionCode')} *</Label>
+        <Input bind:value={form.code} placeholder={t('page.system.permissionCodePlaceholder')} />
       </div>
       <div class="grid gap-2">
-        <Label>权限名称 *</Label>
-        <Input bind:value={form.name} placeholder="请输入权限名称" />
+        <Label>{t('page.system.permissionName')} *</Label>
+        <Input bind:value={form.name} placeholder={t('page.system.permissionNamePlaceholder')} />
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
-          <Label>类型</Label>
+          <Label>{t('page.system.perm_type')}</Label>
           <Select.Root type="single" bind:value={form.type}>
             <Select.Trigger>
               {typeOptions.find(o => o.value === form.type)?.label}
@@ -330,19 +322,19 @@
           </Select.Root>
         </div>
         <div class="grid gap-2">
-          <Label>排序</Label>
+          <Label>{t('common.fields.sort')}</Label>
           <Input bind:value={form.orderNum} type="number" />
         </div>
       </div>
       <div class="grid gap-2">
-        <Label>描述</Label>
-        <Input bind:value={form.description} placeholder="权限描述（可选）" />
+        <Label>{t('common.fields.description')}</Label>
+        <Input bind:value={form.description} placeholder={t('page.system.permissionDesc')} />
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => (dialogOpen = false)}>取消</Button>
+      <Button variant="outline" onclick={() => (dialogOpen = false)}>{t('common.actions.cancel')}</Button>
       <Button onclick={handleSave} disabled={saving}>
-        {saving ? '保存中...' : '保存'}
+        {saving ? t('common.tips.saving') : t('common.actions.save')}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

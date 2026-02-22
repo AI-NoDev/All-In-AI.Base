@@ -10,6 +10,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { Badge } from '$lib/components/ui/badge';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import {
     PostApiSystemDepartmentQueryFieldEnum,
     PostApiSystemDepartmentQueryOrderEnum,
@@ -64,11 +65,11 @@
   const api = authStore.createApi(true);
   const currentUserId = authStore.user?.id;
 
-  const permissionOptions: { value: FilePermission; label: string }[] = [
-    { value: 'read', label: '只读' },
-    { value: 'write', label: '编辑' },
-    { value: 'manage', label: '管理' },
-  ];
+  const permissionOptions = $derived<{ value: FilePermission; label: string }[]>([
+    { value: 'read', label: t('page.knowledge.readOnly') },
+    { value: 'write', label: t('page.knowledge.canEdit') },
+    { value: 'manage', label: t('page.knowledge.permission_manage') },
+  ]);
 
   function getPermissionKey(subjectType: SubjectType, subjectId: string): string {
     return `${subjectType}:${subjectId}`;
@@ -257,8 +258,8 @@
 <Sheet.Root {open} {onOpenChange}>
   <Sheet.Content side="right" class="!w-[80vw] !max-w-none p-0 flex flex-col">
     <Sheet.Header class="px-6 py-4 border-b shrink-0">
-      <Sheet.Title>编辑权限 - {resourceName}</Sheet.Title>
-      <Sheet.Description>设置{resourceType === 'folder' ? '文件夹' : '文件'}的访问权限</Sheet.Description>
+      <Sheet.Title>{t('page.knowledge.editPermissionTitle')} - {resourceName}</Sheet.Title>
+      <Sheet.Description>{resourceType === 'folder' ? t('page.knowledge.setPermissionDesc_folder') : t('page.knowledge.setPermissionDesc_file')}</Sheet.Description>
     </Sheet.Header>
 
     <div class="flex-1 flex flex-col min-h-0 p-6">
@@ -266,10 +267,10 @@
       <div class="flex items-center gap-4 mb-4 shrink-0">
         <div class="flex items-center gap-2">
           <Checkbox id="isPublic" checked={isPublic} onCheckedChange={(v) => (isPublic = !!v)} />
-          <label for="isPublic" class="text-sm font-medium">公开访问</label>
+          <label for="isPublic" class="text-sm font-medium">{t('page.knowledge.publicAccess')}</label>
         </div>
         <span class="text-sm text-muted-foreground">
-          {isPublic ? '所有人都可以访问此资源' : '仅授权用户可以访问'}
+          {isPublic ? t('page.knowledge.publicAccessHint_public') : t('page.knowledge.publicAccessHint_private')}
         </span>
       </div>
 
@@ -279,19 +280,19 @@
           class="px-4 py-2.5 text-sm {activeTab === 'users' ? 'border-b-2 border-primary font-medium' : 'text-muted-foreground'}"
           onclick={() => (activeTab = 'users')}
         >
-          用户权限 ({userPermCount})
+          {t('page.knowledge.userPermissions')} ({userPermCount})
         </button>
         <button
           class="px-4 py-2.5 text-sm {activeTab === 'roles' ? 'border-b-2 border-primary font-medium' : 'text-muted-foreground'}"
           onclick={() => (activeTab = 'roles')}
         >
-          角色权限 ({rolePermCount})
+          {t('page.knowledge.rolePermissions')} ({rolePermCount})
         </button>
         <button
           class="px-4 py-2.5 text-sm {activeTab === 'depts' ? 'border-b-2 border-primary font-medium' : 'text-muted-foreground'}"
           onclick={() => (activeTab = 'depts')}
         >
-          部门权限 ({deptPermCount})
+          {t('page.knowledge.deptPermissions')} ({deptPermCount})
         </button>
       </div>
 
@@ -309,7 +310,7 @@
             <!-- Department tree -->
             <div class="w-56 shrink-0 border rounded-lg">
               <div class="px-3 py-2 border-b bg-muted/30">
-                <span class="text-sm font-medium">部门列表</span>
+                <span class="text-sm font-medium">{t('page.knowledge.departmentList')}</span>
               </div>
               <ScrollArea class="h-[calc(100%-40px)]">
                 <div class="p-2">
@@ -318,7 +319,7 @@
                     onclick={() => selectDept(null)}
                   >
                     <Icon icon="tdesign:tree-square-dot" class="size-4" />
-                    <span>全部部门</span>
+                    <span>{t('page.knowledge.allDepartments')}</span>
                   </button>
                   {#snippet renderTree(nodes: DeptNode[], level: number = 0)}
                     {#each nodes as node}
@@ -360,7 +361,7 @@
             <!-- User list -->
             <div class="flex-1 border rounded-lg flex flex-col min-h-0">
               <div class="px-3 py-2 border-b bg-muted/30 shrink-0">
-                <span class="text-sm font-medium">用户列表</span>
+                <span class="text-sm font-medium">{t('page.knowledge.userList')}</span>
               </div>
               <ScrollArea class="flex-1">
                 {#if userLoading}
@@ -370,14 +371,14 @@
                     {/each}
                   </div>
                 {:else if users.length === 0}
-                  <div class="p-8 text-center text-muted-foreground">暂无用户</div>
+                  <div class="p-8 text-center text-muted-foreground">{t('page.knowledge.noUsers')}</div>
                 {:else}
                   <Table.Root>
                     <Table.Header>
                       <Table.Row>
-                        <Table.Head class="w-32">用户名</Table.Head>
-                        <Table.Head class="w-24">姓名</Table.Head>
-                        <Table.Head>权限</Table.Head>
+                        <Table.Head class="w-32">{t('page.knowledge.username')}</Table.Head>
+                        <Table.Head class="w-24">{t('page.knowledge.realName')}</Table.Head>
+                        <Table.Head>{t('page.knowledge.permission')}</Table.Head>
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
@@ -387,13 +388,13 @@
                           <Table.Cell class="font-medium">
                             {user.loginName}
                             {#if isCurrentUser}
-                              <Badge variant="outline" class="ml-2 text-xs">自己</Badge>
+                              <Badge variant="outline" class="ml-2 text-xs">{t('page.knowledge.self')}</Badge>
                             {/if}
                           </Table.Cell>
                           <Table.Cell>{user.name || '-'}</Table.Cell>
                           <Table.Cell>
                             {#if isCurrentUser}
-                              <span class="text-xs text-muted-foreground">不能给自己分配权限</span>
+                              <span class="text-xs text-muted-foreground">{t('page.knowledge.cannotAssignSelf')}</span>
                             {:else}
                               <div class="flex gap-2 flex-wrap">
                                 {#each permissionOptions as opt}
@@ -420,17 +421,17 @@
           <!-- Roles tab -->
           <div class="border rounded-lg flex flex-col h-full">
             <div class="px-3 py-2 border-b bg-muted/30 shrink-0">
-              <span class="text-sm font-medium">角色列表</span>
+              <span class="text-sm font-medium">{t('page.knowledge.roleList')}</span>
             </div>
             <ScrollArea class="flex-1">
               {#if roles.length === 0}
-                <div class="p-8 text-center text-muted-foreground">暂无角色</div>
+                <div class="p-8 text-center text-muted-foreground">{t('page.knowledge.noRoles')}</div>
               {:else}
                 <Table.Root>
                   <Table.Header>
                     <Table.Row>
-                      <Table.Head>角色名称</Table.Head>
-                      <Table.Head>权限</Table.Head>
+                      <Table.Head>{t('page.knowledge.roleName')}</Table.Head>
+                      <Table.Head>{t('page.knowledge.permission')}</Table.Head>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
@@ -461,11 +462,11 @@
           <!-- Departments tab -->
           <div class="border rounded-lg flex flex-col h-full">
             <div class="px-3 py-2 border-b bg-muted/30 shrink-0">
-              <span class="text-sm font-medium">部门列表</span>
+              <span class="text-sm font-medium">{t('page.knowledge.departmentList')}</span>
             </div>
             <ScrollArea class="flex-1">
               {#if departments.length === 0}
-                <div class="p-8 text-center text-muted-foreground">暂无部门</div>
+                <div class="p-8 text-center text-muted-foreground">{t('page.knowledge.noDepartments')}</div>
               {:else}
                 <div class="p-2">
                   {#snippet renderDeptPermTree(nodes: DeptNode[], level: number = 0)}
@@ -500,8 +501,8 @@
     </div>
 
     <Sheet.Footer class="px-6 py-4 border-t shrink-0">
-      <Button variant="outline" onclick={() => onOpenChange(false)}>取消</Button>
-      <Button onclick={handleSave}>保存</Button>
+      <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.cancel')}</Button>
+      <Button onclick={handleSave}>{t('common.save')}</Button>
     </Sheet.Footer>
   </Sheet.Content>
 </Sheet.Root>

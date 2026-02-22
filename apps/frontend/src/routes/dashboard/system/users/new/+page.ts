@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '新增用户',
+  title: 'nav.title.addUser',
   icon: 'tdesign:user-add',
-  group: '系统管理',
+  group: 'nav.group.system',
   hidden: true,
   permission: 'system:user:add'
 };

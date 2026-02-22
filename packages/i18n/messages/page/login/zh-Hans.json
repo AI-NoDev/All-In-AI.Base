@@ -1,0 +1,23 @@
+{
+  "title": "登录",
+  "welcome": "欢迎回来",
+  "subtitle": "登录您的账户",
+  "username": "用户名",
+  "usernamePlaceholder": "请输入用户名",
+  "password": "密码",
+  "passwordPlaceholder": "请输入密码",
+  "forgotPassword": "忘记密码？",
+  "submit": "登录",
+  "submitting": "登录中...",
+  "otherMethods": "或使用其他方式登录",
+  "appleLogin": "使用 Apple 登录",
+  "googleLogin": "使用 Google 登录",
+  "metaLogin": "使用 Meta 登录",
+  "noAccount": "还没有账户？",
+  "register": "注册",
+  "terms": "点击继续即表示您同意我们的",
+  "termsOfService": "服务条款",
+  "and": "和",
+  "privacyPolicy": "隐私政策",
+  "background": "登录背景"
+}

@@ -12,6 +12,7 @@ import type { MenuSelect, MenuInsert } from './utils';
 export const menuUpdateMany = defineAction({
   meta: {
     name: 'system.menu.updateMany',
+    ignoreTools: true,
     displayName: '批量更新菜单',
     description: `根据ID列表批量更新多个菜单。
 

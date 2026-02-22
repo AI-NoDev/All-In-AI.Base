@@ -1,6 +1,6 @@
 export const _meta = {
-  title: '聊天',
+  title: 'nav.title.chat',
   icon: 'tdesign:chat',
-  group: '沟通',
+  group: 'nav.group.communication',
   order: 5,
 };

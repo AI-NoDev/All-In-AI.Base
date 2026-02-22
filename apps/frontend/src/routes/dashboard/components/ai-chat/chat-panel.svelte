@@ -3,6 +3,7 @@
   import type { UIMessage } from 'ai';
   import { aiChatStore } from '@/lib/stores/ai-chat.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { toast } from 'svelte-sonner';
   import ChatToolbar from './chat-toolbar.svelte';
   import ChatMessages from './chat-messages.svelte';
@@ -303,17 +304,17 @@
                 });
               }
             }
-            toast.success('已中断，回复已保存');
+            toast.success(t('page.ai.chat_abortedSaved'));
           } catch (e) {
             console.error('Failed to save aborted messages:', e);
-            toast.error('保存失败');
+            toast.error(t('page.ai.chat_saveFailed'));
           } finally {
             isSavingMessages = false;
           }
         }
       } else {
         // 只有 reasoning，没有正文内容，丢弃
-        toast.info('已中断，思考内容已丢弃');
+        toast.info(t('page.ai.chat_abortedDiscarded'));
       }
     }
     
@@ -464,7 +465,7 @@
   async function handleSend(content: string, attachments?: MessagePart[]) {
     // 检查是否可以发送消息
     if (!aiChatStore.canSendMessage) {
-      alert('请先选择一个模型或智能体');
+      alert(t('page.ai.chat_selectModelOrAgent'));
       return;
     }
 
@@ -474,7 +475,7 @@
         await aiChatStore.createSession();
       } catch (e) {
         console.error('Failed to create session:', e);
-        alert('创建会话失败');
+        alert(t('page.ai.chat_createSessionFailed'));
         return;
       }
     } else {

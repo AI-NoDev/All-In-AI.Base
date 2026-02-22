@@ -7,6 +7,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface User {
     id: string;
@@ -52,20 +53,20 @@
   }
 
   const columns = [
-    { key: 'loginName', title: '用户名', width: 128, fixed: 'left' as const, render: loginNameRender },
-    { key: 'name', title: '姓名', width: 96 },
-    { key: 'email', title: '邮箱', width: 180, render: mutedRender },
-    { key: 'phonenumber', title: '手机号', width: 128 },
-    { key: 'status', title: '状态', width: 80, render: statusRender },
-    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
-    { key: 'id', title: '操作', width: 192, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+    { key: 'loginName', title: t('db.system.user.loginName'), width: 128, fixed: 'left' as const, render: loginNameRender },
+    { key: 'name', title: t('db.system.user.name'), width: 96 },
+    { key: 'email', title: t('db.system.user.email'), width: 180, render: mutedRender },
+    { key: 'phonenumber', title: t('db.system.user.phonenumber'), width: 128 },
+    { key: 'status', title: t('common.fields.status'), width: 80, render: statusRender },
+    { key: 'createdAt', title: t('common.fields.createdAt'), width: 170, render: dateRender },
+    { key: 'id', title: t('common.actions.more'), width: 192, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
   ];
 </script>
 
 {#snippet loginNameRender({ row })}
   <span class="font-medium">{row.loginName}</span>
   {#if isSystemAdmin(row)}
-    <Badge variant="outline" class="ml-1 text-xs">管理员</Badge>
+    <Badge variant="outline" class="ml-1 text-xs">{t('page.system.user.sysAdminHint')}</Badge>
   {/if}
 {/snippet}
 
@@ -75,7 +76,7 @@
 
 {#snippet statusRender({ value })}
   <Badge variant={value === '0' ? 'default' : 'secondary'}>
-    {value === '0' ? '正常' : '停用'}
+    {value === '0' ? t('common.status.enabled') : t('common.status.disabled')}
   </Badge>
 {/snippet}
 
@@ -93,7 +94,7 @@
           <Icon icon="tdesign:chat" class="size-4" />
         </Button>
       </Tooltip.Trigger>
-      <Tooltip.Content>{row.id === authStore.user?.id ? '不能和自己聊天' : '联系'}</Tooltip.Content>
+      <Tooltip.Content>{row.id === authStore.user?.id ? t('page.im.cannotChatSelf') : t('common.actions.send')}</Tooltip.Content>
     </Tooltip.Root>
     <Tooltip.Root>
       <Tooltip.Trigger>
@@ -102,7 +103,7 @@
           <Icon icon="tdesign:lock-on" class="size-4" />
         </Button>
       </Tooltip.Trigger>
-      <Tooltip.Content>{isSysAdmin ? '系统管理员不允许重置密码' : '重置密码'}</Tooltip.Content>
+      <Tooltip.Content>{isSysAdmin ? t('page.system.user.sysAdminHint') : t('page.system.user.resetPassword')}</Tooltip.Content>
     </Tooltip.Root>
     <Tooltip.Root>
       <Tooltip.Trigger>
@@ -111,7 +112,7 @@
           <Icon icon="tdesign:usergroup" class="size-4" />
         </Button>
       </Tooltip.Trigger>
-      <Tooltip.Content>{isSysAdmin ? '系统管理员拥有所有角色' : '分配角色'}</Tooltip.Content>
+      <Tooltip.Content>{isSysAdmin ? t('page.system.user.sysAdminHint') : t('page.system.user.assignRoles')}</Tooltip.Content>
     </Tooltip.Root>
     <Tooltip.Root>
       <Tooltip.Trigger>
@@ -120,7 +121,7 @@
           <Icon icon="tdesign:edit" class="size-4" />
         </Button>
       </Tooltip.Trigger>
-      <Tooltip.Content>{isSysAdmin ? '系统管理员不允许编辑' : '编辑'}</Tooltip.Content>
+      <Tooltip.Content>{isSysAdmin ? t('page.system.user.sysAdminNoEdit') : t('common.actions.edit')}</Tooltip.Content>
     </Tooltip.Root>
     <Tooltip.Root>
       <Tooltip.Trigger>
@@ -129,7 +130,7 @@
           <Icon icon="tdesign:delete" class="size-4" />
         </Button>
       </Tooltip.Trigger>
-      <Tooltip.Content>{isSysAdmin ? '系统管理员不允许删除' : '删除'}</Tooltip.Content>
+      <Tooltip.Content>{isSysAdmin ? t('page.system.user.sysAdminNoDelete') : t('common.actions.delete')}</Tooltip.Content>
     </Tooltip.Root>
   </div>
 {/snippet}
@@ -139,13 +140,13 @@
     <div class="flex items-center justify-between">
       <div class="flex gap-2">
         <Button size="sm" onclick={() => goto('/dashboard/system/users/new')}>
-          <Icon icon="tdesign:add" class="mr-1 size-4" />新增
+          <Icon icon="tdesign:add" class="mr-1 size-4" />{t('common.actions.add')}
         </Button>
         <Button size="sm" variant="outline">
-          <Icon icon="tdesign:upload" class="mr-1 size-4" />导入
+          <Icon icon="tdesign:upload" class="mr-1 size-4" />{t('common.actions.import')}
         </Button>
         <Button size="sm" variant="outline">
-          <Icon icon="tdesign:download" class="mr-1 size-4" />导出
+          <Icon icon="tdesign:download" class="mr-1 size-4" />{t('common.actions.export')}
         </Button>
         {#if selectedIds.size > 0}
           <Button size="sm" variant="destructive" onclick={onBatchDelete} disabled={deleting}>
@@ -154,15 +155,15 @@
             {:else}
               <Icon icon="tdesign:delete" class="mr-1 size-4" />
             {/if}
-            删除({selectedIds.size})
+            {t('common.actions.delete')}({selectedIds.size})
           </Button>
         {/if}
       </div>
       <div class="flex gap-1">
-        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onToggleFilter} title={showFilter ? '隐藏筛选' : '显示筛选'}>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onToggleFilter}>
           <Icon icon={showFilter ? 'tdesign:filter-clear' : 'tdesign:filter'} class="size-4" />
         </Button>
-        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onRefresh} title="刷新">
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onRefresh}>
           <Icon icon="tdesign:refresh" class="size-4" />
         </Button>
       </div>
@@ -182,7 +183,7 @@
 
     {#if total > 0 && !loading}
       <div class="mt-4 flex items-center justify-between">
-        <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+        <span class="text-sm text-muted-foreground whitespace-nowrap">{t('common.pagination.total').replace('${total}', String(total))}</span>
         <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => onPageChange(currentPage)}>
           {#snippet children({ pages, currentPage: cp })}
             <Pagination.Content>

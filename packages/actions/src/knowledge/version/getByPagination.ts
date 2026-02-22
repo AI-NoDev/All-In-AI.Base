@@ -9,6 +9,7 @@ import { versionPaginationBodySchema, versionPaginationOutputSchema } from './sc
 
 export const versionGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.version.getByPagination',
     displayName: '分页查询版本',
     description: `分页查询文件版本列表。

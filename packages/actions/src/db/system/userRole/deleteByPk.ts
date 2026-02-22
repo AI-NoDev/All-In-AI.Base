@@ -9,6 +9,7 @@ import { userRole } from '@qiyu-allinai/db/entities/system';
 
 export const userRoleDeleteByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userRole.deleteByPk',
     displayName: '删除用户角色关联',
     description: `根据复合主键删除用户与角色的关联关系。

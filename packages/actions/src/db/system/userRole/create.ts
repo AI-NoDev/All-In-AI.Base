@@ -10,6 +10,7 @@ import type { UserRoleSelect, UserRoleInsert } from './utils';
 
 export const userRoleCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userRole.create',
     displayName: '创建用户角色关联',
     description: `创建单个用户与角色的关联关系。

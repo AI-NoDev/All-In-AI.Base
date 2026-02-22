@@ -10,6 +10,7 @@ import type { RoleMenuSelect, RoleMenuInsert } from './utils';
 
 export const roleMenuCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleMenu.create',
     displayName: '创建角色菜单关联',
     description: `创建单个角色与菜单的关联关系。

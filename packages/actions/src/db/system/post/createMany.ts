@@ -11,6 +11,7 @@ import type { PostSelect, PostInsert } from './utils';
 export const postCreateMany = defineAction({
   meta: {
     name: 'system.post.createMany',
+    ignoreTools: true,
     displayName: '批量创建岗位',
     description: `批量创建多个岗位记录，适用于初始化或批量导入场景。
 

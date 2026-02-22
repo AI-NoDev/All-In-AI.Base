@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '用户管理',
+  title: 'nav.title.users',
   icon: 'tdesign:user',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 10,
   permission: 'system:user:view'
 };

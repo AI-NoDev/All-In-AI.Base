@@ -10,6 +10,7 @@ import { nodeIdParamsSchema, permissionEntrySchema, successOutputSchema } from '
 
 export const permissionAdd = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.add',
     displayName: '添加权限',
     description: `为节点添加单个权限条目。

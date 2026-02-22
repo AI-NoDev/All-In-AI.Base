@@ -9,6 +9,7 @@ import { roleMenu } from '@qiyu-allinai/db/entities/system';
 
 export const roleMenuDeleteByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleMenu.deleteByPk',
     displayName: '删除角色菜单关联',
     description: `根据复合主键删除角色与菜单的关联关系。

@@ -22,24 +22,12 @@ export const cozeAdapter: McpAdapter = {
 
   detect(request: Request): boolean {
     const userAgent = request.headers.get("user-agent") || "";
-    const cozeHeader = request.headers.get("x-coze-client");
-    const origin = request.headers.get("origin") || "";
-    const referer = request.headers.get("referer") || "";
     
-    // Detect Coze client by various indicators
-    const isCoze = (
-      userAgent.toLowerCase().includes("coze") ||
-      cozeHeader !== null ||
-      userAgent.includes("ByteDance") ||
-      userAgent.includes("Lark") ||
-      origin.includes("coze.") ||
-      origin.includes("coze.cn") ||
-      referer.includes("coze.") ||
-      referer.includes("coze.cn")
-    );
+    // Coze uses "Coze/1.0" as User-Agent
+    const isCoze = userAgent.startsWith("Coze/");
     
     if (isCoze) {
-      console.log(`[MCP:Coze] Detected Coze client - UA: ${userAgent.substring(0, 100)}`);
+      console.log(`[MCP:Coze] Detected Coze client - UA: ${userAgent}`);
     }
     
     return isCoze;

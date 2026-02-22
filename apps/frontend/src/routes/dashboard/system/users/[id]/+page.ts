@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '编辑用户',
+  title: 'nav.title.editUser',
   icon: 'tdesign:user-setting',
-  group: '系统管理',
+  group: 'nav.group.system',
   hidden: true,
   permission: 'system:user:edit'
 };

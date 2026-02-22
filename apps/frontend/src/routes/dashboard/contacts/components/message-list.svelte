@@ -2,6 +2,7 @@
   import Icon from '@iconify/svelte';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import MessageItem from './message-item.svelte';
 
   interface Props {
@@ -32,20 +33,20 @@
       {#if imStore.isLoadingMoreMessages}
         <div class="flex items-center justify-center py-2 text-muted-foreground text-sm">
           <Icon icon="mdi:loading" class="size-4 animate-spin mr-2" />
-          加载更多消息...
+          {t('page.im.loadingMore')}
         </div>
       {:else if !imStore.hasMoreMessages && imStore.messages.length > 0}
         <div class="flex items-center justify-center py-2 text-muted-foreground text-sm">
-          没有更多消息了
+          {t('page.im.noMoreMessages')}
         </div>
       {/if}
       {#if imStore.isLoadingMessages}
         <div class="flex items-center justify-center py-8 text-muted-foreground">
-          加载中...
+          {t('common.tips.loading')}
         </div>
       {:else if imStore.messages.length === 0}
         <div class="flex items-center justify-center py-8 text-muted-foreground">
-          暂无消息记录
+          {t('page.im.noMessages')}
         </div>
       {:else}
         {#each imStore.messages as msg}

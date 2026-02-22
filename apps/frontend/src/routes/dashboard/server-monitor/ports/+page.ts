@@ -1,7 +1,7 @@
 
 export const _meta = {
-  title: '端口管理',
+  title: 'nav.title.portManagement',
   icon: 'tdesign:internet',
-  group: '服务器监控',
+  group: 'nav.group.monitor',
   hidden: true,
 };

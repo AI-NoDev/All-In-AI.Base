@@ -11,6 +11,7 @@ import type { DictGroupSelect, DictGroupInsert } from './utils';
 export const dictGroupCreateMany = defineAction({
   meta: {
     name: 'system.dictGroup.createMany',
+    ignoreTools: true,
     displayName: '批量创建字典组',
     description: `批量创建多个字典组记录。
 

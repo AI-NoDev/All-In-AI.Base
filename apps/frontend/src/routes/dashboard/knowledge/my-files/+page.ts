@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '我的知识库',
+  title: 'nav.title.myFiles',
   icon: 'tdesign:folder',
-  group: '知识库',
+  group: 'nav.group.knowledge',
   order: 1,
   permission: 'knowledge:view'
 };

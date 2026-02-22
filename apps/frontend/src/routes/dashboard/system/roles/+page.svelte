@@ -49,8 +49,9 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { Badge } from '$lib/components/ui/badge';
-  import { DataTable } from '$lib/components/common';
+  import { DataTable, DatePicker } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { PostApiSystemRoleQueryFieldEnum, PostApiSystemRoleQueryOrderEnum } from '@qiyu-allinai/api';
   import PermissionDialog from './components/permission-dialog.svelte';
   import MenuDialog from './components/menu-dialog.svelte';
@@ -111,22 +112,22 @@
   });
 
   const statusOptions = [
-    { value: '0', label: '正常' },
-    { value: '1', label: '停用' },
+    { value: '0', label: t('common.status.enabled') },
+    { value: '1', label: t('common.status.disabled') },
   ];
 
   const statusFilterOptions = [
-    { value: '', label: '全部' },
-    { value: '0', label: '正常' },
-    { value: '1', label: '停用' },
+    { value: '', label: t('common.filter.all') },
+    { value: '0', label: t('common.status.enabled') },
+    { value: '1', label: t('common.status.disabled') },
   ];
 
   const dataScopeOptions: Array<{ value: string; label: string; variant: 'destructive' | 'default' | 'secondary' | 'outline' }> = [
-    { value: '1', label: '全部数据权限', variant: 'destructive' },
-    { value: '2', label: '自定义数据权限', variant: 'default' },
-    { value: '3', label: '本部门数据权限', variant: 'secondary' },
-    { value: '4', label: '本部门及以下数据权限', variant: 'secondary' },
-    { value: '5', label: '仅本人数据权限', variant: 'outline' },
+    { value: '1', label: t('page.system.role.dataScope.all'), variant: 'destructive' },
+    { value: '2', label: t('page.system.role.dataScope.custom'), variant: 'default' },
+    { value: '3', label: t('page.system.role.dataScope.dept'), variant: 'secondary' },
+    { value: '4', label: t('page.system.role.dataScope.deptAndBelow'), variant: 'secondary' },
+    { value: '5', label: t('page.system.role.dataScope.self'), variant: 'outline' },
   ];
 
   const ADMIN_ROLE_KEY = 'admin';
@@ -136,13 +137,13 @@
   }
 
   const columns = [
-    { key: 'name', title: '角色名称', width: 128, render: nameRender },
-    { key: 'key', title: '权限字符', width: 128, render: keyRender },
-    { key: 'sort', title: '排序', width: 80 },
-    { key: 'dataScope', title: '数据权限', width: 160, render: dataScopeRender },
-    { key: 'status', title: '状态', width: 80, render: statusRender },
-    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
-    { key: 'id', title: '操作', width: 144, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+    { key: 'name', title: t('page.system.role.name'), width: 128, render: nameRender },
+    { key: 'key', title: t('page.system.role.key'), width: 128, render: keyRender },
+    { key: 'sort', title: t('page.system.role.sort'), width: 80 },
+    { key: 'dataScope', title: t('page.system.role.dataScope'), width: 160, render: dataScopeRender },
+    { key: 'status', title: t('page.system.role.status'), width: 80, render: statusRender },
+    { key: 'createdAt', title: t('page.system.role.createdAt'), width: 170, render: dateRender },
+    { key: 'id', title: t('page.system.role.actions'), width: 144, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
   ];
 
   function toggleSelectAll() {
@@ -208,7 +209,7 @@
   }
 
   async function handleSave() {
-    if (!form.name.trim() || !form.key.trim()) return alert('请填写必填项');
+    if (!form.name.trim() || !form.key.trim()) return alert(t('validation.required', { field: t('page.system.role.name') }));
     saving = true;
     try {
       const api = authStore.createApi(true);
@@ -222,27 +223,27 @@
       loadRoles();
     } catch (err) {
       console.error('Failed to save role:', err);
-      alert('保存失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       saving = false;
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('确定要删除该角色吗？')) return;
+    if (!confirm(t('page.system.role.deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemRoleById({ id });
       loadRoles();
     } catch (err) {
       console.error('Failed to delete role:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     }
   }
 
   async function handleBatchDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedIds.size} 个角色吗？`)) return;
+    if (!confirm(t('page.system.role.batchDeleteConfirm', { count: selectedIds.size.toString() }))) return;
     deleting = true;
     try {
       const api = authStore.createApi(true);
@@ -251,7 +252,7 @@
       loadRoles();
     } catch (err) {
       console.error('Failed to delete roles:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       deleting = false;
     }
@@ -280,11 +281,11 @@
 
 {#snippet dataScopeRender({ row })}
   {@const scopeOption = dataScopeOptions.find(o => o.value === row.dataScope)}
-  <Badge variant={scopeOption?.variant || 'outline'}>{scopeOption?.label || '未设置'}</Badge>
+  <Badge variant={scopeOption?.variant || 'outline'}>{scopeOption?.label || t('page.system.role.dataScope.notSet')}</Badge>
 {/snippet}
 
 {#snippet statusRender({ value })}
-  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? '正常' : '停用'}</Badge>
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? t('common.status.enabled') : t('common.status.disabled')}</Badge>
 {/snippet}
 
 {#snippet dateRender({ value })}
@@ -295,15 +296,15 @@
   {@const isAdmin = isAdminRole(row)}
   <div class="flex justify-end gap-1">
     {#if isAdmin}
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:edit" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员角色不允许编辑</Tooltip.Content></Tooltip.Root>
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:lock-on" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员拥有所有权限</Tooltip.Content></Tooltip.Root>
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:menu-application" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员拥有所有菜单</Tooltip.Content></Tooltip.Root>
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" disabled><Icon icon="tdesign:delete" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>管理员角色不允许删除</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:edit" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('page.system.role.adminNoEdit')}</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:lock-on" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('page.system.role.adminHasAllPermissions')}</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" disabled><Icon icon="tdesign:menu-application" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('page.system.role.adminHasAllMenus')}</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" disabled><Icon icon="tdesign:delete" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('page.system.role.adminNoDelete')}</Tooltip.Content></Tooltip.Root>
     {:else}
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}><Icon icon="tdesign:edit" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>编辑</Tooltip.Content></Tooltip.Root>
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openPermissionDialog(row)}><Icon icon="tdesign:lock-on" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>分配权限</Tooltip.Content></Tooltip.Root>
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openMenuDialog(row)}><Icon icon="tdesign:menu-application" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>分配菜单</Tooltip.Content></Tooltip.Root>
-      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}><Icon icon="tdesign:delete" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>删除</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openEdit(row)}><Icon icon="tdesign:edit" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('common.actions.edit')}</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openPermissionDialog(row)}><Icon icon="tdesign:lock-on" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('page.system.role.assignPermission')}</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => openMenuDialog(row)}><Icon icon="tdesign:menu-application" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('page.system.role.assignMenu')}</Tooltip.Content></Tooltip.Root>
+      <Tooltip.Root><Tooltip.Trigger><Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => handleDelete(row.id)}><Icon icon="tdesign:delete" class="size-4" /></Button></Tooltip.Trigger><Tooltip.Content>{t('common.actions.delete')}</Tooltip.Content></Tooltip.Root>
     {/if}
   </div>
 {/snippet}
@@ -314,18 +315,18 @@
     <div class="py-3 border-b border-border">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">角色名称</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.role.name')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.name} />
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">权限字符</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.key} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.role.key')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.key} />
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">状态</span>
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.role.status')}</span>
           <Select.Root type="single" bind:value={searchForm.status}>
             <Select.Trigger class="w-24 h-8">
-              {statusFilterOptions.find(o => o.value === searchForm.status)?.label || '全部'}
+              {statusFilterOptions.find(o => o.value === searchForm.status)?.label || t('common.filter.all')}
             </Select.Trigger>
             <Select.Content>
               {#each statusFilterOptions as option}
@@ -335,17 +336,17 @@
           </Select.Root>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">创建时间</span>
-          <Input type="date" class="w-32 h-8" bind:value={searchForm.createdAtStart} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.role.createdAt')}</span>
+          <DatePicker bind:value={searchForm.createdAtStart} />
           <span class="text-muted-foreground">-</span>
-          <Input type="date" class="w-32 h-8" bind:value={searchForm.createdAtEnd} />
+          <DatePicker bind:value={searchForm.createdAtEnd} />
         </div>
         <div class="flex gap-2">
           <Button size="sm" class="h-8" onclick={handleSearch}>
-            <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
+            <Icon icon="tdesign:search" class="mr-1 size-4" />{t('common.actions.search')}
           </Button>
           <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
-            <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
+            <Icon icon="tdesign:refresh" class="mr-1 size-4" />{t('common.actions.reset')}
           </Button>
         </div>
       </div>
@@ -356,10 +357,10 @@
     <div class="pb-3">
       <div class="flex items-center justify-between">
         <div class="flex gap-2">
-          <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
+          <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />{t('common.actions.add')}</Button>
           {#if selectedIds.size > 0}
             <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
-              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />删除({selectedIds.size})
+              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />{t('common.actions.delete')}({selectedIds.size})
             </Button>
           {/if}
         </div>
@@ -385,7 +386,7 @@
 
       {#if total > 0 && !loading}
         <div class="mt-4 flex items-center justify-between">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.role.totalRecords', { total: total.toString() })}</span>
           <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadRoles()}>
             {#snippet children({ pages, currentPage: cp })}
               <Pagination.Content>
@@ -412,24 +413,24 @@
 <Dialog.Root bind:open={dialogOpen}>
   <Dialog.Content class="sm:max-w-md">
     <Dialog.Header>
-      <Dialog.Title>{editingRole ? '编辑角色' : '新增角色'}</Dialog.Title>
+      <Dialog.Title>{editingRole ? t('page.system.role.editRole') : t('page.system.role.addRole')}</Dialog.Title>
     </Dialog.Header>
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
-        <Label>角色名称 *</Label>
-        <Input bind:value={form.name} placeholder="请输入角色名称" />
+        <Label>{t('page.system.role.name')} *</Label>
+        <Input bind:value={form.name} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
       <div class="grid gap-2">
-        <Label>权限字符 *</Label>
-        <Input bind:value={form.key} placeholder="请输入权限字符" />
+        <Label>{t('page.system.role.key')} *</Label>
+        <Input bind:value={form.key} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
-          <Label>排序</Label>
+          <Label>{t('page.system.role.sort')}</Label>
           <Input bind:value={form.sort} type="number" />
         </div>
         <div class="grid gap-2">
-          <Label>状态</Label>
+          <Label>{t('page.system.role.status')}</Label>
           <Select.Root type="single" bind:value={form.status}>
             <Select.Trigger>{statusOptions.find(o => o.value === form.status)?.label}</Select.Trigger>
             <Select.Content>{#each statusOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
@@ -437,7 +438,7 @@
         </div>
       </div>
       <div class="grid gap-2">
-        <Label>数据权限</Label>
+        <Label>{t('page.system.role.dataScope')}</Label>
         <Select.Root type="single" bind:value={form.dataScope}>
           <Select.Trigger>{dataScopeOptions.find(o => o.value === form.dataScope)?.label}</Select.Trigger>
           <Select.Content>{#each dataScopeOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
@@ -445,8 +446,8 @@
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => dialogOpen = false}>取消</Button>
-      <Button onclick={handleSave} disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
+      <Button variant="outline" onclick={() => dialogOpen = false}>{t('common.actions.cancel')}</Button>
+      <Button onclick={handleSave} disabled={saving}>{saving ? t('common.tips.saving') : t('common.actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

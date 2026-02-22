@@ -6,6 +6,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
   import { authStore } from '$lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   let folderId = $derived($page.params.folderId);
   
@@ -18,7 +19,7 @@
 
   async function handleCreate() {
     if (!fileName.trim()) {
-      error = '请输入文件名';
+      error = t('page.knowledge.enterFileName');
       return;
     }
     
@@ -38,7 +39,7 @@
       
       goBack();
     } catch (err) {
-      error = err instanceof Error ? err.message : '创建失败';
+      error = err instanceof Error ? err.message : t('page.knowledge.createFailed');
     } finally {
       saving = false;
     }
@@ -50,6 +51,16 @@
   }
 </script>
 
+<script lang="ts" module>
+  export const _meta = {
+    title: 'page.knowledge.newTextFile',
+    icon: 'tdesign:file-add',
+    group: 'page.knowledge.myFiles',
+    order: 101,
+    hidden: true,
+  };
+</script>
+
 <div class="flex flex-col h-full">
   <!-- Header -->
   <div class="flex items-center justify-between px-4 py-3 border-b">
@@ -58,19 +69,19 @@
         <Icon icon="tdesign:chevron-left" class="size-5" />
       </Button>
       <div>
-        <h1 class="text-lg font-medium">新建文本文件</h1>
-        <p class="text-sm text-muted-foreground">创建一个新的文本文件</p>
+        <h1 class="text-lg font-medium">{t('page.knowledge.newTextFile')}</h1>
+        <p class="text-sm text-muted-foreground">{t('page.knowledge.newDocument')}</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
       <Button variant="outline" onclick={goBack} disabled={saving}>
-        取消
+        {t('page.knowledge.cancel')}
       </Button>
       <Button onclick={handleCreate} disabled={saving}>
         {#if saving}
           <Icon icon="tdesign:loading" class="size-4 mr-2 animate-spin" />
         {/if}
-        创建
+        {t('page.knowledge.new')}
       </Button>
     </div>
   </div>
@@ -78,11 +89,11 @@
   <!-- Content -->
   <div class="flex-1 p-4 min-h-0 flex flex-col gap-4">
     <div class="space-y-2">
-      <Label for="fileName">文件名</Label>
+      <Label for="fileName">{t('page.knowledge.fileNameLabel')}</Label>
       <Input
         id="fileName"
         bind:value={fileName}
-        placeholder="输入文件名（不含扩展名将自动添加 .txt）"
+        placeholder={t('page.knowledge.fileNameHint')}
       />
     </div>
     
@@ -91,12 +102,12 @@
     {/if}
     
     <div class="flex-1 flex flex-col gap-2 min-h-0">
-      <Label for="content">文件内容</Label>
+      <Label for="content">{t('page.knowledge.fileContentLabel')}</Label>
       <textarea
         id="content"
         bind:value={content}
         class="flex-1 p-4 font-mono text-sm border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-        placeholder="输入文件内容..."
+        placeholder={t('page.knowledge.inputContentPlaceholder')}
       ></textarea>
     </div>
   </div>

@@ -12,6 +12,8 @@ export { userUpdateMany } from './updateMany';
 export { userDeleteByPk } from './deleteByPk';
 export { userGetSchema } from './getSchema';
 export { userResetPassword } from './resetPassword';
+export { userGetPreferences } from './getPreferences';
+export { userUpdatePreferences } from './updatePreferences';
 
 // 导出工具函数和类型
 export * from './utils';
@@ -27,6 +29,8 @@ import { userUpdateMany } from './updateMany';
 import { userDeleteByPk } from './deleteByPk';
 import { userGetSchema } from './getSchema';
 import { userResetPassword } from './resetPassword';
+import { userGetPreferences } from './getPreferences';
+import { userUpdatePreferences } from './updatePreferences';
 
 /** 用户模块所有 Actions */
 export const userActions = [
@@ -39,4 +43,6 @@ export const userActions = [
   userDeleteByPk,
   userGetSchema,
   userResetPassword,
+  userGetPreferences,
+  userUpdatePreferences,
 ];

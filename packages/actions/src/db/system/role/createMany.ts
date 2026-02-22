@@ -11,6 +11,7 @@ import type { RoleSelect, RoleInsert } from './utils';
 export const roleCreateMany = defineAction({
   meta: {
     name: 'system.role.createMany',
+    ignoreTools: true,
     displayName: '批量创建角色',
     description: `批量创建多个角色，适用于初始化场景。
 

@@ -12,7 +12,7 @@ export const userMemoryUpdate = defineAction({
     name: 'ai.userMemory.update',
     displayName: '更新用户记忆',
     description: '更新用户记忆内容、重要性等信息',
-    tags: ['ai', 'memory', 'update'],
+    tags: ['ai', 'memory'],
     method: 'PUT',
     path: '/api/ai/user-memory/:id',
   },

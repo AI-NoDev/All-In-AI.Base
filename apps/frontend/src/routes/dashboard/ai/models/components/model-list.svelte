@@ -4,6 +4,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import { DataTable } from '$lib/components/common';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Model {
     id: string;
@@ -77,17 +78,17 @@
     return `¥${value}`;
   }
 
-  const columns = [
-    { key: 'name', title: '模型名称', width: 140 },
-    { key: 'modelId', title: '模型ID', width: 160, render: modelIdRender },
-    { key: 'providerId', title: '提供商', width: 100, render: providerRender },
-    { key: 'capabilities', title: '能力', width: 120, render: capabilitiesRender },
-    { key: 'io', title: '输入/输出', width: 100, render: ioRender },
-    { key: 'contextWindow', title: '上下文', width: 80, render: contextRender },
-    { key: 'pricing', title: '价格(入/出)', width: 100, render: pricingRender },
-    { key: 'status', title: '状态', width: 70, render: statusRender },
-    { key: 'id', title: '操作', width: 120, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
-  ];
+  const columns = $derived([
+    { key: 'name', title: t('page.ai.model_modelName'), width: 140 },
+    { key: 'modelId', title: t('page.ai.model_modelId'), width: 160, render: modelIdRender },
+    { key: 'providerId', title: t('page.ai.model_providerName'), width: 100, render: providerRender },
+    { key: 'capabilities', title: t('page.ai.model_capabilitiesCol'), width: 120, render: capabilitiesRender },
+    { key: 'io', title: t('page.ai.model_ioCol'), width: 100, render: ioRender },
+    { key: 'contextWindow', title: t('page.ai.model_contextCol'), width: 80, render: contextRender },
+    { key: 'pricing', title: t('page.ai.model_pricingCol'), width: 100, render: pricingRender },
+    { key: 'status', title: t('page.ai.model_statusCol'), width: 70, render: statusRender },
+    { key: 'id', title: t('page.ai.model_actionsCol'), width: 120, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ]);
 </script>
 
 {#snippet modelIdRender({ value })}
@@ -101,19 +102,19 @@
 {#snippet capabilitiesRender({ row })}
   <div class="flex flex-wrap gap-0.5">
     {#if row.supportTools}
-      <Badge variant="outline" class="text-[10px] px-1 py-0">工具</Badge>
+      <Badge variant="outline" class="text-[10px] px-1 py-0">{t('page.ai.model_capTools')}</Badge>
     {/if}
     {#if row.supportThinking}
-      <Badge variant="outline" class="text-[10px] px-1 py-0">思考</Badge>
+      <Badge variant="outline" class="text-[10px] px-1 py-0">{t('page.ai.model_capThinking')}</Badge>
     {/if}
     {#if row.supportJsonOutput}
-      <Badge variant="outline" class="text-[10px] px-1 py-0">JSON</Badge>
+      <Badge variant="outline" class="text-[10px] px-1 py-0">{t('page.ai.model_capJson')}</Badge>
     {/if}
     {#if row.supportFIM}
-      <Badge variant="outline" class="text-[10px] px-1 py-0">FIM</Badge>
+      <Badge variant="outline" class="text-[10px] px-1 py-0">{t('page.ai.model_capFim')}</Badge>
     {/if}
     {#if row.supportPrefixCompletion}
-      <Badge variant="outline" class="text-[10px] px-1 py-0">续写</Badge>
+      <Badge variant="outline" class="text-[10px] px-1 py-0">{t('page.ai.model_capPrefix')}</Badge>
     {/if}
     {#if !row.supportTools && !row.supportThinking && !row.supportJsonOutput && !row.supportFIM && !row.supportPrefixCompletion}
       <span class="text-muted-foreground text-xs">-</span>
@@ -123,15 +124,15 @@
 
 {#snippet ioRender({ row })}
   <div class="flex gap-2 text-xs">
-    <div class="flex items-center gap-0.5" title="输入">
-      <span class="text-muted-foreground">入:</span>
+    <div class="flex items-center gap-0.5" title={t('page.ai.model_inputCapabilities')}>
+      <span class="text-muted-foreground">{t('page.ai.model_inputLabel')}:</span>
       {#if row.supportImageInput}<Icon icon="mdi:image" class="size-3.5" />{/if}
       {#if row.supportVideoInput}<Icon icon="mdi:video" class="size-3.5" />{/if}
       {#if row.supportAudioInput}<Icon icon="mdi:microphone" class="size-3.5" />{/if}
       {#if !row.supportImageInput && !row.supportVideoInput && !row.supportAudioInput}<span class="text-muted-foreground">-</span>{/if}
     </div>
-    <div class="flex items-center gap-0.5" title="输出">
-      <span class="text-muted-foreground">出:</span>
+    <div class="flex items-center gap-0.5" title={t('page.ai.model_outputCapabilities')}>
+      <span class="text-muted-foreground">{t('page.ai.model_outputLabel')}:</span>
       {#if row.supportImageOutput}<Icon icon="mdi:image" class="size-3.5" />{/if}
       {#if row.supportVideoOutput}<Icon icon="mdi:video" class="size-3.5" />{/if}
       {#if row.supportAudioOutput}<Icon icon="mdi:microphone" class="size-3.5" />{/if}
@@ -152,19 +153,19 @@
 
 {#snippet statusRender({ value })}
   <Badge variant={value === '0' ? 'default' : 'secondary'}>
-    {value === '0' ? '正常' : '停用'}
+    {value === '0' ? t('page.ai.model_statusNormal') : t('page.ai.model_statusDisabled')}
   </Badge>
 {/snippet}
 
 {#snippet actionsRender({ row })}
   <div class="flex justify-end gap-1">
-    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onTest(row)} title="测试">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onTest(row)} title={t('page.ai.model_test')}>
       <Icon icon="mdi:play" class="size-4" />
     </Button>
-    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onEdit(row)} title="编辑">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={() => onEdit(row)} title={t('common.actions.edit')}>
       <Icon icon="mdi:pencil" class="size-4" />
     </Button>
-    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => onDelete(row.id)} title="删除">
+    <Button size="sm" variant="ghost" class="h-8 w-8 p-0 text-destructive" onclick={() => onDelete(row.id)} title={t('common.actions.delete')}>
       <Icon icon="mdi:delete" class="size-4" />
     </Button>
   </div>
@@ -174,11 +175,11 @@
   <div class="py-3 flex items-center justify-between border-b border-border">
     <div class="flex gap-2">
       <Button size="sm" onclick={onCreate}>
-        <Icon icon="mdi:plus" class="mr-1 size-4" />新增模型
+        <Icon icon="mdi:plus" class="mr-1 size-4" />{t('page.ai.model_addModel')}
       </Button>
       {#if selectedIds.size > 0}
         <Button size="sm" variant="destructive" onclick={onBatchDelete}>
-          <Icon icon="mdi:delete" class="mr-1 size-4" />删除({selectedIds.size})
+          <Icon icon="mdi:delete" class="mr-1 size-4" />{t('common.actions.delete')}({selectedIds.size})
         </Button>
       {/if}
     </div>

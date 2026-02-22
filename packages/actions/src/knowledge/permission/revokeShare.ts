@@ -9,6 +9,7 @@ import { nodeIdParamsSchema, revokeShareBodySchema, revokeShareOutputSchema } fr
 
 export const permissionRevokeShare = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.revokeShare',
     displayName: '取消共享',
     description: `取消用户对节点的所有权限（批量撤销）。

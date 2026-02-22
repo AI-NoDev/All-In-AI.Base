@@ -11,6 +11,7 @@ import type { AgentSessionSelect } from './utils';
 
 export const agentSessionGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.getByPk',
     displayName: '根据ID查询Agent会话',
     description: `根据主键ID查询单个Agent会话详情。

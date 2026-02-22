@@ -7,6 +7,7 @@
   import * as Empty from '$lib/components/ui/empty';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '$lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface ConversationFile {
     messageId: string;
@@ -56,20 +57,19 @@
 
   let filteredFiles = $derived(getFilteredFiles());
 
-  const columns = [
-    { key: 'fileName', title: '文件名', width: 250, minWidth: 200, render: fileNameRender },
-    { key: 'msgType', title: '类型', width: 80, render: typeRender },
-    { key: 'fileSize', title: '大小', width: 96, render: sizeRender },
-    { key: 'conversationName', title: '会话', width: 160, render: conversationRender },
-    { key: 'senderName', title: '发送者', width: 128, render: senderRender },
-    { key: 'createdAt', title: '时间', width: 170, render: timeRender },
-    { key: 'fileId', title: '操作', width: 80, align: 'center' as const, fixed: 'right' as const, render: actionsRender },
-  ];
+  let columns = $derived([
+    { key: 'fileName', title: t('page.im.fileName'), width: 250, minWidth: 200, render: fileNameRender },
+    { key: 'msgType', title: t('page.im.fileType'), width: 80, render: typeRender },
+    { key: 'fileSize', title: t('page.im.fileSize'), width: 96, render: sizeRender },
+    { key: 'conversationName', title: t('page.im.conversation'), width: 160, render: conversationRender },
+    { key: 'senderName', title: t('page.im.sender'), width: 128, render: senderRender },
+    { key: 'createdAt', title: t('page.im.time'), width: 170, render: timeRender },
+    { key: 'fileId', title: t('common.fields_actions'), width: 80, align: 'center' as const, fixed: 'right' as const, render: actionsRender },
+  ]);
 
   async function loadConversationFiles() {
     loading = true;
     try {
-      // 使用 execute API 调用 action
       const res = await fetch('/api/im/conversation-files', {
         method: 'GET',
         headers: {
@@ -83,7 +83,7 @@
         conversations = data.data.conversations || [];
       }
     } catch (err) {
-      console.error('加载会话文件失败:', err);
+      console.error('loadConversationFiles error:', err);
     } finally {
       loading = false;
     }
@@ -99,7 +99,7 @@
         link.click();
       }
     } catch (err) {
-      console.error('下载失败:', err);
+      console.error('download error:', err);
     }
   }
 
@@ -113,12 +113,12 @@
 
   function getFileTypeLabel(msgType: string): string {
     const labels: Record<string, string> = {
-      '03': '图片',
-      '04': '视频',
-      '05': '音频',
-      '06': '文件',
+      '03': t('page.im.image'),
+      '04': t('page.im.video'),
+      '05': t('page.im.audio'),
+      '06': t('page.im.file'),
     };
-    return labels[msgType] || '未知';
+    return labels[msgType] || t('page.im.unknown');
   }
 
   function getFileExtension(fileName: string): string {
@@ -170,7 +170,7 @@
   <!-- 筛选栏 -->
   <div class="flex items-center gap-4 mb-4">
     <div class="flex items-center gap-2">
-      <span class="text-sm text-muted-foreground">会话:</span>
+      <span class="text-sm text-muted-foreground">{t('page.im.conversation')}:</span>
       <Select.Root 
         type="single"
         value={selectedConversationId ? { value: selectedConversationId, label: conversations.find(c => c.id === selectedConversationId)?.name || '' } : undefined}
@@ -178,11 +178,11 @@
       >
         <Select.Trigger class="w-48">
           {#snippet child({ open })}
-            <Select.Value placeholder="全部会话" />
+            <Select.Value placeholder={t('page.im.allConversations')} />
           {/snippet}
         </Select.Trigger>
         <Select.Content>
-          <Select.Item value={null} label="全部会话">全部会话</Select.Item>
+          <Select.Item value={null} label={t('page.im.allConversations')}>{t('page.im.allConversations')}</Select.Item>
           {#each conversations as conv}
             <Select.Item value={conv.id} label={conv.name}>
               <Icon icon={conv.type === 'group' ? 'tdesign:usergroup' : 'tdesign:user'} class="size-4 mr-2" />
@@ -194,7 +194,7 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <span class="text-sm text-muted-foreground">类型:</span>
+      <span class="text-sm text-muted-foreground">{t('page.im.fileType')}:</span>
       <Select.Root 
         type="single"
         value={{ value: filterType, label: '' }}
@@ -202,22 +202,22 @@
       >
         <Select.Trigger class="w-32">
           {#snippet child({ open })}
-            <Select.Value placeholder="全部类型" />
+            <Select.Value placeholder={t('page.im.allTypes')} />
           {/snippet}
         </Select.Trigger>
         <Select.Content>
-          <Select.Item value="all" label="全部类型">全部类型</Select.Item>
-          <Select.Item value="image" label="图片">图片</Select.Item>
-          <Select.Item value="video" label="视频">视频</Select.Item>
-          <Select.Item value="audio" label="音频">音频</Select.Item>
-          <Select.Item value="file" label="文件">文件</Select.Item>
+          <Select.Item value="all" label={t('page.im.allTypes')}>{t('page.im.allTypes')}</Select.Item>
+          <Select.Item value="image" label={t('page.im.image')}>{t('page.im.image')}</Select.Item>
+          <Select.Item value="video" label={t('page.im.video')}>{t('page.im.video')}</Select.Item>
+          <Select.Item value="audio" label={t('page.im.audio')}>{t('page.im.audio')}</Select.Item>
+          <Select.Item value="file" label={t('page.im.file')}>{t('page.im.file')}</Select.Item>
         </Select.Content>
       </Select.Root>
     </div>
 
     <Button variant="outline" size="sm" onclick={loadConversationFiles}>
       <Icon icon="tdesign:refresh" class="size-4 mr-1" />
-      刷新
+      {t('common.actions_refresh')}
     </Button>
   </div>
 
@@ -229,9 +229,9 @@
           <Icon icon="tdesign:file" class="size-16 text-muted-foreground/50" />
         </Empty.Media>
         <Empty.Header>
-          <Empty.Title>暂无会话文件</Empty.Title>
+          <Empty.Title>{t('page.im.noConversationFiles')}</Empty.Title>
           <Empty.Description>
-            聊天中发送的图片、视频、音频和文件会显示在这里
+            {t('page.im.conversationFilesHint')}
           </Empty.Description>
         </Empty.Header>
       </Empty.Root>

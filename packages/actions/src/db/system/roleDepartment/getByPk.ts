@@ -11,6 +11,7 @@ import type { RoleDepartmentSelect } from './utils';
 
 export const roleDepartmentGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleDepartment.getByPk',
     displayName: '根据复合主键查询角色部门关联',
     description: `根据角色ID和部门ID的复合主键查询关联记录。

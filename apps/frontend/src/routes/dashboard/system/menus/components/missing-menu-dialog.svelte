@@ -6,6 +6,7 @@
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { pages, type PageMeta } from '@/lib/generated-pages';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Menu {
     id: string;
@@ -58,7 +59,7 @@
   async function handleCreate() {
     const selectedPages = missingPages.filter(p => p.selected);
     if (selectedPages.length === 0) {
-      alert('请选择要创建的菜单');
+      alert(t('page.system.menu_selectMenusToCreate'));
       return;
     }
     
@@ -91,7 +92,7 @@
       onCreated?.();
     } catch (err) {
       console.error('Failed to create menus:', err);
-      alert('创建菜单失败');
+      alert(t('page.system.menu_createMenusFailed'));
     } finally {
       creating = false;
     }
@@ -111,12 +112,12 @@
     missingPages = missingPages.map(p => ({ ...p, selected: newVal }));
   }
 
-  const columns = [
-    { key: 'title', title: '页面标题', width: 160, render: titleRender },
-    { key: 'path', title: '路由路径', width: 250, render: pathRender },
-    { key: 'group', title: '所属分组', width: 128, render: groupRender },
-    { key: 'icon', title: '图标', width: 60, render: iconRender },
-  ];
+  const columns = $derived([
+    { key: 'title', title: t('page.system.menu_pageTitle'), width: 160, render: titleRender },
+    { key: 'path', title: t('page.system.menu_routePathCol'), width: 250, render: pathRender },
+    { key: 'group', title: t('page.system.menu_groupCol'), width: 128, render: groupRender },
+    { key: 'icon', title: t('page.system.menu_iconCol'), width: 60, render: iconRender },
+  ]);
 
   // 当对话框打开时检测缺失菜单
   $effect(() => {
@@ -154,9 +155,9 @@
 <Dialog.Root bind:open>
   <Dialog.Content class="sm:max-w-2xl">
     <Dialog.Header>
-      <Dialog.Title>处理缺失菜单</Dialog.Title>
+      <Dialog.Title>{t('page.system.missingMenuTitle')}</Dialog.Title>
       <Dialog.Description>
-        以下页面在菜单中不存在，选择需要创建的菜单项。
+        {t('page.system.missingMenuDesc')}
       </Dialog.Description>
     </Dialog.Header>
     <div class="max-h-[50vh] overflow-y-auto">
@@ -168,13 +169,13 @@
         {selectedIds}
         onToggleSelect={toggleSelect}
         onToggleSelectAll={toggleSelectAll}
-        emptyText="没有缺失的菜单"
+        emptyText={t('page.system.menu_noMissingMenus')}
       />
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => open = false}>取消</Button>
+      <Button variant="outline" onclick={() => open = false}>{t('common.actions_cancel')}</Button>
       <Button onclick={handleCreate} disabled={creating || selectedCount === 0}>
-        {creating ? '创建中...' : `创建选中的 ${selectedCount} 个菜单`}
+        {creating ? t('page.system.creating') : t('page.system.createSelected').replace('${count}', String(selectedCount))}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

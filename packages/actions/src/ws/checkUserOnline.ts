@@ -22,6 +22,7 @@ import type { WsConnectionManager } from './utils';
 
 export const wsCheckUserOnline = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ws.users.checkOnline',
     displayName: '检查用户在线状态',
     description: `检查指定用户是否在线。

@@ -11,6 +11,7 @@ import type { AgentMessageSelect } from './utils';
 
 export const agentMessageGetHistory = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentMessage.getHistory',
     displayName: '获取会话历史',
     description: `获取指定会话的消息历史，支持分页加载更早的消息。

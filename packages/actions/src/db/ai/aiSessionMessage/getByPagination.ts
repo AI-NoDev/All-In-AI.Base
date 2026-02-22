@@ -11,6 +11,7 @@ import type { AISessionMessageSelect } from './utils';
 
 export const aiSessionMessageGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSessionMessage.getByPagination',
     displayName: '分页查询AI会话消息',
     description: `分页查询AI会话消息列表。

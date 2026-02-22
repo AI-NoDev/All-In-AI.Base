@@ -41,6 +41,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface OperationLog {
     id: string;
@@ -95,36 +96,36 @@
     };
   });
 
-  const statusOptions = [
-    { value: '', label: '全部' },
-    { value: '0', label: '成功' },
-    { value: '1', label: '失败' },
-  ];
+  let statusOptions = $derived([
+    { value: '', label: t('common.tips.all') },
+    { value: '0', label: t('common.status.success') },
+    { value: '1', label: t('common.status.failed') },
+  ]);
 
   const businessTypeMap: Record<number, string> = {
-    0: '其他',
-    1: '新增',
-    2: '修改',
-    3: '删除',
-    4: '授权',
-    5: '导出',
-    6: '导入',
-    7: '强退',
-    8: '生成代码',
-    9: '清空数据',
+    0: 'businessTypeOther',
+    1: 'businessTypeAdd',
+    2: 'businessTypeModify',
+    3: 'businessTypeDelete',
+    4: 'businessTypeAuth',
+    5: 'businessTypeExport',
+    6: 'businessTypeImport',
+    7: 'businessTypeForceLogout',
+    8: 'businessTypeGenCode',
+    9: 'businessTypeClearData',
   };
 
-  const columns = [
-    { key: 'title', title: '系统模块', width: 128, render: titleRender },
-    { key: 'businessType', title: '操作类型', width: 96, render: businessTypeRender },
-    { key: 'name', title: '操作人员', width: 96 },
-    { key: 'ip', title: 'IP地址', width: 128 },
-    { key: 'location', title: '操作地点', width: 128, render: mutedRender },
-    { key: 'status', title: '状态', width: 80, render: statusRender },
-    { key: 'time', title: '操作时间', width: 170, render: timeRender },
-    { key: 'costTime', title: '耗时', width: 96, render: costTimeRender },
-    { key: 'id', title: '操作', width: 80, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
-  ];
+  let columns = $derived([
+    { key: 'title', title: t('page.system.systemModule'), width: 128, render: titleRender },
+    { key: 'businessType', title: t('page.system.operationType'), width: 96, render: businessTypeRender },
+    { key: 'name', title: t('page.system.operator'), width: 96 },
+    { key: 'ip', title: t('page.system.ipAddress'), width: 128 },
+    { key: 'location', title: t('page.system.operationLocation'), width: 128, render: mutedRender },
+    { key: 'status', title: t('common.fields.status'), width: 80, render: statusRender },
+    { key: 'time', title: t('page.system.operationTime'), width: 170, render: timeRender },
+    { key: 'costTime', title: t('page.system.costTime'), width: 96, render: costTimeRender },
+    { key: 'id', title: t('common.fields.actions'), width: 80, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ]);
 
   function toggleSelectAll() {
     if (logs.length > 0 && logs.every(l => selectedIds.has(l.id))) {
@@ -193,7 +194,7 @@
 
   async function handleBatchDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedIds.size} 条记录吗？`)) return;
+    if (!confirm(t('page.system.confirmDeleteLogs').replace('${count}', String(selectedIds.size)))) return;
     
     deleting = true;
     try {
@@ -206,7 +207,7 @@
       loadLogs();
     } catch (err) {
       console.error('Failed to delete:', err);
-      alert('删除失败');
+      alert(t('common.tips.deleteFailed'));
     } finally {
       deleting = false;
     }
@@ -214,13 +215,14 @@
 
   function getStatusBadge(status: string | null) {
     return status === '0' 
-      ? { variant: 'default' as const, text: '成功' }
-      : { variant: 'destructive' as const, text: '失败' };
+      ? { variant: 'default' as const, text: t('common.status.success') }
+      : { variant: 'destructive' as const, text: t('common.status.failed') };
   }
 
   function getBusinessType(type: number | null) {
     if (type === null) return '-';
-    return businessTypeMap[type] || '其他';
+    const key = businessTypeMap[type] || 'businessTypeOther';
+    return t(`page.system.${key}`);
   }
 
   function formatTime(time: string | null) {
@@ -270,18 +272,18 @@
     <div class="py-3 border-b border-border">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">系统模块</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.title} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.systemModule')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.title} />
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">操作人员</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.operator')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.name} />
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">状态</span>
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('common.fields.status')}</span>
           <Select.Root type="single" bind:value={searchForm.status}>
             <Select.Trigger class="w-24 h-8">
-              {statusOptions.find(o => o.value === searchForm.status)?.label || '全部'}
+              {statusOptions.find(o => o.value === searchForm.status)?.label || t('common.tips.all')}
             </Select.Trigger>
             <Select.Content>
               {#each statusOptions as option}
@@ -292,10 +294,10 @@
         </div>
         <div class="flex gap-2">
           <Button size="sm" class="h-8" onclick={handleSearch}>
-            <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
+            <Icon icon="tdesign:search" class="mr-1 size-4" />{t('common.actions.search')}
           </Button>
           <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
-            <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
+            <Icon icon="tdesign:refresh" class="mr-1 size-4" />{t('common.actions.reset')}
           </Button>
         </div>
       </div>
@@ -314,11 +316,11 @@
               {:else}
                 <Icon icon="tdesign:delete" class="mr-1 size-4" />
               {/if}
-              删除({selectedIds.size})
+              {t('common.actions.delete')}({selectedIds.size})
             </Button>
           {/if}
           <Button size="sm" variant="outline">
-            <Icon icon="tdesign:download" class="mr-1 size-4" />导出
+            <Icon icon="tdesign:download" class="mr-1 size-4" />{t('common.actions.export')}
           </Button>
         </div>
         <div class="flex gap-1">
@@ -344,7 +346,7 @@
 
       {#if total > 0 && !loading}
         <div class="mt-4 flex items-center justify-between">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.totalRecords').replace('${count}', String(total))}</span>
           <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadLogs()}>
             {#snippet children({ pages, currentPage: cp })}
               <Pagination.Content>
@@ -372,78 +374,78 @@
 <Dialog.Root bind:open={detailOpen}>
   <Dialog.Content class="max-w-2xl max-h-[80vh] overflow-y-auto">
     <Dialog.Header>
-      <Dialog.Title>操作日志详情</Dialog.Title>
+      <Dialog.Title>{t('page.system.operationLogDetail')}</Dialog.Title>
     </Dialog.Header>
     {#if detailLog}
       <div class="grid grid-cols-2 gap-4 py-4">
         <div>
-          <div class="text-sm text-muted-foreground">系统模块</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.systemModule')}</div>
           <div class="font-medium">{detailLog.title}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">操作类型</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.operationType')}</div>
           <Badge variant="outline">{getBusinessType(detailLog.businessType)}</Badge>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">操作人员</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.operator')}</div>
           <div class="font-medium">{detailLog.name || '-'}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">所属部门</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.department')}</div>
           <div class="font-medium">{detailLog.departmentName || '-'}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">请求方式</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.requestMethod')}</div>
           <div class="font-medium">{detailLog.requestMethod || '-'}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">状态</div>
+          <div class="text-sm text-muted-foreground">{t('common.fields.status')}</div>
           <Badge variant={getStatusBadge(detailLog.status).variant}>
             {getStatusBadge(detailLog.status).text}
           </Badge>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">IP地址</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.ipAddress')}</div>
           <div class="font-medium">{detailLog.ip || '-'}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">操作地点</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.operationLocation')}</div>
           <div class="font-medium">{detailLog.location || '-'}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">操作时间</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.operationTime')}</div>
           <div class="font-medium">{formatTime(detailLog.time)}</div>
         </div>
         <div>
-          <div class="text-sm text-muted-foreground">耗时</div>
-          <div class="font-medium">{detailLog.costTime ? `${detailLog.costTime}ms` : '-'}</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.costTime')}</div>
+          <div class="font-medium">{detailLog.costTime ? `${detailLog.costTime}${t('common.unit.ms')}` : '-'}</div>
         </div>
         <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">请求URL</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.requestUrl')}</div>
           <div class="font-medium break-all">{detailLog.url || '-'}</div>
         </div>
         <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">请求方法</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.requestMethodName')}</div>
           <div class="font-medium break-all">{detailLog.method || '-'}</div>
         </div>
         <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">请求参数</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.requestParams')}</div>
           <pre class="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto max-h-32">{detailLog.param || '-'}</pre>
         </div>
         <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">返回结果</div>
+          <div class="text-sm text-muted-foreground">{t('page.system.responseResult')}</div>
           <pre class="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto max-h-32">{detailLog.jsonResult || '-'}</pre>
         </div>
         {#if detailLog.status === '1' && detailLog.errorMsg}
           <div class="col-span-2">
-            <div class="text-sm text-muted-foreground">错误信息</div>
+            <div class="text-sm text-muted-foreground">{t('page.system.errorMessage')}</div>
             <pre class="mt-1 p-2 bg-destructive/10 text-destructive rounded text-xs overflow-x-auto max-h-32">{detailLog.errorMsg}</pre>
           </div>
         {/if}
       </div>
     {/if}
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => detailOpen = false}>关闭</Button>
+      <Button variant="outline" onclick={() => detailOpen = false}>{t('common.actions.close')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

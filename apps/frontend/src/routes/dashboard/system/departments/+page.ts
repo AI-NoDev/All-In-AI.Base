@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '部门管理',
+  title: 'nav.title.departments',
   icon: 'tdesign:tree-square-dot',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 13,
   permission: 'system:dept:view'
 };

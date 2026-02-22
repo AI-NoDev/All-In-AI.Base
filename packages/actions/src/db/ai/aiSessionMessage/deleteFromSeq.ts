@@ -10,6 +10,7 @@ import type { TokenUsage } from './utils';
 
 export const aiSessionMessageDeleteFromSeq = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSessionMessage.deleteFromSeq',
     displayName: '删除指定序号及之后的消息',
     description: `删除会话中指定msgSeq及之后的所有消息，用于重新生成回复。

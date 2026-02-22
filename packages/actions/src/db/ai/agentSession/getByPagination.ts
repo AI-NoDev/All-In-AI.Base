@@ -11,6 +11,7 @@ import type { AgentSessionSelect } from './utils';
 
 export const agentSessionGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.getByPagination',
     displayName: '分页查询Agent会话',
     description: `分页查询Agent会话列表，用于管理用户与AI Agent的对话会话。

@@ -36,6 +36,7 @@
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { PostApiSystemDictQueryFieldEnum, PostApiSystemDictQueryOrderEnum, PostApiSystemDictGroupQueryFieldEnum, PostApiSystemDictGroupQueryOrderEnum } from '@qiyu-allinai/api';
 
   interface DictGroup {
@@ -89,16 +90,16 @@
   let dictForm = $state({ group: '', label: '', value: '', sort: 0, cssClass: '', listClass: '', isDefault: false, status: '0', remark: '' });
   let groupForm = $state({ key: '', name: '', status: '0', remark: '' });
 
-  const statusOptions = [{ value: '0', label: '正常' }, { value: '1', label: '停用' }];
+  let statusOptions = $derived([{ value: '0', label: t('status.normal') }, { value: '1', label: t('status.disabled') }]);
 
-  const columns = [
-    { key: 'label', title: '字典标签', width: 160, render: labelRender },
-    { key: 'value', title: '字典键值', width: 160, render: valueRender },
-    { key: 'sort', title: '排序', width: 80 },
-    { key: 'isDefault', title: '默认', width: 80, render: defaultRender },
-    { key: 'status', title: '状态', width: 80, render: statusRender },
-    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
-  ];
+  let columns = $derived([
+    { key: 'label', title: t('page.system.dictLabel'), width: 160, render: labelRender },
+    { key: 'value', title: t('page.system.dictValue'), width: 160, render: valueRender },
+    { key: 'sort', title: t('fields.sort'), width: 80 },
+    { key: 'isDefault', title: t('page.system.dictDefault'), width: 80, render: defaultRender },
+    { key: 'status', title: t('fields.status'), width: 80, render: statusRender },
+    { key: 'id', title: t('fields.actions'), width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ]);
 
   function toggleSelectAll() { selectedIds = selectedIds.size === dicts.length ? new Set() : new Set(dicts.map(d => d.id)); }
   function toggleSelect(id: string) { const s = new Set(selectedIds); s.has(id) ? s.delete(id) : s.add(id); selectedIds = s; }
@@ -129,7 +130,7 @@
   function openEditGroup(g: DictGroup) { editingGroup = g; groupForm = { key: g.key, name: g.name, status: g.status, remark: g.remark || '' }; groupDialogOpen = true; }
 
   async function handleSaveGroup() {
-    if (!groupForm.key.trim() || !groupForm.name.trim()) return alert('请填写必填项');
+    if (!groupForm.key.trim() || !groupForm.name.trim()) return alert(t('page.system.fillRequired'));
     saving = true;
     try {
       const api = authStore.createApi(true);
@@ -140,23 +141,23 @@
       }
       groupDialogOpen = false;
       loadGroups();
-    } catch (err) { console.error('Failed to save dict group:', err); alert('保存失败'); }
+    } catch (err) { console.error('Failed to save dict group:', err); alert(t('tips.saveFailed')); }
     finally { saving = false; }
   }
 
   async function handleDeleteGroup(key: string) {
-    if (!confirm('确定要删除该字典分组吗？')) return;
+    if (!confirm(t('page.system.confirmDeleteGroup'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemDictGroupByKey({ key });
       if (selectedGroup === key) selectedGroup = null;
       loadGroups();
       loadDicts();
-    } catch (err) { console.error('Failed to delete dict group:', err); alert('删除失败'); }
+    } catch (err) { console.error('Failed to delete dict group:', err); alert(t('tips.deleteFailed')); }
   }
 
   function openCreateDict() {
-    if (!selectedGroup) return alert('请先选择字典分组');
+    if (!selectedGroup) return alert(t('page.system.selectDictGroup'));
     editingDict = null;
     dictForm = { group: selectedGroup, label: '', value: '', sort: 0, cssClass: '', listClass: '', isDefault: false, status: '0', remark: '' };
     dialogOpen = true;
@@ -169,7 +170,7 @@
   }
 
   async function handleSaveDict() {
-    if (!dictForm.label.trim() || !dictForm.value.trim()) return alert('请填写必填项');
+    if (!dictForm.label.trim() || !dictForm.value.trim()) return alert(t('page.system.fillRequired'));
     saving = true;
     try {
       const api = authStore.createApi(true);
@@ -181,29 +182,29 @@
       }
       dialogOpen = false;
       loadDicts();
-    } catch (err) { console.error('Failed to save dict:', err); alert('保存失败'); }
+    } catch (err) { console.error('Failed to save dict:', err); alert(t('tips.saveFailed')); }
     finally { saving = false; }
   }
 
   async function handleDeleteDict(id: string) {
-    if (!confirm('确定要删除该字典项吗？')) return;
+    if (!confirm(t('page.system.confirmDeleteItem'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemDictById({ id });
       loadDicts();
-    } catch (err) { console.error('Failed to delete dict:', err); alert('删除失败'); }
+    } catch (err) { console.error('Failed to delete dict:', err); alert(t('tips.deleteFailed')); }
   }
 
   async function handleBatchDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedIds.size} 个字典项吗？`)) return;
+    if (!confirm(t('page.system.confirmDeleteItems').replace('${count}', String(selectedIds.size)))) return;
     deleting = true;
     try {
       const api = authStore.createApi(true);
       await Promise.all(Array.from(selectedIds).map(id => api.system.deleteApiSystemDictById({ id })));
       selectedIds = new Set();
       loadDicts();
-    } catch (err) { console.error('Failed to delete dicts:', err); alert('删除失败'); }
+    } catch (err) { console.error('Failed to delete dicts:', err); alert(t('tips.deleteFailed')); }
     finally { deleting = false; }
   }
 
@@ -219,11 +220,11 @@
 {/snippet}
 
 {#snippet defaultRender({ row })}
-  <Badge variant={row.isDefault ? 'default' : 'outline'}>{row.isDefault ? '是' : '否'}</Badge>
+  <Badge variant={row.isDefault ? 'default' : 'outline'}>{row.isDefault ? t('status.yes') : t('status.no')}</Badge>
 {/snippet}
 
 {#snippet statusRender({ value })}
-  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? '正常' : '停用'}</Badge>
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? t('status.normal') : t('status.disabled')}</Badge>
 {/snippet}
 
 {#snippet actionsRender({ row })}
@@ -237,7 +238,7 @@
   <!-- 左侧字典分组 -->
   <div class="w-64 shrink-0 flex flex-col pr-4 border-r border-border">
     <div class="py-3 px-2 flex items-center justify-between">
-      <h3 class="text-base font-semibold">字典分组</h3>
+      <h3 class="text-base font-semibold">{t('page.system.dictGroups')}</h3>
       <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={openCreateGroup}><Icon icon="tdesign:add" class="size-4" /></Button>
     </div>
     <div class="flex-1 min-h-0">
@@ -258,7 +259,7 @@
                 </div>
               </div>
             {:else}
-              <div class="text-center text-muted-foreground py-8">暂无分组</div>
+              <div class="text-center text-muted-foreground py-8">{t('page.system.noGroup')}</div>
             {/each}
           </div>
         {/if}
@@ -270,10 +271,10 @@
   <div class="flex-1 flex flex-col min-h-0 pl-4">
     <div class="py-3 flex items-center justify-between border-b border-border">
       <div class="flex gap-2">
-        <Button size="sm" onclick={openCreateDict} disabled={!selectedGroup}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
+        <Button size="sm" onclick={openCreateDict} disabled={!selectedGroup}><Icon icon="tdesign:add" class="mr-1 size-4" />{t('actions.add')}</Button>
         {#if selectedIds.size > 0}
           <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
-            <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />删除({selectedIds.size})
+            <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />{t('actions.delete')}({selectedIds.size})
           </Button>
         {/if}
       </div>
@@ -281,7 +282,7 @@
     </div>
     <div class="flex-1 min-h-0 flex flex-col pt-4">
       {#if !selectedGroup}
-        <div class="h-48 flex items-center justify-center text-muted-foreground">请选择左侧字典分组</div>
+        <div class="h-48 flex items-center justify-center text-muted-foreground">{t('page.system.selectGroup')}</div>
       {:else}
         <DataTable 
           {columns} 
@@ -300,31 +301,31 @@
 <!-- 字典分组弹窗 -->
 <Dialog.Root bind:open={groupDialogOpen}>
   <Dialog.Content class="sm:max-w-md">
-    <Dialog.Header><Dialog.Title>{editingGroup ? '编辑字典分组' : '新增字典分组'}</Dialog.Title></Dialog.Header>
+    <Dialog.Header><Dialog.Title>{editingGroup ? t('page.system.editDictGroup') : t('page.system.addDictGroup')}</Dialog.Title></Dialog.Header>
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
-        <Label>分组标识 *</Label>
-        <Input bind:value={groupForm.key} placeholder="如：sys_user_sex" disabled={!!editingGroup} />
+        <Label>{t('page.system.groupKey')} *</Label>
+        <Input bind:value={groupForm.key} placeholder={t('page.system.groupKeyPlaceholder')} disabled={!!editingGroup} />
       </div>
       <div class="grid gap-2">
-        <Label>分组名称 *</Label>
-        <Input bind:value={groupForm.name} placeholder="如：用户性别" />
+        <Label>{t('page.system.groupName')} *</Label>
+        <Input bind:value={groupForm.name} placeholder={t('page.system.groupNamePlaceholder')} />
       </div>
       <div class="grid gap-2">
-        <Label>状态</Label>
+        <Label>{t('fields.status')}</Label>
         <Select.Root type="single" bind:value={groupForm.status}>
           <Select.Trigger>{statusOptions.find(o => o.value === groupForm.status)?.label}</Select.Trigger>
           <Select.Content>{#each statusOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
         </Select.Root>
       </div>
       <div class="grid gap-2">
-        <Label>备注</Label>
-        <Input bind:value={groupForm.remark} placeholder="请输入备注" />
+        <Label>{t('fields.remark')}</Label>
+        <Input bind:value={groupForm.remark} placeholder={t('tips.inputPlaceholder')} />
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => groupDialogOpen = false}>取消</Button>
-      <Button onclick={handleSaveGroup} disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
+      <Button variant="outline" onclick={() => groupDialogOpen = false}>{t('actions.cancel')}</Button>
+      <Button onclick={handleSaveGroup} disabled={saving}>{saving ? t('tips.saving') : t('actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -332,25 +333,25 @@
 <!-- 字典项弹窗 -->
 <Dialog.Root bind:open={dialogOpen}>
   <Dialog.Content class="sm:max-w-md">
-    <Dialog.Header><Dialog.Title>{editingDict ? '编辑字典项' : '新增字典项'}</Dialog.Title></Dialog.Header>
+    <Dialog.Header><Dialog.Title>{editingDict ? t('page.system.editDictItem') : t('page.system.addDictItem')}</Dialog.Title></Dialog.Header>
     <div class="grid gap-4 py-4">
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
-          <Label>字典标签 *</Label>
-          <Input bind:value={dictForm.label} placeholder="如：男" />
+          <Label>{t('page.system.dictLabel')} *</Label>
+          <Input bind:value={dictForm.label} placeholder={t('page.system.dictLabelPlaceholder')} />
         </div>
         <div class="grid gap-2">
-          <Label>字典键值 *</Label>
-          <Input bind:value={dictForm.value} placeholder="如：0" />
+          <Label>{t('page.system.dictValue')} *</Label>
+          <Input bind:value={dictForm.value} placeholder={t('page.system.dictValuePlaceholder')} />
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
-          <Label>排序</Label>
+          <Label>{t('fields.sort')}</Label>
           <Input bind:value={dictForm.sort} type="number" />
         </div>
         <div class="grid gap-2">
-          <Label>状态</Label>
+          <Label>{t('fields.status')}</Label>
           <Select.Root type="single" bind:value={dictForm.status}>
             <Select.Trigger>{statusOptions.find(o => o.value === dictForm.status)?.label}</Select.Trigger>
             <Select.Content>{#each statusOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
@@ -359,16 +360,16 @@
       </div>
       <div class="flex items-center gap-2">
         <Checkbox bind:checked={dictForm.isDefault} />
-        <Label>设为默认值</Label>
+        <Label>{t('page.system.setAsDefault')}</Label>
       </div>
       <div class="grid gap-2">
-        <Label>备注</Label>
-        <Input bind:value={dictForm.remark} placeholder="请输入备注" />
+        <Label>{t('fields.remark')}</Label>
+        <Input bind:value={dictForm.remark} placeholder={t('tips.inputPlaceholder')} />
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => dialogOpen = false}>取消</Button>
-      <Button onclick={handleSaveDict} disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
+      <Button variant="outline" onclick={() => dialogOpen = false}>{t('actions.cancel')}</Button>
+      <Button onclick={handleSaveDict} disabled={saving}>{saving ? t('tips.saving') : t('actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

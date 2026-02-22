@@ -12,6 +12,7 @@ import { buildDeptMaterializedPath, type DepartmentSelect, type DepartmentInsert
 export const departmentCreateMany = defineAction({
   meta: {
     name: 'system.department.createMany',
+    ignoreTools: true,
     displayName: '批量创建部门',
     description: '批量创建多个部门',
     tags: ['system', 'department'],

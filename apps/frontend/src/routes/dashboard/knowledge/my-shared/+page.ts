@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '我的共享',
+  title: 'nav.title.myShared',
   icon: 'tdesign:share',
-  group: '知识库',
+  group: 'nav.group.knowledge',
   order: 3,
   permission: 'knowledge:view'
 };

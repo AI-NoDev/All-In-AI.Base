@@ -38,6 +38,7 @@ const CHANNEL = 'im';
 
 export const wsSendGroupMessage = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ws.message.group',
     displayName: '发送群聊消息',
     description: `发送消息到群聊会话并通过 WebSocket 实时通知在线成员。

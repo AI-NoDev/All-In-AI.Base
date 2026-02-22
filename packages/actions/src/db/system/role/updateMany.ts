@@ -14,6 +14,7 @@ import type { RoleSelect, RoleInsert } from './utils';
 export const roleUpdateMany = defineAction({
   meta: {
     name: 'system.role.updateMany',
+    ignoreTools: true,
     displayName: '批量更新角色',
     description: `根据ID列表批量更新多个角色。
 

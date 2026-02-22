@@ -8,6 +8,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { PostApiSystemConfigQueryFieldEnum, PostApiSystemConfigQueryOrderEnum } from '@qiyu-allinai/api';
 
   interface ConfigItem {
@@ -35,14 +36,14 @@
 
   let form = $state({ name: '', key: '', value: '' });
 
-  const columns = [
-    { key: 'name', title: '参数名称', width: 160, render: nameRender },
-    { key: 'key', title: '参数键名', width: 200, render: keyRender },
-    { key: 'value', title: '参数值', width: 200, render: valueRender },
-    { key: 'isSystem', title: '类型', width: 96, render: typeRender },
-    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
-    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
-  ];
+  const columns = $derived([
+    { key: 'name', title: t('page.system.config_paramName'), width: 160, render: nameRender },
+    { key: 'key', title: t('page.system.config_paramKey'), width: 200, render: keyRender },
+    { key: 'value', title: t('page.system.config_paramValue'), width: 200, render: valueRender },
+    { key: 'isSystem', title: t('page.system.config_paramType'), width: 96, render: typeRender },
+    { key: 'createdAt', title: t('common.fields.createdAt'), width: 170, render: dateRender },
+    { key: 'id', title: t('common.actions.more'), width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+  ]);
 
   let deletableConfigs = $derived(configs.filter(c => !c.isSystem));
 
@@ -110,7 +111,7 @@
   }
 
   async function handleSave() {
-    if (!form.name.trim() || !form.key.trim()) return alert('请填写必填项');
+    if (!form.name.trim() || !form.key.trim()) return alert(t('validation.required', '请填写必填项'));
     saving = true;
     try {
       const api = authStore.createApi(true);
@@ -135,7 +136,7 @@
       loadConfigs();
     } catch (err) {
       console.error('Failed to save config:', err);
-      alert('保存失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       saving = false;
     }
@@ -144,23 +145,23 @@
   async function handleDelete(id: string) {
     const config = configs.find(c => c.id === id);
     if (config?.isSystem) {
-      alert('系统参数不允许删除');
+      alert(t('page.system.config_system') + t('common.tips.confirmDelete'));
       return;
     }
-    if (!confirm('确定要删除该参数吗？')) return;
+    if (!confirm(t('common.tips.confirmDelete'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemConfigById({ id });
       loadConfigs();
     } catch (err) {
       console.error('Failed to delete config:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     }
   }
 
   async function handleBatchDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedIds.size} 个参数吗？`)) return;
+    if (!confirm(t('common.tips.confirmDelete'))) return;
     deleting = true;
     try {
       const api = authStore.createApi(true);
@@ -169,7 +170,7 @@
       loadConfigs();
     } catch (err) {
       console.error('Failed to delete configs:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       deleting = false;
     }
@@ -192,7 +193,7 @@
 
 {#snippet typeRender({ row })}
   <Badge variant={row.isSystem ? 'default' : 'secondary'}>
-    {row.isSystem ? '系统' : '自定义'}
+    {row.isSystem ? t('page.system.config_system') : t('page.system.config_custom')}
   </Badge>
 {/snippet}
 
@@ -219,19 +220,19 @@
     <div class="py-3 border-b border-border">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">参数名称</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.config_paramName')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.name} />
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">参数键名</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.key} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.config_paramKey')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.key} />
         </div>
         <div class="flex gap-2">
           <Button size="sm" class="h-8" onclick={handleSearch}>
-            <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
+            <Icon icon="tdesign:search" class="mr-1 size-4" />{t('common.actions.search')}
           </Button>
           <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
-            <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
+            <Icon icon="tdesign:refresh" class="mr-1 size-4" />{t('common.actions.reset')}
           </Button>
         </div>
       </div>
@@ -242,10 +243,10 @@
     <div class="pb-3">
       <div class="flex items-center justify-between">
         <div class="flex gap-2">
-          <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
+          <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />{t('common.actions.add')}</Button>
           {#if selectedIds.size > 0}
             <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
-              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />删除({selectedIds.size})
+              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />{t('common.actions.delete')}({selectedIds.size})
             </Button>
           {/if}
         </div>
@@ -275,25 +276,25 @@
 <Dialog.Root bind:open={dialogOpen}>
   <Dialog.Content class="sm:max-w-md">
     <Dialog.Header>
-      <Dialog.Title>{editingConfig ? '编辑参数' : '新增参数'}</Dialog.Title>
+      <Dialog.Title>{editingConfig ? t('page.system.config_editParam') : t('page.system.config_addParam')}</Dialog.Title>
     </Dialog.Header>
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
-        <Label>参数名称 *</Label>
-        <Input bind:value={form.name} placeholder="请输入参数名称" />
+        <Label>{t('page.system.config_paramName')} *</Label>
+        <Input bind:value={form.name} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
       <div class="grid gap-2">
-        <Label>参数键名 *</Label>
-        <Input bind:value={form.key} placeholder="请输入参数键名，如 sys.site.name" disabled={!!editingConfig?.isSystem} />
+        <Label>{t('page.system.config_paramKey')} *</Label>
+        <Input bind:value={form.key} placeholder={t('page.system.config_keyPlaceholder')} disabled={!!editingConfig?.isSystem} />
       </div>
       <div class="grid gap-2">
-        <Label>参数值</Label>
-        <Input bind:value={form.value} placeholder="请输入参数值" />
+        <Label>{t('page.system.config_paramValue')}</Label>
+        <Input bind:value={form.value} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => dialogOpen = false}>取消</Button>
-      <Button onclick={handleSave} disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
+      <Button variant="outline" onclick={() => dialogOpen = false}>{t('common.actions.cancel')}</Button>
+      <Button onclick={handleSave} disabled={saving}>{saving ? t('common.tips.saving') : t('common.actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

@@ -15,6 +15,7 @@
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { systemConfigStore } from '@/lib/stores/system-config.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
   const id = $props.id();
@@ -35,7 +36,7 @@
 </script>
 
 <svelte:head>
-  <title>登录 - {siteName}</title>
+  <title>{t('page.login.title')} - {siteName}</title>
 </svelte:head>
 
 <div class="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
@@ -46,8 +47,8 @@
           <form onsubmit={handleSubmit} class="p-6 md:p-8">
             <FieldGroup>
               <div class="flex flex-col items-center gap-2 text-center">
-                <h1 class="text-2xl font-bold">欢迎回来</h1>
-                <p class="text-muted-foreground text-balance">登录您的账户</p>
+                <h1 class="text-2xl font-bold">{t('page.login.welcome')}</h1>
+                <p class="text-muted-foreground text-balance">{t('page.login.subtitle')}</p>
               </div>
               
               {#if authStore.error}
@@ -57,10 +58,10 @@
               {/if}
               
               <Field>
-                <FieldLabel for="loginName-{id}">用户名</FieldLabel>
+                <FieldLabel for="loginName-{id}">{t('page.login.username')}</FieldLabel>
                 <Input 
                   id="loginName-{id}" 
-                  placeholder="请输入用户名" 
+                  placeholder={t('page.login.usernamePlaceholder')} 
                   bind:value={loginName}
                   required 
                   disabled={authStore.isLoading}
@@ -68,15 +69,15 @@
               </Field>
               <Field>
                 <div class="flex items-center">
-                  <FieldLabel for="password-{id}">密码</FieldLabel>
+                  <FieldLabel for="password-{id}">{t('page.login.password')}</FieldLabel>
                   <a href="/forgot-password" class="ms-auto text-sm underline-offset-2 hover:underline">
-                    忘记密码？
+                    {t('page.login.forgotPassword')}
                   </a>
                 </div>
                 <Input 
                   id="password-{id}" 
                   type="password" 
-                  placeholder="请输入密码"
+                  placeholder={t('page.login.passwordPlaceholder')}
                   bind:value={password}
                   required 
                   disabled={authStore.isLoading}
@@ -89,14 +90,14 @@
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    登录中...
+                    {t('page.login.submitting')}
                   {:else}
-                    登录
+                    {t('page.login.submit')}
                   {/if}
                 </Button>
               </Field>
               <FieldSeparator class="*:data-[slot=field-separator-content]:bg-card">
-                或使用其他方式登录
+                {t('page.login.otherMethods')}
               </FieldSeparator>
               <Field class="grid grid-cols-3 gap-4">
                 <Button variant="outline" type="button" disabled={authStore.isLoading}>
@@ -106,7 +107,7 @@
                       fill="currentColor"
                     />
                   </svg>
-                  <span class="sr-only">使用 Apple 登录</span>
+                  <span class="sr-only">{t('page.login.appleLogin')}</span>
                 </Button>
                 <Button variant="outline" type="button" disabled={authStore.isLoading}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -115,7 +116,7 @@
                       fill="currentColor"
                     />
                   </svg>
-                  <span class="sr-only">使用 Google 登录</span>
+                  <span class="sr-only">{t('page.login.googleLogin')}</span>
                 </Button>
                 <Button variant="outline" type="button" disabled={authStore.isLoading}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -124,26 +125,26 @@
                       fill="currentColor"
                     />
                   </svg>
-                  <span class="sr-only">使用 Meta 登录</span>
+                  <span class="sr-only">{t('page.login.metaLogin')}</span>
                 </Button>
               </Field>
               <FieldDescription class="text-center">
-                还没有账户？ <a href="/register" class="underline underline-offset-2 hover:text-primary">注册</a>
+                {t('page.login.noAccount')} <a href="/register" class="underline underline-offset-2 hover:text-primary">{t('page.login.register')}</a>
               </FieldDescription>
             </FieldGroup>
           </form>
           <div class="bg-muted relative hidden md:block">
             <img
               src={loginImg}
-              alt="登录背景"
+              alt={t('page.login.background')}
               class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.9]"
             />
           </div>
         </Card.Content>
       </Card.Root>
       <FieldDescription class="px-6 text-center">
-        点击继续即表示您同意我们的 <a href="/terms" class="underline underline-offset-2 hover:text-primary">服务条款</a> 和
-        <a href="/privacy" class="underline underline-offset-2 hover:text-primary">隐私政策</a>。
+        {t('page.login.terms')} <a href="/terms" class="underline underline-offset-2 hover:text-primary">{t('page.login.termsOfService')}</a> {t('page.login.and')}
+        <a href="/privacy" class="underline underline-offset-2 hover:text-primary">{t('page.login.privacyPolicy')}</a>
       </FieldDescription>
     </div>
   </div>

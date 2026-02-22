@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '首页',
+  title: 'nav.title.dashboard',
   icon: 'tdesign:home',
-  group: '平台',
+  group: 'nav.group.platform',
   order: 1,
   permission: 'dashboard:view'
 };

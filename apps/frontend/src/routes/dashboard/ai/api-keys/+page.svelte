@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
@@ -77,7 +78,7 @@
       if (res.data?.data) apiKeys = res.data.data;
     } catch (err) {
       console.error('Failed to load API keys:', err);
-      toast.error('加载失败');
+      toast.error(t('common.tips.loadFailed'));
     } finally {
       loading = false;
     }
@@ -128,11 +129,11 @@
 
   async function handleCreate() {
     if (!form.name.trim()) {
-      toast.error('请填写密钥名称');
+      toast.error(t('page.ai.apiKey_fillKeyName'));
       return;
     }
     if (!form.accessAll && form.mcpServerIds.length === 0) {
-      toast.error('请至少选择一个 MCP 服务');
+      toast.error(t('page.ai.apiKey_selectAtLeastOneMcp'));
       return;
     }
     
@@ -155,12 +156,12 @@
       
       if (res.data?.token) {
         newKeyValue = res.data.token;
-        toast.success('API 密钥创建成功');
+        toast.success(t('page.ai.apiKey_createSuccess'));
         loadApiKeys();
       }
     } catch (err) {
       console.error('Failed to create:', err);
-      toast.error('创建失败');
+      toast.error(t('common.tips.createFailed'));
     } finally {
       saving = false;
     }
@@ -169,11 +170,11 @@
   async function handleUpdate() {
     if (!editingKey) return;
     if (!editForm.name.trim()) {
-      toast.error('请填写密钥名称');
+      toast.error(t('page.ai.apiKey_fillKeyName'));
       return;
     }
     if (!editForm.accessAll && editForm.mcpServerIds.length === 0) {
-      toast.error('请至少选择一个 MCP 服务');
+      toast.error(t('page.ai.apiKey_selectAtLeastOneMcp'));
       return;
     }
     
@@ -189,48 +190,48 @@
         }
       });
       
-      toast.success('更新成功');
+      toast.success(t('page.ai.apiKey_updateSuccess'));
       editSheetOpen = false;
       loadApiKeys();
     } catch (err) {
       console.error('Failed to update:', err);
-      toast.error('更新失败');
+      toast.error(t('common.tips.updateFailed'));
     } finally {
       editSaving = false;
     }
   }
 
   async function handleRevoke(id: string) {
-    if (!confirm('确定要撤销此 API 密钥吗？撤销后将无法恢复。')) return;
+    if (!confirm(t('page.ai.apiKey_revokeConfirm'))) return;
     
     try {
       const api = authStore.createApi(true);
       await api.ai.postApiAiApiKeyByIdRevoke({ id });
-      toast.success('已撤销');
+      toast.success(t('page.ai.apiKey_revokeSuccess'));
       loadApiKeys();
     } catch (err) {
       console.error('Failed to revoke:', err);
-      toast.error('撤销失败');
+      toast.error(t('common.tips.operationFailed'));
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('确定要删除此 API 密钥吗？')) return;
+    if (!confirm(t('page.ai.apiKey_deleteConfirm'))) return;
     
     try {
       const api = authStore.createApi(true);
       await api.ai.deleteApiAiApiKeyById({ id });
-      toast.success('已删除');
+      toast.success(t('page.ai.apiKey_deleteSuccess'));
       loadApiKeys();
     } catch (err) {
       console.error('Failed to delete:', err);
-      toast.error('删除失败');
+      toast.error(t('common.tips.deleteFailed'));
     }
   }
 
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
-    toast.success('已复制到剪贴板');
+    toast.success(t('page.ai.apiKey_copiedToClipboard'));
   }
 
   function formatDate(dateStr: string | null): string {
@@ -253,7 +254,7 @@
   <div class="py-3 flex items-center justify-between border-b border-border">
     <div class="flex gap-2">
       <Button size="sm" onclick={openCreateDialog}>
-        <Icon icon="mdi:plus" class="mr-1 size-4" />新增密钥
+        <Icon icon="mdi:plus" class="mr-1 size-4" />{t('page.ai.apiKey_addKey')}
       </Button>
     </div>
     <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={loadApiKeys}>
@@ -265,26 +266,26 @@
   {#if loading}
     <div class="flex items-center justify-center py-12 text-muted-foreground">
       <Icon icon="mdi:loading" class="size-6 animate-spin mr-2" />
-      加载中...
+      {t('common.tips.loading')}
     </div>
   {:else if apiKeys.length === 0}
     <div class="flex flex-col items-center justify-center py-12 text-muted-foreground">
       <Icon icon="mdi:key-variant" class="size-12 mb-4 opacity-50" />
-      <p>暂无 API 密钥</p>
-      <p class="text-sm mt-1">创建一个 API 密钥来访问 MCP 服务</p>
+      <p>{t('page.ai.apiKey_noKeys')}</p>
+      <p class="text-sm mt-1">{t('page.ai.apiKey_createHint')}</p>
     </div>
   {:else}
     <Card.Root>
       <Table.Root>
         <Table.Header>
           <Table.Row>
-            <Table.Head>名称</Table.Head>
-            <Table.Head>密钥</Table.Head>
-            <Table.Head>MCP 访问范围</Table.Head>
-            <Table.Head>状态</Table.Head>
-            <Table.Head>过期时间</Table.Head>
-            <Table.Head>最后使用</Table.Head>
-            <Table.Head class="text-right">操作</Table.Head>
+            <Table.Head>{t('page.ai.apiKey_name')}</Table.Head>
+            <Table.Head>{t('page.ai.apiKey_key')}</Table.Head>
+            <Table.Head>{t('page.ai.apiKey_mcpAccess')}</Table.Head>
+            <Table.Head>{t('page.ai.apiKey_status')}</Table.Head>
+            <Table.Head>{t('page.ai.apiKey_expiresAt')}</Table.Head>
+            <Table.Head>{t('page.ai.apiKey_lastUsed')}</Table.Head>
+            <Table.Head class="text-right">{t('page.ai.apiKey_actions')}</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -296,7 +297,7 @@
               </Table.Cell>
               <Table.Cell>
                 {#if key.accessAll}
-                  <Badge variant="default">全部 MCP</Badge>
+                  <Badge variant="default">{t('page.ai.apiKey_allMcp')}</Badge>
                 {:else}
                   <div class="flex flex-wrap gap-1">
                     {#each getMcpNames(key.mcpServerIds).slice(0, 2) as name}
@@ -306,37 +307,37 @@
                       <Badge variant="outline" class="text-xs">+{key.mcpServerIds.length - 2}</Badge>
                     {/if}
                     {#if key.mcpServerIds.length === 0}
-                      <span class="text-muted-foreground text-xs">无</span>
+                      <span class="text-muted-foreground text-xs">{t('page.ai.apiKey_none')}</span>
                     {/if}
                   </div>
                 {/if}
               </Table.Cell>
               <Table.Cell>
                 {#if key.isRevoked}
-                  <Badge variant="destructive">已撤销</Badge>
+                  <Badge variant="destructive">{t('page.ai.apiKey_revoked')}</Badge>
                 {:else if isExpired(key.expiresAt)}
-                  <Badge variant="secondary">已过期</Badge>
+                  <Badge variant="secondary">{t('page.ai.apiKey_expired')}</Badge>
                 {:else}
-                  <Badge variant="default">有效</Badge>
+                  <Badge variant="default">{t('page.ai.apiKey_active')}</Badge>
                 {/if}
               </Table.Cell>
               <Table.Cell class="text-sm text-muted-foreground">
-                {key.expiresAt ? formatDate(key.expiresAt) : '永不过期'}
+                {key.expiresAt ? formatDate(key.expiresAt) : t('page.ai.apiKey_neverExpire')}
               </Table.Cell>
               <Table.Cell class="text-sm text-muted-foreground">
                 {formatDate(key.lastUsedAt)}
               </Table.Cell>
               <Table.Cell class="text-right" onclick={(e: MouseEvent) => e.stopPropagation()}>
                 <div class="flex justify-end gap-1">
-                  <Button variant="ghost" size="icon" onclick={() => openEditSheet(key)} title="编辑">
+                  <Button variant="ghost" size="icon" onclick={() => openEditSheet(key)} title={t('common.edit')}>
                     <Icon icon="mdi:pencil" class="size-4" />
                   </Button>
                   {#if !key.isRevoked && !isExpired(key.expiresAt)}
-                    <Button variant="ghost" size="icon" onclick={() => handleRevoke(key.id)} title="撤销">
+                    <Button variant="ghost" size="icon" onclick={() => handleRevoke(key.id)} title={t('common.revoke')}>
                       <Icon icon="mdi:cancel" class="size-4" />
                     </Button>
                   {/if}
-                  <Button variant="ghost" size="icon" onclick={() => handleDelete(key.id)} title="删除">
+                  <Button variant="ghost" size="icon" onclick={() => handleDelete(key.id)} title={t('common.delete')}>
                     <Icon icon="mdi:delete-outline" class="size-4 text-destructive" />
                   </Button>
                 </div>
@@ -354,8 +355,8 @@
 <Dialog.Root bind:open={createDialogOpen}>
   <Dialog.Content class="sm:max-w-lg">
     <Dialog.Header>
-      <Dialog.Title>创建 API 密钥</Dialog.Title>
-      <Dialog.Description>创建一个新的 API 密钥来访问 MCP 服务</Dialog.Description>
+      <Dialog.Title>{t('page.ai.apiKey_createTitle')}</Dialog.Title>
+      <Dialog.Description>{t('page.ai.apiKey_createDesc')}</Dialog.Description>
     </Dialog.Header>
     
     {#if newKeyValue}
@@ -363,9 +364,9 @@
         <div class="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
           <div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 mb-2">
             <Icon icon="mdi:alert" class="size-5" />
-            <span class="font-medium">请保存此密钥</span>
+            <span class="font-medium">{t('page.ai.apiKey_saveKeyWarning')}</span>
           </div>
-          <p class="text-sm text-amber-600 dark:text-amber-400 mb-3">密钥只会显示一次，请立即复制保存：</p>
+          <p class="text-sm text-amber-600 dark:text-amber-400 mb-3">{t('page.ai.apiKey_saveKeyHint')}</p>
           <div class="flex items-center gap-2">
             <code class="flex-1 text-sm bg-background p-2 rounded border break-all font-mono">{newKeyValue}</code>
             <Button variant="outline" size="icon" onclick={() => copyToClipboard(newKeyValue!)}>
@@ -374,42 +375,42 @@
           </div>
         </div>
         <Button class="w-full" onclick={() => { createDialogOpen = false; }}>
-          我已保存，关闭
+          {t('page.ai.apiKey_savedClose')}
         </Button>
       </div>
     {:else}
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="name">密钥名称 *</Label>
-          <Input id="name" bind:value={form.name} placeholder="例如：production, test, dev-local" />
+          <Label for="name">{t('page.ai.apiKey_keyNameRequired')}</Label>
+          <Input id="name" bind:value={form.name} placeholder={t('page.ai.apiKey_keyNameExample')} />
         </div>
         
         <div class="space-y-2">
-          <Label for="expiresInDays">有效期（天）</Label>
+          <Label for="expiresInDays">{t('page.ai.apiKey_validityDays')}</Label>
           <Input id="expiresInDays" type="number" bind:value={form.expiresInDays} min={0} max={365} />
-          <p class="text-xs text-muted-foreground">设为 0 表示永不过期</p>
+          <p class="text-xs text-muted-foreground">{t('page.ai.apiKey_validityHint')}</p>
         </div>
 
         <div class="space-y-2">
-          <Label for="remark">备注</Label>
-          <Input id="remark" bind:value={form.remark} placeholder="可选，记录用途等信息" />
+          <Label for="remark">{t('page.ai.apiKey_remark')}</Label>
+          <Input id="remark" bind:value={form.remark} placeholder={t('page.ai.apiKey_remarkPlaceholder')} />
         </div>
         
         <div class="flex items-center justify-between rounded-lg border p-3">
           <div class="space-y-0.5">
-            <Label>访问全部 MCP 服务</Label>
-            <p class="text-xs text-muted-foreground">开启后可访问所有 MCP 服务</p>
+            <Label>{t('page.ai.apiKey_accessAllMcp')}</Label>
+            <p class="text-xs text-muted-foreground">{t('page.ai.apiKey_accessAllMcpHint')}</p>
           </div>
           <Switch bind:checked={form.accessAll} />
         </div>
         
         {#if !form.accessAll}
           <div class="space-y-2">
-            <Label>选择可访问的 MCP 服务 ({form.mcpServerIds.length} 已选)</Label>
+            <Label>{t('page.ai.apiKey_selectMcp')} ({form.mcpServerIds.length} {t('page.ai.apiKey_selected')})</Label>
             <ScrollArea class="h-48 rounded-md border p-3">
               {#if mcpServers.length === 0}
                 <div class="text-center py-4 text-muted-foreground">
-                  暂无 MCP 服务，请先创建
+                  {t('page.ai.mcp_noServersCreateFirst')}
                 </div>
               {:else}
                 {#each mcpServers as server}
@@ -424,7 +425,7 @@
                         <div class="text-xs text-muted-foreground truncate">{server.description}</div>
                       {/if}
                       <div class="text-xs text-muted-foreground mt-1">
-                        {server.actions.length} 个 Tools
+                        {server.actions.length} {t('page.ai.apiKey_tools')}
                       </div>
                     </div>
                   </label>
@@ -436,12 +437,12 @@
       </div>
       
       <Dialog.Footer>
-        <Button variant="outline" onclick={() => createDialogOpen = false}>取消</Button>
+        <Button variant="outline" onclick={() => createDialogOpen = false}>{t('common.cancel')}</Button>
         <Button onclick={handleCreate} disabled={saving}>
           {#if saving}
             <Icon icon="mdi:loading" class="mr-2 size-4 animate-spin" />
           {/if}
-          创建
+          {t('common.create')}
         </Button>
       </Dialog.Footer>
     {/if}
@@ -452,8 +453,8 @@
 <Sheet.Root bind:open={editSheetOpen}>
   <Sheet.Content side="right" class="w-full sm:max-w-md flex flex-col">
     <Sheet.Header>
-      <Sheet.Title>编辑 API 密钥</Sheet.Title>
-      <Sheet.Description>修改密钥名称和 MCP 访问范围</Sheet.Description>
+      <Sheet.Title>{t('page.ai.apiKey_editTitle')}</Sheet.Title>
+      <Sheet.Description>{t('page.ai.apiKey_editDesc')}</Sheet.Description>
     </Sheet.Header>
     
     {#if editingKey}
@@ -466,11 +467,11 @@
               <code class="text-sm font-mono">{editingKey.tokenPrefix}</code>
               <div class="flex items-center gap-2 mt-1">
                 {#if editingKey.isRevoked}
-                  <Badge variant="destructive">已撤销</Badge>
+                  <Badge variant="destructive">{t('page.ai.apiKey_revoked')}</Badge>
                 {:else if isExpired(editingKey.expiresAt)}
-                  <Badge variant="secondary">已过期</Badge>
+                  <Badge variant="secondary">{t('page.ai.apiKey_expired')}</Badge>
                 {:else}
-                  <Badge variant="default">有效</Badge>
+                  <Badge variant="default">{t('page.ai.apiKey_active')}</Badge>
                 {/if}
               </div>
             </div>
@@ -478,13 +479,13 @@
 
           <div class="grid gap-3">
             <div class="space-y-1.5">
-              <Label for="edit-name">密钥名称</Label>
+              <Label for="edit-name">{t('page.ai.apiKey_name')}</Label>
               <Input id="edit-name" bind:value={editForm.name} />
             </div>
 
             <div class="space-y-1.5">
-              <Label for="edit-remark">备注</Label>
-              <Input id="edit-remark" bind:value={editForm.remark} placeholder="可选" />
+              <Label for="edit-remark">{t('page.ai.apiKey_remark')}</Label>
+              <Input id="edit-remark" bind:value={editForm.remark} placeholder={t('common.optional')} />
             </div>
           </div>
         </div>
@@ -493,8 +494,8 @@
         <div class="space-y-3">
           <div class="flex items-center justify-between py-2 px-3 rounded-lg border">
             <div>
-              <div class="text-sm font-medium">访问全部 MCP</div>
-              <div class="text-xs text-muted-foreground">开启后可访问所有服务</div>
+              <div class="text-sm font-medium">{t('page.ai.apiKey_accessAllMcpShort')}</div>
+              <div class="text-xs text-muted-foreground">{t('page.ai.apiKey_accessAllMcpShortHint')}</div>
             </div>
             <Switch bind:checked={editForm.accessAll} />
           </div>
@@ -502,13 +503,13 @@
           {#if !editForm.accessAll}
             <div class="space-y-2">
               <div class="flex items-center justify-between">
-                <Label class="text-sm">MCP 服务</Label>
-                <span class="text-xs text-muted-foreground">{editForm.mcpServerIds.length} 已选</span>
+                <Label class="text-sm">{t('page.ai.apiKey_mcpServices')}</Label>
+                <span class="text-xs text-muted-foreground">{editForm.mcpServerIds.length} {t('page.ai.apiKey_selected')}</span>
               </div>
               <div class="rounded-lg border divide-y max-h-40 overflow-y-auto">
                 {#if mcpServers.length === 0}
                   <div class="text-center py-6 text-muted-foreground text-sm">
-                    暂无 MCP 服务
+                    {t('page.ai.mcp_noServers')}
                   </div>
                 {:else}
                   {#each mcpServers as server}
@@ -532,27 +533,27 @@
         <!-- 详细信息 -->
         <div class="rounded-lg border p-3 space-y-2 text-sm">
           <div class="flex justify-between">
-            <span class="text-muted-foreground">创建时间</span>
+            <span class="text-muted-foreground">{t('page.ai.apiKey_createdAt')}</span>
             <span>{formatDate(editingKey.createdAt)}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-muted-foreground">过期时间</span>
-            <span>{editingKey.expiresAt ? formatDate(editingKey.expiresAt) : '永不过期'}</span>
+            <span class="text-muted-foreground">{t('page.ai.apiKey_expiresAt')}</span>
+            <span>{editingKey.expiresAt ? formatDate(editingKey.expiresAt) : t('page.ai.apiKey_neverExpire')}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-muted-foreground">最后使用</span>
+            <span class="text-muted-foreground">{t('page.ai.apiKey_lastUsed')}</span>
             <span>{formatDate(editingKey.lastUsedAt)}</span>
           </div>
         </div>
       </div>
       
       <Sheet.Footer class="border-t pt-4">
-        <Button variant="outline" onclick={() => editSheetOpen = false}>取消</Button>
+        <Button variant="outline" onclick={() => editSheetOpen = false}>{t('common.cancel')}</Button>
         <Button onclick={handleUpdate} disabled={editSaving || editingKey.isRevoked}>
           {#if editSaving}
             <Icon icon="mdi:loading" class="mr-2 size-4 animate-spin" />
           {/if}
-          保存
+          {t('common.save')}
         </Button>
       </Sheet.Footer>
     {/if}

@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1771050216071,
-      "tag": "0000_bitter_arachne",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1771050740415,
-      "tag": "0001_regular_wallop",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1771263790764,
-      "tag": "0002_tricky_next_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1771323618650,
-      "tag": "0003_thick_microchip",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1771338481581,
-      "tag": "0004_violet_tusk",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1771466995317,
-      "tag": "0005_add_knowledge_node",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1771605755333,
-      "tag": "0006_natural_crystal",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1771653544016,
-      "tag": "0007_open_karma",
+      "when": 1771745880795,
+      "tag": "0000_kind_wraith",
       "breakpoints": true
     }
   ]

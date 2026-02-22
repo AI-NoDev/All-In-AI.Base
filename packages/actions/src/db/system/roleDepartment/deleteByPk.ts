@@ -9,6 +9,7 @@ import { roleDepartment } from '@qiyu-allinai/db/entities/system';
 
 export const roleDepartmentDeleteByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleDepartment.deleteByPk',
     displayName: '删除角色部门关联',
     description: `根据复合主键删除角色与部门的关联关系。

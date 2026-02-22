@@ -11,6 +11,7 @@ import type { AISessionMessageSelect, AISessionMessageInsert, TokenUsage } from 
 
 export const aiSessionMessageCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSessionMessage.create',
     displayName: '创建AI会话消息',
     description: `创建单条AI会话消息，自动分配消息序号并更新会话统计。

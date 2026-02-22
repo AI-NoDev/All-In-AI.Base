@@ -10,6 +10,7 @@ import type { RoleMenuInsert } from './utils';
 
 export const roleMenuSetByRoleId = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleMenu.setByRoleId',
     displayName: '设置角色菜单',
     description: `设置指定角色的菜单列表，采用全量替换方式。

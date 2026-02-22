@@ -10,6 +10,7 @@ import type { AgentSessionSelect, AgentSessionInsert } from './utils';
 
 export const agentSessionCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.create',
     displayName: '创建Agent会话',
     description: `创建单个Agent会话记录。

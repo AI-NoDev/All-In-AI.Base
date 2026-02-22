@@ -12,7 +12,7 @@ export const userMemoryGetByPk = defineAction({
     name: 'ai.userMemory.getByPk',
     displayName: '查询用户记忆详情',
     description: '根据ID查询单条用户记忆详情',
-    tags: ['ai', 'memory', 'query'],
+    tags: ['ai', 'memory'],
     method: 'GET',
     path: '/api/ai/user-memory/:id',
   },

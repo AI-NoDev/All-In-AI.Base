@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
-  import { mode } from 'mode-watcher';
   import Icon from '@iconify/svelte';
   import * as Sheet from '$lib/components/ui/sheet';
   import { Button } from '$lib/components/ui/button';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import MarkdownEditor from '$lib/components/common/markdown-editor.svelte';
+  import MarkdownPreview from '$lib/components/common/markdown-preview.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -25,35 +25,9 @@
     onSave 
   }: Props = $props();
 
-  let previewRef: HTMLDivElement | undefined = $state();
   let editor: MarkdownEditor | undefined = $state();
   let saving = $state(false);
   let editorReady = $state(false);
-
-  let isDark = $derived(mode.current === 'dark');
-
-  async function renderPreview() {
-    if (!browser || !previewRef) return;
-    
-    const Vditor = (await import('vditor')).default;
-    await import('vditor/dist/index.css');
-    
-    const content = currentDescription || '';
-    if (content) {
-      Vditor.preview(previewRef, content, {
-        mode: isDark ? 'dark' : 'light',
-        theme: {
-          current: isDark ? 'dark' : 'light',
-        },
-      });
-    }
-  }
-
-  $effect(() => {
-    if (open && readOnly) {
-      setTimeout(() => renderPreview(), 100);
-    }
-  });
 
   function handleEditorReady() {
     editorReady = true;
@@ -99,7 +73,7 @@
     <Sheet.Header>
       <Sheet.Title class="flex items-center gap-2">
         <Icon icon="tdesign:file-setting" class="size-5" />
-        {readOnly ? '查看描述' : '编辑描述'}
+        {readOnly ? t('page.knowledge.viewDescription') : t('page.knowledge.editDescription')}
       </Sheet.Title>
       <Sheet.Description class="flex items-center gap-1">
         <span class="truncate max-w-[300px]">{title}</span>
@@ -109,7 +83,7 @@
               <Icon icon="tdesign:help-circle" class="size-4 text-muted-foreground" />
             </Tooltip.Trigger>
             <Tooltip.Content>
-              <p>描述有助于 AI 理解文件内容</p>
+              <p>{t('page.knowledge.descriptionHelp')}</p>
             </Tooltip.Content>
           </Tooltip.Root>
         {/if}
@@ -119,23 +93,25 @@
     <div class="flex-1 flex flex-col min-h-0 py-4">
       {#if readOnly}
         {#if currentDescription}
-          <div bind:this={previewRef} class="vditor-preview flex-1 overflow-auto border rounded-lg p-4"></div>
+          <div class="flex-1 overflow-auto border rounded-lg p-4">
+            <MarkdownPreview value={currentDescription} />
+          </div>
         {:else}
           <div class="flex-1 flex items-center justify-center text-muted-foreground">
-            暂无描述
+            {t('page.knowledge.noDescription')}
           </div>
         {/if}
       {:else if open}
         <MarkdownEditor
           bind:this={editor}
           value={currentDescription || ''}
-          placeholder="使用 Markdown 格式编写描述..."
+          placeholder={t('page.knowledge.descriptionPlaceholder')}
           height={350}
           onReady={handleEditorReady}
         />
         {#if editorReady}
           <p class="text-xs text-muted-foreground mt-2">
-            支持 Markdown 格式，描述有助于 AI 理解文件内容
+            {t('page.knowledge.descriptionHint')}
           </p>
         {/if}
       {/if}
@@ -143,22 +119,16 @@
 
     <Sheet.Footer>
       {#if readOnly}
-        <Button onclick={handleClose}>关闭</Button>
+        <Button onclick={handleClose}>{t('common.actions.close')}</Button>
       {:else}
-        <Button variant="outline" onclick={handleClose} disabled={saving}>取消</Button>
+        <Button variant="outline" onclick={handleClose} disabled={saving}>{t('common.actions.cancel')}</Button>
         <Button onclick={handleSave} disabled={saving || !editorReady}>
           {#if saving}
             <Icon icon="tdesign:loading" class="size-4 mr-2 animate-spin" />
           {/if}
-          保存
+          {t('common.actions.save')}
         </Button>
       {/if}
     </Sheet.Footer>
   </Sheet.Content>
 </Sheet.Root>
-
-<style>
-  :global(.vditor-preview) {
-    font-size: 14px;
-  }
-</style>

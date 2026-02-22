@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '角色管理',
+  title: 'nav.title.roles',
   icon: 'tdesign:usergroup',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 11,
   permission: 'system:role:view'
 };

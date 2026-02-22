@@ -12,6 +12,7 @@ import type { DepartmentSelect, DepartmentInsert } from './utils';
 export const departmentUpdateMany = defineAction({
   meta: {
     name: 'system.department.updateMany',
+    ignoreTools: true,
     displayName: '批量更新部门',
     description: '根据ID列表批量更新部门',
     tags: ['system', 'department'],

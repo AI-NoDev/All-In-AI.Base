@@ -1,5 +1,5 @@
 export const _meta = {
-  title: '新建文本文件',
+  title: 'nav.title.createTextFile',
   icon: 'tdesign:file-add',
   hidden: true,
   permission: 'knowledge:file:create',

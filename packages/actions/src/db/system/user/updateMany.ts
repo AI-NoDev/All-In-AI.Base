@@ -13,6 +13,7 @@ import { checkIsSystemAdmin, sanitizeUser, type UserSelect, type UserInsert } fr
 export const userUpdateMany = defineAction({
   meta: {
     name: 'system.user.updateMany',
+    ignoreTools: true,
     displayName: '批量更新用户',
     description: '根据ID列表批量更新用户',
     tags: ['system', 'user'],

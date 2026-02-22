@@ -11,6 +11,7 @@ import { nodeIdParamsSchema, versionListOutputSchema } from './schemas';
 
 export const versionList = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.version.list',
     displayName: '获取版本列表',
     description: `获取文件的所有历史版本列表。

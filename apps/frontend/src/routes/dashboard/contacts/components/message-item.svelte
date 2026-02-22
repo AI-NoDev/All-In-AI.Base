@@ -4,6 +4,7 @@
   import { Avatar, AvatarFallback, AvatarImage } from '$lib/components/ui/avatar';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { FileIcon } from '@qiyu-allinai/file-icons';
   import { onMount } from 'svelte';
 
@@ -71,7 +72,7 @@
 
   function getUserName(userId: string): string {
     const user = imStore.users.get(userId);
-    return user?.name || user?.loginName || '未知用户';
+    return user?.name || user?.loginName || t('page.im.unknownUser');
   }
 
   function getInitials(name: string | null): string {
@@ -163,7 +164,7 @@
         <ContextMenu.Trigger>
           <div class="rounded-lg cursor-pointer {message.msgType === '03' || message.msgType === '04' ? '' : 'px-3 py-2'} {message.msgType === '03' || message.msgType === '04' ? '' : isCurrentUser(message.senderId) ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
             {#if message.isRecalled}
-              <span class="text-muted-foreground italic text-sm">消息已撤回</span>
+              <span class="text-muted-foreground italic text-sm">{t('page.im.recalled')}</span>
             {:else if message.msgType === '01'}
               <span class="whitespace-pre-wrap break-words">{message.content.text || ''}</span>
             {:else if message.msgType === '06'}
@@ -184,7 +185,7 @@
                 {:else if mediaUrl}
                   <img 
                     src={mediaUrl} 
-                    alt={message.content.fileName || '图片'} 
+                    alt={message.content.fileName || t('page.im.image')} 
                     class="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -216,11 +217,11 @@
                 {/if}
               </div>
             {:else if message.msgType === '05'}
-              <span class="text-sm">[语音]</span>
+              <span class="text-sm">{t('page.im.voice')}</span>
             {:else if message.msgType === '07'}
-              <span class="text-sm text-muted-foreground">{message.content.text || '[系统消息]'}</span>
+              <span class="text-sm text-muted-foreground">{message.content.text || t('page.im.systemMessage')}</span>
             {:else}
-              <span class="text-sm">[未知消息类型]</span>
+              <span class="text-sm">{t('page.im.unknownMessageType')}</span>
             {/if}
           </div>
         </ContextMenu.Trigger>
@@ -228,25 +229,25 @@
           {#if canRecallMessage(message)}
             <ContextMenu.Item onclick={() => handleRecallMessage(message.id)}>
               <Icon icon="mdi:undo" class="mr-2 size-4" />
-              撤回
+              {t('page.im.recall')}
             </ContextMenu.Item>
           {/if}
           {#if !message.isRecalled}
             <ContextMenu.Item onclick={() => copyMessageText(message.content, message.msgType)}>
               <Icon icon="mdi:content-copy" class="mr-2 size-4" />
-              复制
+              {t('page.im.copy')}
             </ContextMenu.Item>
             {#if (isFileMessage(message.msgType) || isMediaMessage(message.msgType)) && message.content.fileId}
               <ContextMenu.Item onclick={() => downloadFile(message.content)}>
                 <Icon icon="mdi:download" class="mr-2 size-4" />
-                下载
+                {t('page.im.download')}
               </ContextMenu.Item>
             {/if}
           {/if}
         </ContextMenu.Content>
       </ContextMenu.Root>
       <span class="text-xs text-muted-foreground">
-        {new Date(message.createdAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+        {new Date(message.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
       </span>
     </div>
   </div>

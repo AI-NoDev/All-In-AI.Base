@@ -4,6 +4,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Agent {
     id: string;
@@ -58,7 +59,7 @@
   <div class="py-3 flex items-center justify-between border-b border-border">
     <div class="flex gap-2">
       <Button size="sm" onclick={onCreate}>
-        <Icon icon="mdi:plus" class="mr-1 size-4" />新增智能体
+        <Icon icon="mdi:plus" class="mr-1 size-4" />{t('page.ai.agent_addAgent')}
       </Button>
     </div>
     <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onRefresh}>
@@ -91,11 +92,11 @@
                   <div class="flex items-center gap-2">
                     <h3 class="font-medium truncate">{agent.name}</h3>
                     <Badge variant={agent.status === '0' ? 'default' : 'secondary'} class="shrink-0">
-                      {agent.status === '0' ? '正常' : '停用'}
+                      {agent.status === '0' ? t('page.ai.agent_statusNormal') : t('page.ai.agent_statusDisabled')}
                     </Badge>
                   </div>
                   <p class="text-sm text-muted-foreground line-clamp-2 mt-1">
-                    {agent.description || '暂无描述'}
+                    {agent.description || t('page.ai.agent_noDescription')}
                   </p>
                 </div>
               </div>
@@ -122,7 +123,7 @@
             </div>
           {:else}
             <div class="col-span-full h-48 flex items-center justify-center text-muted-foreground">
-              暂无智能体
+              {t('page.ai.agent_noAgents')}
             </div>
           {/each}
         </div>

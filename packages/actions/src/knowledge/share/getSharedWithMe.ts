@@ -11,6 +11,7 @@ import { sharedWithMeBodySchema, sharedWithMeOutputSchema } from './schemas';
 
 export const shareGetSharedWithMe = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.share.getSharedWithMe',
     displayName: '获取共享给我的资源',
     description: `获取他人共享给当前用户的节点，支持文件夹层级浏览。

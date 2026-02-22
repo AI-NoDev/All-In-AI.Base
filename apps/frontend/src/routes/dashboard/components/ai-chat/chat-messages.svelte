@@ -7,6 +7,7 @@
   import { Button } from '$lib/components/ui/button';
   import { MarkdownRenderer, AudioPlayer } from '$lib/components/common';
   import { aiChatStore, type AIAgent, type AIModel } from '@/lib/stores/ai-chat.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { toast } from 'svelte-sonner';
   import type { UIMessage } from 'ai';
 
@@ -143,10 +144,10 @@
   }
 
   function getFileTypeLabel(part: FilePart): string {
-    if (isImageFile(part)) return '图片';
-    if (isAudioFile(part)) return '音频';
-    if (isVideoFile(part)) return '视频';
-    return '文件';
+    if (isImageFile(part)) return t('page.ai.chat_fileImage');
+    if (isAudioFile(part)) return t('page.ai.chat_fileAudio');
+    if (isVideoFile(part)) return t('page.ai.chat_fileVideo');
+    return t('page.ai.chat_fileGeneric');
   }
 
   async function downloadFile(part: FilePart) {
@@ -177,10 +178,10 @@
         document.body.removeChild(link);
         URL.revokeObjectURL(blobUrl);
       }
-      toast.success('下载成功');
+      toast.success(t('page.ai.chat_downloadSuccess'));
     } catch (e) {
       console.error('Download failed:', e);
-      toast.error('下载失败');
+      toast.error(t('page.ai.chat_downloadFailed'));
     }
   }
 
@@ -203,10 +204,10 @@
   async function copyToClipboard(text: string) {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success('已复制到剪贴板');
+      toast.success(t('page.ai.chat_copiedToClipboard'));
     } catch (e) {
       console.error('Failed to copy:', e);
-      toast.error('复制失败');
+      toast.error(t('page.ai.chat_copyFailed'));
     }
   }
 
@@ -261,7 +262,7 @@
       {#if isImageFile(file)}
         <img 
           src={getFileUrl(file)} 
-          alt="附件图片" 
+          alt={t('page.ai.chat_attachmentImage')} 
           class="max-h-[200px] rounded-lg object-cover cursor-pointer hover:opacity-90"
           style="max-width: {maxWidth}"
         />
@@ -276,23 +277,23 @@
       {:else}
         <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted hover:bg-muted/80 cursor-pointer">
           <Icon icon="mdi:file-outline" class="size-4" />
-          <span class="text-sm">附件文件</span>
+          <span class="text-sm">{t('page.ai.chat_attachmentFile')}</span>
         </div>
       {/if}
     </ContextMenu.Trigger>
     <ContextMenu.Content class="w-48">
       <ContextMenu.Item onclick={() => openInNewTab(file)}>
         <Icon icon="mdi:open-in-new" class="mr-2 size-4" />
-        在新标签页打开
+        {t('page.ai.chat_openInNewTab')}
       </ContextMenu.Item>
       <ContextMenu.Item onclick={() => downloadFile(file)}>
         <Icon icon="mdi:download" class="mr-2 size-4" />
-        下载{getFileTypeLabel(file)}
+        {t('page.ai.chat_downloadFile').replace('${type}', getFileTypeLabel(file))}
       </ContextMenu.Item>
       <ContextMenu.Separator />
       <ContextMenu.Item onclick={() => copyToClipboard(getFileUrl(file))}>
         <Icon icon="mdi:link" class="mr-2 size-4" />
-        复制链接
+        {t('page.ai.chat_copyLink')}
       </ContextMenu.Item>
     </ContextMenu.Content>
   </ContextMenu.Root>
@@ -304,8 +305,8 @@
       {#if messages.length === 0}
         <div class="flex flex-col items-center justify-center py-12 text-muted-foreground">
           <Icon icon="mdi:robot-outline" class="size-12 mb-4 opacity-50" />
-          <p class="text-sm">开始一个新对话</p>
-          <p class="text-xs mt-1">选择模型或智能体，然后输入消息</p>
+          <p class="text-sm">{t('page.ai.chat_startNewChat')}</p>
+          <p class="text-xs mt-1">{t('page.ai.chat_selectModelHint')}</p>
         </div>
       {:else}
         {#each messages as message, index (message.id)}
@@ -324,7 +325,7 @@
                     {#each images as img}
                       <img 
                         src={img.image} 
-                        alt="消息图片" 
+                        alt={t('page.ai.chat_messageImage')} 
                         class="max-w-[200px] max-h-[200px] rounded-lg object-cover cursor-pointer hover:opacity-90"
                         onclick={() => window.open(img.image, '_blank')}
                       />
@@ -350,10 +351,10 @@
                     ></textarea>
                     <div class="flex justify-end gap-2 mt-2">
                       <Button variant="ghost" size="sm" onclick={cancelEdit}>
-                        取消
+                        {t('page.ai.chat_cancel')}
                       </Button>
                       <Button size="sm" onclick={() => saveEdit(index)}>
-                        保存并重新生成
+                        {t('page.ai.chat_saveAndRegenerate')}
                       </Button>
                     </div>
                   </div>
@@ -367,14 +368,14 @@
                     <button 
                       class="hover:text-foreground transition-colors p-1"
                       onclick={() => copyToClipboard(textContent)}
-                      title="复制"
+                      title={t('page.ai.chat_copy')}
                     >
                       <Icon icon="mdi:content-copy" class="size-3.5" />
                     </button>
                     <button 
                       class="hover:text-foreground transition-colors p-1"
                       onclick={() => startEdit(message)}
-                      title="编辑"
+                      title={t('page.ai.chat_edit')}
                     >
                       <Icon icon="mdi:pencil" class="size-3.5" />
                     </button>
@@ -394,7 +395,7 @@
                 >
                   <Collapsible.Trigger class="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg bg-muted/50 border border-border/50">
                     <Icon icon="mdi:lightbulb-outline" class="size-4" />
-                    <span>思考过程</span>
+                    <span>{t('page.ai.chat_thinkingProcess')}</span>
                     <Icon icon="mdi:chevron-down" class="size-4 ml-auto" />
                   </Collapsible.Trigger>
                   <Collapsible.Content>
@@ -411,7 +412,7 @@
                   {#each images as img}
                     <img 
                       src={img.image} 
-                      alt="消息图片" 
+                      alt={t('page.ai.chat_messageImage')} 
                       class="max-w-[300px] max-h-[300px] rounded-lg object-cover cursor-pointer hover:opacity-90"
                       onclick={() => window.open(img.image, '_blank')}
                     />
@@ -441,7 +442,7 @@
                   <span>{formatTime(message.createdAt)}</span>
                 {/if}
                 {#if message.latencyMs}
-                  <span>耗时 {formatLatency(message.latencyMs)}</span>
+                  <span>{t('page.ai.chat_latency')} {formatLatency(message.latencyMs)}</span>
                 {/if}
                 {#if message.tokenUsage?.totalTokens}
                   <Tooltip.Root>
@@ -450,30 +451,30 @@
                     </Tooltip.Trigger>
                     <Tooltip.Content class="max-w-xs">
                       <div class="space-y-1 text-xs">
-                        <div class="font-medium">Token 使用详情</div>
+                        <div class="font-medium">{t('page.ai.chat_tokenUsageDetail')}</div>
                         <div class="grid grid-cols-2 gap-x-4 gap-y-0.5">
                           {#if message.tokenUsage.inputTokens !== undefined}
-                            <span class="text-muted-foreground">输入:</span>
+                            <span class="text-muted-foreground">{t('page.ai.chat_tokenInput')}:</span>
                             <span>{message.tokenUsage.inputTokens}</span>
                           {/if}
                           {#if message.tokenUsage.outputTokens !== undefined}
-                            <span class="text-muted-foreground">输出:</span>
+                            <span class="text-muted-foreground">{t('page.ai.chat_tokenOutput')}:</span>
                             <span>{message.tokenUsage.outputTokens}</span>
                           {/if}
                           {#if message.tokenUsage.inputTokenDetails?.cacheReadTokens}
-                            <span class="text-muted-foreground">缓存读取:</span>
+                            <span class="text-muted-foreground">{t('page.ai.chat_tokenCacheRead')}:</span>
                             <span>{message.tokenUsage.inputTokenDetails.cacheReadTokens}</span>
                           {/if}
                           {#if message.tokenUsage.inputTokenDetails?.cacheWriteTokens}
-                            <span class="text-muted-foreground">缓存写入:</span>
+                            <span class="text-muted-foreground">{t('page.ai.chat_tokenCacheWrite')}:</span>
                             <span>{message.tokenUsage.inputTokenDetails.cacheWriteTokens}</span>
                           {/if}
                           {#if message.tokenUsage.outputTokenDetails?.reasoningTokens}
-                            <span class="text-muted-foreground">推理:</span>
+                            <span class="text-muted-foreground">{t('page.ai.chat_tokenReasoning')}:</span>
                             <span>{message.tokenUsage.outputTokenDetails.reasoningTokens}</span>
                           {/if}
                           {#if message.tokenUsage.outputTokenDetails?.textTokens}
-                            <span class="text-muted-foreground">文本:</span>
+                            <span class="text-muted-foreground">{t('page.ai.chat_tokenText')}:</span>
                             <span>{message.tokenUsage.outputTokenDetails.textTokens}</span>
                           {/if}
                         </div>
@@ -484,7 +485,7 @@
                 <button 
                   class="hover:text-foreground transition-colors p-1 ml-auto"
                   onclick={() => copyToClipboard(textContent)}
-                  title="复制"
+                  title={t('page.ai.chat_copy')}
                 >
                   <Icon icon="mdi:content-copy" class="size-3.5" />
                 </button>
@@ -498,7 +499,7 @@
           <div class="w-full">
             <div class="flex items-center gap-2 text-muted-foreground">
               <Icon icon="mdi:loading" class="size-4 animate-spin" />
-              <span class="text-sm">正在思考...</span>
+              <span class="text-sm">{t('page.ai.chat_thinking')}</span>
             </div>
           </div>
         {/if}

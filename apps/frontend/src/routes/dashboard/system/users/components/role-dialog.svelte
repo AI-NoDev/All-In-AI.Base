@@ -5,6 +5,7 @@
   import { ItemSelector } from '$lib/components/ui/item-selector';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { PostApiSystemRoleQueryFieldEnum, PostApiSystemRoleQueryOrderEnum } from '@qiyu-allinai/api';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Role {
     id: string;
@@ -28,12 +29,12 @@
   let loading = $state(false);
   let saving = $state(false);
 
-  // 转换为 ItemSelector 需要的格式
+  // Convert to ItemSelector format
   let selectorItems = $derived(roles.map(r => ({
     id: r.id,
     label: r.name,
     description: r.key,
-    badge: r.key === 'admin' ? '管理员' : undefined,
+    badge: r.key === 'admin' ? t('page.system.user.admin') : undefined,
     badgeVariant: r.key === 'admin' ? 'destructive' as const : undefined,
   })));
 
@@ -42,7 +43,7 @@
     try {
       const api = authStore.createApi(true);
       
-      // 加载所有角色
+      // Load all roles
       const roleRes = await api.system.postApiSystemRoleQuery({
         limit: 100,
         offset: 0,
@@ -53,7 +54,7 @@
         roles = roleRes.data.data;
       }
       
-      // 加载用户已有的角色
+      // Load user's existing roles
       const userRoleRes = await api.system.getApiSystemUserRoleUserByUserId({ userId });
       if (userRoleRes.data) {
         selectedIds = userRoleRes.data;
@@ -77,7 +78,7 @@
       open = false;
     } catch (err) {
       console.error('Failed to save roles:', err);
-      alert('保存失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       saving = false;
     }
@@ -93,7 +94,7 @@
 <Dialog.Root bind:open onOpenChange={(v) => !v && onClose()}>
   <Dialog.Content class="sm:max-w-md max-h-[80vh] flex flex-col">
     <Dialog.Header>
-      <Dialog.Title>分配角色 - {userName}</Dialog.Title>
+      <Dialog.Title>{t('page.system.user.assignRole')} - {userName}</Dialog.Title>
     </Dialog.Header>
     
     <div class="flex-1 min-h-0 py-4">
@@ -108,17 +109,15 @@
           items={selectorItems}
           bind:selected={selectedIds}
           mode="multiple"
-          searchPlaceholder="搜索角色..."
-          emptyText="暂无可用角色"
           maxHeight="350px"
         />
       {/if}
     </div>
     
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => open = false}>取消</Button>
+      <Button variant="outline" onclick={() => open = false}>{t('common.actions.cancel')}</Button>
       <Button onclick={handleSave} disabled={saving || loading}>
-        {saving ? '保存中...' : '保存'}
+        {saving ? t('common.tips.saving') : t('common.actions.save')}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

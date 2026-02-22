@@ -6,6 +6,7 @@
   import { Input } from '$lib/components/ui/input';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { Skeleton } from '$lib/components/ui/skeleton';
+  import { t } from '@/lib/stores/i18n.svelte';
   import mdiIcons from '@iconify-json/mdi/icons.json';
 
   interface Props {
@@ -14,7 +15,7 @@
     placeholder?: string;
   }
 
-  let { value = $bindable(''), onValueChange, placeholder = '选择图标' }: Props = $props();
+  let { value = $bindable(''), onValueChange, placeholder }: Props = $props();
 
   let open = $state(false);
   let search = $state('');
@@ -77,7 +78,7 @@
         <span class="truncate text-sm">{value}</span>
       {:else}
         <Icon icon="mdi:image-outline" class="size-5 text-muted-foreground" />
-        <span class="text-muted-foreground">{placeholder}</span>
+        <span class="text-muted-foreground">{placeholder || t('fields.icon')}</span>
       {/if}
     </Button>
   </Popover.Trigger>
@@ -85,7 +86,7 @@
     <div class="p-3 border-b">
       <Input
         bind:value={search}
-        placeholder="搜索图标... (共 {allIconNames.length} 个)"
+        placeholder={t('tips.searchPlaceholder')}
         class="h-8"
       />
     </div>
@@ -98,7 +99,7 @@
         </div>
       {:else if filteredIcons.length === 0}
         <div class="flex items-center justify-center h-32 text-muted-foreground text-sm">
-          {search ? '未找到匹配的图标' : '暂无图标'}
+          {t('tips.noData')}
         </div>
       {:else}
         <div class="grid grid-cols-8 gap-1 p-3">
@@ -124,7 +125,7 @@
           class="h-6 px-2 text-xs"
           onclick={clearValue}
         >
-          清除
+          {t('actions.clear')}
         </Button>
       </div>
     {/if}

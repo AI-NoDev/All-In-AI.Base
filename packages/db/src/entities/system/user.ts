@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, jsonb } from 'drizzle-orm/pg-core';
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
   createZodSchemas, createPermissions,
@@ -22,6 +22,7 @@ import {
   db_system_user_loginIp,
   db_system_user_loginDate,
   db_system_user_pwdUpdateDate,
+  db_system_user_preferences,
 } from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
@@ -110,6 +111,11 @@ const userOwnFields = {
   pwdUpdateDate: {
     field: timestamp('pwd_update_date'),
     comment: db_system_user_pwdUpdateDate,
+    config: { canExport: false, canImport: false }
+  },
+  preferences: {
+    field: jsonb('preferences'),
+    comment: db_system_user_preferences,
     config: { canExport: false, canImport: false }
   },
 } satisfies FieldMap;

@@ -11,6 +11,7 @@ import type { UserPostSelect } from './utils';
 
 export const userPostGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userPost.getByPagination',
     displayName: '分页查询用户岗位关联',
     description: `分页查询用户与岗位的关联关系。

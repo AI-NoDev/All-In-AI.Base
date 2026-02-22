@@ -12,7 +12,7 @@ export const userMemoryDeleteByPk = defineAction({
     name: 'ai.userMemory.deleteByPk',
     displayName: '删除用户记忆',
     description: '软删除用户记忆（设置状态为禁用）',
-    tags: ['ai', 'memory', 'delete'],
+    tags: ['ai', 'memory'],
     method: 'DELETE',
     path: '/api/ai/user-memory/:id',
   },

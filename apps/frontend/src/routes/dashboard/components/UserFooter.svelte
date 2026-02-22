@@ -1,5 +1,4 @@
 <script lang="ts">
-  import CreditCardIcon from '@iconify-svelte/tdesign/creditcard';
   import DotsVerticalIcon from '@iconify-svelte/tdesign/ellipsis';
   import LogoutIcon from '@iconify-svelte/tdesign/logout';
   import NotificationIcon from '@iconify-svelte/tdesign/notification';
@@ -10,18 +9,30 @@
   import * as Sidebar from '$lib/components/ui/sidebar';
   import { goto } from '$app/navigation';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { i18n, t } from '@/lib/stores/i18n.svelte';
+  import { tabsStore } from '@/lib/stores/tabs.svelte';
+
+  let _ = $derived(i18n.version);
 
   const sidebar = Sidebar.useSidebar();
 
-  // 从 authStore 获取用户信息
   const user = $derived(authStore.user ? {
     name: authStore.user.name || authStore.user.loginName,
     email: authStore.user.email || '',
     avatar: authStore.user.avatar || ''
   } : null);
 
-  // 获取用户名首字母作为头像 fallback
   const initials = $derived(user?.name ? user.name.slice(0, 2).toUpperCase() : 'U');
+
+  function handleAccount() {
+    tabsStore.open('/dashboard/account', 'nav.title.account');
+    goto('/dashboard/account');
+  }
+
+  function handleNotifications() {
+    tabsStore.open('/dashboard/notifications', 'nav.title.notifications');
+    goto('/dashboard/notifications');
+  }
 
   async function handleLogout() {
     await authStore.logout();
@@ -66,6 +77,7 @@
         align="end"
         sideOffset={4}
       >
+        {#key _}
         <DropdownMenu.Label class="p-0 font-normal">
           <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
             {#if user}
@@ -88,24 +100,21 @@
         </DropdownMenu.Label>
         <DropdownMenu.Separator />
         <DropdownMenu.Group>
-          <DropdownMenu.Item>
+          <DropdownMenu.Item onclick={handleAccount}>
             <UserCircleIcon />
-            账户
+            {t('nav.userMenu_account')}
           </DropdownMenu.Item>
-          <DropdownMenu.Item>
-            <CreditCardIcon />
-            账单
-          </DropdownMenu.Item>
-          <DropdownMenu.Item>
+          <DropdownMenu.Item onclick={handleNotifications}>
             <NotificationIcon />
-            通知
+            {t('nav.userMenu_notifications')}
           </DropdownMenu.Item>
         </DropdownMenu.Group>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onclick={handleLogout}>
           <LogoutIcon />
-          退出登录
+          {t('nav.userMenu_logout')}
         </DropdownMenu.Item>
+        {/key}
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   </Sidebar.MenuItem>

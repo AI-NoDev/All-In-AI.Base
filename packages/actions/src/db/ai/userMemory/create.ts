@@ -12,7 +12,7 @@ export const userMemoryCreate = defineAction({
     name: 'ai.userMemory.create',
     displayName: '创建用户记忆',
     description: '创建一条新的用户记忆，支持自动生成向量嵌入',
-    tags: ['ai', 'memory', 'create'],
+    tags: ['ai', 'memory'],
     method: 'POST',
     path: '/api/ai/user-memory',
   },

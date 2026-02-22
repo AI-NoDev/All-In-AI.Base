@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
   import * as Table from '$lib/components/ui/table';
@@ -44,7 +45,7 @@
   let loading = $state(true);
   let folders = $state<FavoriteFolder[]>([]);
   let files = $state<FavoriteFile[]>([]);
-  let pathStack = $state<PathItem[]>([{ id: null, name: '收藏' }]);
+  let pathStack = $state<PathItem[]>([{ id: null, name: t('page.knowledge.favorites') }]);
   let currentFolderId = $state<string | null>(null);
   let favoritedFolderIds = $state<Set<string>>(new Set());
   let favoritedFileIds = $state<Set<string>>(new Set());
@@ -99,7 +100,7 @@
         await loadFavoriteStatus();
       }
     } catch (err) {
-      console.error('加载收藏数据失败:', err);
+      console.error(t('page.knowledge.loadFavoritesFailed'), err);
       folders = [];
       files = [];
     } finally {
@@ -121,7 +122,7 @@
       favoritedFolderIds = new Set(folders.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
       favoritedFileIds = new Set(files.filter(f => favoritedIds.includes(f.id)).map(f => f.id));
     } catch (err) {
-      console.error('加载收藏状态失败:', err);
+      console.error(t('page.knowledge.loadFavoriteStatusFailed'), err);
     }
   }
 
@@ -163,7 +164,7 @@
         window.open(res.data.url, '_blank');
       }
     } catch (err) {
-      console.error('获取下载链接失败:', err);
+      console.error(t('page.knowledge.getDownloadUrlFailed'), err);
     }
   }
 
@@ -183,7 +184,7 @@
         favoritedFolderIds = new Set([...favoritedFolderIds, folder.id]);
       }
     } catch (err) {
-      console.error('切换收藏失败:', err);
+      console.error(t('page.knowledge.toggleFavoriteFailed'), err);
     }
   }
 
@@ -203,16 +204,16 @@
         favoritedFileIds = new Set([...favoritedFileIds, file.id]);
       }
     } catch (err) {
-      console.error('切换收藏失败:', err);
+      console.error(t('page.knowledge.toggleFavoriteFailed'), err);
     }
   }
 
   function getPermissionLabel(permission: string | undefined): string {
     switch (permission) {
-      case 'manage': return '管理';
-      case 'write': return '编辑';
-      case 'read': return '只读';
-      case 'none': return '无权限';
+      case 'manage': return t('page.knowledge.permission_manage');
+      case 'write': return t('page.knowledge.permission_write');
+      case 'read': return t('page.knowledge.permission_read');
+      case 'none': return t('page.knowledge.permission_none');
       default: return '-';
     }
   }
@@ -240,8 +241,8 @@
     {#if !loading && folders.length === 0 && files.length === 0 && currentFolderId === null}
       <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
         <Icon icon="tdesign:star" class="size-16 mb-4 opacity-50" />
-        <p class="text-lg">您还没有收藏任何文件</p>
-        <p class="text-sm">在文件列表中点击星标即可收藏</p>
+        <p class="text-lg">{t('page.knowledge.noFavorites')}</p>
+        <p class="text-sm">{t('page.knowledge.favoritesHint')}</p>
       </div>
     {:else}
       <KnowledgeFileList
@@ -261,17 +262,17 @@
       >
         {#snippet extraHeaderColumns()}
           {#if currentFolderId === null}
-            <Table.Head class="text-left w-20">来源</Table.Head>
-            <Table.Head class="text-left w-20">权限</Table.Head>
+            <Table.Head class="text-left w-20">{t('common.fields.source')}</Table.Head>
+            <Table.Head class="text-left w-20">{t('page.knowledge.sharePermission')}</Table.Head>
           {/if}
         {/snippet}
         {#snippet extraFolderColumns(folder)}
           {#if currentFolderId === null}
             <Table.Cell class="text-sm">
               {#if folder.isOwner}
-                <Badge variant="outline">我的</Badge>
+                <Badge variant="outline">{t('page.knowledge.source_mine')}</Badge>
               {:else}
-                <Badge variant="secondary">共享</Badge>
+                <Badge variant="secondary">{t('page.knowledge.source_shared')}</Badge>
               {/if}
             </Table.Cell>
             <Table.Cell class="text-sm">
@@ -283,9 +284,9 @@
           {#if currentFolderId === null}
             <Table.Cell class="text-sm">
               {#if file.isOwner}
-                <Badge variant="outline">我的</Badge>
+                <Badge variant="outline">{t('page.knowledge.source_mine')}</Badge>
               {:else}
-                <Badge variant="secondary">共享</Badge>
+                <Badge variant="secondary">{t('page.knowledge.source_shared')}</Badge>
               {/if}
             </Table.Cell>
             <Table.Cell class="text-sm">

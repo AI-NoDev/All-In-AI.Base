@@ -4,6 +4,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -79,7 +80,7 @@
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
   <Dialog.Content class="sm:max-w-md">
     <Dialog.Header>
-      <Dialog.Title>修改文件夹样式 - {folderName}</Dialog.Title>
+      <Dialog.Title>{t('page.knowledge.editStyle')} - {folderName}</Dialog.Title>
     </Dialog.Header>
     <div class="py-4 space-y-4">
       <div class="flex items-center justify-center p-4 bg-muted rounded-lg">
@@ -91,7 +92,7 @@
       </div>
 
       <div class="space-y-2">
-        <Label>图标</Label>
+        <Label>{t('common.fields_icon')}</Label>
         <div class="flex flex-wrap gap-2">
           {#each presetIcons as presetIcon}
             <button
@@ -105,13 +106,13 @@
         </div>
         <Input
           bind:value={icon}
-          placeholder="自定义图标 (如 tdesign:folder)"
+          placeholder={t('page.knowledge.customIconPlaceholder')}
           class="mt-2"
         />
       </div>
 
       <div class="space-y-2">
-        <Label>颜色</Label>
+        <Label>{t('common.fields_color')}</Label>
         <div class="flex flex-wrap gap-2">
           {#each presetColors as presetColor}
             <button
@@ -119,7 +120,7 @@
               class="size-8 rounded-full border-2 transition-all {color === presetColor ? 'border-foreground scale-110' : 'border-transparent'}"
               style="background-color: {presetColor}"
               onclick={() => color = presetColor}
-              aria-label="选择颜色 {presetColor}"
+              aria-label="{t('page.knowledge.selectColor')} {presetColor}"
             ></button>
           {/each}
         </div>
@@ -138,8 +139,8 @@
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={handleClose}>取消</Button>
-      <Button onclick={handleSave}>保存</Button>
+      <Button variant="outline" onclick={handleClose}>{t('page.knowledge.cancel')}</Button>
+      <Button onclick={handleSave}>{t('page.knowledge.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

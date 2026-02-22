@@ -4,6 +4,7 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { knowledgeStore, type FolderItem, type FileItem } from '@/lib/stores/knowledge.svelte';
   import { PostApiKnowledgeUploadForceConflictModeEnum } from '@qiyu-allinai/api';
+  import { t } from '$lib/stores/i18n.svelte';
   import {
     FileBreadcrumb,
     FileToolbar,
@@ -148,7 +149,7 @@
           }
         }
       } catch (err) {
-        console.error('检查文件冲突失败', err);
+        console.error(t('page.knowledge.checkConflictFailed'), err);
       }
     }
     
@@ -228,7 +229,7 @@
           if (item.clipboardItem.action === 'cut') {
             // Move folder - skip if same folder
             if (isSameFolder) {
-              throw new Error('不能移动到同一文件夹');
+              throw new Error(t('page.knowledge.cannotMoveToSameFolder'));
             }
             await api.files.postApiFilesFoldersByIdMove(
               { id: item.clipboardItem.id },
@@ -236,7 +237,7 @@
             );
           } else {
             // Copy folder - not supported yet
-            throw new Error('复制文件夹功能暂不支持');
+            throw new Error(t('page.knowledge.copyFolderNotSupported'));
           }
         } else if (item.clipboardItem.type === 'file') {
           // Handle file paste with conflict modes using fileUploadForce (like drag-and-drop upload)
@@ -246,7 +247,7 @@
             // CUT operation
             if (isSameFolder && !hasConflict) {
               // Cut to same folder without conflict - nothing to do
-              throw new Error('不能移动到同一文件夹');
+              throw new Error(t('page.knowledge.cannotMoveToSameFolder'));
             }
             
             if (hasConflict) {
@@ -316,8 +317,8 @@
           idx === i ? { ...p, status: 'success' as const } : p
         );
       } catch (err) {
-        console.error('粘贴失败:', item.clipboardItem.name, err);
-        const errorMessage = err instanceof Error ? err.message : '粘贴失败';
+        console.error(t('page.knowledge.pasteFailed') + ':', item.clipboardItem.name, err);
+        const errorMessage = err instanceof Error ? err.message : t('page.knowledge.pasteFailed');
         pasteItems = pasteItems.map((p, idx) => 
           idx === i ? { ...p, status: 'error' as const, error: errorMessage } : p
         );
@@ -340,13 +341,13 @@
     // Get presigned download URL
     const urlRes = await api.files.getApiFilesByIdDownloadUrl({ id: fileId });
     if (!urlRes.data?.url) {
-      throw new Error('获取下载链接失败');
+      throw new Error(t('page.knowledge.getDownloadUrlFailed'));
     }
     
     // Fetch file content
     const response = await fetch(urlRes.data.url);
     if (!response.ok) {
-      throw new Error('下载文件失败');
+      throw new Error(t('page.knowledge.downloadFileFailed'));
     }
     
     const blob = await response.blob();
@@ -361,13 +362,13 @@
         const base64 = result.split(',')[1] || result;
         resolve({ content: base64, mimeType });
       };
-      reader.onerror = () => reject(new Error('读取文件内容失败'));
+      reader.onerror = () => reject(new Error(t('page.knowledge.readFileContentFailed')));
       reader.readAsDataURL(blob);
     });
   }
 
   async function handleBatchDelete() {
-    if (!confirm('确定要删除选中的项目吗？')) return;
+    if (!confirm(t('page.knowledge.confirmDeleteSelected'))) return;
     await knowledgeStore.deleteSelected();
   }
 
@@ -378,7 +379,7 @@
   }
 
   async function handleDeleteFolder(f: FolderItem) {
-    if (!confirm(`确定要删除文件夹 "${f.name}" 吗？`)) return;
+    if (!confirm(t('page.knowledge.confirmDeleteFolder').replace('${name}', f.name))) return;
     await knowledgeStore.deleteFolder(f);
   }
 
@@ -430,7 +431,7 @@
   }
 
   async function handleDeleteFile(f: FileItem) {
-    if (!confirm(`确定要删除文件 "${f.name}" 吗？`)) return;
+    if (!confirm(t('page.knowledge.confirmDeleteFile').replace('${name}', f.name))) return;
     await knowledgeStore.deleteFile(f);
   }
 
@@ -517,7 +518,7 @@
       styleTarget = null;
       await knowledgeStore.refresh();
     } catch (err) {
-      console.error('保存文件夹样式失败', err);
+      console.error(t('page.knowledge.saveFolderStyleFailed'), err);
     }
   }
 
@@ -562,7 +563,7 @@
       permissionTarget = null;
       await knowledgeStore.refresh();
     } catch (err) {
-      console.error('保存权限失败:', err);
+      console.error(t('page.knowledge.savePermissionFailed') + ':', err);
     }
   }
 
@@ -882,7 +883,7 @@
         const targetFolderId = folderPath ? folderMap.get(folderPath) : knowledgeStore.currentFolderId;
 
         if (targetFolderId === '__FAILED__') {
-          throw new Error('目标文件夹创建失败');
+          throw new Error(t('page.knowledge.targetFolderCreateFailed'));
         }
 
         const content = await readFileAsBase64(item.file);
@@ -909,7 +910,7 @@
           });
           
           if (uploadRes.data && !uploadRes.data.success && uploadRes.data.conflict) {
-            throw new Error(`文件已存在: ${uploadRes.data.conflict.name}`);
+            throw new Error(t('page.knowledge.fileExists').replace('${name}', uploadRes.data.conflict.name));
           }
         }
 
@@ -917,8 +918,8 @@
           idx === i ? { ...u, status: 'success' as const, progress: 100 } : u
         );
       } catch (err) {
-        console.error('上传失败:', item.file.name, err);
-        const errorMessage = err instanceof Error ? err.message : '上传失败';
+        console.error(t('page.knowledge.uploadFailed') + ':', item.file.name, err);
+        const errorMessage = err instanceof Error ? err.message : t('page.knowledge.uploadFailed');
         uploadItems = uploadItems.map((u, idx) => 
           idx === i ? { ...u, status: 'error' as const, error: errorMessage } : u
         );
@@ -960,7 +961,7 @@
   ondragleave={handleDragLeave}
   ondrop={handleDrop}
   role="region"
-  aria-label="文件管理区域"
+  aria-label={t('page.knowledge.fileManageArea')}
 >
   <div class={`${isDragging ? 'ring-2 ring-primary ring-offset-2' : ''} flex-1 flex gap-2 flex-col min-h-0`}>
     <div class="flex items-center justify-between">
@@ -984,8 +985,8 @@
           class="flex items-center justify-center h-48 border-2 border-dashed border-primary rounded-lg bg-primary/5"
         >
           <div class="text-center">
-            <p class="text-lg font-medium text-primary">释放文件以上传</p>
-            <p class="text-sm text-muted-foreground">支持拖拽文件或文件夹</p>
+            <p class="text-lg font-medium text-primary">{t('page.knowledge.releaseToUpload')}</p>
+            <p class="text-sm text-muted-foreground">{t('page.knowledge.supportDragFolder')}</p>
           </div>
         </div>
       {:else}

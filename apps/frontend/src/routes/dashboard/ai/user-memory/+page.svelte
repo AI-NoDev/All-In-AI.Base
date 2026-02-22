@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
   import { MemoryList, MemoryDialog } from './components';
 
   interface UserMemory {
@@ -140,7 +141,7 @@
 
   async function handleSaveMemory() {
     if (!memoryForm.userId || !memoryForm.content.trim()) {
-      alert('请填写必填项');
+      alert(t('page.ai.memory_fillRequired'));
       return;
     }
     saving = true;
@@ -151,7 +152,7 @@
         try {
           parsedMetadata = JSON.parse(memoryForm.metadata);
         } catch {
-          alert('元数据 JSON 格式错误');
+          alert(t('page.ai.memory_metadataJsonError'));
           saving = false;
           return;
         }
@@ -179,21 +180,21 @@
       loadMemories();
     } catch (err) {
       console.error('Failed to save memory:', err);
-      alert('保存失败');
+      alert(t('page.ai.memory_saveFailed'));
     } finally {
       saving = false;
     }
   }
 
   async function handleDeleteMemory(id: string) {
-    if (!confirm('确定要删除该记忆吗？')) return;
+    if (!confirm(t('page.ai.memory_deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.ai.deleteApiAiUserMemoryById({ id });
       loadMemories();
     } catch (err) {
       console.error('Failed to delete memory:', err);
-      alert('删除失败');
+      alert(t('page.ai.memory_deleteFailed'));
     }
   }
 

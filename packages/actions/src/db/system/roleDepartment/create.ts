@@ -10,6 +10,7 @@ import type { RoleDepartmentSelect, RoleDepartmentInsert } from './utils';
 
 export const roleDepartmentCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleDepartment.create',
     displayName: '创建角色部门关联',
     description: `创建单个角色与部门的关联关系。

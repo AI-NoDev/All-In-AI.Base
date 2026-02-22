@@ -1,0 +1,7 @@
+{
+  "title": "通知",
+  "unreadCount": "您有 ${count} 条未读通知",
+  "allRead": "所有通知已读",
+  "markAllRead": "全部标为已读",
+  "empty": "暂无通知"
+}

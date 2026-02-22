@@ -11,6 +11,7 @@ import type { ProviderSelect, ProviderInsert } from './utils';
 export const providerCreateMany = defineAction({
   meta: {
     name: 'ai.provider.createMany',
+    ignoreTools: true,
     displayName: '批量创建AI提供商',
     description: `批量创建多个AI提供商配置，适用于初始化场景。
 

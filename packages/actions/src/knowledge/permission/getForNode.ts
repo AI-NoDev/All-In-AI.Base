@@ -11,6 +11,7 @@ import { nodeIdParamsSchema, permissionsOutputSchema } from './schemas';
 
 export const permissionGetForNode = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.getForNode',
     displayName: '获取节点权限',
     description: `获取节点的权限列表（所有被授权的主体）。

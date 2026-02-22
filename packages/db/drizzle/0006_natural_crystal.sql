@@ -1,1 +1,0 @@
-ALTER TABLE "system_department" ADD COLUMN "materialized_path" text DEFAULT '' NOT NULL;

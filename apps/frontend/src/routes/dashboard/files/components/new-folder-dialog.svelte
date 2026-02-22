@@ -2,6 +2,7 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -45,17 +46,17 @@
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
   <Dialog.Content class="sm:max-w-md">
     <Dialog.Header>
-      <Dialog.Title>新建文件夹</Dialog.Title>
+      <Dialog.Title>{t('page.knowledge.newFolder')}</Dialog.Title>
     </Dialog.Header>
     <div class="py-4">
       <Input
         bind:value={folderName}
-        placeholder="请输入文件夹名称"
+        placeholder={t('page.knowledge.folderNamePlaceholder')}
       />
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={handleClose}>取消</Button>
-      <Button onclick={handleCreate} disabled={!folderName.trim()}>创建</Button>
+      <Button variant="outline" onclick={handleClose}>{t('common.actions_cancel')}</Button>
+      <Button onclick={handleCreate} disabled={!folderName.trim()}>{t('common.actions_create')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

@@ -7,6 +7,7 @@
   import * as Table from '$lib/components/ui/table';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { knowledgeStore } from '@/lib/stores/knowledge.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
   import {
     PostApiKnowledgeVersionsQueryFieldEnum,
     PostApiKnowledgeVersionsQueryOrderEnum,
@@ -58,7 +59,7 @@
       });
       versions = (res.data?.data || []) as FileVersion[];
     } catch (err) {
-      console.error('加载版本失败:', err);
+      console.error(t('page.knowledge.loadVersionsFailed') + ':', err);
       versions = [];
     } finally {
       loading = false;
@@ -73,25 +74,25 @@
         window.open(res.data.url, '_blank');
       }
     } catch (err) {
-      console.error('获取下载链接失败:', err);
+      console.error(t('page.knowledge.getDownloadUrlFailed') + ':', err);
     } finally {
       actionLoading = null;
     }
   }
 
   async function handleRestore(version: FileVersion) {
-    if (!confirm(`确定要恢复到版本 ${version.versionNumber} 吗？当前版本将被保存为新的历史版本。`)) {
+    if (!confirm(t('page.knowledge.confirmRestore').replace('${version}', version.versionNumber))) {
       return;
     }
     
     actionLoading = version.id;
     try {
       await api.knowledge.postApiKnowledgeVersionsByIdRestore({ id: version.id });
-      // 刷新版本列表和文件列表
+      // Refresh version list and file list
       await loadVersions();
       await knowledgeStore.refresh();
     } catch (err) {
-      console.error('恢复版本失败:', err);
+      console.error(t('page.knowledge.restoreVersionFailed') + ':', err);
     } finally {
       actionLoading = null;
     }
@@ -115,7 +116,7 @@
     <Sheet.Header class="px-6 py-4 border-b shrink-0">
       <Sheet.Title class="flex items-center gap-2">
         <Icon icon="mdi:source-branch" class="size-5 text-blue-500" />
-        版本历史
+        {t('page.knowledge.versionHistory')}
       </Sheet.Title>
       <Sheet.Description class="truncate" title={fileName}>
         {fileName}
@@ -132,19 +133,19 @@
       {:else if versions.length === 0}
         <div class="flex flex-col items-center justify-center h-full text-muted-foreground">
           <Icon icon="mdi:source-branch" class="size-12 mb-2 opacity-50" />
-          <p>暂无历史版本</p>
+          <p>{t('page.knowledge.noVersions')}</p>
         </div>
       {:else}
         <ScrollArea class="h-full">
           <Table.Root>
             <Table.Header>
               <Table.Row>
-                <Table.Head class="w-20 sticky top-0 bg-background">版本</Table.Head>
-                <Table.Head class="w-20 sticky top-0 bg-background">大小</Table.Head>
-                <Table.Head class="sticky top-0 bg-background">变更说明</Table.Head>
-                <Table.Head class="w-36 sticky top-0 bg-background">创建时间</Table.Head>
-                <Table.Head class="w-20 sticky top-0 bg-background">创建者</Table.Head>
-                <Table.Head class="w-24 text-right sticky top-0 bg-background">操作</Table.Head>
+                <Table.Head class="w-20 sticky top-0 bg-background">{t('page.knowledge.version')}</Table.Head>
+                <Table.Head class="w-20 sticky top-0 bg-background">{t('page.knowledge.size')}</Table.Head>
+                <Table.Head class="sticky top-0 bg-background">{t('page.knowledge.changeLog')}</Table.Head>
+                <Table.Head class="w-36 sticky top-0 bg-background">{t('common.fields_createdAt')}</Table.Head>
+                <Table.Head class="w-20 sticky top-0 bg-background">{t('page.knowledge.creator')}</Table.Head>
+                <Table.Head class="w-24 text-right sticky top-0 bg-background">{t('page.knowledge.actions')}</Table.Head>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -167,7 +168,7 @@
                         class="h-7 w-7 p-0"
                         disabled={actionLoading === version.id}
                         onclick={() => handleDownload(version)}
-                        title="下载此版本"
+                        title={t('page.knowledge.downloadVersion')}
                       >
                         {#if actionLoading === version.id}
                           <Icon icon="mdi:loading" class="size-4 animate-spin" />
@@ -181,7 +182,7 @@
                         class="h-7 w-7 p-0"
                         disabled={actionLoading === version.id}
                         onclick={() => handleRestore(version)}
-                        title="恢复到此版本"
+                        title={t('page.knowledge.restoreVersion')}
                       >
                         <Icon icon="mdi:restore" class="size-4" />
                       </Button>
@@ -196,7 +197,7 @@
     </div>
 
     <Sheet.Footer class="px-6 py-4 border-t shrink-0">
-      <Button variant="outline" onclick={() => onOpenChange(false)}>关闭</Button>
+      <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.actions_close')}</Button>
     </Sheet.Footer>
   </Sheet.Content>
 </Sheet.Root>

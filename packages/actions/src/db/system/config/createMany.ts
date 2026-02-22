@@ -11,6 +11,7 @@ import type { ConfigSelect, ConfigInsert } from './utils';
 export const configCreateMany = defineAction({
   meta: {
     name: 'system.config.createMany',
+    ignoreTools: true,
     displayName: '批量创建系统配置',
     description: `批量创建多个系统配置记录。
 

@@ -11,6 +11,7 @@ import type { UserPostSelect, UserPostInsert } from './utils';
 export const userPostCreateMany = defineAction({
   meta: {
     name: 'system.userPost.createMany',
+    ignoreTools: true,
     displayName: '批量创建用户岗位关联',
     description: `批量创建多个用户与岗位的关联关系。
 

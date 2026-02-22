@@ -3,6 +3,7 @@
   import * as Empty from '$lib/components/ui/empty';
   import { Button } from '$lib/components/ui/button';
   import { imStore } from '$lib/stores/im.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import {
     ConversationList,
     ChatHeader,
@@ -158,7 +159,7 @@
   <div 
     class="flex-1 flex flex-col overflow-hidden relative"
     role="region"
-    aria-label="聊天区域"
+    aria-label={t('page.im.chatArea')}
     ondragenter={handleDragEnter}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -169,8 +170,8 @@
       <div class="absolute inset-0 z-50 bg-primary/10 border-2 border-dashed border-primary rounded-lg flex items-center justify-center pointer-events-none">
         <div class="text-center">
           <Icon icon="mdi:file-upload-outline" class="size-12 text-primary mx-auto mb-2" />
-          <p class="text-primary font-medium">释放文件以发送</p>
-          <p class="text-sm text-muted-foreground">仅支持文件，不支持文件夹</p>
+          <p class="text-primary font-medium">{t('page.im.dropFilesToSend')}</p>
+          <p class="text-sm text-muted-foreground">{t('page.im.onlyFilesSupported')}</p>
         </div>
       </div>
     {/if}
@@ -201,16 +202,16 @@
             <Icon icon="tdesign:chat" class="size-16 text-muted-foreground/50" />
           </Empty.Media>
           <Empty.Header>
-            <Empty.Title>选择一个会话开始聊天</Empty.Title>
+            <Empty.Title>{t('page.im.selectConversation')}</Empty.Title>
             <Empty.Description>
-              从左侧列表选择会话，或者创建新的群聊
+              {t('page.im.selectConversationDesc')}
             </Empty.Description>
           </Empty.Header>
           <Empty.Content>
             <div class="flex flex-wrap justify-center gap-2">
               <Button variant="outline" size="sm" onclick={() => showCreateGroup = true}>
                 <Icon icon="tdesign:chat-add" class="mr-2 size-4" />
-                新建会话
+                {t('page.im.newConversation')}
               </Button>
             </div>
           </Empty.Content>

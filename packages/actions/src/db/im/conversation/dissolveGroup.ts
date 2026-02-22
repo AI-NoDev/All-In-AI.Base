@@ -12,6 +12,7 @@ import { CONVERSATION_TYPE } from './utils';
 
 export const conversationDissolveGroup = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'im.conversation.dissolveGroup',
     displayName: '解散群聊',
     description: '解散群聊（仅群主可操作）',

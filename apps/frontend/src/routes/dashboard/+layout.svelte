@@ -16,6 +16,7 @@
   import { aiChatStore } from '@/lib/stores/ai-chat.svelte';
   import { actionsStore } from '@/lib/stores/actions.svelte';
   import { systemConfigStore } from '@/lib/stores/system-config.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { pages, routePermissionMap, routeTitles } from '@/lib/generated-pages';
 
   /**
@@ -48,8 +49,10 @@
 
   // 动态页面标题
   let pageTitle = $derived.by(() => {
-    const title = getPageTitle(page.url.pathname);
+    const titleKey = getPageTitle(page.url.pathname);
     const siteName = systemConfigStore.getSiteName();
+    // 翻译 i18n key
+    const title = titleKey ? t(titleKey, titleKey) : '';
     return title ? `${title} - ${siteName}` : siteName;
   });
 
@@ -185,7 +188,7 @@
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <span class="text-muted-foreground text-sm">加载中...</span>
+      <span class="text-muted-foreground text-sm">{t('common.tips.loading')}</span>
     </div>
   </div>
 {:else}
@@ -218,14 +221,14 @@
                 <Icon icon="tdesign:lock-on" class="size-12 text-destructive" />
               </div>
               <div class="space-y-2">
-                <h2 class="text-xl font-semibold">访问受限</h2>
+                <h2 class="text-xl font-semibold">{t('page.dashboard.accessDenied')}</h2>
                 <p class="text-muted-foreground max-w-md">
-                  您没有权限访问此页面，请联系管理员获取相应权限。
+                  {t('page.dashboard.accessDeniedDesc')}
                 </p>
               </div>
               <Button onclick={goBack}>
                 <Icon icon="tdesign:home" class="mr-2 size-4" />
-                返回首页
+                {t('page.dashboard.backHome')}
               </Button>
             </div>
           </div>
@@ -286,7 +289,7 @@
                   "transition-all duration-300",
                   isButtonExpanded ? "opacity-100 max-w-24" : "opacity-0 max-w-0"
                 ].join(' ')}>
-                  AI 助手
+                  {t('nav.aiAssistant')}
                 </span>
               </div>
             </div>

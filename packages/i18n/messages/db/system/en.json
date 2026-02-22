@@ -16,6 +16,7 @@
   "user_loginIp": "Last Login IP",
   "user_loginDate": "Last Login Time",
   "user_pwdUpdateDate": "Password Update Time",
+  "user_preferences": "Preferences",
   "department_meta_displayName": "Department Management",
   "department_meta_verboseName": "Department",
   "department_meta_verboseNamePlural": "Departments",

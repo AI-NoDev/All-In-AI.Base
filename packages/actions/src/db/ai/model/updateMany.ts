@@ -12,6 +12,7 @@ import type { ModelSelect, ModelInsert } from './utils';
 export const modelUpdateMany = defineAction({
   meta: {
     name: 'ai.model.updateMany',
+    ignoreTools: true,
     displayName: '批量更新AI模型',
     description: `根据ID列表批量更新多个AI模型的配置。
 

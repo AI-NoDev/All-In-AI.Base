@@ -29,6 +29,7 @@ const CHANNEL = 'notification';
 
 export const wsBroadcastNotification = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ws.notification.broadcast',
     displayName: '广播通知',
     description: `向指定用户发送实时通知（不创建 IM 消息记录）。

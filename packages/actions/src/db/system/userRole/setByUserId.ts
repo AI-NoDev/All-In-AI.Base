@@ -10,6 +10,7 @@ import type { UserRoleInsert } from './utils';
 
 export const userRoleSetByUserId = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userRole.setByUserId',
     displayName: '设置用户角色',
     description: `设置指定用户的角色列表，采用全量替换方式。

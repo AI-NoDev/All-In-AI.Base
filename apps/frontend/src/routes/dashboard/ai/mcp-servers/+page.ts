@@ -1,6 +1,6 @@
 export const _meta = {
-  title: 'MCP发布',
+  title: 'nav.title.mcpServers',
   icon: 'mdi:api',
-  group: '智能体',
+  group: 'nav.group.ai',
   order: 60
 };

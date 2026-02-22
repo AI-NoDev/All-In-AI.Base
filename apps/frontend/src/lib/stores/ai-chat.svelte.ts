@@ -389,13 +389,14 @@ function createAIChatStore() {
   async function createSession(): Promise<string> {
     const api = authStore.createApi(true);
     // 创建会话时包含当前选中的模型/智能体
+    // title 设为 null，让 UI 显示翻译后的"新对话"
     const res = await api.ai.postApiAiAgentSession({
       data: {
         agentId: selectedAgentId || PLACEHOLDER_AGENT_ID, // 占位符（旧API兼容）
         providerId: selectedProviderId || undefined,
         modelId: selectedModelId || undefined,
         userId: authStore.user?.id || '',
-        title: '新对话',
+        title: null,
         createdBy: authStore.user?.name || '',
         updatedBy: authStore.user?.name || '',
       },

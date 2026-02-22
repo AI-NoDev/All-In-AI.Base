@@ -11,6 +11,7 @@ import type { AISessionSelect } from './utils';
 
 export const aiSessionGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSession.getByPagination',
     displayName: '分页查询AI会话',
     description: `分页查询AI会话列表，自动排除已删除的会话。

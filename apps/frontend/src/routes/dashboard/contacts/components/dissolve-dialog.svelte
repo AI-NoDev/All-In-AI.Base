@@ -2,6 +2,7 @@
   import * as AlertDialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
   import { imStore } from '@/lib/stores/im.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -25,14 +26,14 @@
 <AlertDialog.Root bind:open={open}>
   <AlertDialog.Content>
     <AlertDialog.Header>
-      <AlertDialog.Title>解散群聊</AlertDialog.Title>
+      <AlertDialog.Title>{t('page.im.dissolveGroup')}</AlertDialog.Title>
       <AlertDialog.Description>
-        确定要解散该群聊吗？解散后所有成员将无法再发送消息，此操作不可撤销。
+        {t('page.im.dissolveGroupConfirm')}
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-      <Button variant="outline" onclick={() => onOpenChange(false)}>取消</Button>
-      <Button variant="destructive" onclick={handleDissolve}>解散</Button>
+      <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.cancel')}</Button>
+      <Button variant="destructive" onclick={handleDissolve}>{t('page.im.dissolveGroup')}</Button>
     </AlertDialog.Footer>
   </AlertDialog.Content>
 </AlertDialog.Root>

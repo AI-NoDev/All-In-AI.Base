@@ -7,6 +7,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { getContext } from 'svelte';
   import * as Alert from '$lib/components/ui/alert';
+  import { t } from '$lib/stores/i18n.svelte';
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030';
   const monitorData = getContext('monitor-data');
@@ -23,9 +24,9 @@
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    if (days > 0) return `${days}天 ${hours}小时 ${minutes}分钟`;
-    if (hours > 0) return `${hours}小时 ${minutes}分钟`;
-    return `${minutes}分钟`;
+    if (days > 0) return t('page.monitor.uptimeDays').replace('${days}', String(days)).replace('${hours}', String(hours)).replace('${minutes}', String(minutes));
+    if (hours > 0) return t('page.monitor.uptimeHours').replace('${hours}', String(hours)).replace('${minutes}', String(minutes));
+    return t('page.monitor.uptimeMinutes').replace('${minutes}', String(minutes));
   }
 
   function formatNetSpeed(bytesPerSec: number): string {
@@ -51,7 +52,7 @@
     <Card.Header class="pb-2">
       <Card.Title class="text-sm font-medium text-muted-foreground flex items-center gap-2">
         <Icon icon="tdesign:server" class="size-4" />
-        主机信息
+        {t('page.monitor.hostInfo')}
       </Card.Title>
     </Card.Header>
     <Card.Content class="space-y-1">
@@ -65,12 +66,12 @@
     <Card.Header class="pb-2">
       <Card.Title class="text-sm font-medium text-muted-foreground flex items-center gap-2">
         <Icon icon="tdesign:time" class="size-4" />
-        运行时间
+        {t('page.monitor.uptime')}
       </Card.Title>
     </Card.Header>
     <Card.Content class="space-y-1">
       <p class="text-lg font-semibold">{monitorData.systemInfo ? formatUptime(monitorData.systemInfo.uptime) : '-'}</p>
-      <p class="text-xs text-muted-foreground">时区: {monitorData.systemInfo?.timezone || '-'}</p>
+      <p class="text-xs text-muted-foreground">{t('page.monitor.timezone')}: {monitorData.systemInfo?.timezone || '-'}</p>
     </Card.Content>
   </Card.Root>
 
@@ -78,13 +79,13 @@
     <Card.Header class="pb-2">
       <Card.Title class="text-sm font-medium text-muted-foreground flex items-center gap-2">
         <Icon icon="tdesign:cpu" class="size-4" />
-        CPU
+        {t('page.monitor.cpu')}
       </Card.Title>
     </Card.Header>
     <Card.Content class="space-y-1">
       <p class="text-lg font-semibold {getStatusColor(monitorData.currentMetrics?.cpu || 0)}">{monitorData.currentMetrics?.cpu.toFixed(1) || 0}%</p>
       <p class="text-xs text-muted-foreground">{monitorData.systemInfo?.cpu.model || '-'}</p>
-      <p class="text-xs text-muted-foreground">{monitorData.systemInfo?.cpu.cores || 0} 核心 @ {monitorData.systemInfo?.cpu.speed || 0} MHz</p>
+      <p class="text-xs text-muted-foreground">{t('page.monitor.cores').replace('${count}', String(monitorData.systemInfo?.cpu.cores || 0))} @ {monitorData.systemInfo?.cpu.speed || 0} MHz</p>
       <Progress value={monitorData.currentMetrics?.cpu || 0} class="mt-2 h-1.5" />
     </Card.Content>
   </Card.Root>
@@ -93,7 +94,7 @@
     <Card.Header class="pb-2">
       <Card.Title class="text-sm font-medium text-muted-foreground flex items-center gap-2">
         <Icon icon="tdesign:memory" class="size-4" />
-        内存
+        {t('page.monitor.memory')}
       </Card.Title>
     </Card.Header>
     <Card.Content class="space-y-1">
@@ -109,7 +110,7 @@
   {#if monitorData.systemInfo?.unavailable}
     <Alert.Root variant="default" class="col-span-full">
       <Icon icon="tdesign:info-circle" class="size-4" />
-      <Alert.Title>提示</Alert.Title>
+      <Alert.Title>{t('page.monitor.hint')}</Alert.Title>
       <Alert.Description>{monitorData.systemInfo.unavailable}</Alert.Description>
     </Alert.Root>
   {/if}
@@ -118,7 +119,7 @@
     <Card.Header>
       <Card.Title class="text-sm font-medium flex items-center gap-2">
         <Icon icon="tdesign:hard-disk" class="size-4" />
-        磁盘分区
+        {t('page.monitor.diskPartitions')}
       </Card.Title>
     </Card.Header>
     <Card.Content>
@@ -134,14 +135,14 @@
               </div>
               <Progress value={partition.usedPercent} class="h-1.5" />
               <div class="flex justify-between text-xs text-muted-foreground">
-                <span>{formatBytes(partition.used)} 已用</span>
-                <span>{formatBytes(partition.free)} 可用</span>
+                <span>{formatBytes(partition.used)} {t('page.monitor.used')}</span>
+                <span>{formatBytes(partition.free)} {t('page.monitor.available')}</span>
               </div>
             </div>
           {/if}
         {/each}
         {#if monitorData.diskPartitions.length === 0}
-          <p class="text-sm text-muted-foreground text-center py-4">暂无数据</p>
+          <p class="text-sm text-muted-foreground text-center py-4">{t('page.monitor.noData')}</p>
         {/if}
       </div>
     </Card.Content>
@@ -151,7 +152,7 @@
     <Card.Header>
       <Card.Title class="text-sm font-medium flex items-center gap-2">
         <Icon icon="tdesign:internet" class="size-4" />
-        网络信息
+        {t('page.monitor.networkInfo')}
       </Card.Title>
     </Card.Header>
     <Card.Content>
@@ -161,14 +162,14 @@
             <Icon icon="tdesign:download" class="size-5 text-green-500" />
             <div>
               <p class="text-sm font-medium">{formatNetSpeed(monitorData.currentMetrics?.netRx || 0)}</p>
-              <p class="text-xs text-muted-foreground">下载</p>
+              <p class="text-xs text-muted-foreground">{t('page.monitor.download')}</p>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <Icon icon="tdesign:upload" class="size-5 text-blue-500" />
             <div>
               <p class="text-sm font-medium">{formatNetSpeed(monitorData.currentMetrics?.netTx || 0)}</p>
-              <p class="text-xs text-muted-foreground">上传</p>
+              <p class="text-xs text-muted-foreground">{t('page.monitor.upload')}</p>
             </div>
           </div>
         </div>

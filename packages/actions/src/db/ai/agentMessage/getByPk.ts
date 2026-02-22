@@ -11,6 +11,7 @@ import type { AgentMessageSelect } from './utils';
 
 export const agentMessageGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentMessage.getByPk',
     displayName: '根据ID查询Agent消息',
     description: `根据主键ID查询单个Agent消息详情。

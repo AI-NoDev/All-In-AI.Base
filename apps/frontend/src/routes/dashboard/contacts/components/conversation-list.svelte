@@ -7,6 +7,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { imStore } from '@/lib/stores/im.svelte';
   import { wsStore } from '@/lib/stores/websocket.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Props {
     onCreateGroup: () => void;
@@ -23,11 +24,10 @@
   );
 
   function getConversationName(conv: { name: string | null; type: string; displayName?: string | null }): string {
-    // 优先使用 displayName（私聊时为对方名称）
     if (conv.displayName) return conv.displayName;
     if (conv.name) return conv.name;
-    if (conv.type === '1') return '私聊';
-    return '群聊';
+    if (conv.type === '1') return t('page.im.privateChat');
+    return t('page.im.groupChat');
   }
 
   function getInitials(name: string | null): string {
@@ -43,14 +43,14 @@
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (days === 0) {
-      return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
     } else if (days === 1) {
-      return '昨天';
+      return t('page.im.yesterday');
     } else if (days < 7) {
-      const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-      return weekdays[date.getDay()];
+      const weekdayKeys = ['weekday_sun', 'weekday_mon', 'weekday_tue', 'weekday_wed', 'weekday_thu', 'weekday_fri', 'weekday_sat'];
+      return t(`page.im.${weekdayKeys[date.getDay()]}`);
     } else {
-      return date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+      return date.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
     }
   }
 
@@ -67,19 +67,19 @@
   <!-- 头部 -->
   <div class="p-4 space-y-3">
     <div class="flex items-center justify-between">
-      <h2 class="font-semibold">消息</h2>
+      <h2 class="font-semibold">{t('page.im.messages')}</h2>
       <div class="flex items-center gap-2">
         {#if wsStore.isConnected}
-          <span class="size-2 rounded-full bg-green-500" title="已连接"></span>
+          <span class="size-2 rounded-full bg-green-500" title={t('page.im.connected')}></span>
         {:else}
-          <span class="size-2 rounded-full bg-gray-400" title="未连接"></span>
+          <span class="size-2 rounded-full bg-gray-400" title={t('page.im.disconnected')}></span>
         {/if}
-        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" title="新建会话" onclick={onCreateGroup}>
+        <Button size="sm" variant="ghost" class="h-8 w-8 p-0" title={t('page.im.newConversation')} onclick={onCreateGroup}>
           <Icon icon="tdesign:chat-add" class="size-4" />
         </Button>
       </div>
     </div>
-    <Input placeholder="搜索会话..." class="h-8" bind:value={searchQuery} />
+    <Input placeholder={t('page.im.searchConversations')} class="h-8" bind:value={searchQuery} />
   </div>
 
   <!-- 会话列表 -->
@@ -88,11 +88,11 @@
       <div class="px-2 pb-2 space-y-1">
         {#if imStore.isLoading}
           <div class="py-8 text-center text-muted-foreground text-sm">
-            加载中...
+            {t('common.tips.loading')}
           </div>
         {:else if filteredConversations.length === 0}
           <div class="py-8 text-center text-muted-foreground text-sm">
-            暂无会话
+            {t('page.im.noConversations')}
           </div>
         {:else}
           {#each filteredConversations as conv}
@@ -113,7 +113,7 @@
                 </Avatar>
                 {#if isGroupDissolved(conv)}
                   <div class="absolute -bottom-1 -right-1 bg-red-500 text-white text-[10px] px-1 rounded">
-                    已解散
+                    {t('page.im.groupDissolved')}
                   </div>
                 {/if}
               </div>
@@ -124,7 +124,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-sm text-muted-foreground truncate">
-                    {conv.lastMessageContent || '暂无消息'}
+                    {conv.lastMessageContent || t('page.im.noMessages')}
                   </span>
                   {#if conv.unreadCount > 0}
                     <Badge variant="destructive" class="h-5 min-w-5 px-1.5 text-xs">

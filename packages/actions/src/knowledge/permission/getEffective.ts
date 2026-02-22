@@ -12,6 +12,7 @@ import { nodeIdParamsSchema, effectivePermissionQuerySchema, effectivePermission
 
 export const permissionGetEffective = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.getEffective',
     displayName: '获取有效权限',
     description: `获取用户对节点的有效权限（考虑继承和角色）。

@@ -11,6 +11,7 @@ import type { RoleDepartmentSelect } from './utils';
 
 export const roleDepartmentGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleDepartment.getByPagination',
     displayName: '分页查询角色部门关联',
     description: `分页查询角色与部门的关联关系，用于数据权限控制。

@@ -12,6 +12,7 @@ import type { PostSelect, PostInsert } from './utils';
 export const postUpdateMany = defineAction({
   meta: {
     name: 'system.post.updateMany',
+    ignoreTools: true,
     displayName: '批量更新岗位',
     description: `根据ID列表批量更新岗位，所有指定的岗位将应用相同的更新数据。
 

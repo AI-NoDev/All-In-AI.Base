@@ -4,6 +4,7 @@
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { actionsStore } from '@/lib/stores/actions.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
@@ -276,13 +277,13 @@
   {#if loading}
     <div class="flex items-center justify-center py-12 text-muted-foreground">
       <Icon icon="mdi:loading" class="size-6 animate-spin mr-2" />
-      加载中...
+      {t('common.tips.loading')}
     </div>
   {:else if servers.length === 0}
     <div class="flex flex-col items-center justify-center py-12 text-muted-foreground">
       <Icon icon="mdi:api" class="size-12 mb-4 opacity-50" />
-      <p>暂无 MCP 服务</p>
-      <p class="text-sm mt-1">创建一个 MCP 服务来发布你的 Actions</p>
+      <p>{t('page.ai.mcp.noServers')}</p>
+      <p class="text-sm mt-1">{t('page.ai.mcp.createHint')}</p>
     </div>
   {:else}
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -457,8 +458,8 @@
           {#if apiKeys.length === 0}
             <div class="text-center py-8 text-muted-foreground border rounded-lg">
               <Icon icon="mdi:key-variant" class="size-8 mb-2 mx-auto opacity-50" />
-              <p class="text-sm">暂无 API 密钥</p>
-              <p class="text-xs mt-1">创建一个 API 密钥来访问此服务</p>
+              <p class="text-sm">{t('page.ai.apiKey.noKeys')}</p>
+              <p class="text-xs mt-1">{t('page.ai.apiKey.createHintForMcp')}</p>
             </div>
           {:else}
             <div class="rounded-lg border divide-y max-h-64 overflow-y-auto">
@@ -521,7 +522,7 @@
         {#if configLoading}
           <div class="flex items-center justify-center py-12 text-muted-foreground">
             <Icon icon="mdi:loading" class="size-6 animate-spin mr-2" />
-            加载中...
+            {t('common.tips.loading')}
           </div>
         {:else if mcpConfig}
           <div class="space-y-2">

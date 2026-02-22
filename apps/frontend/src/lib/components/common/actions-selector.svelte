@@ -9,6 +9,7 @@
   import * as Tooltip from '$lib/components/ui/tooltip';
   import * as Select from '$lib/components/ui/select';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -23,11 +24,13 @@
   let localSelected = $state<string[]>([]);
   let activeGroup = $state('');
 
-  // 同步外部 selected 到本地
+  // 同步外部 selected 到本地，并刷新 actions 列表
   $effect(() => {
     if (open) {
       localSelected = [...selected];
       search = '';
+      // 强制刷新 actions 列表以获取最新数据
+      actionsStore.load(true);
     }
   });
 
@@ -77,23 +80,10 @@
     );
   });
 
-  // 当前分组选中数量
-  let groupSelectedCount = $derived(() => {
-    const groupActionNames = groupActions().map(a => a.name);
-    return localSelected.filter(n => groupActionNames.includes(n)).length;
-  });
-
   // 当前分组是否全选
   let isGroupAllSelected = $derived(() => {
-    const actions = filteredActions();
+    const actions = groupActions();
     return actions.length > 0 && actions.every(a => localSelected.includes(a.name));
-  });
-
-  // 当前分组是否部分选中
-  let isGroupPartial = $derived(() => {
-    const actions = filteredActions();
-    const count = actions.filter(a => localSelected.includes(a.name)).length;
-    return count > 0 && count < actions.length;
   });
 
   function toggleAction(actionName: string) {
@@ -105,9 +95,9 @@
   }
 
   function selectAllInGroup() {
-    const actions = filteredActions();
+    const actions = groupActions();
     const names = actions.map(a => a.name);
-    if (isGroupAllSelected) {
+    if (isGroupAllSelected()) {
       localSelected = localSelected.filter(n => !names.includes(n));
     } else {
       const newSelected = new Set([...localSelected, ...names]);
@@ -148,19 +138,24 @@
 <Sheet.Root bind:open onOpenChange={(isOpen) => { if (isOpen) return; /* 只允许通过按钮关闭 */ }}>
   <Sheet.Content side="right" class="w-full sm:max-w-2xl flex flex-col" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
     <Sheet.Header class="flex-shrink-0">
-      <Sheet.Title>选择 Actions</Sheet.Title>
+      <Sheet.Title>{t('actions.selectActions')}</Sheet.Title>
       <Sheet.Description>
-        已选择 {localSelected.length} / {availableActions.length} 个 Actions
+        {t('actions.selectedCount').replace('${selected}', String(localSelected.length)).replace('${total}', String(availableActions.length))}
       </Sheet.Description>
     </Sheet.Header>
 
     <div class="flex flex-col gap-3 py-4 px-1 flex-1 min-h-0">
-      <!-- 分组选择器 -->
+      <!-- 分组选择器和搜索 -->
       <div class="flex items-center gap-2 flex-shrink-0">
+        <Button variant="outline" size="sm" onclick={selectAllInGroup}>
+          <Icon icon={isGroupAllSelected() ? 'mdi:checkbox-marked' : 'mdi:checkbox-blank-outline'} class="size-4 mr-1" />
+          {isGroupAllSelected() ? t('actions.deselectAllInGroup') : t('actions.selectAllInGroup')}
+        </Button>
+
         <Select.Root type="single" bind:value={activeGroup}>
           <Select.Trigger class="w-48">
             {@const stats = getGroupStats(activeGroup)}
-            <span class="capitalize">{activeGroup || '选择分组'}</span>
+            <span class="capitalize">{activeGroup || t('actions.selectGroup')}</span>
             <span class="ml-2 text-xs text-muted-foreground">({stats.selected}/{stats.total})</span>
           </Select.Trigger>
           <Select.Content>
@@ -178,7 +173,7 @@
           <Icon icon="mdi:magnify" class="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input 
             class="pl-8" 
-            placeholder="搜索名称、描述..." 
+            placeholder={t('tips.searchNameDesc')} 
             bind:value={search}
           />
         </div>
@@ -218,7 +213,7 @@
           {:else}
             <div class="text-center py-8 text-muted-foreground">
               <Icon icon="mdi:magnify-close" class="size-8 mx-auto mb-2 opacity-50" />
-              <p>没有找到匹配的 Actions</p>
+              <p>{t('actions.noMatchingActions')}</p>
             </div>
           {/each}
         </div>
@@ -226,9 +221,9 @@
     </div>
 
     <Sheet.Footer class="flex-shrink-0">
-      <Button variant="outline" onclick={handleCancel}>取消</Button>
+      <Button variant="outline" onclick={handleCancel}>{t('actions.cancel')}</Button>
       <Button onclick={handleConfirm}>
-        确定 ({localSelected.length})
+        {t('actions.confirm')} ({localSelected.length})
       </Button>
     </Sheet.Footer>
   </Sheet.Content>

@@ -11,6 +11,7 @@ import type { AgentSessionSelect } from './utils';
 
 export const agentSessionArchive = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.archive',
     displayName: '归档Agent会话',
     description: `归档或取消归档指定Agent会话。

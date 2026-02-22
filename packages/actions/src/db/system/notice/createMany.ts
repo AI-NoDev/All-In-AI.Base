@@ -11,6 +11,7 @@ import type { NoticeSelect, NoticeInsert } from './utils';
 export const noticeCreateMany = defineAction({
   meta: {
     name: 'system.notice.createMany',
+    ignoreTools: true,
     displayName: '批量创建通知公告',
     description: `批量创建多个通知公告记录。
 

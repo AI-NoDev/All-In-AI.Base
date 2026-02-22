@@ -37,6 +37,7 @@ const CHANNEL = 'im';
 
 export const wsSendMessage = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ws.message.send',
     displayName: '发送消息到会话',
     description: `发送消息到指定会话并通过 WebSocket 实时通知在线用户。

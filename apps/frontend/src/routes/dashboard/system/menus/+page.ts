@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '菜单管理',
+  title: 'nav.title.menus',
   icon: 'tdesign:menu-application',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 12,
   permission: 'system:menu:view'
 };

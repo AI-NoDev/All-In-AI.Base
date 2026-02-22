@@ -2,6 +2,7 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
   import { Textarea } from '$lib/components/ui/textarea';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -49,12 +50,12 @@
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
   <Dialog.Content class="sm:max-w-lg">
     <Dialog.Header>
-      <Dialog.Title>{readOnly ? '简介' : '编辑简介'} - {title}</Dialog.Title>
+      <Dialog.Title>{readOnly ? t('page.knowledge.descriptionTitle') : t('page.knowledge.editDescriptionTitle')} - {title}</Dialog.Title>
     </Dialog.Header>
     <div class="py-4">
       <Textarea
         bind:value={description}
-        placeholder="请输入简介..."
+        placeholder={t('page.knowledge.descriptionInputPlaceholder')}
         rows={5}
         disabled={readOnly}
         class="resize-none"
@@ -62,10 +63,10 @@
     </div>
     <Dialog.Footer>
       {#if readOnly}
-        <Button onclick={handleClose}>关闭</Button>
+        <Button onclick={handleClose}>{t('common.actions_close')}</Button>
       {:else}
-        <Button variant="outline" onclick={handleClose}>取消</Button>
-        <Button onclick={handleSave}>保存</Button>
+        <Button variant="outline" onclick={handleClose}>{t('page.knowledge.cancel')}</Button>
+        <Button onclick={handleSave}>{t('page.knowledge.save')}</Button>
       {/if}
     </Dialog.Footer>
   </Dialog.Content>

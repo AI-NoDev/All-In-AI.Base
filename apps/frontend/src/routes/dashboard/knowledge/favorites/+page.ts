@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '收藏',
+  title: 'nav.title.favorites',
   icon: 'tdesign:star',
-  group: '知识库',
+  group: 'nav.group.knowledge',
   order: 4,
   permission: 'knowledge:view'
 };

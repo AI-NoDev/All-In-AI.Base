@@ -3,6 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
   import Icon from '@iconify/svelte';
+  import { t } from '$lib/stores/i18n.svelte';
   import type { ConflictMode } from './types';
 
   interface UploadItem {
@@ -102,7 +103,7 @@
     <Dialog.Header>
       <Dialog.Title class="flex items-center gap-2">
         <Icon icon="mdi:upload" class="w-5 h-5" />
-        上传文件
+        {t('page.knowledge.uploadFiles')}
         {#if isUploading || isComplete}
           <span class="text-sm font-normal text-muted-foreground">
             ({completedCount}/{totalCount - skippedCount})
@@ -115,28 +116,28 @@
       <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
         <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400 mb-2">
           <Icon icon="mdi:alert" class="w-5 h-5" />
-          <span class="font-medium">发现 {duplicateCount} 个重复文件</span>
+          <span class="font-medium">{t('page.knowledge.duplicateFound').replace('${count}', String(duplicateCount))}</span>
         </div>
         <p class="text-sm text-amber-600 dark:text-amber-500 mb-3">
-          以下文件已存在，请选择处理方式：
+          {t('page.knowledge.duplicateHint')}
         </p>
         {#if showBatchButtons}
           <div class="flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onclick={() => onHandleDuplicate('', 'overwrite-all')}>
               <Icon icon="mdi:file-replace" class="w-4 h-4 mr-1" />
-              全部覆盖
+              {t('page.knowledge.overwriteAll')}
             </Button>
             <Button size="sm" variant="outline" onclick={() => onHandleDuplicate('', 'newVersion-all')}>
               <Icon icon="mdi:file-document-plus" class="w-4 h-4 mr-1" />
-              全部创建新版本
+              {t('page.knowledge.newVersionAll')}
             </Button>
             <Button size="sm" variant="outline" onclick={() => onHandleDuplicate('', 'copy-all')}>
               <Icon icon="mdi:file-multiple" class="w-4 h-4 mr-1" />
-              全部保存为副本
+              {t('page.knowledge.copyAll')}
             </Button>
             <Button size="sm" variant="outline" onclick={() => onHandleDuplicate('', 'skip-all')}>
               <Icon icon="mdi:skip-forward" class="w-4 h-4 mr-1" />
-              全部跳过
+              {t('page.knowledge.skipAll')}
             </Button>
           </div>
         {/if}
@@ -146,7 +147,7 @@
     {#if (isUploading || isComplete) && !hasDuplicates}
       <div class="mb-4">
         <div class="flex justify-between text-sm mb-1">
-          <span>总进度</span>
+          <span>{t('page.knowledge.totalProgress')}</span>
           <span>{overallProgress}%</span>
         </div>
         <div class="h-2 bg-muted rounded-full overflow-hidden">
@@ -157,13 +158,13 @@
         </div>
         <div class="flex gap-4 mt-2 text-sm">
           {#if completedCount > 0}
-            <span class="text-green-500">{completedCount} 成功</span>
+            <span class="text-green-500">{t('page.knowledge.successCount').replace('${count}', String(completedCount))}</span>
           {/if}
           {#if errorCount > 0}
-            <span class="text-red-500">{errorCount} 失败</span>
+            <span class="text-red-500">{t('page.knowledge.errorCount').replace('${count}', String(errorCount))}</span>
           {/if}
           {#if skippedCount > 0}
-            <span class="text-gray-400">{skippedCount} 跳过</span>
+            <span class="text-gray-400">{t('page.knowledge.skippedCount').replace('${count}', String(skippedCount))}</span>
           {/if}
         </div>
       </div>
@@ -184,15 +185,15 @@
                 </p>
                 <div class="flex items-center gap-2 flex-shrink-0">
                   {#if item.status === 'duplicate'}
-                    <Badge variant="outline" class="text-amber-600 border-amber-300">重复</Badge>
+                    <Badge variant="outline" class="text-amber-600 border-amber-300">{t('page.knowledge.duplicate')}</Badge>
                   {:else if item.status === 'skipped'}
-                    <Badge variant="secondary">已跳过</Badge>
+                    <Badge variant="secondary">{t('page.knowledge.skipped')}</Badge>
                   {:else if item.conflictMode === 'overwrite'}
-                    <Badge variant="outline" class="text-blue-600 border-blue-300">覆盖</Badge>
+                    <Badge variant="outline" class="text-blue-600 border-blue-300">{t('page.knowledge.overwrite')}</Badge>
                   {:else if item.conflictMode === 'newVersion'}
-                    <Badge variant="outline" class="text-green-600 border-green-300">新版本</Badge>
+                    <Badge variant="outline" class="text-green-600 border-green-300">{t('page.knowledge.newVersion')}</Badge>
                   {:else if item.conflictMode === 'copy'}
-                    <Badge variant="outline" class="text-purple-600 border-purple-300">副本</Badge>
+                    <Badge variant="outline" class="text-purple-600 border-purple-300">{t('page.knowledge.copyAsDuplicate')}</Badge>
                   {/if}
                   <span class="text-xs text-muted-foreground">
                     {formatFileSize(item.file.size)}
@@ -216,19 +217,19 @@
                 <div class="mt-2 flex flex-wrap gap-2">
                   <Button size="sm" variant="outline" class="h-7 text-xs" onclick={() => onHandleDuplicate(item.id, 'overwrite')}>
                     <Icon icon="mdi:file-replace" class="w-3 h-3 mr-1" />
-                    覆盖
+                    {t('page.knowledge.overwrite')}
                   </Button>
                   <Button size="sm" variant="outline" class="h-7 text-xs" onclick={() => onHandleDuplicate(item.id, 'newVersion')}>
                     <Icon icon="mdi:file-document-plus" class="w-3 h-3 mr-1" />
-                    新版本
+                    {t('page.knowledge.newVersion')}
                   </Button>
                   <Button size="sm" variant="outline" class="h-7 text-xs" onclick={() => onHandleDuplicate(item.id, 'copy')}>
                     <Icon icon="mdi:file-multiple" class="w-3 h-3 mr-1" />
-                    副本
+                    {t('page.knowledge.copyAsDuplicate')}
                   </Button>
                   <Button size="sm" variant="ghost" class="h-7 text-xs" onclick={() => onHandleDuplicate(item.id, 'skip')}>
                     <Icon icon="mdi:skip-next" class="w-3 h-3 mr-1" />
-                    跳过
+                    {t('page.knowledge.skip')}
                   </Button>
                 </div>
               {/if}
@@ -245,26 +246,26 @@
       {#if !isUploading && !isComplete && !hasDuplicates}
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-muted-foreground">
-            共 {totalCount} 个文件
+            {t('page.knowledge.totalFiles').replace('${count}', String(totalCount))}
           </span>
           <div class="flex gap-2">
-            <Button variant="outline" onclick={handleClose}>取消</Button>
+            <Button variant="outline" onclick={handleClose}>{t('common.actions_cancel')}</Button>
             <Button onclick={onStartUpload} disabled={totalCount === 0}>
               <Icon icon="mdi:upload" class="w-4 h-4 mr-1" />
-              开始上传
+              {t('page.knowledge.startUpload')}
             </Button>
           </div>
         </div>
       {:else if hasDuplicates}
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-muted-foreground">
-            请处理重复文件后继续
+            {t('page.knowledge.handleDuplicateFirst')}
           </span>
           <div class="flex gap-2">
-            <Button variant="outline" onclick={handleClose}>取消</Button>
+            <Button variant="outline" onclick={handleClose}>{t('common.actions_cancel')}</Button>
             <Button onclick={onStartUpload} disabled={duplicateCount > 0}>
               <Icon icon="mdi:upload" class="w-4 h-4 mr-1" />
-              继续上传
+              {t('page.knowledge.continueUpload')}
             </Button>
           </div>
         </div>
@@ -272,22 +273,22 @@
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-green-600 font-medium flex items-center gap-1">
             <Icon icon="mdi:check-circle" class="w-4 h-4" />
-            上传完成
+            {t('page.knowledge.uploadComplete')}
             {#if skippedCount > 0}
-              <span class="text-muted-foreground font-normal">（{skippedCount} 个已跳过）</span>
+              <span class="text-muted-foreground font-normal">（{t('page.knowledge.skippedFiles').replace('${count}', String(skippedCount))}）</span>
             {/if}
           </span>
           <Button onclick={handleClose}>
-            完成
+            {t('page.knowledge.done')}
           </Button>
         </div>
       {:else}
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-muted-foreground">
-            正在上传...
+            {t('page.knowledge.uploading')}
           </span>
           <Button variant="outline" disabled>
-            取消
+            {t('common.actions_cancel')}
           </Button>
         </div>
       {/if}

@@ -12,6 +12,7 @@ import { versionIdParamsSchema, nodeZodSchemas } from './schemas';
 
 export const versionRestore = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.version.restore',
     displayName: '恢复历史版本',
     description: `将历史版本恢复为当前版本。

@@ -10,9 +10,9 @@
   import { Textarea } from '$lib/components/ui/textarea';
   import { Checkbox } from '$lib/components/ui/checkbox';
   import MarkdownEditor from '$lib/components/common/markdown-editor.svelte';
+  import MarkdownPreview from '$lib/components/common/markdown-preview.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
-  import { browser } from '$app/environment';
-  import { mode } from 'mode-watcher';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Agent {
     id: string;
@@ -68,8 +68,8 @@
   let { open, editing, form = $bindable(), providers, models, saving, onOpenChange, onSave }: Props = $props();
 
   const statusOptions = [
-    { value: '0', label: '正常' },
-    { value: '1', label: '停用' },
+    { value: '0', label: t('common.status.enabled') },
+    { value: '1', label: t('common.status.disabled') },
   ];
 
   let filteredModels = $derived(
@@ -83,36 +83,6 @@
   let editorSheetOpen = $state(false);
   let editor: MarkdownEditor;
   let editorReady = $state(false);
-
-  // 预览相关
-  let previewRef: HTMLDivElement | undefined = $state();
-  let isDark = $derived(mode.current === 'dark');
-
-  // 渲染预览
-  async function renderPreview() {
-    if (!browser || !previewRef) return;
-    
-    const Vditor = (await import('vditor')).default;
-    await import('vditor/dist/index.css');
-    
-    if (form.systemPrompt) {
-      Vditor.preview(previewRef, form.systemPrompt, {
-        mode: isDark ? 'dark' : 'light',
-        theme: {
-          current: isDark ? 'dark' : 'light',
-        },
-      });
-    } else {
-      previewRef.innerHTML = '';
-    }
-  }
-
-  // 当 dialog 打开或 systemPrompt 变化时渲染预览
-  $effect(() => {
-    if (open && previewRef) {
-      renderPreview();
-    }
-  });
 
   function handleEditorReady() {
     editorReady = true;
@@ -132,8 +102,6 @@
   function closeEditorSheet() {
     editorSheetOpen = false;
     editorReady = false;
-    // 关闭后刷新预览
-    setTimeout(() => renderPreview(), 100);
   }
 
   async function handleAvatarUpload(event: Event) {
@@ -143,12 +111,12 @@
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      alert('请选择 JPG、PNG、GIF 或 WebP 格式的图片');
+      alert(t('validation.imageFormat'));
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('图片大小不能超过 2MB');
+      alert(t('validation.imageSizeLimit'));
       return;
     }
 
@@ -166,11 +134,11 @@
       if (res.data?.success && res.data.url) {
         form.avatar = res.data.url;
       } else {
-        alert('上传失败');
+        alert(t('common.tips.uploadFailed'));
       }
     } catch (err) {
       console.error('Avatar upload failed:', err);
-      alert('上传失败');
+      alert(t('common.tips.uploadFailed'));
     } finally {
       avatarUploading = false;
       target.value = '';
@@ -202,7 +170,7 @@
 <Dialog.Root {open} onOpenChange={onOpenChange}>
   <Dialog.Content class="sm:max-w-6xl max-h-[90vh] overflow-y-auto" interactOutsideBehavior="ignore">
     <Dialog.Header>
-      <Dialog.Title>{editing ? '编辑智能体' : '新增智能体'}</Dialog.Title>
+      <Dialog.Title>{editing ? t('common.actions.edit') : t('common.actions.add')} {t('page.ai.agents')}</Dialog.Title>
     </Dialog.Header>
     <div class="grid grid-cols-2 gap-6 py-4">
       <!-- 左侧：基础信息 -->
@@ -212,7 +180,7 @@
           <div class="relative group cursor-pointer" onclick={triggerFileInput}>
             <div class="size-16 rounded-full border-2 flex items-center justify-center bg-muted overflow-hidden" style={form.color ? `border-color: ${form.color}` : ''}>
               {#if form.avatar}
-                <img src={form.avatar} alt="头像" class="size-full object-cover" />
+                <img src={form.avatar} alt={t('common.fields.avatar')} class="size-full object-cover" />
               {:else}
                 <span class="text-xl text-muted-foreground">
                   {form.name ? form.name.charAt(0).toUpperCase() : 'A'}
@@ -237,10 +205,10 @@
             />
           </div>
           <div class="flex-1 space-y-1">
-            <p class="text-sm text-muted-foreground">点击上传头像</p>
+            <p class="text-sm text-muted-foreground">{t('common.tips.clickToUploadAvatar')}</p>
             {#if form.avatar}
               <Button variant="ghost" size="sm" onclick={clearAvatar} class="h-6 px-2 text-xs">
-                <Icon icon="mdi:close" class="size-3 mr-1" />清除
+                <Icon icon="mdi:close" class="size-3 mr-1" />{t('common.actions.clear')}
               </Button>
             {/if}
           </div>
@@ -248,11 +216,11 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div class="grid gap-1.5">
-            <Label class="text-xs">名称 *</Label>
-            <Input bind:value={form.name} placeholder="智能体名称" class="h-9" />
+            <Label class="text-xs">{t('common.fields.name')} *</Label>
+            <Input bind:value={form.name} placeholder={t('page.ai.agentNamePlaceholder')} class="h-9" />
           </div>
           <div class="grid gap-1.5">
-            <Label class="text-xs">状态</Label>
+            <Label class="text-xs">{t('common.fields.status')}</Label>
             <Select.Root type="single" bind:value={form.status}>
               <Select.Trigger class="h-9">{statusOptions.find(o => o.value === form.status)?.label}</Select.Trigger>
               <Select.Content>
@@ -266,9 +234,9 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div class="grid gap-1.5">
-            <Label class="text-xs">提供商 *</Label>
+            <Label class="text-xs">{t('db.ai.model.providerId')} *</Label>
             <Select.Root type="single" bind:value={form.providerId} onValueChange={() => form.modelId = ''}>
-              <Select.Trigger class="h-9">{providers.find(p => p.id === form.providerId)?.name || '请选择'}</Select.Trigger>
+              <Select.Trigger class="h-9">{providers.find(p => p.id === form.providerId)?.name || t('common.tips.selectPlaceholder')}</Select.Trigger>
               <Select.Content>
                 {#each providers as p}
                   <Select.Item value={p.id}>{p.name}</Select.Item>
@@ -277,9 +245,9 @@
             </Select.Root>
           </div>
           <div class="grid gap-1.5">
-            <Label class="text-xs">模型 *</Label>
+            <Label class="text-xs">{t('db.ai.agent.modelId')} *</Label>
             <Select.Root type="single" bind:value={form.modelId}>
-              <Select.Trigger class="h-9">{filteredModels.find(m => m.id === form.modelId)?.name || '请选择'}</Select.Trigger>
+              <Select.Trigger class="h-9">{filteredModels.find(m => m.id === form.modelId)?.name || t('common.tips.selectPlaceholder')}</Select.Trigger>
               <Select.Content>
                 {#each filteredModels as m}
                   <Select.Item value={m.id}>{m.name}</Select.Item>
@@ -288,20 +256,20 @@
             </Select.Root>
           </div>
         </div>
-        <p class="text-xs text-muted-foreground -mt-2">默认模型，对话时可切换其他模型</p>
+        <p class="text-xs text-muted-foreground -mt-2">{t('page.ai.defaultModelHint')}</p>
 
         <div class="grid gap-1.5">
-          <Label class="text-xs">描述</Label>
-          <Textarea bind:value={form.description} placeholder="智能体描述" rows={2} />
+          <Label class="text-xs">{t('common.fields.description')}</Label>
+          <Textarea bind:value={form.description} placeholder={t('page.ai.agentDescPlaceholder')} rows={2} />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div class="grid gap-1.5">
-            <Label class="text-xs">温度 (0-2)</Label>
+            <Label class="text-xs">{t('db.ai.agent.temperature')} (0-2)</Label>
             <Input bind:value={form.temperature} type="number" step="0.1" min="0" max="2" class="h-9" />
           </div>
           <div class="grid gap-1.5">
-            <Label class="text-xs">主题色</Label>
+            <Label class="text-xs">{t('db.ai.agent.color')}</Label>
             <Input bind:value={form.color} type="color" class="h-9" />
           </div>
         </div>
@@ -309,11 +277,11 @@
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-2">
             <Checkbox bind:checked={form.supportLoop} />
-            <Label class="text-xs">支持循环调用</Label>
+            <Label class="text-xs">{t('db.ai.agent.supportLoop')}</Label>
           </div>
           {#if form.supportLoop}
             <div class="flex items-center gap-2">
-              <Label class="text-xs">最大循环</Label>
+              <Label class="text-xs">{t('db.ai.agent.maxLoops')}</Label>
               <Input bind:value={form.maxLoops} type="number" class="w-16 h-8" min="1" max="100" />
             </div>
           {/if}
@@ -323,18 +291,18 @@
       <!-- 右侧：系统提示词预览 -->
       <div class="flex flex-col gap-1.5">
         <div class="flex items-center justify-between">
-          <Label class="text-xs">系统提示词</Label>
+          <Label class="text-xs">{t('page.ai.systemPrompt')}</Label>
           <Button variant="ghost" size="sm" onclick={openEditorSheet} class="h-6 px-2 text-xs">
-            <Icon icon="mdi:pencil" class="size-3 mr-1" />编辑
+            <Icon icon="mdi:pencil" class="size-3 mr-1" />{t('common.actions.edit')}
           </Button>
         </div>
         <div class="border rounded-[var(--radius)] h-[380px] bg-muted/30">
           <ScrollArea class="h-full p-4">
             {#if form.systemPrompt}
-              <div bind:this={previewRef} class="vditor-preview prose prose-sm dark:prose-invert max-w-none"></div>
+              <MarkdownPreview value={form.systemPrompt} />
             {:else}
               <div class="flex items-center justify-center h-[350px] text-muted-foreground text-sm">
-                暂无系统提示词，点击编辑添加
+                {t('page.ai.noSystemPrompt')}
               </div>
             {/if}
           </ScrollArea>
@@ -342,8 +310,8 @@
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => onOpenChange(false)}>取消</Button>
-      <Button onclick={onSave} disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
+      <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.actions.cancel')}</Button>
+      <Button onclick={onSave} disabled={saving}>{saving ? t('common.tips.saving') : t('common.actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
@@ -354,10 +322,10 @@
     <Sheet.Header>
       <Sheet.Title class="flex items-center gap-2">
         <Icon icon="mdi:file-document-edit" class="size-5" />
-        编辑系统提示词
+        {t('page.ai.editSystemPrompt')}
       </Sheet.Title>
       <Sheet.Description>
-        定义智能体的角色、行为和约束
+        {t('page.ai.systemPromptDesc')}
       </Sheet.Description>
     </Sheet.Header>
 
@@ -366,7 +334,7 @@
         <MarkdownEditor
           bind:this={editor}
           value={form.systemPrompt}
-          placeholder="定义智能体的角色和行为..."
+          placeholder={t('page.ai.systemPromptPlaceholder')}
           height={500}
           onInput={handleEditorInput}
           onReady={handleEditorReady}
@@ -375,13 +343,7 @@
     </div>
 
     <Sheet.Footer>
-      <Button onclick={closeEditorSheet}>完成</Button>
+      <Button onclick={closeEditorSheet}>{t('common.actions.done')}</Button>
     </Sheet.Footer>
   </Sheet.Content>
 </Sheet.Root>
-
-<style>
-  :global(.vditor-preview) {
-    font-size: 14px;
-  }
-</style>

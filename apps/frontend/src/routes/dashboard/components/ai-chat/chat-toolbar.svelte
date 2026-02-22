@@ -4,13 +4,17 @@
   import * as Sheet from '$lib/components/ui/sheet';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { aiChatStore, type AISession } from '@/lib/stores/ai-chat.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   let showHistory = $state(false);
 
   // 当前会话标题（截取第一条用户消息）
+  // 检查 title 是否为空或是旧版默认值 '新对话'
+  const isDefaultTitle = (title: string | null) => !title || title === '新对话';
+  
   const currentTitle = $derived(() => {
     const session = aiChatStore.currentSession;
-    if (session?.title && session.title !== '新对话') {
+    if (session?.title && !isDefaultTitle(session.title)) {
       return session.title.length > 20 ? session.title.slice(0, 20) + '...' : session.title;
     }
     return null;
@@ -18,7 +22,7 @@
 
   async function handleNewSession() {
     if (!aiChatStore.canSendMessage) {
-      alert('请先选择一个模型或智能体');
+      alert(t('page.ai.chat_selectModelOrAgent'));
       return;
     }
     try {
@@ -48,9 +52,9 @@
     if (days === 0) {
       return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
     } else if (days === 1) {
-      return '昨天';
+      return t('page.ai.chat_yesterday');
     } else if (days < 7) {
-      return `${days}天前`;
+      return t('page.ai.chat_daysAgo').replace('${days}', String(days));
     } else {
       return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
     }
@@ -58,10 +62,10 @@
 
   // 获取会话显示标题
   function getSessionTitle(session: { title: string | null; messageCount: number }): string {
-    if (session.title && session.title !== '新对话') {
+    if (session.title && !isDefaultTitle(session.title)) {
       return session.title.length > 25 ? session.title.slice(0, 25) + '...' : session.title;
     }
-    return '新对话';
+    return t('page.ai.chat_newChat');
   }
 
   // 获取会话的模型名称
@@ -95,19 +99,19 @@
       <Sheet.Trigger>
         <Button variant="ghost" size="sm" class="h-8 px-2">
           <Icon icon="mdi:history" class="size-4 mr-1" />
-          历史
+          {t('page.ai.chat_history')}
         </Button>
       </Sheet.Trigger>
       <Sheet.Content side="left" class="w-80">
         <Sheet.Header>
-          <Sheet.Title>历史会话</Sheet.Title>
-          <Sheet.Description>选择一个会话继续对话</Sheet.Description>
+          <Sheet.Title>{t('page.ai.chat_historyTitle')}</Sheet.Title>
+          <Sheet.Description>{t('page.ai.chat_historyDesc')}</Sheet.Description>
         </Sheet.Header>
         <ScrollArea class="h-[calc(100vh-120px)] mt-4">
           <div class="space-y-1 pr-4">
             {#if aiChatStore.sessions.length === 0}
               <div class="text-center text-muted-foreground py-8">
-                暂无历史会话
+                {t('page.ai.chat_noHistory')}
               </div>
             {:else}
               {#each aiChatStore.sessions as session}
@@ -145,7 +149,7 @@
                         {:else if modelName}
                           <span class="px-1.5 py-0.5 rounded bg-muted-foreground/10">{modelName}</span>
                         {/if}
-                        <span>{session.messageCount} 条消息</span>
+                        <span>{session.messageCount} {t('page.ai.chat_messages')}</span>
                         <span>·</span>
                         <span>{formatDate(session.lastMessageAt || session.createdAt)}</span>
                       </div>
@@ -180,7 +184,7 @@
   <div class="flex items-center gap-1">
     <Button variant="ghost" size="sm" class="h-8 px-2" onclick={handleNewSession}>
       <Icon icon="mdi:plus" class="size-4 mr-1" />
-      新对话
+      {t('page.ai.chat_newChat')}
     </Button>
     <Button variant="ghost" size="sm" class="h-8 w-8 p-0" onclick={() => aiChatStore.togglePanel()}>
       <Icon icon="mdi:close" class="size-4" />

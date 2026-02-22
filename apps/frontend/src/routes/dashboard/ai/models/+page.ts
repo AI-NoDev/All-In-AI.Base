@@ -1,6 +1,6 @@
 export const _meta = {
-  title: '模型管理',
+  title: 'nav.title.models',
   icon: 'mdi:brain',
-  group: '智能体',
+  group: 'nav.group.ai',
   order: 10,
 };

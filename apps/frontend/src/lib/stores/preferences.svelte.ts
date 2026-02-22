@@ -1,7 +1,10 @@
 /**
  * 个性化设置 Store
  * 管理主题、语言等用户偏好设置
+ * 支持与服务器同步
  */
+
+import { authStore } from './auth.svelte';
 
 export type ThemeMode = 'light' | 'dark';
 export type ThemeColor = 'slate' | 'zinc' | 'neutral' | 'stone' | 'blue' | 'green' | 'violet' | 'orange' | 'rose';
@@ -18,6 +21,17 @@ export interface Preferences {
   fontSize: number;
   /** 圆角大小 */
   radius: number;
+  /** 默认文本生成模型 ID */
+  defaultTextModelId: string | null;
+  /** 默认图像生成模型 ID */
+  defaultImageModelId: string | null;
+  /** 默认对象生成模型 ID */
+  defaultObjectModelId: string | null;
+}
+
+// 服务器返回的偏好设置响应
+interface PreferencesResponse {
+  preferences: Partial<Preferences> | null;
 }
 
 const DEFAULT_PREFERENCES: Preferences = {
@@ -26,6 +40,9 @@ const DEFAULT_PREFERENCES: Preferences = {
   language: 'zh-CN',
   fontSize: 14,
   radius: 0.5,
+  defaultTextModelId: null,
+  defaultImageModelId: null,
+  defaultObjectModelId: null,
 };
 
 const STORAGE_KEY = 'user-preferences';
@@ -179,6 +196,11 @@ export const RADIUS_OPTIONS = [
 
 function createPreferencesStore() {
   let preferences = $state<Preferences>({ ...DEFAULT_PREFERENCES });
+  let syncing = $state(false);
+  let initialized = $state(false);
+
+  // 防抖保存到服务器
+  let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
   function loadFromStorage(): void {
     if (typeof window === 'undefined') return;
@@ -197,6 +219,77 @@ function createPreferencesStore() {
   function saveToStorage(): void {
     if (typeof window === 'undefined') return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+  }
+
+  // 从服务器加载偏好设置
+  async function loadFromServer(): Promise<void> {
+    if (!authStore.isAuthenticated) return;
+    
+    try {
+      // 使用 fetch 直接调用，因为 API 类型尚未重新生成
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030'}/api/system/user/preferences`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${authStore.accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      
+      if (response.ok) {
+        const result = await response.json() as PreferencesResponse;
+        if (result.preferences) {
+          preferences = { ...DEFAULT_PREFERENCES, ...result.preferences };
+          saveToStorage(); // 同步到本地存储
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load preferences from server:', e);
+      // 失败时使用本地存储
+    }
+  }
+
+  // 保存到服务器（防抖）
+  function saveToServer(): void {
+    if (!authStore.isAuthenticated) return;
+    
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+    
+    saveTimeout = setTimeout(async () => {
+      syncing = true;
+      try {
+        await fetch(
+          `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030'}/api/system/user/preferences`,
+          {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${authStore.accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              preferences: {
+                theme: preferences.theme,
+                themeColor: preferences.themeColor,
+                language: preferences.language,
+                fontSize: preferences.fontSize,
+                radius: preferences.radius,
+                defaultTextModelId: preferences.defaultTextModelId,
+                defaultImageModelId: preferences.defaultImageModelId,
+                defaultObjectModelId: preferences.defaultObjectModelId,
+              },
+            }),
+          }
+        );
+      } catch (e) {
+        console.error('Failed to save preferences to server:', e);
+      } finally {
+        syncing = false;
+      }
+    }, 500);
   }
 
   function applyThemeColor(color: ThemeColor): void {
@@ -233,6 +326,7 @@ function createPreferencesStore() {
   function setTheme(theme: ThemeMode): void {
     preferences.theme = theme;
     saveToStorage();
+    saveToServer();
     // 主题色需要重新应用（因为 light/dark 颜色不同）
     setTimeout(() => applyThemeColor(preferences.themeColor), 50);
   }
@@ -241,33 +335,73 @@ function createPreferencesStore() {
     preferences.themeColor = color;
     applyThemeColor(color);
     saveToStorage();
+    saveToServer();
   }
 
   function setLanguage(language: Language): void {
     preferences.language = language;
     saveToStorage();
+    saveToServer();
   }
 
   function setFontSize(size: number): void {
     preferences.fontSize = size;
     applyFontSize(size);
     saveToStorage();
+    saveToServer();
   }
 
   function setRadius(radius: number): void {
     preferences.radius = radius;
     applyRadius(radius);
     saveToStorage();
+    saveToServer();
   }
 
   function reset(): void {
     preferences = { ...DEFAULT_PREFERENCES };
     applyAll();
     saveToStorage();
+    saveToServer();
   }
 
-  function init(): void {
+  function setDefaultTextModelId(modelId: string | null): void {
+    preferences.defaultTextModelId = modelId;
+    saveToStorage();
+    saveToServer();
+  }
+
+  function setDefaultImageModelId(modelId: string | null): void {
+    preferences.defaultImageModelId = modelId;
+    saveToStorage();
+    saveToServer();
+  }
+
+  function setDefaultObjectModelId(modelId: string | null): void {
+    preferences.defaultObjectModelId = modelId;
+    saveToStorage();
+    saveToServer();
+  }
+
+  async function init(): Promise<void> {
+    if (initialized) return;
+    
+    // 先从本地存储加载（快速显示）
     loadFromStorage();
+    applyAll();
+    
+    // 然后从服务器加载（如果已登录）
+    if (authStore.isAuthenticated) {
+      await loadFromServer();
+      applyAll();
+    }
+    
+    initialized = true;
+  }
+
+  // 用户登录后重新加载偏好设置
+  async function onLogin(): Promise<void> {
+    await loadFromServer();
     applyAll();
   }
 
@@ -277,13 +411,21 @@ function createPreferencesStore() {
     get language() { return preferences.language; },
     get fontSize() { return preferences.fontSize; },
     get radius() { return preferences.radius; },
+    get defaultTextModelId() { return preferences.defaultTextModelId; },
+    get defaultImageModelId() { return preferences.defaultImageModelId; },
+    get defaultObjectModelId() { return preferences.defaultObjectModelId; },
+    get syncing() { return syncing; },
     setTheme,
     setThemeColor,
     setLanguage,
     setFontSize,
     setRadius,
+    setDefaultTextModelId,
+    setDefaultImageModelId,
+    setDefaultObjectModelId,
     reset,
     init,
+    onLogin,
   };
 }
 

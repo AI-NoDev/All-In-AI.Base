@@ -41,6 +41,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { DataTable } from '$lib/components/common';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { PostApiSystemPostQueryFieldEnum, PostApiSystemPostQueryOrderEnum } from '@qiyu-allinai/api';
 
   interface Post {
@@ -87,8 +88,8 @@
   let form = $state({ code: '', name: '', sort: '0', status: '0' });
 
   const statusOptions = [
-    { value: '0', label: '正常' },
-    { value: '1', label: '停用' },
+    { value: '0', label: t('common.status.enabled') },
+    { value: '1', label: t('common.status.disabled') },
   ];
 
   let allSelected = $derived(posts.length > 0 && posts.every(p => selectedIds.has(p.id)));
@@ -104,12 +105,12 @@
   }
 
   const columns = [
-    { key: 'code', title: '岗位编码', width: 160, render: codeRender },
-    { key: 'name', title: '岗位名称', width: 160 },
-    { key: 'sort', title: '排序', width: 80 },
-    { key: 'status', title: '状态', width: 80, render: statusRender },
-    { key: 'createdAt', title: '创建时间', width: 170, render: dateRender },
-    { key: 'id', title: '操作', width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
+    { key: 'code', title: t('page.system.post.code'), width: 160, render: codeRender },
+    { key: 'name', title: t('page.system.post.name'), width: 160 },
+    { key: 'sort', title: t('page.system.post.sort'), width: 80 },
+    { key: 'status', title: t('page.system.post.status'), width: 80, render: statusRender },
+    { key: 'createdAt', title: t('page.system.post.createdAt'), width: 170, render: dateRender },
+    { key: 'id', title: t('page.system.post.actions'), width: 112, align: 'right' as const, fixed: 'right' as const, render: actionsRender },
   ];
 
   async function loadPosts() {
@@ -162,7 +163,7 @@
   }
 
   async function handleSave() {
-    if (!form.code.trim() || !form.name.trim()) return alert('请填写必填项');
+    if (!form.code.trim() || !form.name.trim()) return alert(t('page.system.post.requiredFields'));
     saving = true;
     try {
       const api = authStore.createApi(true);
@@ -176,27 +177,27 @@
       loadPosts();
     } catch (err) {
       console.error('Failed to save post:', err);
-      alert('保存失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       saving = false;
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('确定要删除该岗位吗？')) return;
+    if (!confirm(t('page.system.post.deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.system.deleteApiSystemPostById({ id });
       loadPosts();
     } catch (err) {
       console.error('Failed to delete post:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     }
   }
 
   async function handleBatchDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedIds.size} 个岗位吗？`)) return;
+    if (!confirm(t('page.system.post.batchDeleteConfirm').replace('${count}', String(selectedIds.size)))) return;
     deleting = true;
     try {
       const api = authStore.createApi(true);
@@ -205,7 +206,7 @@
       loadPosts();
     } catch (err) {
       console.error('Failed to delete posts:', err);
-      alert('删除失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       deleting = false;
     }
@@ -219,7 +220,7 @@
 {/snippet}
 
 {#snippet statusRender({ value })}
-  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? '正常' : '停用'}</Badge>
+  <Badge variant={value === '0' ? 'default' : 'secondary'}>{value === '0' ? t('common.status.enabled') : t('common.status.disabled')}</Badge>
 {/snippet}
 
 {#snippet dateRender({ value })}
@@ -239,19 +240,19 @@
     <div class="py-3 border-b border-border">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">岗位编码</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.code} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.post.code')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.code} />
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">岗位名称</span>
-          <Input placeholder="请输入" class="w-32 h-8" bind:value={searchForm.name} />
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.post.name')}</span>
+          <Input placeholder={t('common.tips.inputPlaceholder')} class="w-32 h-8" bind:value={searchForm.name} />
         </div>
         <div class="flex gap-2">
           <Button size="sm" class="h-8" onclick={handleSearch}>
-            <Icon icon="tdesign:search" class="mr-1 size-4" />搜索
+            <Icon icon="tdesign:search" class="mr-1 size-4" />{t('common.actions.search')}
           </Button>
           <Button size="sm" variant="outline" class="h-8" onclick={handleReset}>
-            <Icon icon="tdesign:refresh" class="mr-1 size-4" />重置
+            <Icon icon="tdesign:refresh" class="mr-1 size-4" />{t('common.actions.reset')}
           </Button>
         </div>
       </div>
@@ -262,10 +263,10 @@
     <div class="pb-3">
       <div class="flex items-center justify-between">
         <div class="flex gap-2">
-          <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />新增</Button>
+          <Button size="sm" onclick={openCreate}><Icon icon="tdesign:add" class="mr-1 size-4" />{t('common.actions.add')}</Button>
           {#if selectedIds.size > 0}
             <Button size="sm" variant="destructive" onclick={handleBatchDelete} disabled={deleting}>
-              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />删除({selectedIds.size})
+              <Icon icon={deleting ? 'tdesign:loading' : 'tdesign:delete'} class="mr-1 size-4 {deleting ? 'animate-spin' : ''}" />{t('common.actions.delete')}({selectedIds.size})
             </Button>
           {/if}
         </div>
@@ -290,7 +291,7 @@
 
       {#if total > 0 && !loading}
         <div class="mt-4 flex items-center justify-between">
-          <span class="text-sm text-muted-foreground whitespace-nowrap">共 {total} 条记录</span>
+          <span class="text-sm text-muted-foreground whitespace-nowrap">{t('page.system.post.totalRecords').replace('${total}', String(total))}</span>
           <Pagination.Root count={total} perPage={pageSize} bind:page={currentPage} onPageChange={() => loadPosts()}>
             {#snippet children({ pages, currentPage: cp })}
               <Pagination.Content>
@@ -317,24 +318,24 @@
 <Dialog.Root bind:open={dialogOpen}>
   <Dialog.Content class="sm:max-w-md">
     <Dialog.Header>
-      <Dialog.Title>{editingPost ? '编辑岗位' : '新增岗位'}</Dialog.Title>
+      <Dialog.Title>{editingPost ? t('page.system.post.editPost') : t('page.system.post.addPost')}</Dialog.Title>
     </Dialog.Header>
     <div class="grid gap-4 py-4">
       <div class="grid gap-2">
-        <Label>岗位编码 *</Label>
-        <Input bind:value={form.code} placeholder="请输入岗位编码" />
+        <Label>{t('page.system.post.code')} *</Label>
+        <Input bind:value={form.code} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
       <div class="grid gap-2">
-        <Label>岗位名称 *</Label>
-        <Input bind:value={form.name} placeholder="请输入岗位名称" />
+        <Label>{t('page.system.post.name')} *</Label>
+        <Input bind:value={form.name} placeholder={t('common.tips.inputPlaceholder')} />
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-2">
-          <Label>排序</Label>
+          <Label>{t('page.system.post.sort')}</Label>
           <Input bind:value={form.sort} type="number" />
         </div>
         <div class="grid gap-2">
-          <Label>状态</Label>
+          <Label>{t('page.system.post.status')}</Label>
           <Select.Root type="single" bind:value={form.status}>
             <Select.Trigger>{statusOptions.find(o => o.value === form.status)?.label}</Select.Trigger>
             <Select.Content>{#each statusOptions as opt}<Select.Item value={opt.value}>{opt.label}</Select.Item>{/each}</Select.Content>
@@ -343,8 +344,8 @@
       </div>
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => dialogOpen = false}>取消</Button>
-      <Button onclick={handleSave} disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
+      <Button variant="outline" onclick={() => dialogOpen = false}>{t('common.actions.cancel')}</Button>
+      <Button onclick={handleSave} disabled={saving}>{saving ? t('common.tips.saving') : t('common.actions.save')}</Button>
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>

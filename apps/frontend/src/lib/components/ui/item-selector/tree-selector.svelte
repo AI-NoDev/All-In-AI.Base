@@ -5,6 +5,7 @@
   import { ScrollArea } from '../scroll-area/index.js';
   import { Button } from '../button/index.js';
   import { Badge } from '../badge/index.js';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface TreeItem {
     id: string;
@@ -39,13 +40,17 @@
     items,
     selected = $bindable(),
     mode = 'multiple',
-    searchPlaceholder = '搜索...',
-    emptyText = '暂无数据',
+    searchPlaceholder,
+    emptyText,
     showSelectAll = true,
     maxHeight = '400px',
     defaultExpanded = true,
     onSelect,
   }: Props = $props();
+
+  // Use i18n defaults
+  let actualSearchPlaceholder = $derived(searchPlaceholder ?? t('common.actions.search') + '...');
+  let actualEmptyText = $derived(emptyText ?? t('common.tips.noData'));
 
   let searchQuery = $state('');
   let expandedIds = $state<Set<string>>(new Set());
@@ -245,7 +250,7 @@
     <Icon icon="tdesign:search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
     <Input 
       bind:value={searchQuery}
-      placeholder={searchPlaceholder}
+      placeholder={actualSearchPlaceholder}
       class="pl-9"
     />
     {#if searchQuery}
@@ -263,22 +268,22 @@
     <div class="flex gap-2">
       {#if mode === 'multiple' && showSelectAll}
         <Button size="sm" variant="outline" onclick={selectAll} disabled={selectableCount === 0}>
-          全选
+          {t('common.actions.selectAll')}
         </Button>
         <Button size="sm" variant="outline" onclick={deselectAll} disabled={selectedSet.size === 0}>
-          取消
+          {t('common.actions.cancel')}
         </Button>
       {/if}
       <Button size="sm" variant="ghost" onclick={expandAll}>
-        <Icon icon="tdesign:chevron-down-double" class="size-4 mr-1" />展开
+        <Icon icon="tdesign:chevron-down-double" class="size-4 mr-1" />{t('common.selector.expand')}
       </Button>
       <Button size="sm" variant="ghost" onclick={collapseAll}>
-        <Icon icon="tdesign:chevron-up-double" class="size-4 mr-1" />收起
+        <Icon icon="tdesign:chevron-up-double" class="size-4 mr-1" />{t('common.selector.collapse')}
       </Button>
     </div>
     {#if mode === 'multiple'}
       <span class="text-sm text-muted-foreground">
-        已选 {selectedSet.size} / {selectableCount}
+        {t('common.selector.selected')} {selectedSet.size} / {selectableCount}
       </span>
     {/if}
   </div>
@@ -352,10 +357,10 @@
         <div class="py-8 text-center text-muted-foreground">
           {#if searchQuery}
             <Icon icon="tdesign:search-error" class="size-8 mx-auto mb-2 opacity-50" />
-            <p>未找到匹配 "{searchQuery}" 的结果</p>
+            <p>{t('common.selector.noMatch')} "{searchQuery}"</p>
           {:else}
             <Icon icon="tdesign:inbox" class="size-8 mx-auto mb-2 opacity-50" />
-            <p>{emptyText}</p>
+            <p>{actualEmptyText}</p>
           {/if}
         </div>
       {/each}

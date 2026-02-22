@@ -12,6 +12,7 @@ import type { DictGroupSelect, DictGroupInsert } from './utils';
 export const dictGroupUpdateMany = defineAction({
   meta: {
     name: 'system.dictGroup.updateMany',
+    ignoreTools: true,
     displayName: '批量更新字典组',
     description: `根据Key列表批量更新字典组。
 

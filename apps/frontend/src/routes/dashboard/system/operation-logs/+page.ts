@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '操作日志',
+  title: 'nav.title.operationLogs',
   icon: 'tdesign:history',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 16,
   permission: 'system:operlog:view'
 };

@@ -11,6 +11,7 @@ import type { JobLogSelect, JobLogInsert } from './utils';
 export const jobLogCreateMany = defineAction({
   meta: {
     name: 'system.jobLog.createMany',
+    ignoreTools: true,
     displayName: '批量创建任务日志',
     description: `批量创建多个任务执行日志记录。
 

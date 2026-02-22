@@ -16,6 +16,7 @@
   "user_loginIp": "最后登录IP",
   "user_loginDate": "最后登录时间",
   "user_pwdUpdateDate": "密码更新时间",
+  "user_preferences": "偏好设置",
   "department_meta_displayName": "部门管理",
   "department_meta_verboseName": "部门",
   "department_meta_verboseNamePlural": "部门列表",

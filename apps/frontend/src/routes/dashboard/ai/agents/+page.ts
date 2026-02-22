@@ -1,6 +1,6 @@
 export const _meta = {
-	title: '智能体管理',
+	title: 'nav.title.agents',
 	icon: 'mdi:robot',
-	group: '智能体',
+	group: 'nav.group.ai',
 	order: 30
 };

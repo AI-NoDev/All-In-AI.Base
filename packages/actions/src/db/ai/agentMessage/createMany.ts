@@ -12,6 +12,7 @@ import type { AgentMessageSelect, AgentMessageInsert } from './utils';
 export const agentMessageCreateMany = defineAction({
   meta: {
     name: 'ai.agentMessage.createMany',
+    ignoreTools: true,
     displayName: '批量创建Agent消息',
     description: `批量创建Agent消息，自动分配递增序号并更新会话统计。
 

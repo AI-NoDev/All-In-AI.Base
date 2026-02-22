@@ -6,14 +6,18 @@
   import { tabsStore } from '@/lib/stores/tabs.svelte';
   import { imStore } from '@/lib/stores/im.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { i18n, t } from '@/lib/stores/i18n.svelte';
   import { groupedPages, type PageMeta } from '@/lib/generated-pages';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import { dev } from '$app/environment';
   import { onMount } from 'svelte';
 
-  // 开发模式分组名
-  const DEV_GROUP_NAME = '开发模式';
+  // 读取 i18n.version 建立响应式依赖
+  let _ = $derived(i18n.version);
+
+  // 开发模式分组名 (i18n key)
+  const DEV_GROUP_NAME = 'nav.group.dev';
 
   /**
    * 检查用户是否有权限访问某个页面
@@ -43,37 +47,14 @@
   );
 
   let loaded = $state(false);
-  let zoomLevel = $state(100);
-
-  function detectZoom(): number {
-    return Math.round(window.devicePixelRatio * 100);
-  }
-
-  function handleResize() {
-    zoomLevel = detectZoom();
-  }
-
-  let mediaQuery: MediaQueryList | undefined;
-  function handleMediaChange() {
-    zoomLevel = detectZoom();
-  }
 
   onMount(() => {
     const timer = setTimeout(() => {
       loaded = true;
     }, 800);
 
-    zoomLevel = detectZoom();
-    window.addEventListener('resize', handleResize);
-
-    // 监听 devicePixelRatio 变化（更精确地捕获缩放）
-    mediaQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
-    mediaQuery.addEventListener('change', handleMediaChange);
-
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', handleResize);
-      mediaQuery?.removeEventListener('change', handleMediaChange);
     };
   });
 
@@ -102,9 +83,10 @@
 </script>
 
 {#if loaded}
+  {#key _}
   {#each visibleGroups as group}
     <Sidebar.Group>
-      <Sidebar.GroupLabel>{group.label}</Sidebar.GroupLabel>
+      <Sidebar.GroupLabel>{t(group.label)}</Sidebar.GroupLabel>
       <Sidebar.GroupContent>
         <Sidebar.Menu>
           {#each group.items as item}
@@ -116,7 +98,7 @@
                 {#if item.icon}
                   <Icon icon={item.icon} class="size-4" />
                 {/if}
-                <span>{item.title}</span>
+                <span>{t(item.title)}</span>
                 {#if isContactsPage(item.path) && imStore.totalUnreadCount > 0}
                   <Badge variant="destructive" class="ml-auto h-5 min-w-5 px-1.5 text-xs">
                     {imStore.totalUnreadCount > 99 ? '99+' : imStore.totalUnreadCount}
@@ -129,17 +111,8 @@
       </Sidebar.GroupContent>
     </Sidebar.Group>
   {/each}
+  {/key}
 
-  {#if zoomLevel !== 100}
-    <Sidebar.Group>
-      <Sidebar.GroupContent>
-        <div class="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
-          <Icon icon="tdesign:search" class="size-3.5" />
-          <span>缩放 {zoomLevel}%</span>
-        </div>
-      </Sidebar.GroupContent>
-    </Sidebar.Group>
-  {/if}
 {:else}
   {#each [1, 2] as _}
     <Sidebar.Group>

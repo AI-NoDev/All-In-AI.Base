@@ -3,6 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Badge } from '$lib/components/ui/badge';
   import Icon from '@iconify/svelte';
+  import { t } from '$lib/stores/i18n.svelte';
   import type { ConflictMode, PasteConflictItem } from './types';
 
   interface Props {
@@ -72,7 +73,7 @@
     <Dialog.Header>
       <Dialog.Title class="flex items-center gap-2">
         <Icon icon="mdi:content-paste" class="w-5 h-5" />
-        粘贴文件
+        {t('page.knowledge.paste')}
         {#if isPasting || isComplete}
           <span class="text-sm font-normal text-muted-foreground">
             ({successCount}/{totalCount - skippedCount})
@@ -85,28 +86,28 @@
       <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
         <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400 mb-2">
           <Icon icon="mdi:alert" class="w-5 h-5" />
-          <span class="font-medium">发现 {conflictCount} 个重复文件</span>
+          <span class="font-medium">{t('page.knowledge.duplicateFound').replace('${count}', String(conflictCount))}</span>
         </div>
         <p class="text-sm text-amber-600 dark:text-amber-500 mb-3">
-          目标文件夹中已存在同名文件，请选择处理方式：
+          {t('page.knowledge.duplicateHint')}
         </p>
         {#if showBatchButtons}
           <div class="flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onclick={() => onResolve('', 'overwrite-all')}>
               <Icon icon="mdi:file-replace" class="w-4 h-4 mr-1" />
-              全部覆盖
+              {t('page.knowledge.overwriteAll')}
             </Button>
             <Button size="sm" variant="outline" onclick={() => onResolve('', 'newVersion-all')}>
               <Icon icon="mdi:file-document-plus" class="w-4 h-4 mr-1" />
-              全部创建新版本
+              {t('page.knowledge.newVersionAll')}
             </Button>
             <Button size="sm" variant="outline" onclick={() => onResolve('', 'copy-all')}>
               <Icon icon="mdi:file-multiple" class="w-4 h-4 mr-1" />
-              全部保存为副本
+              {t('page.knowledge.copyAll')}
             </Button>
             <Button size="sm" variant="outline" onclick={() => onResolve('', 'skip-all')}>
               <Icon icon="mdi:skip-forward" class="w-4 h-4 mr-1" />
-              全部跳过
+              {t('page.knowledge.skipAll')}
             </Button>
           </div>
         {/if}
@@ -128,21 +129,21 @@
                 </p>
                 <div class="flex items-center gap-2 flex-shrink-0">
                   <Badge variant="outline" class="text-xs">
-                    {item.clipboardItem.type === 'folder' ? '文件夹' : '文件'}
+                    {item.clipboardItem.type === 'folder' ? t('page.knowledge.folder') : t('page.knowledge.file')}
                   </Badge>
                   <Badge variant={item.clipboardItem.action === 'cut' ? 'default' : 'secondary'} class="text-xs">
-                    {item.clipboardItem.action === 'cut' ? '剪切' : '复制'}
+                    {item.clipboardItem.action === 'cut' ? t('page.knowledge.cutAction') : t('page.knowledge.copyAction')}
                   </Badge>
                   {#if item.status === 'conflict'}
-                    <Badge variant="outline" class="text-amber-600 border-amber-300">重复</Badge>
+                    <Badge variant="outline" class="text-amber-600 border-amber-300">{t('page.knowledge.duplicate')}</Badge>
                   {:else if item.status === 'skipped'}
-                    <Badge variant="secondary">已跳过</Badge>
+                    <Badge variant="secondary">{t('page.knowledge.skipped')}</Badge>
                   {:else if item.conflictMode === 'overwrite'}
-                    <Badge variant="outline" class="text-blue-600 border-blue-300">覆盖</Badge>
+                    <Badge variant="outline" class="text-blue-600 border-blue-300">{t('page.knowledge.overwrite')}</Badge>
                   {:else if item.conflictMode === 'newVersion'}
-                    <Badge variant="outline" class="text-green-600 border-green-300">新版本</Badge>
+                    <Badge variant="outline" class="text-green-600 border-green-300">{t('page.knowledge.newVersion')}</Badge>
                   {:else if item.conflictMode === 'copy'}
-                    <Badge variant="outline" class="text-purple-600 border-purple-300">副本</Badge>
+                    <Badge variant="outline" class="text-purple-600 border-purple-300">{t('page.knowledge.copyAsDuplicate')}</Badge>
                   {/if}
                 </div>
               </div>
@@ -150,19 +151,19 @@
                 <div class="mt-2 flex flex-wrap gap-2">
                   <Button size="sm" variant="outline" class="h-7 text-xs" onclick={() => onResolve(item.clipboardItem.id, 'overwrite')}>
                     <Icon icon="mdi:file-replace" class="w-3 h-3 mr-1" />
-                    覆盖
+                    {t('page.knowledge.overwrite')}
                   </Button>
                   <Button size="sm" variant="outline" class="h-7 text-xs" onclick={() => onResolve(item.clipboardItem.id, 'newVersion')}>
                     <Icon icon="mdi:file-document-plus" class="w-3 h-3 mr-1" />
-                    新版本
+                    {t('page.knowledge.newVersion')}
                   </Button>
                   <Button size="sm" variant="outline" class="h-7 text-xs" onclick={() => onResolve(item.clipboardItem.id, 'copy')}>
                     <Icon icon="mdi:file-multiple" class="w-3 h-3 mr-1" />
-                    副本
+                    {t('page.knowledge.copyAsDuplicate')}
                   </Button>
                   <Button size="sm" variant="ghost" class="h-7 text-xs" onclick={() => onResolve(item.clipboardItem.id, 'skip')}>
                     <Icon icon="mdi:skip-next" class="w-3 h-3 mr-1" />
-                    跳过
+                    {t('page.knowledge.skip')}
                   </Button>
                 </div>
               {/if}
@@ -179,26 +180,26 @@
       {#if !isPasting && !isComplete && !hasConflicts}
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-muted-foreground">
-            共 {totalCount} 个项目
+            {t('page.knowledge.totalFiles').replace('${count}', String(totalCount))}
           </span>
           <div class="flex gap-2">
-            <Button variant="outline" onclick={onCancel}>取消</Button>
+            <Button variant="outline" onclick={onCancel}>{t('page.knowledge.cancel')}</Button>
             <Button onclick={onConfirm}>
               <Icon icon="mdi:content-paste" class="w-4 h-4 mr-1" />
-              确认粘贴
+              {t('page.knowledge.paste')}
             </Button>
           </div>
         </div>
       {:else if hasConflicts}
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-muted-foreground">
-            请处理重复文件后继续
+            {t('page.knowledge.handleDuplicateFirst')}
           </span>
           <div class="flex gap-2">
-            <Button variant="outline" onclick={onCancel}>取消</Button>
+            <Button variant="outline" onclick={onCancel}>{t('page.knowledge.cancel')}</Button>
             <Button onclick={onConfirm} disabled={conflictCount > 0}>
               <Icon icon="mdi:content-paste" class="w-4 h-4 mr-1" />
-              继续粘贴
+              {t('page.knowledge.continueUpload')}
             </Button>
           </div>
         </div>
@@ -206,20 +207,20 @@
         <div class="flex items-center justify-between w-full">
           <span class="text-sm text-green-600 font-medium flex items-center gap-1">
             <Icon icon="mdi:check-circle" class="w-4 h-4" />
-            粘贴完成
+            {t('page.knowledge.uploadComplete')}
             {#if skippedCount > 0}
-              <span class="text-muted-foreground font-normal">（{skippedCount} 个已跳过）</span>
+              <span class="text-muted-foreground font-normal">({t('page.knowledge.skippedFiles').replace('${count}', String(skippedCount))})</span>
             {/if}
             {#if errorCount > 0}
-              <span class="text-red-500 font-normal">（{errorCount} 个失败）</span>
+              <span class="text-red-500 font-normal">({t('page.knowledge.errorCount').replace('${count}', String(errorCount))})</span>
             {/if}
           </span>
-          <Button onclick={onCancel}>完成</Button>
+          <Button onclick={onCancel}>{t('page.knowledge.done')}</Button>
         </div>
       {:else}
         <div class="flex items-center justify-between w-full">
-          <span class="text-sm text-muted-foreground">正在粘贴...</span>
-          <Button variant="outline" disabled>取消</Button>
+          <span class="text-sm text-muted-foreground">{t('page.knowledge.uploading')}</span>
+          <Button variant="outline" disabled>{t('page.knowledge.cancel')}</Button>
         </div>
       {/if}
     </Dialog.Footer>

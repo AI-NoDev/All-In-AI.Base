@@ -6,6 +6,7 @@
   import * as Table from '$lib/components/ui/table';
   import { FileIcon } from '@qiyu-allinai/file-icons';
   import type { SharedFolderItem, SharedFileItem, FileViewMode } from '@/lib/stores/knowledge.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Props {
     loading: boolean;
@@ -43,14 +44,23 @@
     });
   }
 
-  function getViewModeTitle(): string {
+  let viewModeTitle = $derived.by(() => {
     switch (viewMode) {
-      case 'my-shared': return '我共享的';
-      case 'shared-with-me': return '收到的共享';
-      case 'favorites': return '收藏';
+      case 'my-shared': return t('page.knowledge.mySharedTab');
+      case 'shared-with-me': return t('page.knowledge.sharedWithMeTab');
+      case 'favorites': return t('page.knowledge.favoritesTab');
       default: return '';
     }
-  }
+  });
+
+  let emptyHint = $derived.by(() => {
+    switch (viewMode) {
+      case 'my-shared': return t('page.knowledge.noMyShared');
+      case 'shared-with-me': return t('page.knowledge.noSharedFiles');
+      case 'favorites': return t('page.knowledge.noFavorites');
+      default: return '';
+    }
+  });
 </script>
 
 <div class="flex flex-col flex-1 min-h-0">
@@ -63,33 +73,25 @@
   {:else if folders.length === 0 && files.length === 0}
     <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
       <Icon icon="tdesign:folder-open" class="size-16 mb-4 opacity-50" />
-      <p class="text-lg">{getViewModeTitle()}为空</p>
-      <p class="text-sm">
-        {#if viewMode === 'my-shared'}
-          您还没有共享任何文件或文件夹
-        {:else if viewMode === 'shared-with-me'}
-          还没有人与您共享文件
-        {:else if viewMode === 'favorites'}
-          您还没有收藏任何文件或文件夹
-        {/if}
-      </p>
+      <p class="text-lg">{viewModeTitle}</p>
+      <p class="text-sm">{emptyHint}</p>
     </div>
   {:else}
     <ScrollArea class="flex-1 min-h-0">
       <Table.Root>
         <Table.Header class="sticky top-0 bg-muted/50 z-10">
           <Table.Row>
-            <Table.Head>名称</Table.Head>
+            <Table.Head>{t('page.knowledge.name')}</Table.Head>
             {#if viewMode === 'my-shared'}
-              <Table.Head>共享给</Table.Head>
+              <Table.Head>{t('page.knowledge.shareWith')}</Table.Head>
             {:else if viewMode === 'shared-with-me'}
-              <Table.Head>共享者</Table.Head>
-              <Table.Head>权限</Table.Head>
+              <Table.Head>{t('page.knowledge.sharedBy')}</Table.Head>
+              <Table.Head>{t('page.knowledge.permission')}</Table.Head>
             {/if}
-            <Table.Head>大小</Table.Head>
-            <Table.Head>创建时间</Table.Head>
+            <Table.Head>{t('page.knowledge.size')}</Table.Head>
+            <Table.Head>{t('page.knowledge.createdTime')}</Table.Head>
             {#if viewMode === 'favorites'}
-              <Table.Head class="w-20">操作</Table.Head>
+              <Table.Head class="w-20">{t('page.knowledge.actions')}</Table.Head>
             {/if}
           </Table.Row>
         </Table.Header>
@@ -108,7 +110,7 @@
                   />
                   <span class="truncate">{folder.name}</span>
                   {#if folder.isPublic}
-                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
+                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title={t('page.knowledge.public')} />
                   {/if}
                 </div>
               </Table.Cell>
@@ -147,7 +149,7 @@
                   <FileIcon filename={file.name} class="size-5" />
                   <span class="truncate">{file.name}</span>
                   {#if file.isPublic}
-                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title="公开" />
+                    <Icon icon="tdesign:earth" class="size-4 text-muted-foreground" title={t('page.knowledge.public')} />
                   {/if}
                 </div>
               </Table.Cell>

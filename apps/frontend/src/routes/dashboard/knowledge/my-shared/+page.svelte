@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { Button } from '$lib/components/ui/button';
   import * as Table from '$lib/components/ui/table';
   import {
@@ -39,7 +40,7 @@
   let loading = $state(true);
   let folders = $state<GenericFolder[]>([]);
   let files = $state<GenericFile[]>([]);
-  let pathStack = $state<PathItem[]>([{ id: null, name: '我的共享' }]);
+  let pathStack = $state<PathItem[]>([{ id: null, name: t('page.knowledge.myShared') }]);
   let currentFolderId = $state<string | null>(null);
   let permissionSheetOpen = $state(false);
 
@@ -104,7 +105,7 @@
         })) as GenericFile[];
       }
     } catch (err) {
-      console.error('加载我的共享数据失败:', err);
+      console.error(t('page.knowledge.loadMySharedFailed'), err);
       folders = [];
       files = [];
     } finally {
@@ -134,7 +135,7 @@
 
   function getSharedCount(sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>): string {
     const count = sharedTo?.length || 0;
-    return count > 0 ? `${count} 人/角色` : '未共享';
+    return count > 0 ? t('page.knowledge.sharedToCount').replace('${count}', String(count)) : t('page.knowledge.notShared');
   }
 
   function handleEditFolderPermission(folder: GenericFolder) {
@@ -163,7 +164,7 @@
       permissionTarget = null;
       await loadData();
     } catch (err) {
-      console.error('保存权限失败:', err);
+      console.error(t('page.knowledge.savePermissionFailed'), err);
     }
   }
 
@@ -182,8 +183,8 @@
     {#if !loading && folders.length === 0 && files.length === 0 && currentFolderId === null}
       <div class="flex flex-col items-center justify-center h-64 text-muted-foreground">
         <Icon icon="tdesign:share" class="size-16 mb-4 opacity-50" />
-        <p class="text-lg">您还没有共享任何文件</p>
-        <p class="text-sm">在"我的知识库"中选择文件，点击共享按钮即可共享</p>
+        <p class="text-lg">{t('page.knowledge.noMyShared')}</p>
+        <p class="text-sm">{t('page.knowledge.mySharedHint')}</p>
       </div>
     {:else}
       <KnowledgeFileList
@@ -200,7 +201,7 @@
       >
         {#snippet extraHeaderColumns()}
           {#if currentFolderId === null}
-            <Table.Head class="text-left">共享给</Table.Head>
+            <Table.Head class="text-left">{t('page.knowledge.shareWith')}</Table.Head>
           {/if}
         {/snippet}
         {#snippet extraFolderColumns(folder)}

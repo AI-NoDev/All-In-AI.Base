@@ -1,6 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { Button } from '$lib/components/ui/button';
+  import { t } from '$lib/stores/i18n.svelte';
 
   export type FileViewMode = 'all' | 'my-shared' | 'shared-with-me' | 'favorites';
 
@@ -11,12 +12,12 @@
 
   let { activeTab, onTabChange }: Props = $props();
 
-  const tabs: Array<{ id: FileViewMode; label: string; icon: string }> = [
-    { id: 'all', label: '全部文件', icon: 'tdesign:folder' },
-    { id: 'my-shared', label: '我共享的', icon: 'tdesign:share' },
-    { id: 'shared-with-me', label: '收到的共享', icon: 'tdesign:user-transmit' },
-    { id: 'favorites', label: '收藏', icon: 'tdesign:star' },
-  ];
+  let tabs = $derived([
+    { id: 'all' as FileViewMode, label: t('page.knowledge.allFiles'), icon: 'tdesign:folder' },
+    { id: 'my-shared' as FileViewMode, label: t('page.knowledge.mySharedTab'), icon: 'tdesign:share' },
+    { id: 'shared-with-me' as FileViewMode, label: t('page.knowledge.sharedWithMeTab'), icon: 'tdesign:user-transmit' },
+    { id: 'favorites' as FileViewMode, label: t('page.knowledge.favoritesTab'), icon: 'tdesign:star' },
+  ]);
 </script>
 
 <div class="flex items-center gap-1 border-b pb-2 mb-2">

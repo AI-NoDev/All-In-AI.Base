@@ -1,6 +1,6 @@
 export const _meta = {
-	title: '记忆管理',
+	title: 'nav.title.userMemory',
 	icon: 'mdi:head-lightbulb-outline',
-	group: '智能体',
+	group: 'nav.group.ai',
 	order: 50
 };

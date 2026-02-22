@@ -12,6 +12,7 @@ import type { ProviderSelect, ProviderInsert } from './utils';
 export const providerUpdateMany = defineAction({
   meta: {
     name: 'ai.provider.updateMany',
+    ignoreTools: true,
     displayName: '批量更新AI提供商',
     description: `根据ID列表批量更新多个AI提供商的配置。
 

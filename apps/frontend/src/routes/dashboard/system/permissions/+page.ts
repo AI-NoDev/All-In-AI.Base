@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '权限管理',
+  title: 'nav.title.permissions',
   icon: 'tdesign:secured',
-  group: '系统管理',
+  group: 'nav.group.system',
   order: 12,
   permission: 'system:permission:view'
 };

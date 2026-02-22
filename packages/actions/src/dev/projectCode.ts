@@ -99,6 +99,7 @@ function isAllowedFile(name: string): boolean {
  */
 export const getProjectRoot = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'dev.projectCode.getRoot',
     displayName: '获取项目根目录',
     description: `获取 Turborepo monorepo 项目的根目录路径。

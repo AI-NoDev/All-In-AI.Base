@@ -7,6 +7,7 @@
   import { curveMonotoneX } from 'd3-shape';
   import { cubicInOut } from 'svelte/easing';
   import { getContext } from 'svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   const monitorData = getContext('monitor-data');
   const API_BASE = monitorData.API_BASE;
@@ -27,10 +28,10 @@
   let timeRange = $state('1h');
   let chartData = $state<ChartDataPoint[]>([]);
 
-  const chartConfig = {
-    cpu: { label: "CPU", color: "var(--chart-1)" },
-    memory: { label: "内存", color: "var(--chart-2)" },
-  } satisfies Chart.ChartConfig;
+  let chartConfig = $derived({
+    cpu: { label: t('page.monitor.cpu'), color: "var(--chart-1)" },
+    memory: { label: t('page.monitor.memory'), color: "var(--chart-2)" },
+  } satisfies Chart.ChartConfig);
 
   async function loadHistoryMetrics() {
     try {
@@ -87,24 +88,24 @@
 <div class="flex flex-col min-h-0 overflow-auto">
   <div class="flex justify-end mb-4">
     <ToggleGroup.Root type="single" bind:value={timeRange} variant="outline">
-      <ToggleGroup.Item value="1h">1小时</ToggleGroup.Item>
-      <ToggleGroup.Item value="24h">24小时</ToggleGroup.Item>
-      <ToggleGroup.Item value="7d">7天</ToggleGroup.Item>
-      <ToggleGroup.Item value="30d">30天</ToggleGroup.Item>
+      <ToggleGroup.Item value="1h">{t('page.monitor.timeRange1h')}</ToggleGroup.Item>
+      <ToggleGroup.Item value="24h">{t('page.monitor.timeRange24h')}</ToggleGroup.Item>
+      <ToggleGroup.Item value="7d">{t('page.monitor.timeRange7d')}</ToggleGroup.Item>
+      <ToggleGroup.Item value="30d">{t('page.monitor.timeRange30d')}</ToggleGroup.Item>
     </ToggleGroup.Root>
   </div>
 
   <Card.Root>
     <Card.Header>
-      <Card.Title>系统资源使用率</Card.Title>
+      <Card.Title>{t('page.monitor.systemResourceUsage')}</Card.Title>
       <Card.Description class="flex gap-6">
         <span class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full" style="background: var(--chart-1)"></span>
-          CPU: {monitorData.currentMetrics?.cpu.toFixed(1) || 0}%
+          {t('page.monitor.cpu')}: {monitorData.currentMetrics?.cpu.toFixed(1) || 0}%
         </span>
         <span class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full" style="background: var(--chart-2)"></span>
-          内存: {monitorData.currentMetrics?.memory.toFixed(1) || 0}%
+          {t('page.monitor.memory')}: {monitorData.currentMetrics?.memory.toFixed(1) || 0}%
         </span>
       </Card.Description>
     </Card.Header>
@@ -121,12 +122,12 @@
               series={[
                 {
                   key: "cpu",
-                  label: "CPU",
+                  label: t('page.monitor.cpu'),
                   color: chartConfig.cpu.color,
                 },
                 {
                   key: "memory",
-                  label: "内存",
+                  label: t('page.monitor.memory'),
                   color: chartConfig.memory.color,
                 },
               ]}
@@ -179,7 +180,7 @@
             </AreaChart>
           </Chart.Container>
         {:else}
-          <div class="h-full flex items-center justify-center text-muted-foreground">暂无数据</div>
+          <div class="h-full flex items-center justify-center text-muted-foreground">{t('tips.noData')}</div>
         {/if}
       </div>
     </Card.Content>

@@ -9,6 +9,7 @@ import { nodeIdParamsSchema, setPermissionsBodySchema, successOutputSchema } fro
 
 export const permissionSetForNode = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'knowledge.permission.setForNode',
     displayName: '设置节点权限',
     description: `设置节点的权限（替换现有所有权限）。

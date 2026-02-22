@@ -10,7 +10,8 @@ import { updateOrderBodySchema, updateOrderOutputSchema } from './schemas';
 
 export const nodeUpdateOrder = defineAction({
   meta: { 
-    name: 'knowledge.node.updateOrder', 
+    ignoreTools: true,
+    name: 'knowledge.node.updateOrder',
     displayName: '更新节点排序', 
     description: `批量更新节点排序号。
 

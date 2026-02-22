@@ -7,6 +7,7 @@
   import { DataTable } from '$lib/components/common';
   import { getContext } from 'svelte';
   import * as Alert from '$lib/components/ui/alert';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   const monitorData = getContext('monitor-data');
   const API_BASE = monitorData.API_BASE;
@@ -52,14 +53,14 @@
     return () => clearInterval(interval);
   });
 
-  const columns = [
-    { key: 'protocol', title: '协议', width: 64, render: protocolRender },
-    { key: 'localAddress', title: '本地地址', width: 150, render: monoRender },
-    { key: 'localPort', title: '本地端口', width: 80, render: portRender },
-    { key: 'remoteAddress', title: '远程地址', width: 150, render: remoteAddrRender },
-    { key: 'remotePort', title: '远程端口', width: 80, render: remotePortRender },
-    { key: 'state', title: '状态', width: 112, render: stateRender },
-  ];
+  const columns = $derived([
+    { key: 'protocol', title: t('page.monitor.portProtocol'), width: 64, render: protocolRender },
+    { key: 'localAddress', title: t('page.monitor.localAddress'), width: 150, render: monoRender },
+    { key: 'localPort', title: t('page.monitor.localPort'), width: 80, render: portRender },
+    { key: 'remoteAddress', title: t('page.monitor.remoteAddress'), width: 150, render: remoteAddrRender },
+    { key: 'remotePort', title: t('page.monitor.remotePort'), width: 80, render: remotePortRender },
+    { key: 'state', title: t('page.monitor.state'), width: 112, render: stateRender },
+  ]);
 </script>
 
 {#snippet protocolRender({ value })}
@@ -91,15 +92,15 @@
 {#if unavailableMessage}
   <Alert.Root variant="default" class="mb-4">
     <Icon icon="tdesign:info-circle" class="size-4" />
-    <Alert.Title>功能不可用</Alert.Title>
+    <Alert.Title>{t('page.monitor.featureUnavailable')}</Alert.Title>
     <Alert.Description>{unavailableMessage}</Alert.Description>
   </Alert.Root>
 {:else}
   <div class="flex justify-between items-center mb-4">
-    <p class="text-sm text-muted-foreground">共 {ports.length} 个连接</p>
+    <p class="text-sm text-muted-foreground">{t('page.monitor.totalConnections').replace('${count}', String(ports.length))}</p>
     <Button size="sm" variant="outline" onclick={loadPorts}>
       <Icon icon="tdesign:refresh" class="size-4 mr-1" />
-      刷新
+      {t('common.refresh')}
     </Button>
   </div>
 {/if}

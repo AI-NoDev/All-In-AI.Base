@@ -6,7 +6,11 @@
   import { Separator } from '$lib/components/ui/separator';
   import * as Sidebar from '$lib/components/ui/sidebar';
   import { tabsStore } from '@/lib/stores/tabs.svelte';
+  import { i18n, t } from '@/lib/stores/i18n.svelte';
   import { cn } from '$lib/utils';
+
+  // 读取 i18n.version 建立响应式依赖
+  let _ = $derived(i18n.version);
 
   // 同步当前路由到标签页
   $effect(() => {
@@ -32,6 +36,7 @@
 
     <!-- 标签页区域 -->
     <div class="tabs-scrollbar flex flex-1 items-center gap-1 overflow-x-auto">
+      {#key _}
       {#each tabsStore.tabs as tab (tab.path)}
         <button
           onclick={() => handleTabClick(tab.path)}
@@ -43,7 +48,7 @@
               : 'text-muted-foreground'
           )}
         >
-          <span class="max-w-32 truncate">{tab.title}</span>
+          <span class="max-w-32 truncate">{t(tab.title)}</span>
           {#if tab.closable}
             <span
               role="button"
@@ -57,6 +62,7 @@
           {/if}
         </button>
       {/each}
+      {/key}
     </div>
   </div>
 </header>

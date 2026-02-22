@@ -9,6 +9,7 @@
   import { imStore } from '@/lib/stores/im.svelte';
   import { sendMessage } from '@/lib/stores/ws-channels/im.svelte';
   import { preferencesStore } from '@/lib/stores/preferences.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 	import { theme } from 'mode-watcher';
 
   interface PendingFile {
@@ -157,7 +158,7 @@
         imStore.addMessage(newMessage);
       } catch (e) {
         console.error('Failed to upload file:', e);
-        pf.error = '上传失败';
+        pf.error = t('page.im.uploadFailed');
         pendingFiles = [...pendingFiles];
       }
     }
@@ -221,16 +222,16 @@
 
   {#if imStore.selectedConversation && isGroupDissolved(imStore.selectedConversation)}
     <div class="text-center text-muted-foreground text-sm py-2">
-      该群聊已解散，无法发送消息
+      {t('page.im.cannotSendInDissolved')}
     </div>
   {:else}
     <!-- 待发送文件列表 -->
     {#if pendingFiles.length > 0}
       <div class="mb-3 p-3 bg-muted rounded-lg">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-sm font-medium">待发送文件 ({pendingFiles.length})</span>
+          <span class="text-sm font-medium">{t('page.im.pendingFiles')} ({pendingFiles.length})</span>
           <Button size="sm" variant="ghost" class="h-6 px-2" onclick={clearPendingFiles}>
-            清空
+            {t('page.im.clearFiles')}
           </Button>
         </div>
         <div class="space-y-2 max-h-32 overflow-y-auto">
@@ -252,8 +253,8 @@
           {/each}
         </div>
         <div class="flex justify-end gap-2 mt-2">
-          <Button size="sm" variant="outline" onclick={clearPendingFiles}>取消</Button>
-          <Button size="sm" onclick={uploadAndSendFiles}>发送文件</Button>
+          <Button size="sm" variant="outline" onclick={clearPendingFiles}>{t('common.actions.cancel')}</Button>
+          <Button size="sm" onclick={uploadAndSendFiles}>{t('page.im.sendFiles')}</Button>
         </div>
       </div>
     {/if}
@@ -280,7 +281,7 @@
             </Button>
           </Tooltip.Trigger>
           <Tooltip.Content>
-            <p>支持拖拽文件快捷发送</p>
+            <p>{t('page.im.dragToSendTip')}</p>
           </Tooltip.Content>
         </Tooltip.Root>
 
@@ -291,7 +292,7 @@
           <Kbd>Shift</Kbd>
           <span>+</span>
           <Kbd>Enter</Kbd>
-          <span>换行</span>
+          <span>{t('page.im.newLine')}</span>
         </button>
 
         <input
@@ -306,7 +307,7 @@
       <!-- 下方输入框和发送按钮 -->
       <div class="flex items-end gap-2">
         <Textarea 
-          placeholder="输入消息..." 
+          placeholder={t('page.im.messagePlaceholder')} 
           class="flex-1 min-h-[40px] max-h-32 resize-none" 
           bind:value={messageInput}
           bind:ref={textareaRef}

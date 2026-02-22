@@ -6,6 +6,7 @@
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { Input } from '$lib/components/ui/input';
   import * as Select from '$lib/components/ui/select';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface UserMemory {
     id: string;
@@ -57,22 +58,22 @@
     onCreate, onEdit, onDelete, onRefresh, onPageChange, onFilter
   }: Props = $props();
 
-  const memoryTypes = [
-    { value: '', label: '全部类型' },
-    { value: 'STM', label: '短期记忆' },
-    { value: 'LTM', label: '长期记忆' },
-    { value: 'PREFERENCE', label: '偏好' },
-    { value: 'FACT', label: '事实' },
-    { value: 'EPISODIC', label: '情景记忆' }
-  ];
+  const memoryTypes = $derived([
+    { value: '', label: t('page.ai.memory_allTypes') },
+    { value: 'STM', label: t('page.ai.memory_typeSTM') },
+    { value: 'LTM', label: t('page.ai.memory_typeLTM') },
+    { value: 'PREFERENCE', label: t('page.ai.memory_typePREFERENCE') },
+    { value: 'FACT', label: t('page.ai.memory_typeFACT') },
+    { value: 'EPISODIC', label: t('page.ai.memory_typeEPISODIC') }
+  ]);
 
-  const memoryTypeLabels: Record<string, string> = {
-    STM: '短期记忆',
-    LTM: '长期记忆',
-    PREFERENCE: '偏好',
-    FACT: '事实',
-    EPISODIC: '情景记忆'
-  };
+  const memoryTypeLabels = $derived<Record<string, string>>({
+    STM: t('page.ai.memory_typeSTM'),
+    LTM: t('page.ai.memory_typeLTM'),
+    PREFERENCE: t('page.ai.memory_typePREFERENCE'),
+    FACT: t('page.ai.memory_typeFACT'),
+    EPISODIC: t('page.ai.memory_typeEPISODIC')
+  });
 
   const memoryTypeColors: Record<string, string> = {
     STM: 'bg-yellow-100 text-yellow-800',
@@ -103,14 +104,14 @@
   <div class="py-3 flex items-center justify-between border-b border-border gap-4">
     <div class="flex gap-2 items-center">
       <Button size="sm" onclick={onCreate}>
-        <Icon icon="mdi:plus" class="mr-1 size-4" />新增记忆
+        <Icon icon="mdi:plus" class="mr-1 size-4" />{t('page.ai.memory_addMemory')}
       </Button>
       <Select.Root type="single" name="filterUser" bind:value={filterUserId} onValueChange={() => onFilter()}>
         <Select.Trigger class="w-40 h-8">
-          {users.find(u => u.id === filterUserId)?.nickName || '全部用户'}
+          {users.find(u => u.id === filterUserId)?.nickName || t('page.ai.memory_allUsers')}
         </Select.Trigger>
         <Select.Content>
-          <Select.Item value="">全部用户</Select.Item>
+          <Select.Item value="">{t('page.ai.memory_allUsers')}</Select.Item>
           {#each users as user}
             <Select.Item value={user.id}>{user.nickName || user.loginName}</Select.Item>
           {/each}
@@ -118,7 +119,7 @@
       </Select.Root>
       <Select.Root type="single" name="filterType" bind:value={filterMemoryType} onValueChange={() => onFilter()}>
         <Select.Trigger class="w-32 h-8">
-          {memoryTypes.find(t => t.value === filterMemoryType)?.label || '全部类型'}
+          {memoryTypes.find(t => t.value === filterMemoryType)?.label || t('page.ai.memory_allTypes')}
         </Select.Trigger>
         <Select.Content>
           {#each memoryTypes as type}
@@ -128,7 +129,7 @@
       </Select.Root>
     </div>
     <div class="flex items-center gap-2">
-      <span class="text-sm text-muted-foreground">共 {total} 条</span>
+      <span class="text-sm text-muted-foreground">{t('page.ai.memory_totalCount').replace('${count}', String(total))}</span>
       <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onRefresh}>
         <Icon icon="mdi:refresh" class="size-4" />
       </Button>
@@ -154,10 +155,10 @@
                       {memoryTypeLabels[memory.memoryType] || memory.memoryType}
                     </Badge>
                     <span class="text-sm text-muted-foreground">
-                      重要度: {memory.importance}/10
+                      {t('page.ai.memory_importance')}: {memory.importance}/10
                     </span>
                     <span class="text-sm text-muted-foreground">
-                      访问: {memory.accessCount}次
+                      {t('page.ai.memory_accessCount')}: {memory.accessCount}{t('page.ai.memory_times')}
                     </span>
                   </div>
                   <p class="text-sm line-clamp-2">{memory.content}</p>
@@ -177,7 +178,7 @@
                     {#if memory.expiresAt}
                       <span class="flex items-center gap-1 text-orange-600">
                         <Icon icon="mdi:timer-sand" class="size-3" />
-                        过期: {formatDate(memory.expiresAt)}
+                        {t('page.ai.memory_expires')}: {formatDate(memory.expiresAt)}
                       </span>
                     {/if}
                   </div>
@@ -194,7 +195,7 @@
             </div>
           {:else}
             <div class="h-48 flex items-center justify-center text-muted-foreground">
-              暂无记忆数据
+              {t('page.ai.memory_noMemories')}
             </div>
           {/each}
         </div>

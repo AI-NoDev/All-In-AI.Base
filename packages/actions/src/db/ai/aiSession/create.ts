@@ -10,6 +10,7 @@ import type { AISessionSelect, AISessionInsert } from './utils';
 
 export const aiSessionCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSession.create',
     displayName: '创建AI会话',
     description: `创建单个AI会话。

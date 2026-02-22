@@ -13,6 +13,7 @@ const AI_CHAT_BUCKET = process.env.S3_AI_CHAT_BUCKET || DEFAULT_BUCKET;
 // ============ 上传 AI 聊天附件 ============
 export const aiChatUploadAttachment = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'files.aiChatUpload',
     displayName: '上传AI聊天附件',
     description: `上传文件到AI聊天存储，返回可访问的预签名URL（7天有效）。

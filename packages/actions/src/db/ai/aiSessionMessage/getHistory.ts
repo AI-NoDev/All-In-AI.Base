@@ -11,6 +11,7 @@ import type { AISessionMessageSelect } from './utils';
 
 export const aiSessionMessageGetHistory = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSessionMessage.getHistory',
     displayName: '获取会话历史',
     description: `获取指定会话的消息历史，支持分页加载更早的消息。

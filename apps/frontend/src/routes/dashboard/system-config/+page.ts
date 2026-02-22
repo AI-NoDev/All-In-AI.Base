@@ -1,7 +1,7 @@
 export const _meta = {
-  title: '系统参数',
+  title: 'nav.title.systemConfig',
   permission: 'system:config:view',
   icon: 'tdesign:setting',
-  group: '系统设置',
+  group: 'nav.group.settings',
   order: 101,
 };

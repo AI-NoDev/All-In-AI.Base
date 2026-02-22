@@ -9,7 +9,8 @@ import { checkExistsBodySchema, checkExistsOutputSchema } from './schemas';
 
 export const nodeCheckExists = defineAction({
   meta: { 
-    name: 'knowledge.node.checkExists', 
+    ignoreTools: true,
+    name: 'knowledge.node.checkExists',
     displayName: '检查节点是否存在', 
     description: `检查指定父节点下是否存在同名节点（批量检查）。
 

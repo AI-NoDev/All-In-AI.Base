@@ -11,6 +11,7 @@ import type { UserRoleSelect, UserRoleInsert } from './utils';
 export const userRoleCreateMany = defineAction({
   meta: {
     name: 'system.userRole.createMany',
+    ignoreTools: true,
     displayName: '批量创建用户角色关联',
     description: `批量创建多个用户与角色的关联关系。
 

@@ -37,6 +37,7 @@ const CHANNEL = 'im';
 
 export const wsSendPrivateMessage = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ws.message.private',
     displayName: '发送单聊消息',
     description: `发送私聊消息给指定用户，如果会话不存在会自动创建。

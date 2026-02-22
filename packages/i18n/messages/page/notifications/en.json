@@ -1,0 +1,7 @@
+{
+  "title": "Notifications",
+  "unreadCount": "You have ${count} unread notifications",
+  "allRead": "All notifications read",
+  "markAllRead": "Mark all as read",
+  "empty": "No notifications"
+}

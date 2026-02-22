@@ -12,6 +12,7 @@ import type { DictSelect, DictInsert } from './utils';
 export const dictUpdateMany = defineAction({
   meta: {
     name: 'system.dict.updateMany',
+    ignoreTools: true,
     displayName: '批量更新字典',
     description: `根据ID列表批量更新多个字典项。
 

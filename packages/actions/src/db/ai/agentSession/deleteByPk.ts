@@ -9,6 +9,7 @@ import { agentSession } from '@qiyu-allinai/db/entities/ai';
 
 export const agentSessionDeleteByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.deleteByPk',
     displayName: '删除Agent会话',
     description: `根据ID软删除Agent会话（逻辑删除，数据保留）。

@@ -26,221 +26,227 @@ export interface PageMeta {
 export const pages: PageMeta[] = [
   {
     "path": "/dashboard",
-    "title": "首页",
+    "title": "nav.title.dashboard",
     "permission": "dashboard:view",
     "icon": "tdesign:home",
-    "group": "平台",
+    "group": "nav.group.platform",
     "order": 1
   },
   {
     "path": "/dashboard/knowledge/my-files",
-    "title": "我的知识库",
+    "title": "nav.title.myFiles",
     "permission": "knowledge:view",
     "icon": "tdesign:folder",
-    "group": "知识库",
+    "group": "nav.group.knowledge",
     "order": 1
   },
   {
     "path": "/dashboard/knowledge/shared-with-me",
-    "title": "收到的共享",
+    "title": "nav.title.sharedWithMe",
     "permission": "knowledge:view",
     "icon": "tdesign:user-transmit",
-    "group": "知识库",
+    "group": "nav.group.knowledge",
     "order": 2
   },
   {
     "path": "/dashboard/knowledge/my-shared",
-    "title": "我的共享",
+    "title": "nav.title.myShared",
     "permission": "knowledge:view",
     "icon": "tdesign:share",
-    "group": "知识库",
+    "group": "nav.group.knowledge",
     "order": 3
   },
   {
     "path": "/dashboard/knowledge/favorites",
-    "title": "收藏",
+    "title": "nav.title.favorites",
     "permission": "knowledge:view",
     "icon": "tdesign:star",
-    "group": "知识库",
+    "group": "nav.group.knowledge",
     "order": 4
   },
   {
     "path": "/dashboard/contacts/chat",
-    "title": "聊天",
+    "title": "nav.title.chat",
     "icon": "tdesign:chat",
-    "group": "沟通",
+    "group": "nav.group.communication",
     "order": 5
   },
   {
     "path": "/dashboard/contacts/files",
-    "title": "会话文件",
+    "title": "nav.title.conversationFiles",
     "icon": "tdesign:file",
-    "group": "沟通",
+    "group": "nav.group.communication",
     "order": 6
   },
   {
     "path": "/dashboard/ai/models",
-    "title": "模型管理",
+    "title": "nav.title.models",
     "icon": "mdi:brain",
-    "group": "智能体",
+    "group": "nav.group.ai",
     "order": 10
   },
   {
     "path": "/dashboard/knowledge/my-files/[folderId]/create-text-file",
-    "title": "新建文本文件",
+    "title": "nav.title.createTextFile",
     "permission": "knowledge:view",
     "icon": "tdesign:file-add",
-    "group": "知识库",
+    "group": "nav.group.knowledge",
     "order": 10,
     "hidden": true
   },
   {
     "path": "/dashboard/knowledge/my-files/[folderId]/edit/[fileId]",
-    "title": "编辑文件",
+    "title": "nav.title.editFile",
     "permission": "knowledge:view",
     "icon": "tdesign:edit",
-    "group": "知识库",
+    "group": "nav.group.knowledge",
     "order": 10,
     "hidden": true
   },
   {
     "path": "/dashboard/system/users",
-    "title": "用户管理",
+    "title": "nav.title.users",
     "permission": "system:user:view",
     "icon": "tdesign:user",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 10
   },
   {
     "path": "/dashboard/system/roles",
-    "title": "角色管理",
+    "title": "nav.title.roles",
     "permission": "system:role:view",
     "icon": "tdesign:usergroup",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 11
   },
   {
     "path": "/dashboard/system/menus",
-    "title": "菜单管理",
+    "title": "nav.title.menus",
     "permission": "system:menu:view",
     "icon": "tdesign:menu-application",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 12
   },
   {
     "path": "/dashboard/system/permissions",
-    "title": "权限管理",
+    "title": "nav.title.permissions",
     "permission": "system:permission:view",
     "icon": "tdesign:secured",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 12
   },
   {
     "path": "/dashboard/system/departments",
-    "title": "部门管理",
+    "title": "nav.title.departments",
     "permission": "system:dept:view",
     "icon": "tdesign:tree-square-dot",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 13
   },
   {
     "path": "/dashboard/system/posts",
-    "title": "岗位管理",
+    "title": "nav.title.posts",
     "permission": "system:post:view",
     "icon": "tdesign:user-business",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 14
   },
   {
     "path": "/dashboard/system/dicts",
-    "title": "字典管理",
+    "title": "nav.title.dicts",
     "permission": "system:dict:view",
     "icon": "tdesign:book",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 15
   },
   {
     "path": "/dashboard/system/operation-logs",
-    "title": "操作日志",
+    "title": "nav.title.operationLogs",
     "permission": "system:operlog:view",
     "icon": "tdesign:history",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 16
   },
   {
     "path": "/dashboard/system/login-logs",
-    "title": "登录日志",
+    "title": "nav.title.loginLogs",
     "permission": "system:loginlog:view",
     "icon": "tdesign:login",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "order": 17
   },
   {
     "path": "/dashboard/ai/agents",
-    "title": "智能体管理",
+    "title": "nav.title.agents",
     "icon": "mdi:robot",
-    "group": "智能体",
+    "group": "nav.group.ai",
     "order": 30
   },
   {
     "path": "/dashboard/ai/user-memory",
-    "title": "记忆管理",
+    "title": "nav.title.userMemory",
     "icon": "mdi:head-lightbulb-outline",
-    "group": "智能体",
+    "group": "nav.group.ai",
     "order": 50
   },
   {
     "path": "/dashboard/ai/mcp-servers",
-    "title": "MCP发布",
+    "title": "nav.title.mcpServers",
     "icon": "mdi:api",
-    "group": "智能体",
+    "group": "nav.group.ai",
     "order": 60
   },
   {
     "path": "/dashboard/ai/api-keys",
-    "title": "API 密钥",
+    "title": "nav.title.apiKeys",
     "permission": "ai:apiKey:view",
     "icon": "mdi:key-variant",
-    "group": "智能体",
+    "group": "nav.group.ai",
     "order": 100
   },
   {
     "path": "/dashboard/preferences",
-    "title": "个性化",
+    "title": "nav.title.preferences",
     "permission": "settings:preferences:view",
     "icon": "tdesign:palette",
-    "group": "系统设置",
+    "group": "nav.group.settings",
     "order": 100
   },
   {
     "path": "/dashboard/server-monitor/overview",
-    "title": "服务器监控",
+    "title": "nav.title.serverMonitor",
     "icon": "tdesign:server",
-    "group": "平台",
+    "group": "nav.group.platform",
     "order": 100
   },
   {
     "path": "/dashboard/system-config",
-    "title": "系统参数",
+    "title": "nav.title.systemConfig",
     "permission": "system:config:view",
     "icon": "tdesign:setting",
-    "group": "系统设置",
+    "group": "nav.group.settings",
     "order": 101
   },
   {
     "path": "/dashboard/dev/project-code",
-    "title": "项目代码",
+    "title": "nav.title.projectCode",
     "permission": "dev:project-code:view",
     "icon": "tdesign:code",
-    "group": "开发模式",
+    "group": "nav.group.dev",
     "order": 200
+  },
+  {
+    "path": "/dashboard/account",
+    "title": "nav.title.account",
+    "icon": "tdesign:user-circle",
+    "hidden": true
   },
   {
     "path": "/dashboard/contacts"
   },
   {
     "path": "/dashboard/files",
-    "title": "文件管理",
+    "title": "nav.title.fileManagement",
     "permission": "knowledge:view",
     "icon": "tdesign:folder-open",
     "order": 999,
@@ -248,348 +254,362 @@ export const pages: PageMeta[] = [
   },
   {
     "path": "/dashboard/files/[folderId]/create-text-file",
-    "title": "新建文本文件",
+    "title": "nav.title.createTextFile",
     "permission": "knowledge:file:create",
     "icon": "tdesign:file-add",
     "hidden": true
   },
   {
     "path": "/dashboard/files/[folderId]/edit/[fileId]",
-    "title": "编辑文件",
+    "title": "nav.title.editFile",
+    "hidden": true
+  },
+  {
+    "path": "/dashboard/notifications",
+    "title": "nav.title.notifications",
+    "icon": "tdesign:notification",
     "hidden": true
   },
   {
     "path": "/dashboard/server-monitor/charts",
-    "title": "图表监控",
+    "title": "nav.title.chartMonitor",
     "icon": "tdesign:chart",
-    "group": "服务器监控",
+    "group": "nav.group.monitor",
     "hidden": true
   },
   {
     "path": "/dashboard/server-monitor/ports",
-    "title": "端口管理",
+    "title": "nav.title.portManagement",
     "icon": "tdesign:internet",
-    "group": "服务器监控",
+    "group": "nav.group.monitor",
     "hidden": true
   },
   {
     "path": "/dashboard/server-monitor/processes",
-    "title": "进程管理",
+    "title": "nav.title.processManagement",
     "icon": "tdesign:task",
-    "group": "服务器监控",
+    "group": "nav.group.monitor",
     "hidden": true
   },
   {
     "path": "/dashboard/system/users/[id]",
-    "title": "编辑用户",
+    "title": "nav.title.editUser",
     "permission": "system:user:edit",
     "icon": "tdesign:user-setting",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "hidden": true
   },
   {
     "path": "/dashboard/system/users/new",
-    "title": "新增用户",
+    "title": "nav.title.addUser",
     "permission": "system:user:add",
     "icon": "tdesign:user-add",
-    "group": "系统管理",
+    "group": "nav.group.system",
     "hidden": true
   },
   {
     "path": "/login",
-    "title": "登录",
+    "title": "nav.title.login",
     "hidden": true
   }
 ];
 
 export const routeTitles: Record<string, string> = {
-  '/dashboard': "首页",
-  '/dashboard/knowledge/my-files': "我的知识库",
-  '/dashboard/knowledge/shared-with-me': "收到的共享",
-  '/dashboard/knowledge/my-shared': "我的共享",
-  '/dashboard/knowledge/favorites': "收藏",
-  '/dashboard/contacts/chat': "聊天",
-  '/dashboard/contacts/files': "会话文件",
-  '/dashboard/ai/models': "模型管理",
-  '/dashboard/knowledge/my-files/[folderId]/create-text-file': "新建文本文件",
-  '/dashboard/knowledge/my-files/[folderId]/edit/[fileId]': "编辑文件",
-  '/dashboard/system/users': "用户管理",
-  '/dashboard/system/roles': "角色管理",
-  '/dashboard/system/menus': "菜单管理",
-  '/dashboard/system/permissions': "权限管理",
-  '/dashboard/system/departments': "部门管理",
-  '/dashboard/system/posts': "岗位管理",
-  '/dashboard/system/dicts': "字典管理",
-  '/dashboard/system/operation-logs': "操作日志",
-  '/dashboard/system/login-logs': "登录日志",
-  '/dashboard/ai/agents': "智能体管理",
-  '/dashboard/ai/user-memory': "记忆管理",
-  '/dashboard/ai/mcp-servers': "MCP发布",
-  '/dashboard/ai/api-keys': "API 密钥",
-  '/dashboard/preferences': "个性化",
-  '/dashboard/server-monitor/overview': "服务器监控",
-  '/dashboard/system-config': "系统参数",
-  '/dashboard/dev/project-code': "项目代码",
-  '/dashboard/files': "文件管理",
-  '/dashboard/files/[folderId]/create-text-file': "新建文本文件",
-  '/dashboard/files/[folderId]/edit/[fileId]': "编辑文件",
-  '/dashboard/server-monitor/charts': "图表监控",
-  '/dashboard/server-monitor/ports': "端口管理",
-  '/dashboard/server-monitor/processes': "进程管理",
-  '/dashboard/system/users/[id]': "编辑用户",
-  '/dashboard/system/users/new': "新增用户",
-  '/login': "登录"
+  '/dashboard': "nav.title.dashboard",
+  '/dashboard/knowledge/my-files': "nav.title.myFiles",
+  '/dashboard/knowledge/shared-with-me': "nav.title.sharedWithMe",
+  '/dashboard/knowledge/my-shared': "nav.title.myShared",
+  '/dashboard/knowledge/favorites': "nav.title.favorites",
+  '/dashboard/contacts/chat': "nav.title.chat",
+  '/dashboard/contacts/files': "nav.title.conversationFiles",
+  '/dashboard/ai/models': "nav.title.models",
+  '/dashboard/knowledge/my-files/[folderId]/create-text-file': "nav.title.createTextFile",
+  '/dashboard/knowledge/my-files/[folderId]/edit/[fileId]': "nav.title.editFile",
+  '/dashboard/system/users': "nav.title.users",
+  '/dashboard/system/roles': "nav.title.roles",
+  '/dashboard/system/menus': "nav.title.menus",
+  '/dashboard/system/permissions': "nav.title.permissions",
+  '/dashboard/system/departments': "nav.title.departments",
+  '/dashboard/system/posts': "nav.title.posts",
+  '/dashboard/system/dicts': "nav.title.dicts",
+  '/dashboard/system/operation-logs': "nav.title.operationLogs",
+  '/dashboard/system/login-logs': "nav.title.loginLogs",
+  '/dashboard/ai/agents': "nav.title.agents",
+  '/dashboard/ai/user-memory': "nav.title.userMemory",
+  '/dashboard/ai/mcp-servers': "nav.title.mcpServers",
+  '/dashboard/ai/api-keys': "nav.title.apiKeys",
+  '/dashboard/preferences': "nav.title.preferences",
+  '/dashboard/server-monitor/overview': "nav.title.serverMonitor",
+  '/dashboard/system-config': "nav.title.systemConfig",
+  '/dashboard/dev/project-code': "nav.title.projectCode",
+  '/dashboard/account': "nav.title.account",
+  '/dashboard/files': "nav.title.fileManagement",
+  '/dashboard/files/[folderId]/create-text-file': "nav.title.createTextFile",
+  '/dashboard/files/[folderId]/edit/[fileId]': "nav.title.editFile",
+  '/dashboard/notifications': "nav.title.notifications",
+  '/dashboard/server-monitor/charts': "nav.title.chartMonitor",
+  '/dashboard/server-monitor/ports': "nav.title.portManagement",
+  '/dashboard/server-monitor/processes': "nav.title.processManagement",
+  '/dashboard/system/users/[id]': "nav.title.editUser",
+  '/dashboard/system/users/new': "nav.title.addUser",
+  '/login': "nav.title.login"
 };
 
 export const groupedPages: Record<string, PageMeta[]> = {
-  "平台": [
+  "nav.group.platform": [
     {
       "path": "/dashboard",
-      "title": "首页",
+      "title": "nav.title.dashboard",
       "permission": "dashboard:view",
       "icon": "tdesign:home",
-      "group": "平台",
+      "group": "nav.group.platform",
       "order": 1
     },
     {
       "path": "/dashboard/server-monitor/overview",
-      "title": "服务器监控",
+      "title": "nav.title.serverMonitor",
       "icon": "tdesign:server",
-      "group": "平台",
+      "group": "nav.group.platform",
       "order": 100
     }
   ],
-  "知识库": [
+  "nav.group.knowledge": [
     {
       "path": "/dashboard/knowledge/my-files",
-      "title": "我的知识库",
+      "title": "nav.title.myFiles",
       "permission": "knowledge:view",
       "icon": "tdesign:folder",
-      "group": "知识库",
+      "group": "nav.group.knowledge",
       "order": 1
     },
     {
       "path": "/dashboard/knowledge/shared-with-me",
-      "title": "收到的共享",
+      "title": "nav.title.sharedWithMe",
       "permission": "knowledge:view",
       "icon": "tdesign:user-transmit",
-      "group": "知识库",
+      "group": "nav.group.knowledge",
       "order": 2
     },
     {
       "path": "/dashboard/knowledge/my-shared",
-      "title": "我的共享",
+      "title": "nav.title.myShared",
       "permission": "knowledge:view",
       "icon": "tdesign:share",
-      "group": "知识库",
+      "group": "nav.group.knowledge",
       "order": 3
     },
     {
       "path": "/dashboard/knowledge/favorites",
-      "title": "收藏",
+      "title": "nav.title.favorites",
       "permission": "knowledge:view",
       "icon": "tdesign:star",
-      "group": "知识库",
+      "group": "nav.group.knowledge",
       "order": 4
     },
     {
       "path": "/dashboard/knowledge/my-files/[folderId]/create-text-file",
-      "title": "新建文本文件",
+      "title": "nav.title.createTextFile",
       "permission": "knowledge:view",
       "icon": "tdesign:file-add",
-      "group": "知识库",
+      "group": "nav.group.knowledge",
       "order": 10,
       "hidden": true
     },
     {
       "path": "/dashboard/knowledge/my-files/[folderId]/edit/[fileId]",
-      "title": "编辑文件",
+      "title": "nav.title.editFile",
       "permission": "knowledge:view",
       "icon": "tdesign:edit",
-      "group": "知识库",
+      "group": "nav.group.knowledge",
       "order": 10,
       "hidden": true
     }
   ],
-  "沟通": [
+  "nav.group.communication": [
     {
       "path": "/dashboard/contacts/chat",
-      "title": "聊天",
+      "title": "nav.title.chat",
       "icon": "tdesign:chat",
-      "group": "沟通",
+      "group": "nav.group.communication",
       "order": 5
     },
     {
       "path": "/dashboard/contacts/files",
-      "title": "会话文件",
+      "title": "nav.title.conversationFiles",
       "icon": "tdesign:file",
-      "group": "沟通",
+      "group": "nav.group.communication",
       "order": 6
     }
   ],
-  "智能体": [
+  "nav.group.ai": [
     {
       "path": "/dashboard/ai/models",
-      "title": "模型管理",
+      "title": "nav.title.models",
       "icon": "mdi:brain",
-      "group": "智能体",
+      "group": "nav.group.ai",
       "order": 10
     },
     {
       "path": "/dashboard/ai/agents",
-      "title": "智能体管理",
+      "title": "nav.title.agents",
       "icon": "mdi:robot",
-      "group": "智能体",
+      "group": "nav.group.ai",
       "order": 30
     },
     {
       "path": "/dashboard/ai/user-memory",
-      "title": "记忆管理",
+      "title": "nav.title.userMemory",
       "icon": "mdi:head-lightbulb-outline",
-      "group": "智能体",
+      "group": "nav.group.ai",
       "order": 50
     },
     {
       "path": "/dashboard/ai/mcp-servers",
-      "title": "MCP发布",
+      "title": "nav.title.mcpServers",
       "icon": "mdi:api",
-      "group": "智能体",
+      "group": "nav.group.ai",
       "order": 60
     },
     {
       "path": "/dashboard/ai/api-keys",
-      "title": "API 密钥",
+      "title": "nav.title.apiKeys",
       "permission": "ai:apiKey:view",
       "icon": "mdi:key-variant",
-      "group": "智能体",
+      "group": "nav.group.ai",
       "order": 100
     }
   ],
-  "系统管理": [
+  "nav.group.system": [
     {
       "path": "/dashboard/system/users",
-      "title": "用户管理",
+      "title": "nav.title.users",
       "permission": "system:user:view",
       "icon": "tdesign:user",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 10
     },
     {
       "path": "/dashboard/system/roles",
-      "title": "角色管理",
+      "title": "nav.title.roles",
       "permission": "system:role:view",
       "icon": "tdesign:usergroup",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 11
     },
     {
       "path": "/dashboard/system/menus",
-      "title": "菜单管理",
+      "title": "nav.title.menus",
       "permission": "system:menu:view",
       "icon": "tdesign:menu-application",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 12
     },
     {
       "path": "/dashboard/system/permissions",
-      "title": "权限管理",
+      "title": "nav.title.permissions",
       "permission": "system:permission:view",
       "icon": "tdesign:secured",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 12
     },
     {
       "path": "/dashboard/system/departments",
-      "title": "部门管理",
+      "title": "nav.title.departments",
       "permission": "system:dept:view",
       "icon": "tdesign:tree-square-dot",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 13
     },
     {
       "path": "/dashboard/system/posts",
-      "title": "岗位管理",
+      "title": "nav.title.posts",
       "permission": "system:post:view",
       "icon": "tdesign:user-business",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 14
     },
     {
       "path": "/dashboard/system/dicts",
-      "title": "字典管理",
+      "title": "nav.title.dicts",
       "permission": "system:dict:view",
       "icon": "tdesign:book",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 15
     },
     {
       "path": "/dashboard/system/operation-logs",
-      "title": "操作日志",
+      "title": "nav.title.operationLogs",
       "permission": "system:operlog:view",
       "icon": "tdesign:history",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 16
     },
     {
       "path": "/dashboard/system/login-logs",
-      "title": "登录日志",
+      "title": "nav.title.loginLogs",
       "permission": "system:loginlog:view",
       "icon": "tdesign:login",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "order": 17
     },
     {
       "path": "/dashboard/system/users/[id]",
-      "title": "编辑用户",
+      "title": "nav.title.editUser",
       "permission": "system:user:edit",
       "icon": "tdesign:user-setting",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "hidden": true
     },
     {
       "path": "/dashboard/system/users/new",
-      "title": "新增用户",
+      "title": "nav.title.addUser",
       "permission": "system:user:add",
       "icon": "tdesign:user-add",
-      "group": "系统管理",
+      "group": "nav.group.system",
       "hidden": true
     }
   ],
-  "系统设置": [
+  "nav.group.settings": [
     {
       "path": "/dashboard/preferences",
-      "title": "个性化",
+      "title": "nav.title.preferences",
       "permission": "settings:preferences:view",
       "icon": "tdesign:palette",
-      "group": "系统设置",
+      "group": "nav.group.settings",
       "order": 100
     },
     {
       "path": "/dashboard/system-config",
-      "title": "系统参数",
+      "title": "nav.title.systemConfig",
       "permission": "system:config:view",
       "icon": "tdesign:setting",
-      "group": "系统设置",
+      "group": "nav.group.settings",
       "order": 101
     }
   ],
-  "开发模式": [
+  "nav.group.dev": [
     {
       "path": "/dashboard/dev/project-code",
-      "title": "项目代码",
+      "title": "nav.title.projectCode",
       "permission": "dev:project-code:view",
       "icon": "tdesign:code",
-      "group": "开发模式",
+      "group": "nav.group.dev",
       "order": 200
     }
   ],
   "default": [
     {
+      "path": "/dashboard/account",
+      "title": "nav.title.account",
+      "icon": "tdesign:user-circle",
+      "hidden": true
+    },
+    {
       "path": "/dashboard/contacts"
     },
     {
       "path": "/dashboard/files",
-      "title": "文件管理",
+      "title": "nav.title.fileManagement",
       "permission": "knowledge:view",
       "icon": "tdesign:folder-open",
       "order": 999,
@@ -597,42 +617,48 @@ export const groupedPages: Record<string, PageMeta[]> = {
     },
     {
       "path": "/dashboard/files/[folderId]/create-text-file",
-      "title": "新建文本文件",
+      "title": "nav.title.createTextFile",
       "permission": "knowledge:file:create",
       "icon": "tdesign:file-add",
       "hidden": true
     },
     {
       "path": "/dashboard/files/[folderId]/edit/[fileId]",
-      "title": "编辑文件",
+      "title": "nav.title.editFile",
+      "hidden": true
+    },
+    {
+      "path": "/dashboard/notifications",
+      "title": "nav.title.notifications",
+      "icon": "tdesign:notification",
       "hidden": true
     },
     {
       "path": "/login",
-      "title": "登录",
+      "title": "nav.title.login",
       "hidden": true
     }
   ],
-  "服务器监控": [
+  "nav.group.monitor": [
     {
       "path": "/dashboard/server-monitor/charts",
-      "title": "图表监控",
+      "title": "nav.title.chartMonitor",
       "icon": "tdesign:chart",
-      "group": "服务器监控",
+      "group": "nav.group.monitor",
       "hidden": true
     },
     {
       "path": "/dashboard/server-monitor/ports",
-      "title": "端口管理",
+      "title": "nav.title.portManagement",
       "icon": "tdesign:internet",
-      "group": "服务器监控",
+      "group": "nav.group.monitor",
       "hidden": true
     },
     {
       "path": "/dashboard/server-monitor/processes",
-      "title": "进程管理",
+      "title": "nav.title.processManagement",
       "icon": "tdesign:task",
-      "group": "服务器监控",
+      "group": "nav.group.monitor",
       "hidden": true
     }
   ]
@@ -665,30 +691,30 @@ export type Permission = typeof permissions[number];
 
 /** 权限与路由映射 */
 export const permissionRouteMap: Record<string, { path: string; title?: string }> = {
-  "dashboard:view": { path: "/dashboard", title: "首页" },
-  "knowledge:view": { path: "/dashboard/knowledge/my-files", title: "我的知识库" },
-  "knowledge:view": { path: "/dashboard/knowledge/shared-with-me", title: "收到的共享" },
-  "knowledge:view": { path: "/dashboard/knowledge/my-shared", title: "我的共享" },
-  "knowledge:view": { path: "/dashboard/knowledge/favorites", title: "收藏" },
-  "knowledge:view": { path: "/dashboard/knowledge/my-files/[folderId]/create-text-file", title: "新建文本文件" },
-  "knowledge:view": { path: "/dashboard/knowledge/my-files/[folderId]/edit/[fileId]", title: "编辑文件" },
-  "system:user:view": { path: "/dashboard/system/users", title: "用户管理" },
-  "system:role:view": { path: "/dashboard/system/roles", title: "角色管理" },
-  "system:menu:view": { path: "/dashboard/system/menus", title: "菜单管理" },
-  "system:permission:view": { path: "/dashboard/system/permissions", title: "权限管理" },
-  "system:dept:view": { path: "/dashboard/system/departments", title: "部门管理" },
-  "system:post:view": { path: "/dashboard/system/posts", title: "岗位管理" },
-  "system:dict:view": { path: "/dashboard/system/dicts", title: "字典管理" },
-  "system:operlog:view": { path: "/dashboard/system/operation-logs", title: "操作日志" },
-  "system:loginlog:view": { path: "/dashboard/system/login-logs", title: "登录日志" },
-  "ai:apiKey:view": { path: "/dashboard/ai/api-keys", title: "API 密钥" },
-  "settings:preferences:view": { path: "/dashboard/preferences", title: "个性化" },
-  "system:config:view": { path: "/dashboard/system-config", title: "系统参数" },
-  "dev:project-code:view": { path: "/dashboard/dev/project-code", title: "项目代码" },
-  "knowledge:view": { path: "/dashboard/files", title: "文件管理" },
-  "knowledge:file:create": { path: "/dashboard/files/[folderId]/create-text-file", title: "新建文本文件" },
-  "system:user:edit": { path: "/dashboard/system/users/[id]", title: "编辑用户" },
-  "system:user:add": { path: "/dashboard/system/users/new", title: "新增用户" }
+  "dashboard:view": { path: "/dashboard", title: "nav.title.dashboard" },
+  "knowledge:view": { path: "/dashboard/knowledge/my-files", title: "nav.title.myFiles" },
+  "knowledge:view": { path: "/dashboard/knowledge/shared-with-me", title: "nav.title.sharedWithMe" },
+  "knowledge:view": { path: "/dashboard/knowledge/my-shared", title: "nav.title.myShared" },
+  "knowledge:view": { path: "/dashboard/knowledge/favorites", title: "nav.title.favorites" },
+  "knowledge:view": { path: "/dashboard/knowledge/my-files/[folderId]/create-text-file", title: "nav.title.createTextFile" },
+  "knowledge:view": { path: "/dashboard/knowledge/my-files/[folderId]/edit/[fileId]", title: "nav.title.editFile" },
+  "system:user:view": { path: "/dashboard/system/users", title: "nav.title.users" },
+  "system:role:view": { path: "/dashboard/system/roles", title: "nav.title.roles" },
+  "system:menu:view": { path: "/dashboard/system/menus", title: "nav.title.menus" },
+  "system:permission:view": { path: "/dashboard/system/permissions", title: "nav.title.permissions" },
+  "system:dept:view": { path: "/dashboard/system/departments", title: "nav.title.departments" },
+  "system:post:view": { path: "/dashboard/system/posts", title: "nav.title.posts" },
+  "system:dict:view": { path: "/dashboard/system/dicts", title: "nav.title.dicts" },
+  "system:operlog:view": { path: "/dashboard/system/operation-logs", title: "nav.title.operationLogs" },
+  "system:loginlog:view": { path: "/dashboard/system/login-logs", title: "nav.title.loginLogs" },
+  "ai:apiKey:view": { path: "/dashboard/ai/api-keys", title: "nav.title.apiKeys" },
+  "settings:preferences:view": { path: "/dashboard/preferences", title: "nav.title.preferences" },
+  "system:config:view": { path: "/dashboard/system-config", title: "nav.title.systemConfig" },
+  "dev:project-code:view": { path: "/dashboard/dev/project-code", title: "nav.title.projectCode" },
+  "knowledge:view": { path: "/dashboard/files", title: "nav.title.fileManagement" },
+  "knowledge:file:create": { path: "/dashboard/files/[folderId]/create-text-file", title: "nav.title.createTextFile" },
+  "system:user:edit": { path: "/dashboard/system/users/[id]", title: "nav.title.editUser" },
+  "system:user:add": { path: "/dashboard/system/users/new", title: "nav.title.addUser" }
 };
 
 /** 路由与权限映射 */

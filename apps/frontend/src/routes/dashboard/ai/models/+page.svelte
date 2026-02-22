@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { ProviderList, ModelList, ProviderDialog, ModelDialog } from './components';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Button } from '$lib/components/ui/button';
@@ -196,13 +197,13 @@
   async function handleSaveProvider() {
     // 检查必填项：名称和 token 始终必填
     if (!providerForm.name.trim() || !providerForm.token.trim()) {
-      alert('请填写必填项');
+      alert(t('page.ai.provider.requiredFields'));
       return;
     }
     // 对于需要自定义 baseUrl 的 provider 类型，baseUrl 必填
     const requiresBaseUrl = ['azure', 'gateway', 'openai-compatible'].includes(providerForm.providerType);
     if (requiresBaseUrl && !providerForm.baseUrl.trim()) {
-      alert('请填写 API 地址');
+      alert(t('page.ai.provider.apiUrlRequired'));
       return;
     }
     providerSaving = true;
@@ -218,14 +219,14 @@
       loadProviders();
     } catch (err) {
       console.error('Failed to save provider:', err);
-      alert('保存失败');
+      alert(t('page.ai.provider.saveFailed'));
     } finally {
       providerSaving = false;
     }
   }
 
   async function handleDeleteProvider(id: string) {
-    if (!confirm('确定要删除该提供商吗？')) return;
+    if (!confirm(t('page.ai.provider.deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.ai.deleteApiAiProviderById({ id });
@@ -234,7 +235,7 @@
       loadModels();
     } catch (err) {
       console.error('Failed to delete provider:', err);
-      alert('删除失败');
+      alert(t('page.ai.provider.deleteFailed'));
     }
   }
 
@@ -283,7 +284,7 @@
 
   async function handleSaveModel() {
     if (!modelForm.providerId || !modelForm.name.trim() || !modelForm.modelId.trim()) {
-      alert('请填写必填项');
+      alert(t('page.ai.model.requiredFields'));
       return;
     }
     modelSaving = true;
@@ -312,27 +313,27 @@
       loadModels();
     } catch (err) {
       console.error('Failed to save model:', err);
-      alert('保存失败');
+      alert(t('page.ai.model.saveFailed'));
     } finally {
       modelSaving = false;
     }
   }
 
   async function handleDeleteModel(id: string) {
-    if (!confirm('确定要删除该模型吗？')) return;
+    if (!confirm(t('page.ai.model.deleteConfirm'))) return;
     try {
       const api = authStore.createApi(true);
       await api.ai.deleteApiAiModelById({ id });
       loadModels();
     } catch (err) {
       console.error('Failed to delete model:', err);
-      alert('删除失败');
+      alert(t('page.ai.model.deleteFailed'));
     }
   }
 
   async function handleBatchDeleteModels() {
     if (selectedModelIds.size === 0) return;
-    if (!confirm(`确定要删除选中的 ${selectedModelIds.size} 个模型吗？`)) return;
+    if (!confirm(t('page.ai.model.batchDeleteConfirm').replace('${count}', String(selectedModelIds.size)))) return;
     try {
       const api = authStore.createApi(true);
       await Promise.all(Array.from(selectedModelIds).map(id => api.ai.deleteApiAiModelById({ id })));
@@ -340,7 +341,7 @@
       loadModels();
     } catch (err) {
       console.error('Failed to delete models:', err);
-      alert('删除失败');
+      alert(t('page.ai.model.deleteFailed'));
     }
   }
 
@@ -440,24 +441,24 @@
 <Dialog.Root bind:open={testDialogOpen}>
   <Dialog.Content class="sm:max-w-xl" interactOutsideBehavior="ignore">
     <Dialog.Header>
-      <Dialog.Title>测试模型</Dialog.Title>
+      <Dialog.Title>{t('page.ai.model.testModel')}</Dialog.Title>
       <Dialog.Description>
         {#if testingModel}
-          测试 {testingModel.name} ({testingModel.modelId})
+          {t('page.ai.model.testingModel')} {testingModel.name} ({testingModel.modelId})
         {/if}
       </Dialog.Description>
     </Dialog.Header>
     <div class="space-y-4 py-4">
       {#if !testResult && !testLoading}
         <p class="text-sm text-muted-foreground">
-          点击"开始测试"向模型发送一条测试消息，验证模型是否正常工作。
+          {t('page.ai.model.testDescription')}
         </p>
       {/if}
       
       {#if testLoading}
         <div class="flex items-center gap-2 text-sm text-muted-foreground">
           <Icon icon="mdi:loading" class="size-4 animate-spin" />
-          正在测试...
+          {t('page.ai.model.testing')}
         </div>
       {/if}
       
@@ -465,19 +466,19 @@
         <div class="space-y-3">
           <div class="flex items-center gap-2">
             <Badge variant={testResult.success ? 'default' : 'destructive'}>
-              {testResult.success ? '成功' : '失败'}
+              {testResult.success ? t('page.ai.model.testSuccess') : t('page.ai.model.testFailed')}
             </Badge>
             {#if testResult.supportThinking}
-              <Badge variant="secondary">支持思考</Badge>
+              <Badge variant="secondary">{t('page.ai.model.supportThinking')}</Badge>
             {/if}
             <span class="text-xs text-muted-foreground">
-              耗时: {testResult.latencyMs}ms
+              {t('page.ai.model.latency')}: {testResult.latencyMs}ms
             </span>
           </div>
           
           {#if testResult.success && testResult.thinking && testResult.thinking.length > 0}
             <div class="rounded-md bg-blue-50 dark:bg-blue-950 p-3 border border-blue-200 dark:border-blue-800">
-              <p class="text-sm font-medium mb-1 text-blue-700 dark:text-blue-300">思考过程:</p>
+              <p class="text-sm font-medium mb-1 text-blue-700 dark:text-blue-300">{t('page.ai.model.thinkingProcess')}:</p>
               {#each testResult.thinking as item}
                 <p class="text-sm text-blue-600 dark:text-blue-400 whitespace-pre-wrap">{item.text}</p>
               {/each}
@@ -486,14 +487,14 @@
           
           {#if testResult.success && testResult.response}
             <div class="rounded-md bg-muted p-3">
-              <p class="text-sm font-medium mb-1">AI 回复:</p>
+              <p class="text-sm font-medium mb-1">{t('page.ai.model.aiResponse')}:</p>
               <p class="text-sm text-muted-foreground whitespace-pre-wrap">{testResult.response}</p>
             </div>
           {/if}
           
           {#if !testResult.success && testResult.error}
             <div class="rounded-md bg-destructive/10 p-3">
-              <p class="text-sm font-medium text-destructive mb-1">错误信息:</p>
+              <p class="text-sm font-medium text-destructive mb-1">{t('page.ai.model.errorMessage')}:</p>
               <p class="text-sm text-destructive/80">{testResult.error}</p>
             </div>
           {/if}
@@ -501,14 +502,14 @@
       {/if}
     </div>
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => testDialogOpen = false}>关闭</Button>
+      <Button variant="outline" onclick={() => testDialogOpen = false}>{t('common.actions.close')}</Button>
       <Button onclick={handleTestModel} disabled={testLoading}>
         {#if testLoading}
           <Icon icon="mdi:loading" class="mr-2 size-4 animate-spin" />
         {:else}
           <Icon icon="mdi:play" class="mr-2 size-4" />
         {/if}
-        {testResult ? '重新测试' : '开始测试'}
+        {testResult ? t('page.ai.model.retest') : t('page.ai.model.startTest')}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

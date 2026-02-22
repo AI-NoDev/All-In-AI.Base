@@ -4,6 +4,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Provider {
     id: string;
@@ -46,7 +47,7 @@
 
 <div class="w-72 shrink-0 flex flex-col pr-4 border-r border-border">
   <div class="py-3 px-2 flex items-center justify-between">
-    <h3 class="text-base font-semibold">AI 服务提供商</h3>
+    <h3 class="text-base font-semibold">{t('page.ai.provider_title')}</h3>
     <Button size="sm" variant="ghost" class="h-8 w-8 p-0" onclick={onCreate}>
       <Icon icon="mdi:plus" class="size-4" />
     </Button>
@@ -66,7 +67,7 @@
             onclick={() => onSelect(null)}
           >
             <Icon icon="mdi:view-list" class="size-4" />
-            <span>全部模型</span>
+            <span>{t('page.ai.provider_allModels')}</span>
           </button>
           {#each providers as provider}
             <div
@@ -81,10 +82,10 @@
                   <Icon icon={getProviderIcon(provider.providerType)} class="size-4 shrink-0" />
                   <span class="font-medium truncate">{provider.name}</span>
                   <Badge variant={provider.status === '0' ? 'default' : 'secondary'} class="text-xs">
-                    {provider.status === '0' ? '正常' : '停用'}
+                    {provider.status === '0' ? t('page.ai.provider_statusNormal') : t('page.ai.provider_statusDisabled')}
                   </Badge>
                 </div>
-                <div class="text-xs text-muted-foreground truncate mt-0.5 ml-6">{provider.baseUrl || '使用默认地址'}</div>
+                <div class="text-xs text-muted-foreground truncate mt-0.5 ml-6">{provider.baseUrl || t('page.ai.provider_useDefaultUrl')}</div>
               </div>
               <div class="flex gap-1 ml-2 shrink-0">
                 <button
@@ -102,7 +103,7 @@
               </div>
             </div>
           {:else}
-            <div class="text-center text-muted-foreground py-8">暂无提供商</div>
+            <div class="text-center text-muted-foreground py-8">{t('page.ai.provider_noProviders')}</div>
           {/each}
         </div>
       {/if}

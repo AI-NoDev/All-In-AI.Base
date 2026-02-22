@@ -1,6 +1,7 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface Props {
     open: boolean;
@@ -26,7 +27,7 @@
       <input
         type="text"
         bind:value={searchQuery}
-        placeholder="搜索文件和文件夹..."
+        placeholder={t('page.knowledge.searchPlaceholder')}
         class="flex-1 h-14 bg-transparent outline-none text-base placeholder:text-muted-foreground"
         onkeydown={handleKeydown}
       />
@@ -37,11 +38,11 @@
     <div class="max-h-80 overflow-y-auto p-2">
       {#if searchQuery.trim()}
         <div class="text-sm text-muted-foreground text-center py-8">
-          按 Enter 搜索 "{searchQuery}"
+          {t('page.knowledge.search')} "{searchQuery}"
         </div>
       {:else}
         <div class="text-sm text-muted-foreground text-center py-8">
-          输入关键词搜索文件和文件夹
+          {t('page.knowledge.searchPlaceholder')}
         </div>
       {/if}
     </div>

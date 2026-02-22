@@ -13,7 +13,7 @@ export const userMemoryGetByPagination = defineAction({
     name: 'ai.userMemory.getByPagination',
     displayName: '分页查询用户记忆',
     description: '分页查询用户记忆列表，支持多种过滤条件',
-    tags: ['ai', 'memory', 'query'],
+    tags: ['ai', 'memory'],
     method: 'POST',
     path: '/api/ai/user-memory/query',
   },

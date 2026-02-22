@@ -7,6 +7,7 @@
   import { Badge } from '$lib/components/ui/badge';
   import * as AlertDialog from '$lib/components/ui/alert-dialog';
   import { authStore } from '$lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
 
   interface ApiError {
     message?: string;
@@ -77,7 +78,7 @@
       const res = await api.knowledge.getApiKnowledgeNodesById({ id: fileId });
       const fileInfo = res.data;
       if (!fileInfo) {
-        throw new Error('文件不存在');
+        throw new Error(t('page.knowledge.fileNotFound'));
       }
       fileData = {
         id: fileInfo.id,
@@ -106,9 +107,9 @@
       const e = err as ApiError;
       // 检查是否是 403 权限错误
       if (e?.status === 403 || e?.message?.includes('permissionDenied') || e?.message?.includes('permission')) {
-        error = '您没有权限访问此文件';
+        error = t('page.knowledge.noPermission');
       } else {
-        error = e?.message || '加载文件失败';
+        error = e?.message || t('page.knowledge.loadFailed');
       }
     } finally {
       loading = false;
@@ -123,7 +124,7 @@
       goBack();
     } catch (err: unknown) {
       const e = err as { message?: string };
-      error = e?.message || '保存失败';
+      error = e?.message || t('page.knowledge.saveFailed');
     } finally {
       saving = false;
     }
@@ -138,7 +139,7 @@
     const uploadExt = getFileExtension(file.name);
     
     if (uploadExt !== currentExtension) {
-      uploadError = `文件后缀名不匹配，需要 .${currentExtension} 格式的文件`;
+      uploadError = t('page.knowledge.extensionMismatch').replace('${ext}', currentExtension);
       input.value = '';
       return;
     }
@@ -172,7 +173,7 @@
       await loadFile();
     } catch (err: unknown) {
       const e = err as { message?: string };
-      uploadError = e?.message || '上传替换失败';
+      uploadError = e?.message || t('page.knowledge.uploadReplaceFailed');
     } finally {
       uploading = false;
       pendingFile = null;
@@ -196,9 +197,9 @@
 
 <script lang="ts" module>
   export const _meta = {
-    title: '编辑文件',
+    title: 'page.knowledge.editFile',
     icon: 'tdesign:edit',
-    group: '知识库',
+    group: 'page.knowledge.myFiles',
     order: 100,
     hidden: true,
   };
@@ -212,7 +213,7 @@
   <div class="flex flex-col items-center justify-center h-64 gap-4">
     <Icon icon="tdesign:error-circle" class="w-12 h-12 text-destructive" />
     <p class="text-destructive">{error}</p>
-    <Button variant="outline" onclick={goBack}>返回</Button>
+    <Button variant="outline" onclick={goBack}>{t('page.knowledge.back')}</Button>
   </div>
 {:else if fileData}
   <div class="flex flex-col h-full">
@@ -226,7 +227,7 @@
           <div class="flex items-center gap-2">
             <h1 class="text-lg font-medium">{fileData.name}</h1>
             {#if isReadonly}
-              <Badge variant="secondary">只读</Badge>
+              <Badge variant="secondary">{t('page.knowledge.readOnlyBadge')}</Badge>
             {/if}
           </div>
           <p class="text-sm text-muted-foreground">
@@ -237,7 +238,7 @@
       <div class="flex items-center gap-2">
         <Button variant="outline" onclick={handleDownload}>
           <Icon icon="tdesign:download" class="w-4 h-4 mr-2" />
-          下载
+          {t('page.knowledge.downloadBtn')}
         </Button>
         {#if isTextEditable}
           <Button onclick={handleSave} disabled={saving}>
@@ -246,7 +247,7 @@
             {:else}
               <Icon icon="tdesign:save" class="w-4 h-4 mr-2" />
             {/if}
-            保存
+            {t('page.knowledge.save')}
           </Button>
         {:else if canReplace}
           <Button variant="outline" onclick={() => fileInputRef?.click()} disabled={uploading}>
@@ -255,11 +256,11 @@
             {:else}
               <Icon icon="tdesign:upload" class="w-4 h-4 mr-2" />
             {/if}
-            上传替换
+            {t('page.knowledge.uploadReplace')}
           </Button>
         {/if}
         {#if isReadonly}
-          <Button variant="outline" onclick={goBack}>返回</Button>
+          <Button variant="outline" onclick={goBack}>{t('page.knowledge.back')}</Button>
         {/if}
       </div>
     </div>
@@ -290,7 +291,7 @@
           <textarea
             class="w-full h-full min-h-[400px] p-4 border rounded-md font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
             bind:value={content}
-            placeholder="输入文件内容..."
+            placeholder={t('page.knowledge.inputContentPlaceholder')}
           ></textarea>
         {/if}
       {:else if fileType === 'image' && downloadUrl}
@@ -312,9 +313,9 @@
       {:else}
         <div class="flex flex-col items-center justify-center h-64 gap-4">
           <Icon icon="tdesign:file" class="w-16 h-16 text-muted-foreground" />
-          <p class="text-muted-foreground">此文件类型不支持预览</p>
+          <p class="text-muted-foreground">{t('page.knowledge.previewNotSupported')}</p>
           {#if canReplace}
-            <p class="text-sm text-muted-foreground">可以上传相同后缀名的文件进行替换</p>
+            <p class="text-sm text-muted-foreground">{t('page.knowledge.canUploadSameExtension')}</p>
           {/if}
         </div>
       {/if}
@@ -325,16 +326,16 @@
   <AlertDialog.Root bind:open={confirmDialogOpen}>
     <AlertDialog.Content>
       <AlertDialog.Header>
-        <AlertDialog.Title>确认替换文件</AlertDialog.Title>
+        <AlertDialog.Title>{t('page.knowledge.confirmReplaceTitle')}</AlertDialog.Title>
         <AlertDialog.Description>
           {#if pendingFile}
-            确定要用 "{pendingFile.name}" 替换当前文件吗？此操作不可撤销。
+            {t('page.knowledge.confirmReplaceDesc').replace('${name}', pendingFile.name)}
           {/if}
         </AlertDialog.Description>
       </AlertDialog.Header>
       <AlertDialog.Footer>
-        <AlertDialog.Cancel onclick={() => { pendingFile = null; }}>取消</AlertDialog.Cancel>
-        <AlertDialog.Action onclick={handleUploadReplace}>确认替换</AlertDialog.Action>
+        <AlertDialog.Cancel onclick={() => { pendingFile = null; }}>{t('page.knowledge.cancel')}</AlertDialog.Cancel>
+        <AlertDialog.Action onclick={handleUploadReplace}>{t('page.knowledge.confirmReplace')}</AlertDialog.Action>
       </AlertDialog.Footer>
     </AlertDialog.Content>
   </AlertDialog.Root>

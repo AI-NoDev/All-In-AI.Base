@@ -11,6 +11,7 @@ import type { RoleMenuSelect } from './utils';
 
 export const roleMenuGetByPagination = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.roleMenu.getByPagination',
     displayName: '分页查询角色菜单关联',
     description: `分页查询角色与菜单的关联关系，用于菜单权限控制。

@@ -11,6 +11,7 @@ import type { AgentSessionSelect, AgentSessionInsert } from './utils';
 
 export const agentSessionUpdate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.agentSession.update',
     displayName: '更新Agent会话',
     description: `根据ID更新单个Agent会话信息。

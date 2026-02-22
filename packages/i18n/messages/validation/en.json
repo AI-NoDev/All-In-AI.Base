@@ -17,5 +17,7 @@
   "password_minLength": "Password must be at least ${min} characters",
   "password_requireNumber": "Password must contain a number",
   "password_requireLetter": "Password must contain a letter",
-  "password_requireSpecial": "Password must contain a special character"
+  "password_requireSpecial": "Password must contain a special character",
+  "imageFormat": "Please select a JPG, PNG, GIF or WebP image",
+  "imageSizeLimit": "Image size cannot exceed 2MB"
 }

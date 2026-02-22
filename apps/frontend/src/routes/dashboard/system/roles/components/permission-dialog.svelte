@@ -4,6 +4,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { TreeSelector } from '$lib/components/ui/item-selector';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
 
   interface Permission {
     id: string;
@@ -89,7 +90,7 @@
       open = false;
     } catch (err) {
       console.error('Failed to save permissions:', err);
-      alert('保存失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       saving = false;
     }
@@ -105,7 +106,7 @@
 <Dialog.Root bind:open onOpenChange={(v) => !v && onClose()}>
   <Dialog.Content class="sm:max-w-lg max-h-[85vh] flex flex-col">
     <Dialog.Header>
-      <Dialog.Title>分配权限 - {roleName}</Dialog.Title>
+      <Dialog.Title>{t('page.system.role.assignPermission')} - {roleName}</Dialog.Title>
     </Dialog.Header>
     
     <div class="flex-1 min-h-0 py-4">
@@ -120,17 +121,17 @@
           items={treeItems}
           bind:selected={selectedCodes}
           mode="multiple"
-          searchPlaceholder="搜索权限..."
-          emptyText="暂无权限数据"
+          searchPlaceholder={t('page.system.role.searchPermission')}
+          emptyText={t('page.system.role.noPermissionData')}
           maxHeight="450px"
         />
       {/if}
     </div>
     
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => open = false}>取消</Button>
+      <Button variant="outline" onclick={() => open = false}>{t('common.actions.cancel')}</Button>
       <Button onclick={handleSave} disabled={saving || loading}>
-        {saving ? '保存中...' : '保存'}
+        {saving ? t('common.tips.saving') : t('common.actions.save')}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

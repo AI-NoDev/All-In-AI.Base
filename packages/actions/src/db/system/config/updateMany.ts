@@ -12,6 +12,7 @@ import type { ConfigSelect, ConfigInsert } from './utils';
 export const configUpdateMany = defineAction({
   meta: {
     name: 'system.config.updateMany',
+    ignoreTools: true,
     displayName: '批量更新系统配置',
     description: `根据ID列表批量更新系统配置，所有指定的配置将应用相同的更新数据。
 

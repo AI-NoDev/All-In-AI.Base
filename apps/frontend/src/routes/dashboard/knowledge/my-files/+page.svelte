@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { authStore } from '$lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { knowledgeStore, type FolderItem, type FileItem } from '$lib/stores/knowledge.svelte';
   import { 
     PostApiKnowledgeUploadForceConflictModeEnum,
@@ -106,7 +107,7 @@
             }
           }
         }
-      } catch (err) { console.error('检查文件冲突失败', err); }
+      } catch (err) { console.error(t('page.knowledge.checkConflictFailed'), err); }
     }
     
     pasteItems = items;
@@ -140,7 +141,7 @@
         const isSameFolder = item.clipboardItem.sourceFolderId === targetFolderId;
         if (item.clipboardItem.type === 'folder') {
           if (item.clipboardItem.action === 'cut') {
-            if (isSameFolder) throw new Error('不能移动到同一文件夹');
+            if (isSameFolder) throw new Error(t('page.knowledge.cannotMoveToSameFolder'));
             await api.knowledge.postApiKnowledgeNodesByIdMove({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
           } else {
             await api.knowledge.postApiKnowledgeNodesByIdCopy({ id: item.clipboardItem.id }, { targetParentId: targetFolderId });
@@ -148,7 +149,7 @@
         } else {
           const hasConflict = item.conflictMode && item.existingFileId;
           if (item.clipboardItem.action === 'cut') {
-            if (isSameFolder && !hasConflict) throw new Error('不能移动到同一文件夹');
+            if (isSameFolder && !hasConflict) throw new Error(t('page.knowledge.cannotMoveToSameFolder'));
             if (hasConflict) {
               const { content, mimeType } = await downloadFileAsBase64(item.clipboardItem.id);
               await api.knowledge.postApiKnowledgeUploadForce({ 
@@ -187,7 +188,7 @@
         }
         pasteItems = pasteItems.map((p, idx) => idx === i ? { ...p, status: 'success' as const } : p);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : '粘贴失败';
+        const errorMessage = err instanceof Error ? err.message : t('page.knowledge.pasteFailed');
         pasteItems = pasteItems.map((p, idx) => idx === i ? { ...p, status: 'error' as const, error: errorMessage } : p);
       }
     }
@@ -197,14 +198,14 @@
 
   async function downloadFileAsBase64(fileId: string): Promise<{ content: string; mimeType: string }> {
     const urlRes = await api.knowledge.getApiKnowledgeNodesByIdDownloadUrl({ id: fileId });
-    if (!urlRes.data?.url) throw new Error('获取下载链接失败');
+    if (!urlRes.data?.url) throw new Error(t('page.knowledge.getDownloadUrlFailed'));
     const response = await fetch(urlRes.data.url);
-    if (!response.ok) throw new Error('下载文件失败');
+    if (!response.ok) throw new Error(t('page.knowledge.downloadFileFailed'));
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve({ content: (reader.result as string).split(',')[1] || '', mimeType: blob.type || 'application/octet-stream' });
-      reader.onerror = () => reject(new Error('读取文件内容失败'));
+      reader.onerror = () => reject(new Error(t('page.knowledge.readFileContentFailed')));
       reader.readAsDataURL(blob);
     });
   }
@@ -213,11 +214,11 @@
     return mode === 'overwrite' ? PostApiKnowledgeUploadForceConflictModeEnum.Overwrite : PostApiKnowledgeUploadForceConflictModeEnum.NewVersion;
   }
 
-  async function handleBatchDelete() { if (confirm('确定要删除选中的项目吗？')) await knowledgeStore.deleteSelected(); }
+  async function handleBatchDelete() { if (confirm(t('page.knowledge.confirmDeleteSelected'))) await knowledgeStore.deleteSelected(); }
 
   // Folder handlers
   function handleRenameFolder(f: FolderItem) { renameTarget = { type: 'folder', id: f.id, name: f.name }; renameDialogOpen = true; }
-  async function handleDeleteFolder(f: FolderItem) { if (confirm(`确定要删除文件夹 "${f.name}" 吗？`)) await knowledgeStore.deleteFolder(f); }
+  async function handleDeleteFolder(f: FolderItem) { if (confirm(t('page.knowledge.confirmDeleteFolder').replace('${name}', f.name))) await knowledgeStore.deleteFolder(f); }
   function handleDownloadFolder(f: FolderItem) { console.log('下载文件夹', f.name); }
   function handleShowFolderInfo(f: FolderItem) { descriptionTarget = { type: 'folder', id: f.id, name: f.name, description: f.description, readOnly: true }; descriptionSheetOpen = true; }
   function handleEditFolderDescription(f: FolderItem) { descriptionTarget = { type: 'folder', id: f.id, name: f.name, description: f.description, readOnly: false }; descriptionSheetOpen = true; }
@@ -226,7 +227,7 @@
 
   // File handlers
   function handleRenameFile(f: FileItem) { renameTarget = { type: 'file', id: f.id, name: f.name }; renameDialogOpen = true; }
-  async function handleDeleteFile(f: FileItem) { if (confirm(`确定要删除文件 "${f.name}" 吗？`)) await knowledgeStore.deleteFile(f); }
+  async function handleDeleteFile(f: FileItem) { if (confirm(t('page.knowledge.confirmDeleteFile').replace('${name}', f.name))) await knowledgeStore.deleteFile(f); }
   function handleDownloadFile(f: FileItem) { console.log('下载文件:', f.name); }
   function handleShowFileInfo(f: FileItem) { descriptionTarget = { type: 'file', id: f.id, name: f.name, description: f.description, readOnly: true }; descriptionSheetOpen = true; }
   function handleEditFileDescription(f: FileItem) { descriptionTarget = { type: 'file', id: f.id, name: f.name, description: f.description, readOnly: false }; descriptionSheetOpen = true; }
@@ -242,7 +243,7 @@
       await api.knowledge.putApiKnowledgeNodesById({ id: renameTarget.id }, { name: newName });
       renameDialogOpen = false; renameTarget = null; await knowledgeStore.refresh();
     } catch (err) {
-      console.error('重命名失败:', err);
+      console.error(t('page.knowledge.renameFailed'), err);
     }
   }
 
@@ -252,7 +253,7 @@
       await api.knowledge.putApiKnowledgeNodesById({ id: descriptionTarget.id }, { description: desc });
       descriptionSheetOpen = false; descriptionTarget = null; await knowledgeStore.refresh();
     } catch (err) {
-      console.error('保存描述失败:', err);
+      console.error(t('page.knowledge.saveDescFailed'), err);
     }
   }
 
@@ -261,7 +262,7 @@
     try {
       await api.knowledge.putApiKnowledgeNodesById({ id: styleTarget.id }, { icon, color });
       folderStyleDialogOpen = false; styleTarget = null; await knowledgeStore.refresh();
-    } catch (err) { console.error('保存文件夹样式失败', err); }
+    } catch (err) { console.error(t('page.knowledge.saveFolderStyleFailed'), err); }
   }
 
   async function handleSavePermission(isPublic: boolean, permissions: PermissionGrantee[]) {
@@ -274,7 +275,7 @@
         { permissions: permissions.map(p => ({ subjectType: p.subjectType, subjectId: p.subjectId, permission: p.permission, effect: p.effect })) }
       );
       permissionSheetOpen = false; permissionTarget = null; await knowledgeStore.refresh();
-    } catch (err) { console.error('保存权限失败:', err); }
+    } catch (err) { console.error(t('page.knowledge.savePermissionFailed'), err); }
   }
 
   // Drag and drop
@@ -431,7 +432,7 @@
         const parts = item.relativePath.split('/');
         const folderPath = parts.slice(0, -1).join('/');
         const targetFolderId = folderPath ? folderMap.get(folderPath) : knowledgeStore.currentFolderId;
-        if (targetFolderId === '__FAILED__') throw new Error('目标文件夹创建失败');
+        if (targetFolderId === '__FAILED__') throw new Error(t('page.knowledge.targetFolderCreateFailed'));
         const content = await readFileAsBase64(item.file);
         uploadItems = uploadItems.map((u, idx) => idx === i ? { ...u, progress: 30 } : u);
         if (item.conflictMode && item.existingFileId) {
@@ -453,7 +454,7 @@
         }
         uploadItems = uploadItems.map((u, idx) => idx === i ? { ...u, status: 'success' as const, progress: 100 } : u);
       } catch (err) {
-        uploadItems = uploadItems.map((u, idx) => idx === i ? { ...u, status: 'error' as const, error: err instanceof Error ? err.message : '上传失败' } : u);
+        uploadItems = uploadItems.map((u, idx) => idx === i ? { ...u, status: 'error' as const, error: err instanceof Error ? err.message : t('page.knowledge.uploadFailed') } : u);
       }
     }
     isUploading = false; isUploadComplete = true; await knowledgeStore.refresh();
@@ -479,7 +480,7 @@
   ondragleave={handleDragLeave}
   ondrop={handleDrop}
   role="region"
-  aria-label="文件管理区域"
+  aria-label={t('page.knowledge.fileManageArea')}
 >
   <div class={`${isDragging ? 'ring-2 ring-primary ring-offset-2' : ''} flex-1 flex gap-2 flex-col min-h-0`}>
     <div class="flex items-center justify-between">
@@ -501,8 +502,8 @@
       {#if isDragging}
         <div class="flex items-center justify-center h-48 border-2 border-dashed border-primary rounded-lg bg-primary/5">
           <div class="text-center">
-            <p class="text-lg font-medium text-primary">释放文件以上传</p>
-            <p class="text-sm text-muted-foreground">支持拖拽文件或文件夹</p>
+            <p class="text-lg font-medium text-primary">{t('page.knowledge.releaseToUpload')}</p>
+            <p class="text-sm text-muted-foreground">{t('page.knowledge.supportDragFolder')}</p>
           </div>
         </div>
       {:else}

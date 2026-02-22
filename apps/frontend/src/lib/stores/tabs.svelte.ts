@@ -7,6 +7,10 @@ export type Tab = {
   closable?: boolean;
 };
 
+// Default i18n keys for tabs
+const DEFAULT_DASHBOARD_TITLE = 'nav.title.dashboard';
+const DEFAULT_UNKNOWN_TITLE = 'common.tips.noData';
+
 // 匹配动态路由，返回对应的标题
 function matchRouteTitle(path: string): string | undefined {
   // 先尝试精确匹配
@@ -28,7 +32,7 @@ function matchRouteTitle(path: string): string | undefined {
 }
 
 function createTabsStore() {
-  let tabs = $state<Tab[]>([{ path: '/dashboard', title: '首页', closable: false }]);
+  let tabs = $state<Tab[]>([{ path: '/dashboard', title: DEFAULT_DASHBOARD_TITLE, closable: false }]);
   let activeTab = $state('/dashboard');
 
   return {
@@ -47,7 +51,7 @@ function createTabsStore() {
           ...tabs,
           {
             path,
-            title: title || matchRouteTitle(path) || path.split('/').pop() || '未知',
+            title: title || matchRouteTitle(path) || path.split('/').pop() || DEFAULT_UNKNOWN_TITLE,
             closable: path !== '/dashboard'
           }
         ];

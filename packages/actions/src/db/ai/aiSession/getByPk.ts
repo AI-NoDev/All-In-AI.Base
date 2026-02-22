@@ -11,6 +11,7 @@ import type { AISessionSelect } from './utils';
 
 export const aiSessionGetByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'ai.aiSession.getByPk',
     displayName: '根据ID查询AI会话',
     description: `根据主键ID查询单个AI会话的详细信息。

@@ -1,7 +1,7 @@
 
 export const _meta = {
-  title: '服务器监控',
+  title: 'nav.title.serverMonitor',
   icon: 'tdesign:server',
-  group: '平台',
+  group: 'nav.group.platform',
   order: 100,
 };

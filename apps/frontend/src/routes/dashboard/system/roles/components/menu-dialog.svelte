@@ -4,6 +4,7 @@
   import { Skeleton } from '$lib/components/ui/skeleton';
   import { TreeSelector } from '$lib/components/ui/item-selector';
   import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
   import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@qiyu-allinai/api';
 
   interface Menu {
@@ -103,7 +104,7 @@
       }
     } catch (err) {
       console.error('Failed to load menus:', err);
-      error = '加载菜单失败';
+      error = t('page.system.role.loadMenuFailed');
     } finally {
       loading = false;
     }
@@ -142,7 +143,7 @@
       open = false;
     } catch (err) {
       console.error('Failed to save menus:', err);
-      alert('保存失败');
+      alert(t('common.tips.operationFailed'));
     } finally {
       saving = false;
     }
@@ -158,7 +159,7 @@
 <Dialog.Root bind:open onOpenChange={(v) => !v && onClose()}>
   <Dialog.Content class="sm:max-w-lg max-h-[85vh] flex flex-col">
     <Dialog.Header>
-      <Dialog.Title>分配菜单 - {roleName}</Dialog.Title>
+      <Dialog.Title>{t('page.system.role.assignMenu')} - {roleName}</Dialog.Title>
     </Dialog.Header>
     
     <div class="flex-1 min-h-0 py-4">
@@ -174,24 +175,24 @@
         </div>
       {:else if menus.length === 0}
         <div class="text-center text-muted-foreground py-8">
-          <p>暂无菜单数据</p>
+          <p>{t('page.system.role.noMenuData')}</p>
         </div>
       {:else}
         <TreeSelector
           items={treeItems}
           bind:selected={selectedIds}
           mode="multiple"
-          searchPlaceholder="搜索菜单..."
-          emptyText="暂无菜单数据"
+          searchPlaceholder={t('page.system.role.searchMenu')}
+          emptyText={t('page.system.role.noMenuData')}
           maxHeight="450px"
         />
       {/if}
     </div>
     
     <Dialog.Footer>
-      <Button variant="outline" onclick={() => open = false}>取消</Button>
+      <Button variant="outline" onclick={() => open = false}>{t('common.actions.cancel')}</Button>
       <Button onclick={handleSave} disabled={saving || loading || !!error}>
-        {saving ? '保存中...' : '保存'}
+        {saving ? t('common.tips.saving') : t('common.actions.save')}
       </Button>
     </Dialog.Footer>
   </Dialog.Content>

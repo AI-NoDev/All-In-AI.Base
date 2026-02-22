@@ -13,6 +13,7 @@ import type { AgentSelect, AgentInsert } from './utils';
 export const agentUpdateMany = defineAction({
   meta: {
     name: 'ai.agent.updateMany',
+    ignoreTools: true,
     displayName: '批量更新AI智能体',
     description: '批量更新多个智能体配置。传入ids数组指定要更新的智能体，data对象包含要更新的字段。只能更新自己创建的智能体，管理员可更新所有。示例：{"ids":["id1","id2"],"data":{"status":"1","temperature":0.8}}',
     tags: ['ai', 'agent'],

@@ -10,6 +10,7 @@ import type { UserPostSelect, UserPostInsert } from './utils';
 
 export const userPostCreate = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userPost.create',
     displayName: '创建用户岗位关联',
     description: `创建单个用户与岗位的关联关系。

@@ -9,7 +9,13 @@
   import * as Tooltip from '$lib/components/ui/tooltip';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
   import FileContextMenu from './file-context-menu.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
   import type { FolderItem, FileItem } from './types';
+
+  // Helper to get version count title
+  function getVersionTitle(count: number): string {
+    return t('page.knowledge.hasVersions').replace('${count}', String(count));
+  }
 
   interface Props {
     loading: boolean;
@@ -94,10 +100,10 @@
             <Table.Head class="w-8">
               <Checkbox checked={allSelected} indeterminate={hasSelection && !allSelected} onCheckedChange={onToggleSelectAll} />
             </Table.Head>
-            <Table.Head class="text-left">名称</Table.Head>
-            <Table.Head class="w-24 text-left">大小</Table.Head>
-            <Table.Head class="w-40 text-left">修改时间</Table.Head>
-            <Table.Head class="w-20 text-center">操作</Table.Head>
+            <Table.Head class="text-left">{t('page.knowledge.name')}</Table.Head>
+            <Table.Head class="w-24 text-left">{t('page.knowledge.size')}</Table.Head>
+            <Table.Head class="w-40 text-left">{t('page.knowledge.modifiedTime')}</Table.Head>
+            <Table.Head class="w-20 text-center">{t('page.knowledge.actions')}</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -137,7 +143,7 @@
                       <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
                     {/if}
                     {#if folder.isPublic}
-                      <Badge variant="destructive" class="text-xs px-1.5 py-0">公开</Badge>
+                      <Badge variant="destructive" class="text-xs px-1.5 py-0">{t('page.knowledge.public')}</Badge>
                     {/if}
                   </span>
                 </Table.Cell>
@@ -152,7 +158,7 @@
                         <Icon icon="tdesign:file-setting" class="size-4" />
                       </Button>
                     </Tooltip.Trigger>
-                    <Tooltip.Content>查看描述</Tooltip.Content>
+                    <Tooltip.Content>{t('page.knowledge.viewDescription')}</Tooltip.Content>
                   </Tooltip.Root>
                 </Table.Cell>
               </Table.Row>
@@ -184,12 +190,12 @@
                       <Icon icon="tdesign:star-filled" class="size-4 text-yellow-500" />
                     {/if}
                     {#if file.versionCount > 0}
-                      <span title="具备 {file.versionCount} 个版本">
+                      <span title={getVersionTitle(file.versionCount)}>
                         <Icon icon="mdi:source-branch" class="size-4 text-blue-500" />
                       </span>
                     {/if}
                     {#if file.isPublic}
-                      <Badge variant="destructive" class="text-xs px-1.5 py-0">公开</Badge>
+                      <Badge variant="destructive" class="text-xs px-1.5 py-0">{t('page.knowledge.public')}</Badge>
                     {/if}
                   </span>
                 </Table.Cell>
@@ -202,7 +208,7 @@
                         <Icon icon="tdesign:file-setting" class="size-4" />
                       </Button>
                     </Tooltip.Trigger>
-                    <Tooltip.Content>查看描述</Tooltip.Content>
+                    <Tooltip.Content>{t('page.knowledge.viewDescription')}</Tooltip.Content>
                   </Tooltip.Root>
                 </Table.Cell>
               </Table.Row>
@@ -211,7 +217,7 @@
 
           {#if folders.length === 0 && files.length === 0 && currentFolderId === null}
             <Table.Row>
-              <Table.Cell colspan={5} class="h-24 text-center text-muted-foreground">暂无文件</Table.Cell>
+              <Table.Cell colspan={5} class="h-24 text-center text-muted-foreground">{t('page.knowledge.noFiles')}</Table.Cell>
             </Table.Row>
           {/if}
         </Table.Body>

@@ -9,6 +9,7 @@ import { userPost } from '@qiyu-allinai/db/entities/system';
 
 export const userPostDeleteByPk = defineAction({
   meta: {
+    ignoreTools: true,
     name: 'system.userPost.deleteByPk',
     displayName: '删除用户岗位关联',
     description: `根据复合主键删除用户与岗位的关联关系。
