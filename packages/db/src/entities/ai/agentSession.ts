@@ -1,7 +1,7 @@
 import { pgTable, uuid, varchar, text, integer, timestamp, boolean, char, jsonb, index } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -127,5 +127,9 @@ export const agentSession = pgTable(
 // ============ Config ============
 export const agentSessionConfig = getFieldConfigs(agentSessionFields);
 
-// ============ Schemas ============
-export const agentSessionZodSchemas = createZodSchemas(agentSession, agentSessionFields);
+// ============ Schemas (TypeBox) ============
+export const agentSessionSchemas = createTypeboxSchemas(agentSession);
+
+// ============ Types ============
+export type AgentSessionSelect = typeof agentSession.$inferSelect;
+export type AgentSessionInsert = typeof agentSession.$inferInsert;

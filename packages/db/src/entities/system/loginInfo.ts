@@ -1,22 +1,21 @@
 import { sql } from "drizzle-orm";
 import { pgTable, char, varchar, text, timestamp } from "drizzle-orm/pg-core";
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
-  "db_system_loginInfo_meta_displayName" as meta_displayName,
-  "db_system_loginInfo_meta_verboseName" as meta_verboseName,
-  "db_system_loginInfo_meta_verboseNamePlural" as meta_verboseNamePlural,
-  "db_system_loginInfo_loginName" as f_loginName,
-  "db_system_loginInfo_ipaddr" as f_ipaddr,
-  "db_system_loginInfo_loginLocation" as f_loginLocation,
-  "db_system_loginInfo_browser" as f_browser,
-  "db_system_loginInfo_os" as f_os,
-  "db_system_loginInfo_status" as f_status,
-  "db_system_loginInfo_msg" as f_msg,
-  "db_system_loginInfo_loginTime" as f_loginTime,
+  db_system_loginInfo_meta_displayName as meta_displayName,
+  db_system_loginInfo_meta_verboseName as meta_verboseName,
+  db_system_loginInfo_meta_verboseNamePlural as meta_verboseNamePlural,
+  db_system_loginInfo_loginName as f_loginName,
+  db_system_loginInfo_ipaddr as f_ipaddr,
+  db_system_loginInfo_loginLocation as f_loginLocation,
+  db_system_loginInfo_browser as f_browser,
+  db_system_loginInfo_os as f_os,
+  db_system_loginInfo_status as f_status,
+  db_system_loginInfo_msg as f_msg,
+  db_system_loginInfo_loginTime as f_loginTime,
 } from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
@@ -82,5 +81,9 @@ export const loginInfo = pgTable(loginInfoMeta.name, getTableFields(loginInfoFie
 // ============ Config ============
 export const loginInfoConfig = getFieldConfigs(loginInfoFields);
 
-// ============ Schemas ============
-export const loginInfoZodSchemas = createZodSchemas(loginInfo, loginInfoFields);
+// ============ Schemas (TypeBox) ============
+export const loginInfoSchemas = createTypeboxSchemas(loginInfo);
+
+// ============ Types (从 Drizzle 推导) ============
+export type LoginInfoSelect = typeof loginInfo.$inferSelect;
+export type LoginInfoInsert = typeof loginInfo.$inferInsert;

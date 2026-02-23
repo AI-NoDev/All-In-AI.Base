@@ -2,12 +2,12 @@
  * 分页查询通知公告
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { notice } from '@qiyu-allinai/db/entities/system';
-import { noticePaginationBodySchema, noticeZodSchemas } from './schemas';
-import type { NoticeSelect } from './utils';
+import { notice, noticeTypeboxSchemas } from '@qiyu-allinai/db/entities/system';
+import { noticePaginationBodySchema } from './schemas';
+import type { NoticeSelect } from '@qiyu-allinai/db/entities/system/notice';
 
 export const noticeGetByPagination = defineAction({
   meta: {
@@ -52,7 +52,7 @@ export const noticeGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: noticePaginationBodySchema,
-    outputSchema: z.object({ data: z.array(noticeZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(noticeTypeboxSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,12 +2,11 @@
  * 根据ID查询菜单
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { menu } from '@qiyu-allinai/db/entities/system';
-import { menuZodSchemas } from './schemas';
-import type { MenuSelect } from './utils';
+import { menu, menuSchemas } from '@qiyu-allinai/db/entities/system';
+import type { MenuSelect } from '@qiyu-allinai/db/entities/system/menu';
 
 export const menuGetByPk = defineAction({
   meta: {
@@ -29,8 +28,8 @@ GET /api/system/menu/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/system/menu/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: menuZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([menuSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

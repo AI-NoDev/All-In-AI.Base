@@ -2,7 +2,7 @@
  * 获取上传URL
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../core/define';
 import { getPresignedUploadUrl, generateStorageKey } from '../../files/s3Client';
 import { uploadGetUrlBodySchema } from './schemas';
@@ -41,10 +41,10 @@ export const uploadGetUrl = defineAction({
   },
   schemas: {
     bodySchema: uploadGetUrlBodySchema,
-    outputSchema: z.object({
-      uploadUrl: z.string(),
-      storageKey: z.string(),
-      expiresAt: z.string(),
+    outputSchema: t.Object({
+      uploadUrl: t.String(),
+      storageKey: t.String(),
+      expiresAt: t.String(),
     }),
   },
   execute: async (input, context) => {

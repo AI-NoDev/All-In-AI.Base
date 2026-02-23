@@ -1,9 +1,9 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import type { z } from "zod/v4";
+import type { TSchema } from "@sinclair/typebox";
 
-// MCP SDK uses Zod v3 internally, we need to cast our Zod v4 types
-export type ZodRawShapeCompat = Record<string, z.ZodTypeAny>;
+// TypeBox schema shape type for MCP compatibility
+export type TypeBoxSchemaShape = Record<string, TSchema>;
 
 /**
  * MCP Server configuration from database

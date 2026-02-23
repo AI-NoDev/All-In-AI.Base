@@ -1,7 +1,7 @@
 import { pgTable, char, varchar, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -96,4 +96,4 @@ export const notice = pgTable(noticeMeta.name, getTableFields(noticeFields));
 export const noticeConfig = getFieldConfigs(noticeFields);
 
 // ============ Schemas ============
-export const noticeZodSchemas = createZodSchemas(notice, noticeFields);
+export const noticeTypeboxSchemas = createTypeboxSchemas(notice, noticeFields);

@@ -2,10 +2,10 @@
  * 获取Agent会话Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { agentSessionZodSchemas } from './schemas';
+import { agentSessionSchemas } from './schemas';
 
 export const agentSessionGetSchema = defineAction({
   meta: {
@@ -28,9 +28,9 @@ export const agentSessionGetSchema = defineAction({
     path: '/api/ai/agent-session/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(agentSessionZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(agentSessionSchemas.select) as Record<string, unknown>;
   },
 });

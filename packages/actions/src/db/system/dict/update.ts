@@ -2,12 +2,11 @@
  * 更新字典
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dict } from '@qiyu-allinai/db/entities/system';
-import { dictZodSchemas } from './schemas';
-import type { DictSelect, DictInsert } from './utils';
+import { dict, dictSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictSelect, DictInsert } from '@qiyu-allinai/db/entities/system/dict';
 
 export const dictUpdate = defineAction({
   meta: {
@@ -39,9 +38,9 @@ PUT /api/system/dict/xxx-uuid
     path: '/api/system/dict/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: dictZodSchemas.update }),
-    outputSchema: dictZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: dictSchemas.update }),
+    outputSchema: dictSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

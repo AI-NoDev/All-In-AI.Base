@@ -1,45 +1,46 @@
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, asc, desc, inArray, gte, lte, lt, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { toJSONSchema } from '../../../core/schema';
-import { tempFile, tempFileZodSchemas } from '@qiyu-allinai/db/entities/im';
+import { tempFile, tempFileSchemas } from '@qiyu-allinai/db/entities/im';
 import { uploadFile, getPresignedDownloadUrl, getPresignedDownloadUrlForDownload, DEFAULT_BUCKET } from '../../../files/s3Client';
 
 type TempFileSelect = typeof tempFile.$inferSelect;
 type TempFileInsert = typeof tempFile.$inferInsert;
 
 // ============ Filter Schema ============
-const tempFileFilterSchema = z.object({
-  ids: z.array(z.string()).optional(),
-  conversationId: z.string().optional(),
-  conversationIds: z.array(z.string()).optional(),
-  messageId: z.string().optional(),
-  messageIds: z.array(z.string()).optional(),
-  mimeType: z.string().optional(),
-  status: z.string().optional(),
-  expiresAtBefore: z.string().optional(),
-  createdAtStart: z.string().optional(),
-  createdAtEnd: z.string().optional(),
-}).optional();
+const tempFileFilterSchema = t.Optional(t.Object({
+  ids: t.Optional(t.Array(t.String())),
+  conversationId: t.Optional(t.String()),
+  conversationIds: t.Optional(t.Array(t.String())),
+  messageId: t.Optional(t.String()),
+  messageIds: t.Optional(t.Array(t.String())),
+  mimeType: t.Optional(t.String()),
+  status: t.Optional(t.String()),
+  expiresAtBefore: t.Optional(t.String()),
+  createdAtStart: t.Optional(t.String()),
+  createdAtEnd: t.Optional(t.String()),
+}));
 
-const sortSchema = z.object({
-  field: z.enum(['createdAt', 'expiresAt', 'size']),
-  order: z.enum(['asc', 'desc']),
-}).optional();
+const sortSchema = t.Optional(t.Object({
+  field: t.Union([t.Literal('createdAt'), t.Literal('expiresAt'), t.Literal('size')]),
+  order: t.Union([t.Literal('asc'), t.Literal('desc')]),
+}));
 
-const paginationBodySchema = z.object({
+const paginationBodySchema = t.Object({
   filter: tempFileFilterSchema,
   sort: sortSchema,
-  offset: z.number().int().min(0).default(0),
-  limit: z.number().int().min(1).max(100).default(20),
+  offset: t.Number({ minimum: 0, default: 0 }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 20 }),
 });
+
 
 export const tempFileGetByPagination = defineAction({
   meta: { name: 'im.tempFile.getByPagination', displayName: '分页查询临时文件', description: '分页查询临时文件列表', tags: ['im', 'tempFile'], method: 'POST', path: '/api/im/temp-file/query' },
   schemas: {
     bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(tempFileZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(tempFileSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -73,8 +74,8 @@ export const tempFileGetByPagination = defineAction({
 export const tempFileGetByPk = defineAction({
   meta: { name: 'im.tempFile.getByPk', displayName: '根据ID查询临时文件', description: '根据主键ID查询单个临时文件', tags: ['im', 'tempFile'], method: 'GET', path: '/api/im/temp-file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: tempFileZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([tempFileSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -83,11 +84,12 @@ export const tempFileGetByPk = defineAction({
   },
 });
 
+
 export const tempFileCreate = defineAction({
   meta: { name: 'im.tempFile.create', displayName: '创建临时文件', description: '创建单个临时文件记录', tags: ['im', 'tempFile'], method: 'POST', path: '/api/im/temp-file' },
   schemas: {
-    bodySchema: z.object({ data: tempFileZodSchemas.insert }),
-    outputSchema: tempFileZodSchemas.select,
+    bodySchema: t.Object({ data: tempFileSchemas.insert }),
+    outputSchema: tempFileSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -99,9 +101,9 @@ export const tempFileCreate = defineAction({
 export const tempFileUpdate = defineAction({
   meta: { name: 'im.tempFile.update', displayName: '更新临时文件', description: '根据ID更新临时文件', tags: ['im', 'tempFile'], method: 'PUT', path: '/api/im/temp-file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: tempFileZodSchemas.update }),
-    outputSchema: tempFileZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: tempFileSchemas.update }),
+    outputSchema: tempFileSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -113,8 +115,8 @@ export const tempFileUpdate = defineAction({
 export const tempFileDeleteByPk = defineAction({
   meta: { name: 'im.tempFile.deleteByPk', displayName: '删除临时文件', description: '根据ID删除临时文件', tags: ['im', 'tempFile'], method: 'DELETE', path: '/api/im/temp-file/:id' },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -126,7 +128,7 @@ export const tempFileDeleteByPk = defineAction({
 export const tempFileCleanExpired = defineAction({
   meta: { name: 'im.tempFile.cleanExpired', displayName: '清理过期文件', description: '清理所有过期的临时文件', tags: ['im', 'tempFile'], method: 'DELETE', path: '/api/im/temp-file/clean-expired' },
   schemas: {
-    outputSchema: z.number(),
+    outputSchema: t.Number(),
   },
   execute: async (_input, context) => {
     const { db } = context;
@@ -136,36 +138,36 @@ export const tempFileCleanExpired = defineAction({
   },
 });
 
-
 export const tempFileGetSchema = defineAction({
   meta: { name: 'im.tempFile.getSchema', ignoreTools: true, displayName: '获取临时文件Schema', description: '获取临时文件表的JSON Schema', tags: ['im', 'tempFile'], method: 'GET', path: '/api/im/temp-file/schema' },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(tempFileZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(tempFileSchemas.select) as Record<string, unknown>;
   },
 });
+
 
 // Upload file to S3 and create temp file record
 export const tempFileUpload = defineAction({
   meta: { name: 'im.tempFile.upload', displayName: '上传临时文件', description: '上传文件到S3并创建临时文件记录', tags: ['im', 'tempFile'], method: 'POST', path: '/api/im/temp-file/upload' },
   schemas: {
-    bodySchema: z.object({
-      conversationId: z.string().optional(),
-      fileName: z.string(),
-      mimeType: z.string(),
-      base64Data: z.string(),
+    bodySchema: t.Object({
+      conversationId: t.Optional(t.String()),
+      fileName: t.String(),
+      mimeType: t.String(),
+      base64Data: t.String(),
     }),
-    outputSchema: z.object({
-      id: z.string(),
-      name: z.string(),
-      originalName: z.string(),
-      extension: z.string().nullable(),
-      mimeType: z.string().nullable(),
-      size: z.number(),
-      storageKey: z.string(),
-      downloadUrl: z.string(),
+    outputSchema: t.Object({
+      id: t.String(),
+      name: t.String(),
+      originalName: t.String(),
+      extension: t.Union([t.String(), t.Null()]),
+      mimeType: t.Union([t.String(), t.Null()]),
+      size: t.Number(),
+      storageKey: t.String(),
+      downloadUrl: t.String(),
     }),
   },
   execute: async (input, context) => {
@@ -231,15 +233,16 @@ export const tempFileUpload = defineAction({
   },
 });
 
+
 // Get download URL for temp file
 export const tempFileGetDownloadUrl = defineAction({
   meta: { name: 'im.tempFile.getDownloadUrl', displayName: '获取临时文件下载链接', description: '获取临时文件的预签名下载链接', tags: ['im', 'tempFile'], method: 'GET', path: '/api/im/temp-file/:id/download-url' },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    querySchema: z.object({ download: z.string().optional() }).optional(),
-    outputSchema: z.object({
-      url: z.string(),
-      expiresAt: z.string(),
+    paramsSchema: t.Object({ id: t.String() }),
+    querySchema: t.Optional(t.Object({ download: t.Optional(t.String()) })),
+    outputSchema: t.Object({
+      url: t.String(),
+      expiresAt: t.String(),
     }),
   },
   execute: async (input, context) => {
@@ -259,4 +262,8 @@ export const tempFileGetDownloadUrl = defineAction({
   },
 });
 
-export const tempFileActions = [tempFileGetByPagination, tempFileGetByPk, tempFileCreate, tempFileUpdate, tempFileDeleteByPk, tempFileCleanExpired, tempFileGetSchema, tempFileUpload, tempFileGetDownloadUrl];
+export const tempFileActions = [
+  tempFileGetByPagination, tempFileGetByPk, tempFileCreate, tempFileUpdate, 
+  tempFileDeleteByPk, tempFileCleanExpired, tempFileGetSchema, 
+  tempFileUpload, tempFileGetDownloadUrl
+];

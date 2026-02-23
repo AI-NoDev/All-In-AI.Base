@@ -5,7 +5,7 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { ActionError } from '../../core/errors';
-import { node, nodeZodSchemas, NODE_TYPES, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, NODE_TYPES, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
 import { assertNodePermission } from '../utils';
 import { uploadFile } from '../../files/s3Client';
 import { contentParamsSchema, saveTextBodySchema } from './schemas';
@@ -45,7 +45,7 @@ export const contentSaveText = defineAction({
   schemas: {
     paramsSchema: contentParamsSchema,
     bodySchema: saveTextBodySchema,
-    outputSchema: nodeZodSchemas.select,
+    outputSchema: nodeSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

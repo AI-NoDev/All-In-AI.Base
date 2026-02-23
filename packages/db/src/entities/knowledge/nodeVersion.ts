@@ -6,7 +6,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, bigint, timestamp, text, index } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
@@ -94,7 +94,7 @@ export const nodeVersion = pgTable(
 export const nodeVersionConfig = getFieldConfigs(nodeVersionFields);
 
 // ============ Schemas ============
-export const nodeVersionZodSchemas = createZodSchemas(nodeVersion, nodeVersionFields);
+export const nodeVersionSchemas = createTypeboxSchemas(nodeVersion);
 
 // ============ 类型导出 ============
 export type NodeVersionSelect = typeof nodeVersion.$inferSelect;

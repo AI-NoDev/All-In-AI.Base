@@ -2,11 +2,10 @@
  * 根据ID查询API密钥
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { apiKey, apiKeyMcp } from '@qiyu-allinai/db/entities/ai';
-import { apiKeyWithMcpsSchema } from './schemas';
+import { apiKey, apiKeyMcp, apiKeySchemas } from '@qiyu-allinai/db/entities/ai';
 
 export const apiKeyGetByPk = defineAction({
   meta: {
@@ -18,8 +17,17 @@ export const apiKeyGetByPk = defineAction({
     path: '/api/ai/api-key/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: apiKeyWithMcpsSchema.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([
+      t.Intersect([
+        apiKeySchemas.select,
+        t.Object({
+          accessAll: t.Boolean(),
+          mcpServerIds: t.Array(t.String()),
+        })
+      ]),
+      t.Null()
+    ]),
   },
   execute: async (input, context) => {
     const { db } = context;

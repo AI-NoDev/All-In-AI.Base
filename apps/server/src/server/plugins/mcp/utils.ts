@@ -1,20 +1,22 @@
 import type { ActionDefinition } from "@qiyu-allinai/actions";
-import type { ZodRawShapeCompat } from "./types";
-import type { z } from "zod/v4";
+import type { TSchema } from "@sinclair/typebox";
+
+/** TypeBox schema shape for MCP tool input */
+export type TypeBoxSchemaShape = Record<string, TSchema>;
 
 /**
  * Build input schema shape for MCP tool
  */
-export function buildInputSchemaShape(action: ActionDefinition): ZodRawShapeCompat {
-  const shape: ZodRawShapeCompat = {};
+export function buildInputSchemaShape(action: ActionDefinition): TypeBoxSchemaShape {
+  const shape: TypeBoxSchemaShape = {};
   if (action.schemas.paramsSchema) {
-    shape.params = action.schemas.paramsSchema as z.ZodTypeAny;
+    shape.params = action.schemas.paramsSchema;
   }
   if (action.schemas.querySchema) {
-    shape.query = action.schemas.querySchema as z.ZodTypeAny;
+    shape.query = action.schemas.querySchema;
   }
   if (action.schemas.bodySchema) {
-    shape.body = action.schemas.bodySchema as z.ZodTypeAny;
+    shape.body = action.schemas.bodySchema;
   }
   return shape;
 }

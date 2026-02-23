@@ -2,12 +2,11 @@
  * 更新通知公告
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { notice } from '@qiyu-allinai/db/entities/system';
-import { noticeZodSchemas } from './schemas';
-import type { NoticeSelect, NoticeInsert } from './utils';
+import { notice, noticeTypeboxSchemas } from '@qiyu-allinai/db/entities/system';
+import type { NoticeSelect, NoticeInsert } from '@qiyu-allinai/db/entities/system/notice';
 
 export const noticeUpdate = defineAction({
   meta: {
@@ -45,9 +44,9 @@ export const noticeUpdate = defineAction({
     path: '/api/system/notice/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: noticeZodSchemas.update }),
-    outputSchema: noticeZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: noticeTypeboxSchemas.update }),
+    outputSchema: noticeTypeboxSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

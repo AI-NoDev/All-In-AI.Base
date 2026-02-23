@@ -12,11 +12,10 @@ export type {
 
 export { OperatorsByFieldType } from './types';
 
-// Filter Zod Schemas
+// Filter TypeBox Schemas
 export {
   filterOperatorSchema,
   createFieldFilterSchema,
-  createFilterNodeSchema,
   createSortSchema,
   createQuerySchema,
 } from './schema';

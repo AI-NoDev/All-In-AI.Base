@@ -2,12 +2,11 @@
  * 更新工具组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { toolGroup } from '@qiyu-allinai/db/entities/ai';
-import { toolGroupZodSchemas } from './schemas';
-import type { ToolGroupSelect, ToolGroupInsert } from './utils';
+import { toolGroup, toolGroupSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ToolGroupSelect, ToolGroupInsert } from '@qiyu-allinai/db/entities/ai/toolGroup';
 
 export const toolGroupUpdate = defineAction({
   meta: {
@@ -33,9 +32,9 @@ export const toolGroupUpdate = defineAction({
     path: '/api/ai/tool-group/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: toolGroupZodSchemas.update }),
-    outputSchema: toolGroupZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: toolGroupSchemas.update }),
+    outputSchema: toolGroupSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,12 +2,11 @@
  * 根据ID查询字典
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dict } from '@qiyu-allinai/db/entities/system';
-import { dictZodSchemas } from './schemas';
-import type { DictSelect } from './utils';
+import { dict, dictSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictSelect } from '@qiyu-allinai/db/entities/system/dict';
 
 export const dictGetByPk = defineAction({
   meta: {
@@ -29,8 +28,8 @@ GET /api/system/dict/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/system/dict/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: dictZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([dictSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

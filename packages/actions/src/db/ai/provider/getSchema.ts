@@ -2,10 +2,10 @@
  * 获取AI提供商Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { providerZodSchemas } from './schemas';
+import { providerSchemas } from './schemas';
 
 export const providerGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ export const providerGetSchema = defineAction({
     path: '/api/ai/provider/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(providerZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(providerSchemas.select) as Record<string, unknown>;
   },
 });

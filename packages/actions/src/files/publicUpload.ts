@@ -3,7 +3,7 @@
  * 用于上传公开访问的文件（如头像），不需要签名URL
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../core/define';
 import { ActionError } from '../core/errors';
 import { uploadFile, s3Client, DEFAULT_BUCKET } from './s3Client';
@@ -77,16 +77,20 @@ export const publicUploadAvatar = defineAction({
     path: '/api/public/upload/avatar',
   },
   schemas: {
-    bodySchema: z.object({
-      category: z.enum(['agent-avatar', 'user-avatar', 'group-avatar']),
-      filename: z.string().min(1).max(255),
-      content: z.string(), // base64 encoded
-      mimeType: z.string(),
+    bodySchema: t.Object({
+      category: t.Union([
+        t.Literal('agent-avatar'),
+        t.Literal('user-avatar'),
+        t.Literal('group-avatar'),
+      ]),
+      filename: t.String({ minLength: 1, maxLength: 255 }),
+      content: t.String(), // base64 encoded
+      mimeType: t.String(),
     }),
-    outputSchema: z.object({
-      success: z.boolean(),
-      url: z.string(),
-      key: z.string(),
+    outputSchema: t.Object({
+      success: t.Boolean(),
+      url: t.String(),
+      key: t.String(),
     }),
   },
   execute: async (input, context) => {

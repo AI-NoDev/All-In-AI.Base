@@ -2,10 +2,10 @@
  * 直接上传（小文件）
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
-import { node, nodeZodSchemas, NODE_TYPES, type NodeSelect, type NodeInsert } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, NODE_TYPES, type NodeSelect, type NodeInsert } from '@qiyu-allinai/db/entities/knowledge';
 import { buildPath, buildMaterializedPath, parseFileName } from '../utils';
 import { uploadFile, generateStorageKey } from '../../files/s3Client';
 import { uploadDirectBodySchema } from './schemas';
@@ -52,15 +52,15 @@ export const uploadDirect = defineAction({
   },
   schemas: {
     bodySchema: uploadDirectBodySchema,
-    outputSchema: z.object({
-      success: z.boolean(),
-      node: nodeZodSchemas.select.optional(),
-      conflict: z.object({
-        nodeId: z.string(),
-        name: z.string(),
-        size: z.number(),
-        updatedAt: z.string(),
-      }).optional(),
+    outputSchema: t.Object({
+      success: t.Boolean(),
+      node: t.Optional(nodeSchemas.select),
+      conflict: t.Optional(t.Object({
+        nodeId: t.String(),
+        name: t.String(),
+        size: t.Number(),
+        updatedAt: t.String(),
+      })),
     }),
   },
   execute: async (input, context) => {

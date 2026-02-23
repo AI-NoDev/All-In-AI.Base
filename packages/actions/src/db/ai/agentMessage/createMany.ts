@@ -2,12 +2,11 @@
  * 批量创建Agent消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentMessage, agentSession } from '@qiyu-allinai/db/entities/ai';
-import { agentMessageZodSchemas } from './schemas';
-import type { AgentMessageSelect, AgentMessageInsert } from './utils';
+import { agentMessageSchemas, type AgentMessageSelect, type AgentMessageInsert } from './schemas';
 
 export const agentMessageCreateMany = defineAction({
   meta: {
@@ -44,11 +43,11 @@ export const agentMessageCreateMany = defineAction({
     path: '/api/ai/agent-message/batch',
   },
   schemas: {
-    bodySchema: z.object({
-      sessionId: z.string(),
-      messages: z.array(agentMessageZodSchemas.insert.omit({ sessionId: true, msgSeq: true })),
+    bodySchema: t.Object({
+      sessionId: t.String(),
+      messages: t.Array(t.Omit(agentMessageSchemas.insert, ['sessionId', 'msgSeq'])),
     }),
-    outputSchema: z.array(agentMessageZodSchemas.select),
+    outputSchema: t.Array(agentMessageSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -69,9 +68,10 @@ export const agentMessageCreateMany = defineAction({
     const results = await db.insert(agentMessage).values(messagesToInsert).returning();
 
     // Update session stats
-    const totalTokens = messages.reduce((sum, m) => sum + (m.tokenUsage?.totalTokens ?? 0), 0);
-    const promptTokens = messages.reduce((sum, m) => sum + (m.tokenUsage?.inputTokens ?? 0), 0);
-    const completionTokens = messages.reduce((sum, m) => sum + (m.tokenUsage?.outputTokens ?? 0), 0);
+    type TokenUsage = { totalTokens?: number; inputTokens?: number; outputTokens?: number };
+    const totalTokens = messages.reduce((sum, m) => sum + ((m.tokenUsage as TokenUsage)?.totalTokens ?? 0), 0);
+    const promptTokens = messages.reduce((sum, m) => sum + ((m.tokenUsage as TokenUsage)?.inputTokens ?? 0), 0);
+    const completionTokens = messages.reduce((sum, m) => sum + ((m.tokenUsage as TokenUsage)?.outputTokens ?? 0), 0);
     const lastMessage = results[results.length - 1];
 
     if (lastMessage) {

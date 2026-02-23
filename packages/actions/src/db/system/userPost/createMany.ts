@@ -2,11 +2,10 @@
  * 批量创建用户岗位关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { userPost } from '@qiyu-allinai/db/entities/system';
-import { userPostZodSchemas } from './schemas';
-import type { UserPostSelect, UserPostInsert } from './utils';
+import { userPost, userPostSchemas } from '@qiyu-allinai/db/entities/system';
+import type { UserPostSelect, UserPostInsert } from '@qiyu-allinai/db/entities/system/userPost';
 
 export const userPostCreateMany = defineAction({
   meta: {
@@ -39,8 +38,8 @@ export const userPostCreateMany = defineAction({
     path: '/api/system/user-post/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(userPostZodSchemas.insert) }),
-    outputSchema: z.array(userPostZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(userPostSchemas.insert) }),
+    outputSchema: t.Array(userPostSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

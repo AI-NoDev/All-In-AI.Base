@@ -2,10 +2,10 @@
  * 获取字典Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { dictZodSchemas } from './schemas';
+import { dictSchemas } from '@qiyu-allinai/db/entities/system';
 
 export const dictGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ export const dictGetSchema = defineAction({
     path: '/api/system/dict/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(dictZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(dictSchemas.select) as Record<string, unknown>;
   },
 });

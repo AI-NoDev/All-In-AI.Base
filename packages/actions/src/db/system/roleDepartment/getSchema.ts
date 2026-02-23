@@ -2,10 +2,10 @@
  * 获取角色部门关联Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { roleDepartmentZodSchemas } from './schemas';
+import { roleDepartmentSchemas } from '@qiyu-allinai/db/entities/system/roleDepartment';
 
 export const roleDepartmentGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ GET /api/system/role-department/schema`,
     path: '/api/system/role-department/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(roleDepartmentZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(roleDepartmentSchemas.select) as Record<string, unknown>;
   },
 });

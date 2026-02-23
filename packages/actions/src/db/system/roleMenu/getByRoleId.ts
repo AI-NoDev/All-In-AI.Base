@@ -2,7 +2,7 @@
  * 获取角色的菜单ID列表
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { roleMenu } from '@qiyu-allinai/db/entities/system';
@@ -36,8 +36,8 @@ GET /api/system/role-menu/role/550e8400-e29b-41d4-a716-446655440000
     path: '/api/system/role-menu/role/:roleId',
   },
   schemas: {
-    paramsSchema: z.object({ roleId: z.string() }),
-    outputSchema: z.array(z.string()),
+    paramsSchema: t.Object({ roleId: t.String() }),
+    outputSchema: t.Array(t.String()),
   },
   execute: async (input, context) => {
     const { db } = context;

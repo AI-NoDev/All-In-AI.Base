@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, text, bigint, integer, timestamp, char, jsonb, index } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -154,8 +154,12 @@ export const aiSessionMessage = pgTable(
 // ============ Config ============
 export const aiSessionMessageConfig = getFieldConfigs(aiSessionMessageFields);
 
-// ============ Schemas ============
-export const aiSessionMessageZodSchemas = createZodSchemas(aiSessionMessage, aiSessionMessageFields);
+// ============ Schemas (TypeBox) ============
+export const aiSessionMessageSchemas = createTypeboxSchemas(aiSessionMessage);
+
+// ============ Types ============
+export type AISessionMessageSelect = typeof aiSessionMessage.$inferSelect;
+export type AISessionMessageInsert = typeof aiSessionMessage.$inferInsert;
 
 // ============ Role Constants ============
 export const AI_SESSION_MESSAGE_ROLES = {

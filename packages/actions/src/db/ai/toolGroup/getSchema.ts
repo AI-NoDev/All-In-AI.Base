@@ -2,10 +2,10 @@
  * 获取工具组Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { toolGroupZodSchemas } from './schemas';
+import { toolGroupSchemas } from './schemas';
 
 export const toolGroupGetSchema = defineAction({
   meta: {
@@ -18,9 +18,9 @@ export const toolGroupGetSchema = defineAction({
     path: '/api/ai/tool-group/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(toolGroupZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(toolGroupSchemas.select) as Record<string, unknown>;
   },
 });

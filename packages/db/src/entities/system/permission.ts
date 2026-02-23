@@ -1,7 +1,7 @@
 import { pgTable, varchar, integer, boolean, uuid } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
@@ -89,7 +89,11 @@ export const permission = pgTable(permissionMeta.name, getTableFields(permission
 export const permissionConfig = getFieldConfigs(permissionFields);
 
 // ============ Schemas ============
-export const permissionZodSchemas = createZodSchemas(permission, permissionFields);
+export const permissionSchemas = createTypeboxSchemas(permission);
+
+// ============ Types ============
+export type PermissionSelect = typeof permission.$inferSelect;
+export type PermissionInsert = typeof permission.$inferInsert;
 
 // ============ 权限类型常量 ============
 export const PERMISSION_TYPES = {

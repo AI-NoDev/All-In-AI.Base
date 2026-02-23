@@ -2,12 +2,12 @@
  * 分页查询菜单
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, isNull, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { menu } from '@qiyu-allinai/db/entities/system';
-import { menuPaginationBodySchema, menuZodSchemas } from './schemas';
-import type { MenuSelect } from './utils';
+import { menu, menuSchemas } from '@qiyu-allinai/db/entities/system';
+import { menuPaginationBodySchema } from './schemas';
+import type { MenuSelect } from '@qiyu-allinai/db/entities/system/menu';
 
 export const menuGetByPagination = defineAction({
   meta: {
@@ -53,7 +53,7 @@ export const menuGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: menuPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(menuZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(menuSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

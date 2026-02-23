@@ -5,7 +5,7 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { ActionError } from '../../core/errors';
-import { node, nodeVersion, nodeZodSchemas, NODE_TYPES, type NodeSelect, type NodeInsert, type NodeVersionInsert } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeVersion, nodeSchemas, NODE_TYPES, type NodeSelect, type NodeInsert, type NodeVersionInsert } from '@qiyu-allinai/db/entities/knowledge';
 import { buildPath, buildMaterializedPath, assertNodePermission, parseFileName, generateUniqueName } from '../utils';
 import { uploadFile, generateStorageKey, DEFAULT_BUCKET } from '../../files/s3Client';
 import { uploadForceBodySchema } from './schemas';
@@ -52,7 +52,7 @@ export const uploadForce = defineAction({
   },
   schemas: {
     bodySchema: uploadForceBodySchema,
-    outputSchema: nodeZodSchemas.select,
+    outputSchema: nodeSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,12 +2,12 @@
  * 分页查询登录日志
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { loginInfo } from '@qiyu-allinai/db/entities/system';
-import { loginInfoPaginationBodySchema, loginInfoZodSchemas } from './schemas';
-import type { LoginInfoSelect } from './utils';
+import { loginInfo, loginInfoSchemas } from '@qiyu-allinai/db/entities/system';
+import { loginInfoPaginationBodySchema } from './schemas';
+import type { LoginInfoSelect } from '@qiyu-allinai/db/entities/system/loginInfo';
 
 export const loginInfoGetByPagination = defineAction({
   meta: {
@@ -53,7 +53,7 @@ export const loginInfoGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: loginInfoPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(loginInfoZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(loginInfoSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,10 +2,10 @@
  * 获取AI模型Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { modelZodSchemas } from './schemas';
+import { modelSchemas } from './schemas';
 
 export const modelGetSchema = defineAction({
   meta: {
@@ -25,9 +25,9 @@ export const modelGetSchema = defineAction({
     path: '/api/ai/model/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(modelZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(modelSchemas.select) as Record<string, unknown>;
   },
 });

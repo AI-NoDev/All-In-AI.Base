@@ -7,10 +7,6 @@ import type { DrizzleDB } from '../../../core/types';
 import { conversation } from '@qiyu-allinai/db/entities/im';
 import { user } from '@qiyu-allinai/db/entities/system';
 
-/** 会话类型定义 */
-export type ConversationSelect = typeof conversation.$inferSelect;
-export type ConversationInsert = typeof conversation.$inferInsert;
-
 /** 会话类型常量 */
 export const CONVERSATION_TYPE = {
   PRIVATE: '1',

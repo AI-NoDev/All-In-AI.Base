@@ -2,10 +2,10 @@
  * 更新用户记忆
  */
 
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { userMemory, userMemoryZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import { z } from 'zod';
+import { userMemory, userMemorySchemas } from '@qiyu-allinai/db/entities/ai';
 
 export const userMemoryUpdate = defineAction({
   meta: {
@@ -17,14 +17,14 @@ export const userMemoryUpdate = defineAction({
     path: '/api/ai/user-memory/:id',
   },
   schemas: {
-    paramsSchema: z.object({
-      id: z.string().describe('记忆ID'),
-    }).describe('路径参数'),
-    bodySchema: z.object({
-      data: userMemoryZodSchemas.update.describe('更新数据'),
-      regenerateEmbedding: z.boolean().default(false).describe('是否重新生成向量嵌入'),
-    }).describe('更新用户记忆请求体'),
-    outputSchema: userMemoryZodSchemas.select,
+    paramsSchema: t.Object({
+      id: t.String({ description: '记忆ID' }),
+    }, { description: '路径参数' }),
+    bodySchema: t.Object({
+      data: userMemorySchemas.update,
+      regenerateEmbedding: t.Boolean({ default: false, description: '是否重新生成向量嵌入' }),
+    }, { description: '更新用户记忆请求体' }),
+    outputSchema: userMemorySchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -6,10 +6,6 @@ import { eq, and } from 'drizzle-orm';
 import type { DrizzleDB } from '../../../core/types';
 import { message, groupMember } from '@qiyu-allinai/db/entities/im';
 
-/** 消息类型定义 */
-export type MessageSelect = typeof message.$inferSelect;
-export type MessageInsert = typeof message.$inferInsert;
-
 /**
  * 检查用户是否是会话成员
  */

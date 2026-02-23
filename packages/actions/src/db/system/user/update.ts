@@ -2,13 +2,24 @@
  * 更新用户
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { user, userZodSchemas, userRole, userPost } from '@qiyu-allinai/db/entities/system';
+import { user, userSchemas, userRole, userPost } from '@qiyu-allinai/db/entities/system';
 import { checkIsSystemAdmin, sanitizeUser, type UserSelect, type UserInsert } from './utils';
+
+// 更新用户的输入 schema
+const updateUserBodySchema = t.Object({
+  data: t.Composite([
+    userSchemas.update,
+    t.Object({
+      roleIds: t.Optional(t.Union([t.Array(t.String()), t.Null()])),
+      postIds: t.Optional(t.Union([t.Array(t.String()), t.Null()])),
+    }),
+  ]),
+});
 
 export const userUpdate = defineAction({
   meta: {
@@ -20,14 +31,9 @@ export const userUpdate = defineAction({
     path: '/api/system/user/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ 
-      data: userZodSchemas.update.extend({
-        roleIds: z.array(z.string()).nullable().optional(),
-        postIds: z.array(z.string()).nullable().optional(),
-      }),
-    }),
-    outputSchema: userZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: updateUserBodySchema,
+    outputSchema: userSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

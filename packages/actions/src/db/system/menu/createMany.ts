@@ -2,11 +2,10 @@
  * 批量创建菜单
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { menu } from '@qiyu-allinai/db/entities/system';
-import { menuZodSchemas } from './schemas';
-import type { MenuSelect, MenuInsert } from './utils';
+import { menu, menuSchemas } from '@qiyu-allinai/db/entities/system';
+import type { MenuSelect, MenuInsert } from '@qiyu-allinai/db/entities/system/menu';
 
 export const menuCreateMany = defineAction({
   meta: {
@@ -34,8 +33,8 @@ export const menuCreateMany = defineAction({
     path: '/api/system/menu/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(menuZodSchemas.insert) }),
-    outputSchema: z.array(menuZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(menuSchemas.insert) }),
+    outputSchema: t.Array(menuSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

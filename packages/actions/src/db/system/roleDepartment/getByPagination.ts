@@ -2,12 +2,12 @@
  * 分页查询角色部门关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { roleDepartment } from '@qiyu-allinai/db/entities/system';
-import { roleDepartmentPaginationBodySchema, roleDepartmentZodSchemas } from './schemas';
-import type { RoleDepartmentSelect } from './utils';
+import { roleDepartment, roleDepartmentSchemas } from '@qiyu-allinai/db/entities/system';
+import { roleDepartmentPaginationBodySchema } from './schemas';
+import type { RoleDepartmentSelect } from '@qiyu-allinai/db/entities/system/roleDepartment';
 
 export const roleDepartmentGetByPagination = defineAction({
   meta: {
@@ -50,7 +50,7 @@ export const roleDepartmentGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: roleDepartmentPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(roleDepartmentZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(roleDepartmentSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

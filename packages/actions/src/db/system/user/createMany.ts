@@ -2,10 +2,10 @@
  * 批量创建用户
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { user, userZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { user, userSchemas } from '@qiyu-allinai/db/entities/system';
 import { hashPassword, generateSalt, sanitizeUser, type UserSelect, type UserInsert } from './utils';
 
 export const userCreateMany = defineAction({
@@ -19,13 +19,13 @@ export const userCreateMany = defineAction({
     path: '/api/system/user/batch',
   },
   schemas: {
-    bodySchema: z.object({ 
-      data: z.array(z.object({
-        user: userZodSchemas.insert,
-        password: z.string().min(6).max(50),
+    bodySchema: t.Object({ 
+      data: t.Array(t.Object({
+        user: userSchemas.insert,
+        password: t.String({ minLength: 6, maxLength: 50 }),
       })),
     }),
-    outputSchema: z.array(userZodSchemas.select),
+    outputSchema: t.Array(userSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

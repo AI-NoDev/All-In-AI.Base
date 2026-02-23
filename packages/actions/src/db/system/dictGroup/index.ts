@@ -3,7 +3,6 @@
  */
 
 export * from './schemas';
-export * from './utils';
 export * from './getByPagination';
 export * from './getByPk';
 export * from './create';

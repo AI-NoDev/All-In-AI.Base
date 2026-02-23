@@ -2,10 +2,10 @@
  * 获取会话 Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { conversationZodSchemas } from '@qiyu-allinai/db/entities/im';
+import { conversationSchemas } from './schemas';
 
 export const conversationGetSchema = defineAction({
   meta: {
@@ -18,9 +18,9 @@ export const conversationGetSchema = defineAction({
     path: '/api/im/conversation/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(conversationZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(conversationSchemas.select) as Record<string, unknown>;
   },
 });

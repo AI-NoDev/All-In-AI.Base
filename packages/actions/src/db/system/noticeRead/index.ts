@@ -3,7 +3,6 @@
  */
 
 export * from './schemas';
-export * from './utils';
 export * from './markAsRead';
 export * from './markManyAsRead';
 export * from './getUnreadCount';

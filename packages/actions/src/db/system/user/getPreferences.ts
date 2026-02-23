@@ -2,23 +2,26 @@
  * 获取用户偏好设置
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { user } from '@qiyu-allinai/db/entities/system';
 
 // 偏好设置 Schema
-const preferencesSchema = z.object({
-  theme: z.enum(['light', 'dark']).optional(),
-  themeColor: z.enum(['slate', 'zinc', 'neutral', 'stone', 'blue', 'green', 'violet', 'orange', 'rose']).optional(),
-  language: z.enum(['zh-CN', 'en']).optional(),
-  fontSize: z.number().min(10).max(24).optional(),
-  radius: z.number().min(0).max(2).optional(),
-  defaultTextModelId: z.string().nullable().optional(),
-  defaultImageModelId: z.string().nullable().optional(),
-  defaultObjectModelId: z.string().nullable().optional(),
-}).passthrough();
+const preferencesSchema = t.Object({
+  theme: t.Optional(t.Union([t.Literal('light'), t.Literal('dark')])),
+  themeColor: t.Optional(t.Union([
+    t.Literal('slate'), t.Literal('zinc'), t.Literal('neutral'), t.Literal('stone'),
+    t.Literal('blue'), t.Literal('green'), t.Literal('violet'), t.Literal('orange'), t.Literal('rose'),
+  ])),
+  language: t.Optional(t.Union([t.Literal('zh-CN'), t.Literal('en')])),
+  fontSize: t.Optional(t.Number({ minimum: 10, maximum: 24 })),
+  radius: t.Optional(t.Number({ minimum: 0, maximum: 2 })),
+  defaultTextModelId: t.Optional(t.Union([t.String(), t.Null()])),
+  defaultImageModelId: t.Optional(t.Union([t.String(), t.Null()])),
+  defaultObjectModelId: t.Optional(t.Union([t.String(), t.Null()])),
+}, { additionalProperties: true });
 
 export const userGetPreferences = defineAction({
   meta: {
@@ -30,8 +33,8 @@ export const userGetPreferences = defineAction({
     path: '/api/system/user/preferences',
   },
   schemas: {
-    outputSchema: z.object({
-      preferences: preferencesSchema.nullable(),
+    outputSchema: t.Object({
+      preferences: t.Union([preferencesSchema, t.Null()]),
     }),
   },
   execute: async (_input, context) => {

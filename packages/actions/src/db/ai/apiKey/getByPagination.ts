@@ -2,11 +2,11 @@
  * 分页查询API密钥
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, and, asc, desc, inArray, like } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { apiKey, apiKeyMcp } from '@qiyu-allinai/db/entities/ai';
-import { paginationBodySchema, apiKeyWithMcpsSchema } from './schemas';
+import { apiKey, apiKeyMcp, apiKeySchemas } from '@qiyu-allinai/db/entities/ai';
+import { apiKeyPaginationBodySchema } from './schemas';
 
 export const apiKeyGetByPagination = defineAction({
   meta: {
@@ -18,8 +18,17 @@ export const apiKeyGetByPagination = defineAction({
     path: '/api/ai/api-key/query',
   },
   schemas: {
-    bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(apiKeyWithMcpsSchema), total: z.number() }),
+    bodySchema: apiKeyPaginationBodySchema,
+    outputSchema: t.Object({ 
+      data: t.Array(t.Intersect([
+        apiKeySchemas.select,
+        t.Object({
+          accessAll: t.Boolean(),
+          mcpServerIds: t.Array(t.String()),
+        })
+      ])), 
+      total: t.Number() 
+    }),
   },
   execute: async (input, context) => {
     const { db } = context;

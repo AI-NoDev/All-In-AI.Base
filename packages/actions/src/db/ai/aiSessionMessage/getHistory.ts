@@ -2,12 +2,11 @@
  * 获取会话历史
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, lte, desc } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { aiSessionMessage } from '@qiyu-allinai/db/entities/ai';
-import { aiSessionMessageZodSchemas } from './schemas';
-import type { AISessionMessageSelect } from './utils';
+import { aiSessionMessageSchemas, type AISessionMessageSelect } from './schemas';
 
 export const aiSessionMessageGetHistory = defineAction({
   meta: {
@@ -39,12 +38,12 @@ GET /api/ai/session-message/history/session-uuid?limit=20&beforeSeq=100
     path: '/api/ai/session-message/history/:sessionId',
   },
   schemas: {
-    paramsSchema: z.object({ sessionId: z.string() }),
-    querySchema: z.object({
-      limit: z.coerce.number().int().min(1).max(200).default(50),
-      beforeSeq: z.coerce.number().int().optional(),
-    }).optional(),
-    outputSchema: z.array(aiSessionMessageZodSchemas.select),
+    paramsSchema: t.Object({ sessionId: t.String() }),
+    querySchema: t.Optional(t.Object({
+      limit: t.Number({ minimum: 1, maximum: 200, default: 50 }),
+      beforeSeq: t.Optional(t.Number()),
+    })),
+    outputSchema: t.Array(aiSessionMessageSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

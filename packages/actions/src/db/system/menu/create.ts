@@ -2,11 +2,10 @@
  * 创建菜单
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { menu } from '@qiyu-allinai/db/entities/system';
-import { menuZodSchemas } from './schemas';
-import type { MenuSelect, MenuInsert } from './utils';
+import { menu, menuSchemas } from '@qiyu-allinai/db/entities/system';
+import type { MenuSelect, MenuInsert } from '@qiyu-allinai/db/entities/system/menu';
 
 export const menuCreate = defineAction({
   meta: {
@@ -57,8 +56,8 @@ export const menuCreate = defineAction({
     path: '/api/system/menu',
   },
   schemas: {
-    bodySchema: z.object({ data: menuZodSchemas.insert }),
-    outputSchema: menuZodSchemas.select,
+    bodySchema: t.Object({ data: menuSchemas.insert }),
+    outputSchema: menuSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

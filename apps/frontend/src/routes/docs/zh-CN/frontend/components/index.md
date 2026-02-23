@@ -344,19 +344,22 @@ bunx shadcn-svelte@latest add dialog
 
 ## 表单验证
 
-使用 Zod 进行表单验证：
+使用 TypeBox（Elysia 的 `t`）进行表单验证：
 
 ```svelte
 <script lang="ts">
-  import { z } from 'zod';
+  import { t, type Static } from 'elysia';
+  import { Value } from '@sinclair/typebox/value';
   
-  const formSchema = z.object({
-    name: z.string().min(1, '名称不能为空').max(50, '名称最多50个字符'),
-    code: z.string().min(1, '编码不能为空').regex(/^[A-Z_]+$/, '编码只能包含大写字母和下划线'),
-    sort: z.number().min(0, '排序不能为负数'),
+  const formSchema = t.Object({
+    name: t.String({ minLength: 1, maxLength: 50, error: '名称不能为空（最多50个字符）' }),
+    code: t.String({ minLength: 1, pattern: '^[A-Z_]+$', error: '编码只能包含大写字母和下划线' }),
+    sort: t.Number({ minimum: 0, error: '排序不能为负数' }),
   });
   
-  let form = $state({
+  type FormData = Static<typeof formSchema>;
+  
+  let form = $state<FormData>({
     name: '',
     code: '',
     sort: 0,
@@ -365,11 +368,13 @@ bunx shadcn-svelte@latest add dialog
   let errors = $state<Record<string, string>>({});
   
   function validate() {
-    const result = formSchema.safeParse(form);
-    if (!result.success) {
+    const result = Value.Check(formSchema, form);
+    if (!result) {
       errors = {};
-      result.error.errors.forEach(err => {
-        errors[err.path[0] as string] = err.message;
+      const errs = [...Value.Errors(formSchema, form)];
+      errs.forEach(err => {
+        const path = err.path.replace('/', '');
+        errors[path] = err.message;
       });
       return false;
     }

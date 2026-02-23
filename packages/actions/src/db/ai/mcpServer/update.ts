@@ -2,12 +2,11 @@
  * 更新MCP服务
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { mcpServer } from '@qiyu-allinai/db/entities/ai';
-import { mcpServerZodSchemas } from './schemas';
-import type { McpServerSelect, McpServerInsert } from './utils';
+import { mcpServer, mcpServerSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { McpServerSelect, McpServerInsert } from '@qiyu-allinai/db/entities/ai/mcpServer';
 
 export const mcpServerUpdate = defineAction({
   meta: {
@@ -40,9 +39,9 @@ PUT /api/ai/mcp-server/xxx-uuid
     path: '/api/ai/mcp-server/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: mcpServerZodSchemas.update }),
-    outputSchema: mcpServerZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: mcpServerSchemas.update }),
+    outputSchema: mcpServerSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

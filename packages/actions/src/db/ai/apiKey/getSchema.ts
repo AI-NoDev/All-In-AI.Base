@@ -2,10 +2,10 @@
  * 获取API密钥Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { apiKeyZodSchemas } from './schemas';
+import { apiKeySchemas } from './schemas';
 
 export const apiKeyGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ export const apiKeyGetSchema = defineAction({
     path: '/api/ai/api-key/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(apiKeyZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(apiKeySchemas.select) as Record<string, unknown>;
   },
 });

@@ -2,12 +2,12 @@
  * 分页查询字典
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dict } from '@qiyu-allinai/db/entities/system';
-import { dictPaginationBodySchema, dictZodSchemas } from './schemas';
-import type { DictSelect } from './utils';
+import { dict, dictSchemas } from '@qiyu-allinai/db/entities/system';
+import { dictPaginationBodySchema } from './schemas';
+import type { DictSelect } from '@qiyu-allinai/db/entities/system/dict';
 
 export const dictGetByPagination = defineAction({
   meta: {
@@ -46,7 +46,7 @@ export const dictGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: dictPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(dictZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(dictSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

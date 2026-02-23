@@ -2,12 +2,11 @@
  * 根据Key查询字典组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dictGroup } from '@qiyu-allinai/db/entities/system';
-import { dictGroupZodSchemas } from './schemas';
-import type { DictGroupSelect } from './utils';
+import { dictGroup, dictGroupSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictGroupSelect } from '@qiyu-allinai/db/entities/system/dictGroup';
 
 export const dictGroupGetByPk = defineAction({
   meta: {
@@ -20,22 +19,14 @@ export const dictGroupGetByPk = defineAction({
 
 **返回值：**
 - 成功：返回字典组完整信息（key, name, status, remark等）
-- 未找到：返回 null
-
-**使用场景：**
-1. 查看字典组详情
-2. 编辑字典组前获取当前数据
-3. 验证字典组是否存在
-
-**示例：**
-GET /api/system/dict-group/sys_user_sex`,
+- 未找到：返回 null`,
     tags: ['system', 'dictGroup'],
     method: 'GET',
     path: '/api/system/dict-group/:key',
   },
   schemas: {
-    paramsSchema: z.object({ key: z.string().min(1).max(100) }),
-    outputSchema: dictGroupZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ key: t.String({ minLength: 1, maxLength: 100 }) }),
+    outputSchema: t.Union([dictGroupSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,37 +2,39 @@
  * 获取当前用户的通知列表
  */
 
-import { z } from 'zod';
-import { eq, and, sql, desc, asc, or, arrayContains, inArray } from 'drizzle-orm';
+import { t } from 'elysia';
+import { eq, and, desc, asc, or, arrayContains } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { notice, noticeRead, NOTICE_STATUS, NOTICE_TARGET_TYPE } from '@qiyu-allinai/db/entities/system';
-import { noticeZodSchemas } from './schemas';
+import { notice, noticeRead, noticeTypeboxSchemas, NOTICE_STATUS, NOTICE_TARGET_TYPE } from '@qiyu-allinai/db/entities/system';
 
 /** 我的通知过滤条件 Schema */
-const myNoticesFilterSchema = z.object({
-  type: z.string().optional().describe('类型：1=通知，2=公告'),
-  isRead: z.boolean().optional().describe('是否已读'),
-}).optional();
+const myNoticesFilterSchema = t.Optional(t.Object({
+  type: t.Optional(t.String({ description: '类型：1=通知，2=公告' })),
+  isRead: t.Optional(t.Boolean({ description: '是否已读' })),
+}));
 
 /** 我的通知排序 Schema */
-const myNoticesSortSchema = z.object({
-  field: z.enum(['publishedAt', 'createdAt']).describe('排序字段'),
-  order: z.enum(['asc', 'desc']).describe('排序方向'),
-}).optional();
+const myNoticesSortSchema = t.Optional(t.Object({
+  field: t.Union([t.Literal('publishedAt'), t.Literal('createdAt')], { description: '排序字段' }),
+  order: t.Union([t.Literal('asc'), t.Literal('desc')], { description: '排序方向' }),
+}));
 
 /** 我的通知请求体 Schema */
-const myNoticesBodySchema = z.object({
+const myNoticesBodySchema = t.Object({
   filter: myNoticesFilterSchema,
   sort: myNoticesSortSchema,
-  offset: z.number().int().min(0).default(0).describe('偏移量'),
-  limit: z.number().int().min(1).max(100).default(20).describe('每页数量'),
+  offset: t.Number({ minimum: 0, default: 0, description: '偏移量' }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 20, description: '每页数量' }),
 });
 
 /** 通知列表项（包含已读状态） */
-const noticeWithReadSchema = noticeZodSchemas.select.extend({
-  isRead: z.boolean().describe('是否已读'),
-  readAt: z.string().nullable().describe('阅读时间'),
-});
+const noticeWithReadSchema = t.Intersect([
+  noticeTypeboxSchemas.select,
+  t.Object({
+    isRead: t.Boolean({ description: '是否已读' }),
+    readAt: t.Union([t.String(), t.Null()], { description: '阅读时间' }),
+  }),
+]);
 
 export const noticeGetMyNotices = defineAction({
   meta: {
@@ -56,9 +58,9 @@ export const noticeGetMyNotices = defineAction({
   },
   schemas: {
     bodySchema: myNoticesBodySchema,
-    outputSchema: z.object({ 
-      data: z.array(noticeWithReadSchema), 
-      total: z.number() 
+    outputSchema: t.Object({ 
+      data: t.Array(noticeWithReadSchema), 
+      total: t.Number() 
     }),
   },
   execute: async (input, context) => {

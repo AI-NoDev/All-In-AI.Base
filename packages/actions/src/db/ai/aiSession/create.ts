@@ -2,11 +2,10 @@
  * 创建AI会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { aiSession } from '@qiyu-allinai/db/entities/ai';
-import { aiSessionZodSchemas } from './schemas';
-import type { AISessionSelect, AISessionInsert } from './utils';
+import { aiSessionSchemas, type AISessionSelect, type AISessionInsert } from './schemas';
 
 export const aiSessionCreate = defineAction({
   meta: {
@@ -42,8 +41,8 @@ export const aiSessionCreate = defineAction({
     path: '/api/ai/session',
   },
   schemas: {
-    bodySchema: z.object({ data: aiSessionZodSchemas.insert }),
-    outputSchema: aiSessionZodSchemas.select,
+    bodySchema: t.Object({ data: aiSessionSchemas.insert }),
+    outputSchema: aiSessionSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

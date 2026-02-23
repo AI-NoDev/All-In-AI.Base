@@ -2,11 +2,23 @@
  * 创建API密钥
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { apiKey, apiKeyMcp, mcpServer } from '@qiyu-allinai/db/entities/ai';
-import { generateToken, type ApiKeyInsert } from './utils';
+import type { ApiKeyInsert } from '@qiyu-allinai/db/entities/ai/apiKey';
+
+/**
+ * 生成安全的随机 API Token
+ */
+function generateToken(): { token: string; hash: string; prefix: string } {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const token = 'sk_' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  const prefix = token.slice(0, 10) + '...';
+  const hash = Bun.hash(token).toString(16);
+  return { token, hash, prefix };
+}
 
 export const apiKeyCreate = defineAction({
   meta: {
@@ -18,19 +30,19 @@ export const apiKeyCreate = defineAction({
     path: '/api/ai/api-key',
   },
   schemas: {
-    bodySchema: z.object({ 
-      data: z.object({
-        name: z.string(),
-        accessAll: z.boolean().default(true),
-        mcpServerIds: z.array(z.string()).optional().default([]),
-        expiresAt: z.string().optional(),
-        remark: z.string().optional(),
+    bodySchema: t.Object({ 
+      data: t.Object({
+        name: t.String(),
+        accessAll: t.Boolean({ default: true }),
+        mcpServerIds: t.Optional(t.Array(t.String(), { default: [] })),
+        expiresAt: t.Optional(t.String()),
+        remark: t.Optional(t.String()),
       })
     }),
-    outputSchema: z.object({
-      id: z.string(),
-      token: z.string(),
-      tokenPrefix: z.string(),
+    outputSchema: t.Object({
+      id: t.String(),
+      token: t.String(),
+      tokenPrefix: t.String(),
     }),
   },
   execute: async (input, context) => {

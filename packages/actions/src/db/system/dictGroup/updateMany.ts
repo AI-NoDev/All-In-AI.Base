@@ -2,12 +2,11 @@
  * 批量更新字典组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dictGroup } from '@qiyu-allinai/db/entities/system';
-import { dictGroupZodSchemas } from './schemas';
-import type { DictGroupSelect, DictGroupInsert } from './utils';
+import { dictGroup, dictGroupSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictGroupSelect, DictGroupInsert } from '@qiyu-allinai/db/entities/system/dictGroup';
 
 export const dictGroupUpdateMany = defineAction({
   meta: {
@@ -18,29 +17,14 @@ export const dictGroupUpdateMany = defineAction({
 
 **参数说明：**
 - keys: 要更新的字典组键数组
-- data: 更新的字段数据
-
-**使用场景：**
-1. 批量启用/禁用字典组
-2. 批量添加备注
-
-**示例：**
-\`\`\`json
-{
-  "keys": ["sys_user_sex", "sys_normal_disable"],
-  "data": {
-    "status": "1",
-    "remark": "已停用"
-  }
-}
-\`\`\``,
+- data: 更新的字段数据`,
     tags: ['system', 'dictGroup'],
     method: 'PUT',
     path: '/api/system/dict-group/batch',
   },
   schemas: {
-    bodySchema: z.object({ keys: z.array(z.string().min(1).max(100)), data: dictGroupZodSchemas.update }),
-    outputSchema: z.array(dictGroupZodSchemas.select),
+    bodySchema: t.Object({ keys: t.Array(t.String({ minLength: 1, maxLength: 100 })), data: dictGroupSchemas.update }),
+    outputSchema: t.Array(dictGroupSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

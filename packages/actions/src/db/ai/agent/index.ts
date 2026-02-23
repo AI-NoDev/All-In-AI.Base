@@ -12,8 +12,7 @@ export { agentUpdateMany } from './updateMany';
 export { agentDeleteByPk } from './deleteByPk';
 export { agentGetSchema } from './getSchema';
 
-// 导出工具函数和类型
-export * from './utils';
+// 导出类型和 schemas
 export * from './schemas';
 
 // 导入所有 actions 用于注册

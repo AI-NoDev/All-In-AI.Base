@@ -2,10 +2,10 @@
  * 根据ID查询用户记忆
  */
 
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { userMemory, userMemoryZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import { z } from 'zod';
+import { userMemory, userMemorySchemas } from '@qiyu-allinai/db/entities/ai';
 
 export const userMemoryGetByPk = defineAction({
   meta: {
@@ -17,10 +17,10 @@ export const userMemoryGetByPk = defineAction({
     path: '/api/ai/user-memory/:id',
   },
   schemas: {
-    paramsSchema: z.object({
-      id: z.string().describe('记忆ID'),
-    }).describe('路径参数'),
-    outputSchema: userMemoryZodSchemas.select.nullable(),
+    paramsSchema: t.Object({
+      id: t.String({ description: '记忆ID' }),
+    }, { description: '路径参数' }),
+    outputSchema: t.Union([userMemorySchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

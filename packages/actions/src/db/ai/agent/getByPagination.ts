@@ -2,13 +2,12 @@
  * 分页查询智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { isSystemAdmin } from '../../../core/deptPermission';
-import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import { paginationBodySchema } from './schemas';
-import type { AgentSelect } from './utils';
+import { agent } from '@qiyu-allinai/db/entities/ai';
+import { agentSchemas, agentPaginationBodySchema, type AgentSelect } from './schemas';
 
 export const agentGetByPagination = defineAction({
   meta: {
@@ -20,8 +19,8 @@ export const agentGetByPagination = defineAction({
     path: '/api/ai/agent/query',
   },
   schemas: {
-    bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(agentZodSchemas.select), total: z.number() }),
+    bodySchema: agentPaginationBodySchema,
+    outputSchema: t.Object({ data: t.Array(agentSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db, currentUserId, currentUserType } = context;

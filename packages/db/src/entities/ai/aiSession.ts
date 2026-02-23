@@ -1,7 +1,7 @@
 import { pgTable, uuid, varchar, text, integer, timestamp, boolean, char, jsonb, index } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -126,5 +126,9 @@ export const aiSession = pgTable(
 // ============ Config ============
 export const aiSessionConfig = getFieldConfigs(aiSessionFields);
 
-// ============ Schemas ============
-export const aiSessionZodSchemas = createZodSchemas(aiSession, aiSessionFields);
+// ============ Schemas (TypeBox) ============
+export const aiSessionSchemas = createTypeboxSchemas(aiSession);
+
+// ============ Types ============
+export type AISessionSelect = typeof aiSession.$inferSelect;
+export type AISessionInsert = typeof aiSession.$inferInsert;

@@ -2,11 +2,10 @@
  * 批量创建字典组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { dictGroup } from '@qiyu-allinai/db/entities/system';
-import { dictGroupZodSchemas } from './schemas';
-import type { DictGroupSelect, DictGroupInsert } from './utils';
+import { dictGroup, dictGroupSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictGroupSelect, DictGroupInsert } from '@qiyu-allinai/db/entities/system/dictGroup';
 
 export const dictGroupCreateMany = defineAction({
   meta: {
@@ -16,29 +15,14 @@ export const dictGroupCreateMany = defineAction({
     description: `批量创建多个字典组记录。
 
 **参数说明：**
-- data: 字典组数组，每个元素包含 key、name 等字段
-
-**使用场景：**
-1. 系统初始化时批量创建默认字典组
-2. 导入字典配置
-
-**示例：**
-\`\`\`json
-{
-  "data": [
-    { "key": "sys_user_sex", "name": "用户性别" },
-    { "key": "sys_normal_disable", "name": "状态" },
-    { "key": "sys_yes_no", "name": "是否" }
-  ]
-}
-\`\`\``,
+- data: 字典组数组，每个元素包含 key、name 等字段`,
     tags: ['system', 'dictGroup'],
     method: 'POST',
     path: '/api/system/dict-group/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(dictGroupZodSchemas.insert) }),
-    outputSchema: z.array(dictGroupZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(dictGroupSchemas.insert) }),
+    outputSchema: t.Array(dictGroupSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

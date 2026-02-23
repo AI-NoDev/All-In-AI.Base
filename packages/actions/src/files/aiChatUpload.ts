@@ -3,7 +3,7 @@
  * 上传文件到 MinIO，返回可访问的 URL
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../core/define';
 import { uploadFile, getPresignedDownloadUrl, DEFAULT_BUCKET } from './s3Client';
 
@@ -46,16 +46,16 @@ export const aiChatUploadAttachment = defineAction({
     path: '/api/files/ai-chat/upload',
   },
   schemas: {
-    bodySchema: z.object({
-      filename: z.string().min(1).max(255),
-      content: z.string(), // base64 编码的文件内容
-      mimeType: z.string(),
+    bodySchema: t.Object({
+      filename: t.String({ minLength: 1, maxLength: 255 }),
+      content: t.String(), // base64 编码的文件内容
+      mimeType: t.String(),
     }),
-    outputSchema: z.object({
-      url: z.string(),
-      storageKey: z.string(),
-      mimeType: z.string(),
-      size: z.number(),
+    outputSchema: t.Object({
+      url: t.String(),
+      storageKey: t.String(),
+      mimeType: t.String(),
+      size: t.Number(),
     }),
   },
   execute: async (input, context) => {
@@ -108,12 +108,12 @@ export const aiChatGetAttachmentUrl = defineAction({
     path: '/api/files/ai-chat/get-url',
   },
   schemas: {
-    bodySchema: z.object({
-      storageKey: z.string(),
+    bodySchema: t.Object({
+      storageKey: t.String(),
     }),
-    outputSchema: z.object({
-      url: z.string(),
-      expiresAt: z.string(),
+    outputSchema: t.Object({
+      url: t.String(),
+      expiresAt: t.String(),
     }),
   },
   execute: async (input) => {

@@ -2,14 +2,13 @@
  * 批量更新角色
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { role } from '@qiyu-allinai/db/entities/system';
-import { roleZodSchemas } from './schemas';
+import { role, roleSchemas } from '@qiyu-allinai/db/entities/system';
 import { checkIsAdminRole } from './utils';
-import type { RoleSelect, RoleInsert } from './utils';
+import type { RoleSelect, RoleInsert } from '@qiyu-allinai/db/entities/system/role';
 
 export const roleUpdateMany = defineAction({
   meta: {
@@ -39,8 +38,8 @@ export const roleUpdateMany = defineAction({
     path: '/api/system/role/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: roleZodSchemas.update }),
-    outputSchema: z.array(roleZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: roleSchemas.update }),
+    outputSchema: t.Array(roleSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

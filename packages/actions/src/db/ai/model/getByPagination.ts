@@ -2,12 +2,12 @@
  * 分页查询AI模型
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { model } from '@qiyu-allinai/db/entities/ai';
-import { modelPaginationBodySchema, modelZodSchemas } from './schemas';
-import type { ModelSelect } from './utils';
+import { model, modelSchemas } from '@qiyu-allinai/db/entities/ai';
+import { modelPaginationBodySchema } from './schemas';
+import type { ModelSelect } from '@qiyu-allinai/db/entities/ai/model';
 
 export const modelGetByPagination = defineAction({
   meta: {
@@ -49,7 +49,7 @@ export const modelGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: modelPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(modelZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(modelSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

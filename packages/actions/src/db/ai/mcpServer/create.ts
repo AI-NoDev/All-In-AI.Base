@@ -2,11 +2,10 @@
  * 创建MCP服务
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { mcpServer } from '@qiyu-allinai/db/entities/ai';
-import { mcpServerZodSchemas } from './schemas';
-import type { McpServerSelect, McpServerInsert } from './utils';
+import { mcpServer, mcpServerSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { McpServerSelect, McpServerInsert } from '@qiyu-allinai/db/entities/ai/mcpServer';
 
 export const mcpServerCreate = defineAction({
   meta: {
@@ -39,8 +38,8 @@ export const mcpServerCreate = defineAction({
     path: '/api/ai/mcp-server',
   },
   schemas: {
-    bodySchema: z.object({ data: mcpServerZodSchemas.insert }),
-    outputSchema: mcpServerZodSchemas.select,
+    bodySchema: t.Object({ data: mcpServerSchemas.insert }),
+    outputSchema: mcpServerSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

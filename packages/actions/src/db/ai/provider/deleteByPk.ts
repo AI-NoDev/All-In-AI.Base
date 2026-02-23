@@ -2,7 +2,7 @@
  * 删除AI提供商
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { provider } from '@qiyu-allinai/db/entities/ai';
@@ -32,8 +32,8 @@ DELETE /api/ai/provider/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/provider/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, bigint, timestamp, char, jsonb, index } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -127,4 +127,8 @@ export const tempFile = pgTable(
 export const tempFileConfig = getFieldConfigs(tempFileFields);
 
 // ============ Schemas ============
-export const tempFileZodSchemas = createZodSchemas(tempFile, tempFileFields);
+export const tempFileSchemas = createTypeboxSchemas(tempFile);
+
+// ============ Types ============
+export type TempFileSelect = typeof tempFile.$inferSelect;
+export type TempFileInsert = typeof tempFile.$inferInsert;

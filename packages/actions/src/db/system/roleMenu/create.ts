@@ -2,11 +2,10 @@
  * 创建角色菜单关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { roleMenu } from '@qiyu-allinai/db/entities/system';
-import { roleMenuZodSchemas } from './schemas';
-import type { RoleMenuSelect, RoleMenuInsert } from './utils';
+import { roleMenu, roleMenuSchemas } from '@qiyu-allinai/db/entities/system';
+import type { RoleMenuSelect, RoleMenuInsert } from '@qiyu-allinai/db/entities/system/roleMenu';
 
 export const roleMenuCreate = defineAction({
   meta: {
@@ -37,8 +36,8 @@ export const roleMenuCreate = defineAction({
     path: '/api/system/role-menu',
   },
   schemas: {
-    bodySchema: z.object({ data: roleMenuZodSchemas.insert }),
-    outputSchema: roleMenuZodSchemas.select,
+    bodySchema: t.Object({ data: roleMenuSchemas.insert }),
+    outputSchema: roleMenuSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

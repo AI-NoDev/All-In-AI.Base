@@ -1,49 +1,47 @@
 /**
- * 用户模块 Schema 定义
+ * 用户模块 Schema 定义 (TypeBox)
  */
 
-import { z } from 'zod';
-
-// 空字符串转 undefined
-const emptyToUndefined = (val: unknown) => (val === '' || val === null ? undefined : val);
-const emptyArrayToUndefined = (val: unknown) => {
-  if (!Array.isArray(val)) return val;
-  if (val.length === 0 || (val.length === 1 && val[0] === '')) return undefined;
-  return val;
-};
+import { t } from 'elysia';
 
 /** 用户过滤条件 Schema */
-export const userFilterSchema = z.object({
+export const userFilterSchema = t.Optional(t.Object({
   // IN 查询
-  ids: z.preprocess(emptyArrayToUndefined, z.array(z.string().describe('用户 ID')).optional()).describe('用户 ID 列表，批量查询'),
-  loginNames: z.preprocess(emptyArrayToUndefined, z.array(z.string().describe('登录名')).optional()).describe('登录名列表，批量查询'),
+  ids: t.Optional(t.Array(t.String({ description: '用户 ID' }), { description: '用户 ID 列表，批量查询' })),
+  loginNames: t.Optional(t.Array(t.String({ description: '登录名' }), { description: '登录名列表，批量查询' })),
   // 精确匹配
-  deptId: z.preprocess(emptyToUndefined, z.string().optional()).describe('部门 ID'),
-  userType: z.preprocess(emptyToUndefined, z.string().optional()).describe('用户类型：00=系统管理员，01=普通用户'),
-  sex: z.preprocess(emptyToUndefined, z.string().optional()).describe('性别：0=男，1=女，2=未知'),
-  status: z.preprocess(emptyToUndefined, z.string().optional()).describe('状态：0=正常，1=禁用'),
+  deptId: t.Optional(t.String({ description: '部门 ID' })),
+  userType: t.Optional(t.String({ description: '用户类型：00=系统管理员，01=普通用户' })),
+  sex: t.Optional(t.String({ description: '性别：0=男，1=女，2=未知' })),
+  status: t.Optional(t.String({ description: '状态：0=正常，1=禁用' })),
   // 模糊匹配
-  loginName: z.preprocess(emptyToUndefined, z.string().optional()).describe('登录名（模糊匹配）'),
-  name: z.preprocess(emptyToUndefined, z.string().optional()).describe('用户名（模糊匹配）'),
-  email: z.preprocess(emptyToUndefined, z.string().optional()).describe('邮箱（模糊匹配）'),
-  phonenumber: z.preprocess(emptyToUndefined, z.string().optional()).describe('手机号（模糊匹配）'),
+  loginName: t.Optional(t.String({ description: '登录名（模糊匹配）' })),
+  name: t.Optional(t.String({ description: '用户名（模糊匹配）' })),
+  email: t.Optional(t.String({ description: '邮箱（模糊匹配）' })),
+  phonenumber: t.Optional(t.String({ description: '手机号（模糊匹配）' })),
   // 时间范围
-  createdAtStart: z.preprocess(emptyToUndefined, z.iso.datetime().optional()).describe('创建时间起始'),
-  createdAtEnd: z.preprocess(emptyToUndefined, z.iso.datetime().optional()).describe('创建时间结束'),
-  loginDateStart: z.preprocess(emptyToUndefined, z.iso.datetime().optional()).describe('最后登录时间起始'),
-  loginDateEnd: z.preprocess(emptyToUndefined, z.iso.datetime().optional()).describe('最后登录时间结束'),
-}).optional().describe('过滤条件');
+  createdAtStart: t.Optional(t.String({ format: 'date-time', description: '创建时间起始' })),
+  createdAtEnd: t.Optional(t.String({ format: 'date-time', description: '创建时间结束' })),
+  loginDateStart: t.Optional(t.String({ format: 'date-time', description: '最后登录时间起始' })),
+  loginDateEnd: t.Optional(t.String({ format: 'date-time', description: '最后登录时间结束' })),
+}, { description: '过滤条件' }));
 
 /** 排序 Schema */
-export const sortSchema = z.object({
-  field: z.enum(['loginName', 'name', 'createdAt', 'updatedAt', 'loginDate']).describe('排序字段'),
-  order: z.enum(['asc', 'desc']).describe('排序方向'),
-}).optional().describe('排序配置');
+export const sortSchema = t.Optional(t.Object({
+  field: t.Union([
+    t.Literal('loginName'),
+    t.Literal('name'),
+    t.Literal('createdAt'),
+    t.Literal('updatedAt'),
+    t.Literal('loginDate'),
+  ], { description: '排序字段' }),
+  order: t.Union([t.Literal('asc'), t.Literal('desc')], { description: '排序方向' }),
+}, { description: '排序配置' }));
 
 /** 分页查询 Body Schema */
-export const paginationBodySchema = z.object({
+export const paginationBodySchema = t.Object({
   filter: userFilterSchema,
   sort: sortSchema,
-  offset: z.number().int().min(0).default(0).describe('偏移量'),
-  limit: z.number().int().min(1).max(100).default(20).describe('每页数量'),
+  offset: t.Number({ minimum: 0, default: 0, description: '偏移量' }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 20, description: '每页数量' }),
 });

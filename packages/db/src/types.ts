@@ -7,13 +7,13 @@ export {
   getTableFields, 
   getFieldConfigs,
   mergeFields,
-  createZodSchemas,
-  createDescribeRefinements,
+  createTypeboxSchemas,
+  createPermissions,
 } from './utils/entity';
 
 // Re-export factory functions
 export {
-  createInsertZodSchema,
-  createSelectZodSchema,
-  createUpdateZodSchema,
+  createInsertTypeboxSchema,
+  createSelectTypeboxSchema,
+  createUpdateTypeboxSchema,
 } from './utils/factory';

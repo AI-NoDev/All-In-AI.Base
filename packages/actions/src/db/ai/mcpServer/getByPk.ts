@@ -2,12 +2,11 @@
  * 根据ID查询MCP服务
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { mcpServer } from '@qiyu-allinai/db/entities/ai';
-import { mcpServerZodSchemas } from './schemas';
-import type { McpServerSelect } from './utils';
+import { mcpServer, mcpServerSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { McpServerSelect } from '@qiyu-allinai/db/entities/ai/mcpServer';
 
 export const mcpServerGetByPk = defineAction({
   meta: {
@@ -29,8 +28,8 @@ GET /api/ai/mcp-server/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/mcp-server/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: mcpServerZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([mcpServerSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

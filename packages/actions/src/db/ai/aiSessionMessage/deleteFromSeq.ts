@@ -2,11 +2,11 @@
  * 删除指定序号及之后的消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, gte, desc, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { aiSessionMessage, aiSession } from '@qiyu-allinai/db/entities/ai';
-import type { TokenUsage } from './utils';
+import type { TokenUsage } from './schemas';
 
 export const aiSessionMessageDeleteFromSeq = defineAction({
   meta: {
@@ -37,11 +37,11 @@ DELETE /api/ai/session-message/from-seq/session-uuid/10
     path: '/api/ai/session-message/from-seq/:sessionId/:msgSeq',
   },
   schemas: {
-    paramsSchema: z.object({
-      sessionId: z.string(),
-      msgSeq: z.coerce.number().int(),
+    paramsSchema: t.Object({
+      sessionId: t.String(),
+      msgSeq: t.Number(),
     }),
-    outputSchema: z.object({ deletedCount: z.number() }),
+    outputSchema: t.Object({ deletedCount: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

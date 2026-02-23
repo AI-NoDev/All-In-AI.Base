@@ -2,12 +2,11 @@
  * 根据ID查询工具组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { toolGroup } from '@qiyu-allinai/db/entities/ai';
-import { toolGroupZodSchemas } from './schemas';
-import type { ToolGroupSelect } from './utils';
+import { toolGroup, toolGroupSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ToolGroupSelect } from '@qiyu-allinai/db/entities/ai/toolGroup';
 
 export const toolGroupGetByPk = defineAction({
   meta: {
@@ -29,8 +28,8 @@ GET /api/ai/tool-group/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/tool-group/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: toolGroupZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([toolGroupSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

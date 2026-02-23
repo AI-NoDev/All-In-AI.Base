@@ -2,11 +2,10 @@
  * 创建用户岗位关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { userPost } from '@qiyu-allinai/db/entities/system';
-import { userPostZodSchemas } from './schemas';
-import type { UserPostSelect, UserPostInsert } from './utils';
+import { userPost, userPostSchemas } from '@qiyu-allinai/db/entities/system';
+import type { UserPostSelect, UserPostInsert } from '@qiyu-allinai/db/entities/system/userPost';
 
 export const userPostCreate = defineAction({
   meta: {
@@ -37,8 +36,8 @@ export const userPostCreate = defineAction({
     path: '/api/system/user-post',
   },
   schemas: {
-    bodySchema: z.object({ data: userPostZodSchemas.insert }),
-    outputSchema: userPostZodSchemas.select,
+    bodySchema: t.Object({ data: userPostSchemas.insert }),
+    outputSchema: userPostSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

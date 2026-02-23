@@ -2,12 +2,11 @@
  * 更新AI会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { aiSession } from '@qiyu-allinai/db/entities/ai';
-import { aiSessionZodSchemas } from './schemas';
-import type { AISessionSelect } from './utils';
+import { aiSessionSchemas, type AISessionSelect } from './schemas';
 
 export const aiSessionUpdate = defineAction({
   meta: {
@@ -46,9 +45,9 @@ PUT /api/ai/session/xxx-uuid
     path: '/api/ai/session/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: aiSessionZodSchemas.update }),
-    outputSchema: aiSessionZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: aiSessionSchemas.update }),
+    outputSchema: aiSessionSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

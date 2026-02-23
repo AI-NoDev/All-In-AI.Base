@@ -1,7 +1,5 @@
 import type { PgColumnBuilderBase, PgTableWithColumns } from 'drizzle-orm/pg-core';
-import { 
-  createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema
-} from './factory';
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-typebox';
 
 // 翻译函数类型
 export type TranslateFn = () => string;
@@ -87,45 +85,20 @@ export function getFieldConfigs<T extends FieldMap>(fields: T): { [K in keyof T]
 /**
  * 合并多个 FieldMap，保留类型信息
  */
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 
 export function mergeFields<T extends FieldMap[]>(...fields: T): UnionToIntersection<T[number]> {
     return Object.assign({}, ...fields) as UnionToIntersection<T[number]>;
 }
 
 /**
- * 创建带描述的 refinements 对象
+ * 创建 TypeBox schemas (使用 drizzle-typebox)
  */
-export function createDescribeRefinements<T extends FieldMap>(fields: T) {
-    const refinements: Record<string, (schema: unknown) => unknown> = {};
-    for (const key in fields) {
-        const field = fields[key];
-        if (field?.comment) {
-            const comment = field.comment;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            refinements[key] = (schema: unknown) => (schema as any).describe(comment());
-        }
-    }
-    return refinements;
-}
-
-/**
- * 创建 Zod schemas
- */
-export function createZodSchemas<T extends PgTableWithColumns<any>>(table: T, fields?: FieldMap) {
-    if (fields) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const refinements = createDescribeRefinements(fields) as any;
-        return {
-            insert: createInsertZodSchema(table, refinements),
-            select: createSelectZodSchema(table, refinements),
-            update: createUpdateZodSchema(table, refinements),
-        };
-    }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createTypeboxSchemas<T extends PgTableWithColumns<any>>(table: T) {
     return {
-        insert: createInsertZodSchema(table),
-        select: createSelectZodSchema(table),
-        update: createUpdateZodSchema(table),
+        insert: createInsertSchema(table),
+        select: createSelectSchema(table),
+        update: createUpdateSchema(table),
     };
 }
-

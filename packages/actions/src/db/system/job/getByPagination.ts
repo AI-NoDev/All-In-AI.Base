@@ -2,58 +2,25 @@
  * 分页查询定时任务
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { job } from '@qiyu-allinai/db/entities/system';
-import { jobPaginationBodySchema, jobZodSchemas } from './schemas';
-import type { JobSelect } from './utils';
+import { job, jobSchemas } from '@qiyu-allinai/db/entities/system';
+import { jobPaginationBodySchema } from './schemas';
+import type { JobSelect } from '@qiyu-allinai/db/entities/system/job';
 
 export const jobGetByPagination = defineAction({
   meta: {
     name: 'system.job.getByPagination',
     displayName: '分页查询定时任务',
-    description: `分页查询定时任务列表，用于管理系统定时任务。
-
-**过滤参数 (filter)：**
-- ids: 按ID列表精确查询
-- names: 按任务名称列表精确查询
-- groups: 按任务分组列表精确查询，如 ["DEFAULT", "SYSTEM"]
-- status: 按状态过滤，"0"=正常，"1"=暂停
-- concurrent: 是否允许并发，true/false
-- name: 按任务名称模糊搜索
-- group: 按任务分组模糊搜索
-- createdAtStart/createdAtEnd: 创建时间范围
-
-**排序参数 (sort)：**
-- field: name | group | createdAt | updatedAt
-- order: asc | desc
-
-**分页参数：**
-- offset: 起始位置，默认0
-- limit: 每页数量，1-100，默认20
-
-**使用场景：**
-1. 获取所有正常运行的任务：filter.status = "0"
-2. 获取某分组的任务：filter.group = "SYSTEM"
-3. 搜索任务名称：filter.name = "清理"
-
-**示例：**
-\`\`\`json
-{
-  "filter": { "status": "0", "group": "DEFAULT" },
-  "sort": { "field": "name", "order": "asc" },
-  "offset": 0,
-  "limit": 20
-}
-\`\`\``,
+    description: `分页查询定时任务列表，用于管理系统定时任务。`,
     tags: ['system', 'job'],
     method: 'POST',
     path: '/api/system/job/query',
   },
   schemas: {
     bodySchema: jobPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(jobZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(jobSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

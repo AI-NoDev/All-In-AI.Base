@@ -2,13 +2,13 @@
  * 撤回消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { message, messageZodSchemas, groupMember } from '@qiyu-allinai/db/entities/im';
+import { message, groupMember } from '@qiyu-allinai/db/entities/im';
 import { actionEvents } from '../../../core/events';
-import type { MessageSelect } from './utils';
+import { messageSchemas, type MessageSelect } from './schemas';
 
 export const messageRecall = defineAction({
   meta: {
@@ -20,8 +20,8 @@ export const messageRecall = defineAction({
     path: '/api/im/message/:id/recall',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: messageZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: messageSchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserId, currentUserName } = context;

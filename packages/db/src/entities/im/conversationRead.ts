@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, bigint, timestamp, integer, primaryKey, index } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -70,4 +70,8 @@ export const conversationRead = pgTable(
 export const conversationReadConfig = getFieldConfigs(conversationReadFields);
 
 // ============ Schemas ============
-export const conversationReadZodSchemas = createZodSchemas(conversationRead, conversationReadFields);
+export const conversationReadSchemas = createTypeboxSchemas(conversationRead);
+
+// ============ Types ============
+export type ConversationReadSelect = typeof conversationRead.$inferSelect;
+export type ConversationReadInsert = typeof conversationRead.$inferInsert;

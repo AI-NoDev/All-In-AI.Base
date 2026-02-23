@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, bigint, timestamp, boolean, char, jsonb, index } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -23,8 +23,6 @@ import {
   "db_im_message_extra" as f_extra,
 } from '@qiyu-allinai/i18n';
 import { randomUUID } from "crypto";
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
-import { z } from "zod/v4";
 
 // Message content types
 export type TextContent = { text: string };
@@ -147,23 +145,11 @@ export const message = pgTable(
 export const messageConfig = getFieldConfigs(messageFields);
 
 // ============ Schemas ============
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const describeRefinements = createDescribeRefinements(messageFields) as any;
+export const messageSchemas = createTypeboxSchemas(message);
 
-export const messageZodSchemas = {
-  insert: createInsertZodSchema(message, {
-    ...describeRefinements,
-    atUserIds: z.array(z.string()).describe(messageFields.atUserIds.comment()),
-  }),
-  select: createSelectZodSchema(message, {
-    ...describeRefinements,
-    atUserIds: z.array(z.string()).nullable().describe(messageFields.atUserIds.comment()),
-  }),
-  update: createUpdateZodSchema(message, {
-    ...describeRefinements,
-    atUserIds: z.array(z.string()).optional().describe(messageFields.atUserIds.comment()),
-  }),
-};
+// ============ Types ============
+export type MessageSelect = typeof message.$inferSelect;
+export type MessageInsert = typeof message.$inferInsert;
 
 // ============ Message Type Constants ============
 export const MESSAGE_TYPES = {

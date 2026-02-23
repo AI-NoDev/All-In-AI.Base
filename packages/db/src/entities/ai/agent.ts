@@ -1,31 +1,29 @@
 import { pgTable, uuid, varchar, text, char, boolean, jsonb, real } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
-  "db_ai_agent_meta_displayName" as meta_displayName,
-  "db_ai_agent_meta_verboseName" as meta_verboseName,
-  "db_ai_agent_meta_verboseNamePlural" as meta_verboseNamePlural,
-  "db_ai_agent_name" as f_name,
-  "db_ai_agent_description" as f_description,
-  "db_ai_agent_avatar" as f_avatar,
-  "db_ai_agent_color" as f_color,
-  "db_ai_agent_providerId" as f_providerId,
-  "db_ai_agent_modelId" as f_modelId,
-  "db_ai_agent_systemPrompt" as f_systemPrompt,
-  "db_ai_agent_toolIds" as f_toolIds,
-  "db_ai_agent_temperature" as f_temperature,
-  "db_ai_agent_supportLoop" as f_supportLoop,
-  "db_ai_agent_maxLoops" as f_maxLoops,
-  "db_ai_agent_contextStrategy" as f_contextStrategy,
-  "db_ai_agent_remark" as f_remark,
-  "db_ai_agent_status" as f_status,
+  db_ai_agent_meta_displayName as meta_displayName,
+  db_ai_agent_meta_verboseName as meta_verboseName,
+  db_ai_agent_meta_verboseNamePlural as meta_verboseNamePlural,
+  db_ai_agent_name as f_name,
+  db_ai_agent_description as f_description,
+  db_ai_agent_avatar as f_avatar,
+  db_ai_agent_color as f_color,
+  db_ai_agent_providerId as f_providerId,
+  db_ai_agent_modelId as f_modelId,
+  db_ai_agent_systemPrompt as f_systemPrompt,
+  db_ai_agent_toolIds as f_toolIds,
+  db_ai_agent_temperature as f_temperature,
+  db_ai_agent_supportLoop as f_supportLoop,
+  db_ai_agent_maxLoops as f_maxLoops,
+  db_ai_agent_contextStrategy as f_contextStrategy,
+  db_ai_agent_remark as f_remark,
+  db_ai_agent_status as f_status,
 } from '@qiyu-allinai/i18n';
 import { pkSchema, auditSchema } from '../base';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema, createDescribeRefinements } from "../../types";
-import { z } from "zod/v4";
 
 // ============ Fields ============
 const agentOwnFields = {
@@ -89,25 +87,21 @@ const agentOwnFields = {
     comment: f_maxLoops,
     config: { canExport: true, canImport: true, exportExcelColumnName: f_maxLoops, importExcelColumnName: f_maxLoops, cellType: "NUMERIC" as const }
   },
-  // 上下文压缩策略
   contextStrategy: {
     field: varchar("context_strategy", { length: 64 }),
     comment: f_contextStrategy,
     config: { canExport: true, canImport: true, exportExcelColumnName: f_contextStrategy, importExcelColumnName: f_contextStrategy, cellType: "STRING" as const }
   },
-  // 输入参数 Schema (JSON Schema 格式)
   inputSchema: {
     field: jsonb("input_schema").$type<Record<string, unknown>>(),
     comment: f_description,
     config: { canExport: false, canImport: false }
   },
-  // 是否启用结构化输出
   structuredOutput: {
     field: boolean("structured_output").notNull().default(false),
     comment: f_description,
     config: { canExport: true, canImport: true, exportExcelColumnName: f_description, importExcelColumnName: f_description, cellType: "STRING" as const }
   },
-  // 输出参数 Schema (JSON Schema 格式)
   outputSchema: {
     field: jsonb("output_schema").$type<Record<string, unknown>>(),
     comment: f_description,
@@ -142,31 +136,9 @@ export const agent = pgTable(agentMeta.name, getTableFields(agentFields));
 // ============ Config ============
 export const agentConfig = getFieldConfigs(agentFields);
 
-// ============ Schemas ============
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const describeRefinements = createDescribeRefinements(agentFields) as any;
+// ============ Schemas (TypeBox) ============
+export const agentSchemas = createTypeboxSchemas(agent);
 
-export const agentZodSchemas = {
-  insert: createInsertZodSchema(agent, {
-    ...describeRefinements,
-    toolIds: z.array(z.string()).optional().describe(agentFields.toolIds.comment()),
-    nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
-    inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
-    outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
-  }),
-  select: createSelectZodSchema(agent, {
-    ...describeRefinements,
-    toolIds: z.array(z.string()).nullable().describe(agentFields.toolIds.comment()),
-    nativeTools: z.array(z.string()).nullable().describe(agentFields.nativeTools.comment()),
-    inputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.inputSchema.comment()),
-    outputSchema: z.record(z.string(), z.unknown()).nullable().describe(agentFields.outputSchema.comment()),
-  }),
-  update: createUpdateZodSchema(agent, {
-    ...describeRefinements,
-    toolIds: z.array(z.string()).optional().describe(agentFields.toolIds.comment()),
-    nativeTools: z.array(z.string()).optional().describe(agentFields.nativeTools.comment()),
-    inputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.inputSchema.comment()),
-    outputSchema: z.record(z.string(), z.unknown()).optional().describe(agentFields.outputSchema.comment()),
-  }),
-};
-
+// ============ Types ============
+export type AgentSelect = typeof agent.$inferSelect;
+export type AgentInsert = typeof agent.$inferInsert;

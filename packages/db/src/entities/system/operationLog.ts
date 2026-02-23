@@ -1,29 +1,28 @@
 import { pgTable, varchar, integer, char, bigint, text, timestamp } from 'drizzle-orm/pg-core';
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
-  "db_system_operationLog_meta_displayName" as meta_displayName,
-  "db_system_operationLog_meta_verboseName" as meta_verboseName,
-  "db_system_operationLog_meta_verboseNamePlural" as meta_verboseNamePlural,
-  "db_system_operationLog_title" as f_title,
-  "db_system_operationLog_businessType" as f_businessType,
-  "db_system_operationLog_method" as f_method,
-  "db_system_operationLog_requestMethod" as f_requestMethod,
-  "db_system_operationLog_type" as f_type,
-  "db_system_operationLog_name" as f_name,
-  "db_system_operationLog_departmentName" as f_departmentName,
-  "db_system_operationLog_url" as f_url,
-  "db_system_operationLog_ip" as f_ip,
-  "db_system_operationLog_location" as f_location,
-  "db_system_operationLog_param" as f_param,
-  "db_system_operationLog_jsonResult" as f_jsonResult,
-  "db_system_operationLog_status" as f_status,
-  "db_system_operationLog_errorMsg" as f_errorMsg,
-  "db_system_operationLog_time" as f_time,
-  "db_system_operationLog_costTime" as f_costTime,
+  db_system_operationLog_meta_displayName as meta_displayName,
+  db_system_operationLog_meta_verboseName as meta_verboseName,
+  db_system_operationLog_meta_verboseNamePlural as meta_verboseNamePlural,
+  db_system_operationLog_title as f_title,
+  db_system_operationLog_businessType as f_businessType,
+  db_system_operationLog_method as f_method,
+  db_system_operationLog_requestMethod as f_requestMethod,
+  db_system_operationLog_type as f_type,
+  db_system_operationLog_name as f_name,
+  db_system_operationLog_departmentName as f_departmentName,
+  db_system_operationLog_url as f_url,
+  db_system_operationLog_ip as f_ip,
+  db_system_operationLog_location as f_location,
+  db_system_operationLog_param as f_param,
+  db_system_operationLog_jsonResult as f_jsonResult,
+  db_system_operationLog_status as f_status,
+  db_system_operationLog_errorMsg as f_errorMsg,
+  db_system_operationLog_time as f_time,
+  db_system_operationLog_costTime as f_costTime,
 } from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 
@@ -133,5 +132,9 @@ export const operationLog = pgTable(operationLogMeta.name, getTableFields(operat
 // ============ Config ============
 export const operationLogConfig = getFieldConfigs(operationLogFields);
 
-// ============ Schemas ============
-export const operationLogZodSchemas = createZodSchemas(operationLog, operationLogFields);
+// ============ Schemas (TypeBox) ============
+export const operationLogSchemas = createTypeboxSchemas(operationLog);
+
+// ============ Types (从 Drizzle 推导) ============
+export type OperationLogSelect = typeof operationLog.$inferSelect;
+export type OperationLogInsert = typeof operationLog.$inferInsert;

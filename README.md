@@ -32,7 +32,7 @@ Qiyu AllInAI is a **production-ready AI application foundation** built with mode
 ### Design Philosophy
 
 - **Bun-First** - Ultra-fast JavaScript runtime (4x faster than Node.js)
-- **Type-Safe** - End-to-end TypeScript with Zod validation
+- **Type-Safe** - End-to-end TypeScript with TypeBox validation
 - **Modular** - Turborepo monorepo with reusable packages
 - **AI-Native** - Built-in AI Agent, tool orchestration, and model management
 
@@ -81,7 +81,7 @@ Qiyu AllInAI is a **production-ready AI application foundation** built with mode
 | **UI** | [shadcn-svelte](https://shadcn-svelte.com) + Tailwind CSS v4 |
 | **Backend** | [Elysia](https://elysiajs.com) |
 | **Database** | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team) |
-| **Validation** | [Zod](https://zod.dev) v4 |
+| **Validation** | [TypeBox](https://github.com/sinclairzx81/typebox) (Elysia's `t`) |
 | **Storage** | MinIO / S3 compatible |
 | **i18n** | [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs) |
 
@@ -258,7 +258,7 @@ For detailed development documentation, visit `/docs` in the running application
 
 - TypeScript with strict mode, avoid `any`
 - Svelte 5 runes (`$state`, `$derived`, `$effect`)
-- Zod for all data validation
+- TypeBox for all data validation
 - Keep i18n translations in sync
 
 ---

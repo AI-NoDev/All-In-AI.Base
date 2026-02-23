@@ -1,5 +1,4 @@
 import { pgTable, uuid, primaryKey } from "drizzle-orm/pg-core";
-import { z } from 'zod';
 import { 
   db_ai_apiKeyMcp_meta_displayName as meta_displayName,
   db_ai_apiKeyMcp_meta_verboseName as meta_verboseName,
@@ -7,7 +6,7 @@ import {
   db_ai_apiKeyMcp_apiKeyId as f_apiKeyId,
   db_ai_apiKeyMcp_mcpServerId as f_mcpServerId,
 } from '@qiyu-allinai/i18n';
-import { createPermissions, type EntityMeta } from '../../utils/entity';
+import { createPermissions, createTypeboxSchemas, type EntityMeta } from '../../utils/entity';
 
 // ============ Table ============
 // 多对多关联表：API Key <-> MCP Server
@@ -27,17 +26,12 @@ export const apiKeyMcpMeta: EntityMeta = {
   permissions: createPermissions('ai_api_key_mcp'),
 };
 
-// ============ Schemas ============
-export const apiKeyMcpZodSchemas = {
-  select: z.object({
-    apiKeyId: z.string().uuid(),
-    mcpServerId: z.string().uuid(),
-  }),
-  insert: z.object({
-    apiKeyId: z.string().uuid(),
-    mcpServerId: z.string().uuid(),
-  }),
-};
+// ============ Schemas (TypeBox) ============
+export const apiKeyMcpSchemas = createTypeboxSchemas(apiKeyMcp);
+
+// ============ Types ============
+export type ApiKeyMcpSelect = typeof apiKeyMcp.$inferSelect;
+export type ApiKeyMcpInsert = typeof apiKeyMcp.$inferInsert;
 
 // Field comments for documentation
 export const apiKeyMcpFieldComments = {

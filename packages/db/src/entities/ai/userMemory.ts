@@ -12,11 +12,10 @@
  * - EPISODIC: 情景记忆（特定事件/对话片段）
  */
 
-import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, text, char, jsonb, integer, timestamp, index, customType } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -37,8 +36,6 @@ import {
   db_ai_userMemory_status as f_status,
 } from '@qiyu-allinai/i18n';
 import { pkSchema, auditSchema } from '../base';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
-import { z } from "zod/v4";
 
 // ============ 记忆类型常量 ============
 export const MEMORY_TYPES = {
@@ -166,22 +163,8 @@ export const userMemory = pgTable(userMemoryMeta.name, getTableFields(userMemory
 export const userMemoryConfig = getFieldConfigs(userMemoryFields);
 
 // ============ Schemas ============
-const describeRefinements = createDescribeRefinements(userMemoryFields) as Record<string, (schema: unknown) => unknown>;
+export const userMemorySchemas = createTypeboxSchemas(userMemory);
 
-export const userMemoryZodSchemas = {
-  insert: createInsertZodSchema(userMemory, {
-    ...describeRefinements,
-    metadata: z.record(z.string(), z.unknown()).optional().describe(userMemoryFields.metadata.comment()),
-    embedding: z.array(z.number()).optional().describe(userMemoryFields.embedding.comment()),
-  }),
-  select: createSelectZodSchema(userMemory, {
-    ...describeRefinements,
-    metadata: z.record(z.string(), z.unknown()).nullable().describe(userMemoryFields.metadata.comment()),
-    embedding: z.array(z.number()).nullable().describe(userMemoryFields.embedding.comment()),
-  }),
-  update: createUpdateZodSchema(userMemory, {
-    ...describeRefinements,
-    metadata: z.record(z.string(), z.unknown()).optional().describe(userMemoryFields.metadata.comment()),
-    embedding: z.array(z.number()).optional().describe(userMemoryFields.embedding.comment()),
-  }),
-};
+// ============ Types ============
+export type UserMemorySelect = typeof userMemory.$inferSelect;
+export type UserMemoryInsert = typeof userMemory.$inferInsert;

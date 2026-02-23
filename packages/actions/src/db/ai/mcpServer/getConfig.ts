@@ -2,7 +2,7 @@
  * 获取MCP配置
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { mcpServer } from '@qiyu-allinai/db/entities/ai';
@@ -46,7 +46,7 @@ export const mcpServerGetConfig = defineAction({
     path: '/api/ai/mcp-server/:id/config',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
+    paramsSchema: t.Object({ id: t.String() }),
     outputSchema: mcpConfigSchema,
   },
   execute: async (input, context) => {

@@ -4,8 +4,8 @@
 
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
-import { favorite, node, type FavoriteSelect, type FavoriteInsert } from '@qiyu-allinai/db/entities/knowledge';
-import { addFavoriteBodySchema, favoriteZodSchemas } from './schemas';
+import { favorite, node, favoriteSchemas, type FavoriteSelect, type FavoriteInsert } from '@qiyu-allinai/db/entities/knowledge';
+import { addFavoriteBodySchema } from './schemas';
 
 export const favoriteAdd = defineAction({
   meta: {
@@ -35,7 +35,7 @@ export const favoriteAdd = defineAction({
   },
   schemas: {
     bodySchema: addFavoriteBodySchema,
-    outputSchema: favoriteZodSchemas.select,
+    outputSchema: favoriteSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

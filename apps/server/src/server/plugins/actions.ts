@@ -1,22 +1,17 @@
 import { Elysia, t } from "elysia";
 import { Box } from "@sinclair/typebox-adapter";
-import { toJSONSchema, ActionError } from "@qiyu-allinai/actions";
+import { Value } from "@sinclair/typebox/value";
+import type { TSchema } from "@sinclair/typebox";
+import { ActionError } from "@qiyu-allinai/actions";
 import db from "@qiyu-allinai/db/connect";
 import { user, operationLog } from "@qiyu-allinai/db/entities/system";
 import { eq } from "drizzle-orm";
 import type { ActionDefinition } from "@qiyu-allinai/actions";
-import { setFaker, fake } from "zod-schema-faker/v4";
-import { faker } from "@faker-js/faker";
-import type { $ZodType } from "zod/v4/core";
 
-// 配置 faker (使用类型断言解决版本不兼容问题)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-setFaker(faker as any);
-
-// 生成 Zod Schema 的模拟数据
-function generateFakeData(schema: $ZodType): unknown {
+// 生成 TypeBox Schema 的模拟数据
+function generateFakeData(schema: TSchema): unknown {
   try {
-    return fake(schema);
+    return Value.Create(schema);
   } catch {
     return null;
   }
@@ -55,6 +50,7 @@ interface ActionDetail extends ActionSummary {
   outputSchema: Record<string, unknown>;
 }
 
+
 // ============ Business Type Constants ============
 const BUSINESS_TYPE = {
   OTHER: 0,
@@ -91,17 +87,16 @@ function truncateString(str: string | undefined, maxLength: number = 2000): stri
   return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
 }
 
-// Zod to JSON Schema 转换 - 使用类型断言绕过类型检查
-function zodToJsonSchema(schema: unknown): Record<string, unknown> | undefined {
+// TypeBox to JSON Schema 转换 - TypeBox 本身就是 JSON Schema 兼容的
+function schemaToJsonSchema(schema: unknown): Record<string, unknown> | undefined {
   if (!schema) return undefined;
   try {
-    // toJSONSchema 期望 ZodTypeAny，这里通过类型断言传入
-    return toJSONSchema(schema as Parameters<typeof toJSONSchema>[0]);
+    // TypeBox schemas 已经是 JSON Schema 格式，直接返回
+    return schema as Record<string, unknown>;
   } catch {
     return { type: "unknown", error: "Failed to convert schema" };
   }
 }
-
 
 
 /**
@@ -178,11 +173,11 @@ export const actionsPlugin = (allActions: ActionDefinition[], wsConnectionManage
           method: action.meta.method,
           path: action.meta.path,
           inputSchema: {
-            query: zodToJsonSchema(action.schemas.querySchema),
-            params: zodToJsonSchema(action.schemas.paramsSchema),
-            body: zodToJsonSchema(action.schemas.bodySchema),
+            query: schemaToJsonSchema(action.schemas.querySchema),
+            params: schemaToJsonSchema(action.schemas.paramsSchema),
+            body: schemaToJsonSchema(action.schemas.bodySchema),
           },
-          outputSchema: zodToJsonSchema(action.schemas.outputSchema) ?? {},
+          outputSchema: schemaToJsonSchema(action.schemas.outputSchema) ?? {},
         };
         return { data: detail, status: 200, message: "ok" };
       },
@@ -226,7 +221,7 @@ export const actionsPlugin = (allActions: ActionDefinition[], wsConnectionManage
         // 沙盒模式：不需要认证，直接返回模拟输出数据
         if (isSandbox) {
           const mockOutput = action.schemas.outputSchema 
-            ? generateFakeData(action.schemas.outputSchema as $ZodType)
+            ? generateFakeData(action.schemas.outputSchema as TSchema)
             : null;
           return { 
             data: mockOutput, 

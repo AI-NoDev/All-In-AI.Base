@@ -2,10 +2,10 @@
  * 获取用户岗位关联Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { userPostZodSchemas } from './schemas';
+import { userPostSchemas } from '@qiyu-allinai/db/entities/system/userPost';
 
 export const userPostGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ GET /api/system/user-post/schema`,
     path: '/api/system/user-post/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(userPostZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(userPostSchemas.select) as Record<string, unknown>;
   },
 });

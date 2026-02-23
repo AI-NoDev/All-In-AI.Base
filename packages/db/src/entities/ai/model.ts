@@ -42,7 +42,7 @@ import {
 } from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-import { createZodSchemas } from "../../types";
+import { createTypeboxSchemas } from '../../utils/entity';
 
 // ============ Fields ============
 const modelOwnFields = {
@@ -197,4 +197,8 @@ export const model = pgTable(modelMeta.name, getTableFields(modelFields));
 export const modelConfig = getFieldConfigs(modelFields);
 
 // ============ Schemas ============
-export const modelZodSchemas = createZodSchemas(model, modelFields);
+export const modelSchemas = createTypeboxSchemas(model);
+
+// ============ Types ============
+export type ModelSelect = typeof model.$inferSelect;
+export type ModelInsert = typeof model.$inferInsert;

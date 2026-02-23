@@ -1,9 +1,8 @@
-import { z } from 'zod';
-import { eq, and, sql, inArray } from 'drizzle-orm';
+import { t } from 'elysia';
+import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { casbinRule, casbinRuleZodSchemas, CASBIN_POLICY_TYPES } from '@qiyu-allinai/db/entities/system';
+import { casbinRule, CASBIN_POLICY_TYPES } from '@qiyu-allinai/db/entities/system';
 
-type CasbinRuleSelect = typeof casbinRule.$inferSelect;
 type CasbinRuleInsert = typeof casbinRule.$inferInsert;
 
 // ============ 获取角色的权限列表 ============
@@ -18,8 +17,8 @@ export const casbinRuleGetRolePermissions = defineAction({
     path: '/api/system/casbin-rule/role/:roleKey/permissions',
   },
   schemas: {
-    paramsSchema: z.object({ roleKey: z.string() }),
-    outputSchema: z.array(z.string()),
+    paramsSchema: t.Object({ roleKey: t.String() }),
+    outputSchema: t.Array(t.String()),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -46,9 +45,9 @@ export const casbinRuleSetRolePermissions = defineAction({
     path: '/api/system/casbin-rule/role/:roleKey/permissions',
   },
   schemas: {
-    paramsSchema: z.object({ roleKey: z.string() }),
-    bodySchema: z.object({ permissionCodes: z.array(z.string()) }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ roleKey: t.String() }),
+    bodySchema: t.Object({ permissionCodes: t.Array(t.String()) }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -87,8 +86,8 @@ export const casbinRuleGetUserRoles = defineAction({
     path: '/api/system/casbin-rule/user/:userId/roles',
   },
   schemas: {
-    paramsSchema: z.object({ userId: z.string() }),
-    outputSchema: z.array(z.string()),
+    paramsSchema: t.Object({ userId: t.String() }),
+    outputSchema: t.Array(t.String()),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -119,9 +118,9 @@ export const casbinRuleSetUserRoles = defineAction({
     path: '/api/system/casbin-rule/user/:userId/roles',
   },
   schemas: {
-    paramsSchema: z.object({ userId: z.string() }),
-    bodySchema: z.object({ roleKeys: z.array(z.string()) }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ userId: t.String() }),
+    bodySchema: t.Object({ roleKeys: t.Array(t.String()) }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

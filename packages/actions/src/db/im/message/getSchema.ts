@@ -2,10 +2,10 @@
  * 获取消息 Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { messageZodSchemas } from '@qiyu-allinai/db/entities/im';
+import { messageSchemas } from './schemas';
 
 export const messageGetSchema = defineAction({
   meta: {
@@ -18,9 +18,9 @@ export const messageGetSchema = defineAction({
     path: '/api/im/message/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(messageZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(messageSchemas.select) as Record<string, unknown>;
   },
 });

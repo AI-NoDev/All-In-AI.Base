@@ -2,12 +2,13 @@
  * 查找或创建私聊会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { conversation, conversationZodSchemas, groupMember, conversationHidden } from '@qiyu-allinai/db/entities/im';
-import { CONVERSATION_TYPE, type ConversationSelect, type ConversationInsert } from './utils';
+import { conversation, groupMember, conversationHidden } from '@qiyu-allinai/db/entities/im';
+import { conversationSchemas, type ConversationSelect, type ConversationInsert } from './schemas';
+import { CONVERSATION_TYPE } from './utils';
 
 export const conversationFindOrCreatePrivate = defineAction({
   meta: {
@@ -20,13 +21,13 @@ export const conversationFindOrCreatePrivate = defineAction({
     path: '/api/im/conversation/private',
   },
   schemas: {
-    bodySchema: z.object({ 
-      targetUserId: z.string(),
-      targetUserName: z.string().optional(),
+    bodySchema: t.Object({ 
+      targetUserId: t.String(),
+      targetUserName: t.Optional(t.String()),
     }),
-    outputSchema: z.object({
-      conversation: conversationZodSchemas.select,
-      isNew: z.boolean(),
+    outputSchema: t.Object({
+      conversation: conversationSchemas.select,
+      isNew: t.Boolean(),
     }),
   },
   execute: async (input, context) => {

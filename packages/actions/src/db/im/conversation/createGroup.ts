@@ -2,12 +2,13 @@
  * 创建群聊会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { conversation, conversationZodSchemas, groupMember, GROUP_MEMBER_ROLES } from '@qiyu-allinai/db/entities/im';
+import { conversation, groupMember, GROUP_MEMBER_ROLES } from '@qiyu-allinai/db/entities/im';
 import { actionEvents } from '../../../core/events';
-import { CONVERSATION_TYPE, type ConversationSelect, type ConversationInsert } from './utils';
+import { conversationSchemas, type ConversationSelect, type ConversationInsert } from './schemas';
+import { CONVERSATION_TYPE } from './utils';
 
 export const conversationCreateGroup = defineAction({
   meta: {
@@ -20,14 +21,14 @@ export const conversationCreateGroup = defineAction({
     path: '/api/im/conversation/group',
   },
   schemas: {
-    bodySchema: z.object({ 
-      name: z.string().min(1).max(128),
-      memberIds: z.array(z.string()).min(1),
-      avatar: z.string().optional(),
+    bodySchema: t.Object({ 
+      name: t.String({ minLength: 1, maxLength: 128 }),
+      memberIds: t.Array(t.String(), { minItems: 1 }),
+      avatar: t.Optional(t.String()),
     }),
-    outputSchema: z.object({
-      conversation: conversationZodSchemas.select,
-      memberCount: z.number(),
+    outputSchema: t.Object({
+      conversation: conversationSchemas.select,
+      memberCount: t.Number(),
     }),
   },
   execute: async (input, context) => {

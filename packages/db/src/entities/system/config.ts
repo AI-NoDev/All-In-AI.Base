@@ -1,7 +1,6 @@
 import { pgTable, varchar, boolean } from "drizzle-orm/pg-core";
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -57,5 +56,9 @@ export const config = pgTable(configMeta.name, getTableFields(configFields));
 // ============ Config ============
 export const configConfig = getFieldConfigs(configFields);
 
-// ============ Schemas ============
-export const configZodSchemas = createZodSchemas(config, configFields);
+// ============ Schemas (TypeBox) ============
+export const configSchemas = createTypeboxSchemas(config);
+
+// ============ Types (从 Drizzle 推导) ============
+export type ConfigSelect = typeof config.$inferSelect;
+export type ConfigInsert = typeof config.$inferInsert;

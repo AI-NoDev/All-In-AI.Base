@@ -2,10 +2,10 @@
  * 获取角色菜单关联Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { roleMenuZodSchemas } from './schemas';
+import { roleMenuSchemas } from '@qiyu-allinai/db/entities/system/roleMenu';
 
 export const roleMenuGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ GET /api/system/role-menu/schema`,
     path: '/api/system/role-menu/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(roleMenuZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(roleMenuSchemas.select) as Record<string, unknown>;
   },
 });

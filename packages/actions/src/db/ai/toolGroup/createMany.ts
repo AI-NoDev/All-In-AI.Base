@@ -2,11 +2,10 @@
  * 批量创建工具组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { toolGroup } from '@qiyu-allinai/db/entities/ai';
-import { toolGroupZodSchemas } from './schemas';
-import type { ToolGroupSelect, ToolGroupInsert } from './utils';
+import { toolGroup, toolGroupSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ToolGroupSelect, ToolGroupInsert } from '@qiyu-allinai/db/entities/ai/toolGroup';
 
 export const toolGroupCreateMany = defineAction({
   meta: {
@@ -29,8 +28,8 @@ export const toolGroupCreateMany = defineAction({
     path: '/api/ai/tool-group/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(toolGroupZodSchemas.insert) }),
-    outputSchema: z.array(toolGroupZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(toolGroupSchemas.insert) }),
+    outputSchema: t.Array(toolGroupSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

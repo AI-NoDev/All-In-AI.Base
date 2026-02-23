@@ -2,11 +2,10 @@
  * 撤回通知
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { notice, NOTICE_STATUS } from '@qiyu-allinai/db/entities/system';
-import { noticeZodSchemas } from './schemas';
+import { notice, noticeTypeboxSchemas, NOTICE_STATUS } from '@qiyu-allinai/db/entities/system';
 
 export const noticeWithdraw = defineAction({
   meta: {
@@ -18,8 +17,8 @@ export const noticeWithdraw = defineAction({
     path: '/api/system/notice/:id/withdraw',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string().uuid().describe('通知 ID') }),
-    outputSchema: noticeZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String({ format: 'uuid', description: '通知ID' }) }),
+    outputSchema: noticeTypeboxSchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserId, currentUserName } = context;

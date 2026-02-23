@@ -2,7 +2,7 @@
  * 测试AI模型
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
@@ -43,9 +43,9 @@ POST /api/ai/model/xxx-uuid/test
     path: '/api/ai/model/:id/test',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({
-      message: z.string().default('Hello, please respond with a brief greeting.'),
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({
+      message: t.String({ default: 'Hello, please respond with a brief greeting.' }),
     }),
     outputSchema: modelTestOutputSchema,
   },

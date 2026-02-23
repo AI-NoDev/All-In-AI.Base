@@ -2,7 +2,7 @@
  * 重置用户密码
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
@@ -21,8 +21,8 @@ export const userResetPassword = defineAction({
     path: '/api/system/user/:id/reset-password',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.object({ success: z.boolean() }),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Object({ success: t.Boolean() }),
   },
   execute: async (input, context) => {
     const { db } = context;

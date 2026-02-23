@@ -2,10 +2,10 @@
  * 创建会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { conversation, conversationZodSchemas } from '@qiyu-allinai/db/entities/im';
-import type { ConversationSelect, ConversationInsert } from './utils';
+import { conversation } from '@qiyu-allinai/db/entities/im';
+import { conversationSchemas, type ConversationSelect, type ConversationInsert } from './schemas';
 
 export const conversationCreate = defineAction({
   meta: {
@@ -17,8 +17,8 @@ export const conversationCreate = defineAction({
     path: '/api/im/conversation',
   },
   schemas: {
-    bodySchema: z.object({ data: conversationZodSchemas.insert }),
-    outputSchema: conversationZodSchemas.select,
+    bodySchema: t.Object({ data: conversationSchemas.insert }),
+    outputSchema: conversationSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

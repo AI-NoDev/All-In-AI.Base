@@ -2,11 +2,10 @@
  * 创建Agent会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { agentSession } from '@qiyu-allinai/db/entities/ai';
-import { agentSessionZodSchemas } from './schemas';
-import type { AgentSessionSelect, AgentSessionInsert } from './utils';
+import { agentSessionSchemas, type AgentSessionSelect, type AgentSessionInsert } from './schemas';
 
 export const agentSessionCreate = defineAction({
   meta: {
@@ -49,8 +48,8 @@ export const agentSessionCreate = defineAction({
     path: '/api/ai/agent-session',
   },
   schemas: {
-    bodySchema: z.object({ data: agentSessionZodSchemas.insert }),
-    outputSchema: agentSessionZodSchemas.select,
+    bodySchema: t.Object({ data: agentSessionSchemas.insert }),
+    outputSchema: agentSessionSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

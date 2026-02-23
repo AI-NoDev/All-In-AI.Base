@@ -1,42 +1,42 @@
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { groupMember, groupMemberZodSchemas, conversation } from '@qiyu-allinai/db/entities/im';
+import { groupMember, groupMemberSchemas, conversation } from '@qiyu-allinai/db/entities/im';
 
 type GroupMemberSelect = typeof groupMember.$inferSelect;
 type GroupMemberInsert = typeof groupMember.$inferInsert;
 
 // ============ Filter Schema ============
-const groupMemberFilterSchema = z.object({
-  conversationId: z.string().optional(),
-  conversationIds: z.array(z.string()).optional(),
-  userId: z.string().optional(),
-  userIds: z.array(z.string()).optional(),
-  role: z.string().optional(),
-  roles: z.array(z.string()).optional(),
-  isMuted: z.boolean().optional(),
-  joinedAtStart: z.iso.datetime().optional(),
-  joinedAtEnd: z.iso.datetime().optional(),
-}).optional();
+const groupMemberFilterSchema = t.Optional(t.Object({
+  conversationId: t.Optional(t.String()),
+  conversationIds: t.Optional(t.Array(t.String())),
+  userId: t.Optional(t.String()),
+  userIds: t.Optional(t.Array(t.String())),
+  role: t.Optional(t.String()),
+  roles: t.Optional(t.Array(t.String())),
+  isMuted: t.Optional(t.Boolean()),
+  joinedAtStart: t.Optional(t.String({ format: 'date-time' })),
+  joinedAtEnd: t.Optional(t.String({ format: 'date-time' })),
+}));
 
-const sortSchema = z.object({
-  field: z.enum(['joinedAt', 'role']),
-  order: z.enum(['asc', 'desc']),
-}).optional();
+const sortSchema = t.Optional(t.Object({
+  field: t.Union([t.Literal('joinedAt'), t.Literal('role')]),
+  order: t.Union([t.Literal('asc'), t.Literal('desc')]),
+}));
 
-const paginationBodySchema = z.object({
+const paginationBodySchema = t.Object({
   filter: groupMemberFilterSchema,
   sort: sortSchema,
-  offset: z.number().int().min(0).default(0),
-  limit: z.number().int().min(1).max(100).default(50),
+  offset: t.Number({ minimum: 0, default: 0 }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 50 }),
 });
 
 export const groupMemberGetByPagination = defineAction({
   meta: { name: 'im.groupMember.getByPagination', displayName: '分页查询群成员', description: '分页查询群成员列表', tags: ['im', 'groupMember'], method: 'POST', path: '/api/im/group-member/query' },
   schemas: {
     bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(groupMemberZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(groupMemberSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -69,8 +69,8 @@ export const groupMemberGetByPagination = defineAction({
 export const groupMemberGetByPk = defineAction({
   meta: { name: 'im.groupMember.getByPk', displayName: '查询群成员', description: '根据会话ID和用户ID查询群成员', tags: ['im', 'groupMember'], method: 'GET', path: '/api/im/group-member/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
-    outputSchema: groupMemberZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ conversationId: t.String(), userId: t.String() }),
+    outputSchema: t.Union([groupMemberSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -83,8 +83,8 @@ export const groupMemberGetByPk = defineAction({
 export const groupMemberAdd = defineAction({
   meta: { name: 'im.groupMember.add', displayName: '添加群成员', description: '添加群成员', tags: ['im', 'groupMember'], method: 'POST', path: '/api/im/group-member' },
   schemas: {
-    bodySchema: z.object({ data: groupMemberZodSchemas.insert }),
-    outputSchema: groupMemberZodSchemas.select,
+    bodySchema: t.Object({ data: groupMemberSchemas.insert }),
+    outputSchema: groupMemberSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -103,8 +103,8 @@ export const groupMemberAdd = defineAction({
 export const groupMemberAddMany = defineAction({
   meta: { name: 'im.groupMember.addMany', displayName: '批量添加群成员', description: '批量添加群成员', tags: ['im', 'groupMember'], method: 'POST', path: '/api/im/group-member/batch' },
   schemas: {
-    bodySchema: z.object({ data: z.array(groupMemberZodSchemas.insert) }),
-    outputSchema: z.array(groupMemberZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(groupMemberSchemas.insert) }),
+    outputSchema: t.Array(groupMemberSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -127,9 +127,9 @@ export const groupMemberAddMany = defineAction({
 export const groupMemberUpdate = defineAction({
   meta: { name: 'im.groupMember.update', displayName: '更新群成员', description: '更新群成员信息', tags: ['im', 'groupMember'], method: 'PUT', path: '/api/im/group-member/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
-    bodySchema: z.object({ data: groupMemberZodSchemas.update }),
-    outputSchema: groupMemberZodSchemas.select,
+    paramsSchema: t.Object({ conversationId: t.String(), userId: t.String() }),
+    bodySchema: t.Object({ data: groupMemberSchemas.update }),
+    outputSchema: groupMemberSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -142,8 +142,8 @@ export const groupMemberUpdate = defineAction({
 export const groupMemberRemove = defineAction({
   meta: { name: 'im.groupMember.remove', displayName: '移除群成员', description: '移除群成员', tags: ['im', 'groupMember'], method: 'DELETE', path: '/api/im/group-member/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ conversationId: t.String(), userId: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -166,10 +166,10 @@ export const groupMemberRemove = defineAction({
 export const groupMemberGetSchema = defineAction({
   meta: { name: 'im.groupMember.getSchema', ignoreTools: true, displayName: '获取群成员Schema', description: '获取群成员表的JSON Schema', tags: ['im', 'groupMember'], method: 'GET', path: '/api/im/group-member/schema' },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(groupMemberZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(groupMemberSchemas.select) as Record<string, unknown>;
   },
 });
 

@@ -2,11 +2,11 @@
  * 根据ID查询智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import type { AgentSelect } from './utils';
+import { agent } from '@qiyu-allinai/db/entities/ai';
+import { agentSchemas, type AgentSelect } from './schemas';
 
 export const agentGetByPk = defineAction({
   meta: {
@@ -18,8 +18,8 @@ export const agentGetByPk = defineAction({
     path: '/api/ai/agent/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: agentZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([agentSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

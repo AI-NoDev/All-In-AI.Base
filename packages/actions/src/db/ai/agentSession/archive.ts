@@ -2,12 +2,11 @@
  * 归档Agent会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentSession } from '@qiyu-allinai/db/entities/ai';
-import { agentSessionZodSchemas } from './schemas';
-import type { AgentSessionSelect } from './utils';
+import { agentSessionSchemas, type AgentSessionSelect } from './schemas';
 
 export const agentSessionArchive = defineAction({
   meta: {
@@ -41,9 +40,9 @@ export const agentSessionArchive = defineAction({
     path: '/api/ai/agent-session/:id/archive',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ isArchived: z.boolean() }),
-    outputSchema: agentSessionZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ isArchived: t.Boolean() }),
+    outputSchema: agentSessionSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

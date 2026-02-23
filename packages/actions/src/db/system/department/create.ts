@@ -2,10 +2,10 @@
  * 创建部门
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { department, departmentSchemas } from '@qiyu-allinai/db/entities/system';
 import { buildDeptMaterializedPath, type DepartmentSelect, type DepartmentInsert } from './utils';
 
 export const departmentCreate = defineAction({
@@ -18,8 +18,8 @@ export const departmentCreate = defineAction({
     path: '/api/system/department',
   },
   schemas: {
-    bodySchema: z.object({ data: departmentZodSchemas.insert }),
-    outputSchema: departmentZodSchemas.select,
+    bodySchema: t.Object({ data: departmentSchemas.insert }),
+    outputSchema: departmentSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

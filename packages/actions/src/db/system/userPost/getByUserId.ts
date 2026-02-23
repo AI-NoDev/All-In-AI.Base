@@ -2,7 +2,7 @@
  * 获取用户的岗位ID列表
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { userPost } from '@qiyu-allinai/db/entities/system';
@@ -37,8 +37,8 @@ GET /api/system/user-post/user/550e8400-e29b-41d4-a716-446655440000
     path: '/api/system/user-post/user/:userId',
   },
   schemas: {
-    paramsSchema: z.object({ userId: z.string() }),
-    outputSchema: z.array(z.string()),
+    paramsSchema: t.Object({ userId: t.String() }),
+    outputSchema: t.Array(t.String()),
   },
   execute: async (input, context) => {
     const { db } = context;

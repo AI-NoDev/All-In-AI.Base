@@ -1,7 +1,6 @@
 import { pgTable, varchar, char, boolean, integer } from 'drizzle-orm/pg-core';
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -21,18 +20,6 @@ import { deletedSchema } from '../base/deletedSchema';
 
 /**
  * 角色表
- * 
- * 与 Casbin 集成说明:
- * - 角色权限通过 casbin_rule 表的 g 策略管理: g, user:xxx, role:xxx
- * - 角色的具体权限通过 p 策略管理: p, role:xxx, resource, action
- * - dataScope 用于数据权限控制，配合 ABAC 策略使用
- * 
- * 数据范围 (dataScope):
- * - 1: 全部数据
- * - 2: 自定义数据（通过 roleDepartment 关联）
- * - 3: 本部门数据
- * - 4: 本部门及以下数据
- * - 5: 仅本人数据
  */
 
 // ============ Fields ============
@@ -91,31 +78,26 @@ export const role = pgTable(roleMeta.name, getTableFields(roleFields));
 // ============ Config ============
 export const roleConfig = getFieldConfigs(roleFields);
 
-// ============ Schemas ============
-export const roleZodSchemas = createZodSchemas(role, roleFields);
+// ============ Schemas (TypeBox) ============
+export const roleSchemas = createTypeboxSchemas(role);
+
+// ============ Types (从 Drizzle 推导) ============
+export type RoleSelect = typeof role.$inferSelect;
+export type RoleInsert = typeof role.$inferInsert;
 
 // ============ 数据范围常量 ============
 export const DATA_SCOPE = {
-  /** 全部数据 */
   ALL: '1',
-  /** 自定义数据 */
   CUSTOM: '2',
-  /** 本部门数据 */
   DEPT: '3',
-  /** 本部门及以下数据 */
   DEPT_AND_CHILD: '4',
-  /** 仅本人数据 */
   SELF: '5',
 } as const;
 
 // ============ 内置角色 ============
 export const BUILTIN_ROLES = {
-  /** 超级管理员 */
   SUPER_ADMIN: 'super_admin',
-  /** 管理员 */
   ADMIN: 'admin',
-  /** 普通用户 */
   USER: 'user',
-  /** 访客 */
   GUEST: 'guest',
 } as const;

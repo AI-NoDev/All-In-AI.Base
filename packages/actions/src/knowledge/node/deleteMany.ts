@@ -2,7 +2,7 @@
  * 批量删除节点
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, sql, inArray } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { node, NODE_TYPES } from '@qiyu-allinai/db/entities/knowledge';
@@ -39,8 +39,8 @@ export const nodeDeleteMany = defineAction({
     path: '/api/knowledge/nodes/delete-batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()) }),
-    outputSchema: z.object({ deletedCount: z.number() }),
+    bodySchema: t.Object({ ids: t.Array(t.String()) }),
+    outputSchema: t.Object({ deletedCount: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

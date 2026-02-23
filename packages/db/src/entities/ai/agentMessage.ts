@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, text, bigint, integer, timestamp, char, jsonb, index } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -154,8 +154,12 @@ export const agentMessage = pgTable(
 // ============ Config ============
 export const agentMessageConfig = getFieldConfigs(agentMessageFields);
 
-// ============ Schemas ============
-export const agentMessageZodSchemas = createZodSchemas(agentMessage, agentMessageFields);
+// ============ Schemas (TypeBox) ============
+export const agentMessageSchemas = createTypeboxSchemas(agentMessage);
+
+// ============ Types ============
+export type AgentMessageSelect = typeof agentMessage.$inferSelect;
+export type AgentMessageInsert = typeof agentMessage.$inferInsert;
 
 // ============ Role Constants ============
 export const AGENT_MESSAGE_ROLES = {

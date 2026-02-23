@@ -1,7 +1,7 @@
 import { pgTable, varchar, text, char } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -70,4 +70,8 @@ export const provider = pgTable(providerMeta.name, getTableFields(providerFields
 export const providerConfig = getFieldConfigs(providerFields);
 
 // ============ Schemas ============
-export const providerZodSchemas = createZodSchemas(provider, providerFields);
+export const providerSchemas = createTypeboxSchemas(provider);
+
+// ============ Types ============
+export type ProviderSelect = typeof provider.$inferSelect;
+export type ProviderInsert = typeof provider.$inferInsert;

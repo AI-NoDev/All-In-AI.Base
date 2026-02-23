@@ -2,12 +2,11 @@
  * 根据ID查询登录日志
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { loginInfo } from '@qiyu-allinai/db/entities/system';
-import { loginInfoZodSchemas } from './schemas';
-import type { LoginInfoSelect } from './utils';
+import { loginInfo, loginInfoSchemas } from '@qiyu-allinai/db/entities/system';
+import type { LoginInfoSelect } from '@qiyu-allinai/db/entities/system/loginInfo';
 
 export const loginInfoGetByPk = defineAction({
   meta: {
@@ -34,8 +33,8 @@ GET /api/system/login-info/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/system/login-info/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: loginInfoZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([loginInfoSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

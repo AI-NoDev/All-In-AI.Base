@@ -2,11 +2,11 @@
  * 撤销API密钥
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { apiKey } from '@qiyu-allinai/db/entities/ai';
-import type { ApiKeyInsert } from './utils';
+import type { ApiKeyInsert } from '@qiyu-allinai/db/entities/ai/apiKey';
 
 export const apiKeyRevoke = defineAction({
   meta: {
@@ -33,8 +33,8 @@ POST /api/ai/api-key/550e8400-e29b-41d4-a716-446655440000/revoke`,
     path: '/api/ai/api-key/:id/revoke',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db, currentUserName, currentUserId } = context;

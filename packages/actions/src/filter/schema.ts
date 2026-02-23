@@ -1,91 +1,56 @@
-import { z } from 'zod';
+import { t } from 'elysia';
+import { Type, type TSchema } from '@sinclair/typebox';
 
 /**
- * Filter Zod Schema 构建工具
+ * Filter TypeBox Schema 构建工具
  * 用于为每个表创建类型安全的 Filter schema
  */
 
 // ============ 基础 Operator Schema ============
-export const filterOperatorSchema = z.enum([
-  'eq', 'ne', 'lt', 'lte', 'gt', 'gte',
-  'in', 'nin', 'contains', 'icontains',
-  'startswith', 'endswith', 'isnull'
+export const filterOperatorSchema = t.Union([
+  t.Literal('eq'),
+  t.Literal('ne'),
+  t.Literal('lt'),
+  t.Literal('lte'),
+  t.Literal('gt'),
+  t.Literal('gte'),
+  t.Literal('in'),
+  t.Literal('nin'),
+  t.Literal('contains'),
+  t.Literal('icontains'),
+  t.Literal('startswith'),
+  t.Literal('endswith'),
+  t.Literal('isnull'),
 ]);
 
 // ============ 创建 FieldFilter Schema ============
-export function createFieldFilterSchema<T extends readonly [string, ...string[]]>(fields: T) {
-  return z.object({
-    type: z.literal('field'),
-    field: z.enum(fields),
+export function createFieldFilterSchema<T extends readonly string[]>(fields: T) {
+  return t.Object({
+    type: t.Literal('field'),
+    field: t.Union(fields.map(f => t.Literal(f)) as [TSchema, ...TSchema[]]),
     operator: filterOperatorSchema,
-    value: z.unknown().optional(),
+    value: t.Optional(t.Unknown()),
   });
 }
 
-// ============ 创建递归 FilterNode Schema ============
-export function createFilterNodeSchema<T extends readonly [string, ...string[]]>(fields: T) {
-  const fieldFilterSchema = createFieldFilterSchema(fields);
-  
-  // 使用 z.lazy 实现递归
-  const filterNodeSchema: z.ZodType<FilterNodeType<T[number]>> = z.lazy(() =>
-    z.discriminatedUnion('type', [
-      fieldFilterSchema,
-      z.object({
-        type: z.literal('logic'),
-        operator: z.enum(['and', 'or']),
-        filters: z.array(filterNodeSchema).min(1),
-      }),
-      z.object({
-        type: z.literal('not'),
-        filter: filterNodeSchema,
-      }),
-    ])
-  );
-  
-  return filterNodeSchema;
-}
-
 // ============ 创建 Sort Schema ============
-export function createSortSchema<T extends readonly [string, ...string[]]>(fields: T) {
-  return z.object({
-    field: z.enum(fields),
-    order: z.enum(['asc', 'desc']),
+export function createSortSchema<T extends readonly string[]>(fields: T) {
+  return t.Object({
+    field: t.Union(fields.map(f => t.Literal(f)) as [TSchema, ...TSchema[]]),
+    order: t.Union([t.Literal('asc'), t.Literal('desc')]),
   });
 }
 
 // ============ 创建完整 Query Schema ============
-export function createQuerySchema<T extends readonly [string, ...string[]]>(fields: T) {
-  const filterNodeSchema = createFilterNodeSchema(fields);
+// 注意：TypeBox 不支持递归类型，简化为单层 filter
+export function createQuerySchema<T extends readonly string[]>(fields: T) {
+  const fieldFilterSchema = createFieldFilterSchema(fields);
   const sortSchema = createSortSchema(fields);
   
-  return z.object({
-    filter: filterNodeSchema.optional(),
-    sort: z.array(sortSchema).optional(),
-    offset: z.number().int().min(0).default(0),
-    limit: z.number().int().min(1).max(100).default(20),
+  return t.Object({
+    filter: t.Optional(t.Array(fieldFilterSchema)),
+    sort: t.Optional(t.Array(sortSchema)),
+    offset: t.Number({ minimum: 0, default: 0 }),
+    limit: t.Number({ minimum: 1, maximum: 100, default: 20 }),
   });
 }
-
-// ============ 辅助类型 ============
-type FieldFilterType<TField extends string> = {
-  type: 'field';
-  field: TField;
-  operator: z.infer<typeof filterOperatorSchema>;
-  value?: unknown;
-};
-
-type LogicalFilterType<TField extends string> = {
-  type: 'logic';
-  operator: 'and' | 'or';
-  filters: FilterNodeType<TField>[];
-};
-
-type NotFilterType<TField extends string> = {
-  type: 'not';
-  filter: FilterNodeType<TField>;
-};
-
-type FilterNodeType<TField extends string> =
-  | FieldFilterType<TField>
-  | LogicalFilterType<TField>
-  | NotFilterType<TField>;

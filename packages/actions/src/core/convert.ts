@@ -1,5 +1,5 @@
 import { tool, jsonSchema } from 'ai';
-import { z } from 'zod/v4';
+import { t, type TSchema } from 'elysia';
 import type { ActionDefinition, ActionContext, ActionRegistry } from './types';
 
 /** 空 JSON Schema 对象 */
@@ -12,28 +12,27 @@ const emptyJsonSchema = jsonSchema<Record<string, never>>({
 
 /** 合并 action 的所有 schema 为单个输入 schema，并转换为 JSON Schema */
 function mergeActionSchemas(action: ActionDefinition) {
-  const shape: Record<string, z.ZodType> = {};
+  const properties: Record<string, TSchema> = {};
   
   if (action.schemas.querySchema) {
-    shape.query = action.schemas.querySchema as z.ZodType;
+    properties.query = action.schemas.querySchema;
   }
   if (action.schemas.paramsSchema) {
-    shape.params = action.schemas.paramsSchema as z.ZodType;
+    properties.params = action.schemas.paramsSchema;
   }
   if (action.schemas.bodySchema) {
-    shape.body = action.schemas.bodySchema as z.ZodType;
+    properties.body = action.schemas.bodySchema;
   }
   
   // 如果没有任何 schema，返回空 JSON Schema
-  if (Object.keys(shape).length === 0) {
+  if (Object.keys(properties).length === 0) {
     return emptyJsonSchema;
   }
   
-  // 构建合并后的 Zod schema 并转换为 JSON Schema
-  const mergedSchema = z.object(shape);
-  const jsonSchemaObj = z.toJSONSchema(mergedSchema) as Record<string, unknown>;
+  // 构建合并后的 TypeBox schema（已经是 JSON Schema 兼容格式）
+  const mergedSchema = t.Object(properties);
   
-  return jsonSchema<Record<string, unknown>>(jsonSchemaObj);
+  return jsonSchema<Record<string, unknown>>(mergedSchema as unknown as Record<string, unknown>);
 }
 
 /**

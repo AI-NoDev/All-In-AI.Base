@@ -2,11 +2,10 @@
  * 创建角色部门关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { roleDepartment } from '@qiyu-allinai/db/entities/system';
-import { roleDepartmentZodSchemas } from './schemas';
-import type { RoleDepartmentSelect, RoleDepartmentInsert } from './utils';
+import { roleDepartment, roleDepartmentSchemas } from '@qiyu-allinai/db/entities/system';
+import type { RoleDepartmentSelect, RoleDepartmentInsert } from '@qiyu-allinai/db/entities/system/roleDepartment';
 
 export const roleDepartmentCreate = defineAction({
   meta: {
@@ -37,8 +36,8 @@ export const roleDepartmentCreate = defineAction({
     path: '/api/system/role-department',
   },
   schemas: {
-    bodySchema: z.object({ data: roleDepartmentZodSchemas.insert }),
-    outputSchema: roleDepartmentZodSchemas.select,
+    bodySchema: t.Object({ data: roleDepartmentSchemas.insert }),
+    outputSchema: roleDepartmentSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

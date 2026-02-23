@@ -10,7 +10,7 @@ ai-drive-system/
 │   └── server/            # Elysia 后端
 │       └── src/server/plugins/  # 服务端插件/模块
 ├── packages/
-│   ├── db/                # Drizzle ORM 实体和 Zod Schema
+│   ├── db/                # Drizzle ORM 实体和 TypeBox Schema
 │   ├── actions/           # 业务逻辑 Actions
 │   └── i18n/              # 国际化翻译
 ```
@@ -38,7 +38,7 @@ packages/db/src/entities/
 ```typescript
 // packages/db/src/entities/[module]/myEntity.ts
 import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
-import { z } from 'zod';
+import { createTypeboxSchemas } from '../../utils/entity';
 import { pkSchema, auditSchema } from '../base';
 
 export const myEntity = pgTable('my_entity', {
@@ -47,11 +47,12 @@ export const myEntity = pgTable('my_entity', {
   ...auditSchema,
 });
 
-export const myEntityZodSchemas = {
-  select: z.object({ id: z.string(), name: z.string() }),
-  insert: z.object({ name: z.string() }),
-  update: z.object({ name: z.string().optional() }),
-};
+// 使用 drizzle-typebox 自动生成 schemas
+export const myEntitySchemas = createTypeboxSchemas(myEntity);
+
+// 类型推导
+export type MyEntitySelect = typeof myEntity.$inferSelect;
+export type MyEntityInsert = typeof myEntity.$inferInsert;
 ```
 
 ### 2. 业务逻辑层 (packages/actions)
@@ -71,7 +72,7 @@ Action 定义规范：
 ```typescript
 // packages/actions/src/db/[module]/index.ts
 import { defineAction } from '../../core/define';
-import { z } from 'zod';
+import { t } from 'elysia';
 
 export const myEntityGetList = defineAction({
   meta: {
@@ -81,8 +82,8 @@ export const myEntityGetList = defineAction({
     path: '/api/module/my-entity/query',
   },
   schemas: {
-    bodySchema: z.object({ limit: z.number().default(20) }),
-    outputSchema: z.object({ data: z.array(z.object({})), total: z.number() }),
+    bodySchema: t.Object({ limit: t.Number({ default: 20 }) }),
+    outputSchema: t.Object({ data: t.Array(t.Object({})), total: t.Number() }),
   },
   execute: async (input, context) => {
     // 业务逻辑
@@ -177,12 +178,14 @@ apps/frontend/src/routes/public/about/+page.svelte    -> /public/about
 
 导出规范：
 ```typescript
+import { createTypeboxSchemas } from '../../utils/entity';
+
 export const tableName = pgTable('table_name', { ... });
-export const tableNameZodSchemas = {
-  select: z.object({ ... }),
-  insert: z.object({ ... }),
-  update: z.object({ ... }),
-};
+export const tableNameSchemas = createTypeboxSchemas(tableName);
+
+// 类型推导
+export type TableNameSelect = typeof tableName.$inferSelect;
+export type TableNameInsert = typeof tableName.$inferInsert;
 ```
 
 ## packages/actions

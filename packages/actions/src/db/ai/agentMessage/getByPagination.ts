@@ -2,12 +2,11 @@
  * 分页查询Agent消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentMessage } from '@qiyu-allinai/db/entities/ai';
-import { agentMessagePaginationBodySchema, agentMessageZodSchemas } from './schemas';
-import type { AgentMessageSelect } from './utils';
+import { agentMessagePaginationBodySchema, agentMessageSchemas, type AgentMessageSelect } from './schemas';
 
 export const agentMessageGetByPagination = defineAction({
   meta: {
@@ -55,7 +54,7 @@ export const agentMessageGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: agentMessagePaginationBodySchema,
-    outputSchema: z.object({ data: z.array(agentMessageZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(agentMessageSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

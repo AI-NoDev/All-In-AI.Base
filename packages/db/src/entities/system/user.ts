@@ -1,7 +1,6 @@
 import { pgTable, uuid, varchar, timestamp, jsonb } from 'drizzle-orm/pg-core';
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -30,15 +29,6 @@ import { deletedSchema } from '../base/deletedSchema';
 
 /**
  * 用户表
- * 
- * 与 Casbin 集成说明:
- * - 用户角色通过 casbin_rule 表的 g 策略管理: g, user:{userId}, role:{roleKey}
- * - 用户直接权限通过 p 策略管理: p, user:{userId}, resource, action
- * - 多租户场景使用域: g, user:{userId}, role:{roleKey}, tenant:{tenantId}
- * 
- * 移除的字段:
- * - roleIds, postIds, permissions: 改用 Casbin 策略管理
- * - parentId, roleId: 简化用户层级，通过部门和角色管理
  */
 
 // ============ Fields ============
@@ -137,8 +127,12 @@ export const user = pgTable(userMeta.name, getTableFields(userFields));
 // ============ Config ============
 export const userConfig = getFieldConfigs(userFields);
 
-// ============ Schemas ============
-export const userZodSchemas = createZodSchemas(user, userFields);
+// ============ Schemas (TypeBox) ============
+export const userSchemas = createTypeboxSchemas(user);
+
+// ============ Types (从 Drizzle 推导) ============
+export type UserSelect = typeof user.$inferSelect;
+export type UserInsert = typeof user.$inferInsert;
 
 // ============ 用户类型常量 ============
 export const USER_TYPES = {

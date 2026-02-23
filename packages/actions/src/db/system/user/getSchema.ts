@@ -2,10 +2,10 @@
  * 获取用户 Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { userZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { userSchemas } from '@qiyu-allinai/db/entities/system';
 
 export const userGetSchema = defineAction({
   meta: {
@@ -18,9 +18,9 @@ export const userGetSchema = defineAction({
     path: '/api/system/user/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(userZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(userSchemas.select) as Record<string, unknown>;
   },
 });

@@ -2,12 +2,12 @@
  * 更新部门
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { department, departmentSchemas } from '@qiyu-allinai/db/entities/system';
 import { buildDeptMaterializedPath, updateChildrenMaterializedPath, type DepartmentSelect, type DepartmentInsert } from './utils';
 
 export const departmentUpdate = defineAction({
@@ -20,9 +20,9 @@ export const departmentUpdate = defineAction({
     path: '/api/system/department/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: departmentZodSchemas.update }),
-    outputSchema: departmentZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: departmentSchemas.update }),
+    outputSchema: departmentSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

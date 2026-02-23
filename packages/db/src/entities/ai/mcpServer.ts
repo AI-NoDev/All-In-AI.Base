@@ -1,7 +1,7 @@
 import { pgTable, varchar, text, char, jsonb, boolean } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -71,5 +71,9 @@ export const mcpServer = pgTable(mcpServerMeta.name, getTableFields(mcpServerFie
 // ============ Config ============
 export const mcpServerConfig = getFieldConfigs(mcpServerFields);
 
-// ============ Schemas ============
-export const mcpServerZodSchemas = createZodSchemas(mcpServer, mcpServerFields);
+// ============ Schemas (TypeBox) ============
+export const mcpServerSchemas = createTypeboxSchemas(mcpServer);
+
+// ============ Types ============
+export type McpServerSelect = typeof mcpServer.$inferSelect;
+export type McpServerInsert = typeof mcpServer.$inferInsert;

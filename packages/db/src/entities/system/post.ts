@@ -1,7 +1,6 @@
 import { pgTable, varchar, char } from 'drizzle-orm/pg-core';
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -58,5 +57,9 @@ export const post = pgTable(postMeta.name, getTableFields(postFields));
 // ============ Config ============
 export const postConfig = getFieldConfigs(postFields);
 
-// ============ Schemas ============
-export const postZodSchemas = createZodSchemas(post, postFields);
+// ============ Schemas (TypeBox) ============
+export const postSchemas = createTypeboxSchemas(post);
+
+// ============ Types (从 Drizzle 推导) ============
+export type PostSelect = typeof post.$inferSelect;
+export type PostInsert = typeof post.$inferInsert;

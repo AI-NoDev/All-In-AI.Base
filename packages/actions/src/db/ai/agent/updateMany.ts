@@ -2,13 +2,13 @@
  * 批量更新智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { isSystemAdmin } from '../../../core/deptPermission';
-import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import type { AgentSelect, AgentInsert } from './utils';
+import { agent } from '@qiyu-allinai/db/entities/ai';
+import { agentSchemas, type AgentSelect, type AgentInsert } from './schemas';
 
 export const agentUpdateMany = defineAction({
   meta: {
@@ -21,8 +21,8 @@ export const agentUpdateMany = defineAction({
     path: '/api/ai/agent/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: agentZodSchemas.update }),
-    outputSchema: z.array(agentZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: agentSchemas.update }),
+    outputSchema: t.Array(agentSchemas.select),
   },
   execute: async (input, context) => {
     const { db, currentUserId, currentUserType } = context;

@@ -1,6 +1,6 @@
 # Entity Development
 
-Entities are TypeScript definitions of database tables, using Drizzle ORM and Zod for type-safe database operations.
+Entities are TypeScript definitions of database tables, using Drizzle ORM and TypeBox (via drizzle-typebox) for type-safe database operations.
 
 ## File Location
 
@@ -30,7 +30,7 @@ packages/db/src/entities/
 import { pgTable, uuid, varchar, integer } from 'drizzle-orm/pg-core';
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
@@ -101,8 +101,8 @@ export const post = pgTable(postMeta.name, getTableFields(postFields));
 // Get field configs (for import/export)
 export const postConfig = getFieldConfigs(postFields);
 
-// Create Zod Schemas
-export const postZodSchemas = createZodSchemas(post, postFields);
+// Create TypeBox Schemas (using drizzle-typebox)
+export const postSchemas = createTypeboxSchemas(post, postFields);
 ```
 
 ### 4. Export Schema
@@ -184,35 +184,42 @@ export const deletedSchema = {
 | importExcelColumnName | TranslateFn | Import column name (translation function) |
 | cellType | string | Cell type: STRING, NUMERIC, IMAGE, TEXT |
 
-## Generated Zod Schemas
+## Generated TypeBox Schemas
 
-`createZodSchemas` automatically generates three schemas:
+`createTypeboxSchemas` automatically generates three schemas using drizzle-typebox:
 
 ```typescript
-export const postZodSchemas = {
+import { t } from 'elysia';
+import type { Static } from '@sinclair/typebox';
+
+export const postSchemas = {
   // Query return type
-  select: z.object({
-    id: z.string().uuid(),
-    name: z.string(),
-    code: z.string(),
+  select: t.Object({
+    id: t.String({ format: 'uuid' }),
+    name: t.String(),
+    code: t.String(),
     // ... all fields
   }),
   
   // Create type
-  insert: z.object({
-    id: z.string().uuid().optional(),
-    name: z.string(),
-    code: z.string(),
+  insert: t.Object({
+    id: t.Optional(t.String({ format: 'uuid' })),
+    name: t.String(),
+    code: t.String(),
     // ... required fields
   }),
   
   // Update type
-  update: z.object({
-    name: z.string().optional(),
-    code: z.string().optional(),
+  update: t.Partial(t.Object({
+    name: t.String(),
+    code: t.String(),
     // ... all fields optional
-  }),
+  })),
 };
+
+// Type inference
+type PostSelect = Static<typeof postSchemas.select>;
+type PostInsert = Static<typeof postSchemas.insert>;
 ```
 
 ## Database Migrations

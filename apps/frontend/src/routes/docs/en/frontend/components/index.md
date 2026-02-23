@@ -344,19 +344,22 @@ Common icon sets:
 
 ## Form Validation
 
-Use Zod for form validation:
+Use TypeBox (Elysia's `t`) for form validation:
 
 ```svelte
 <script lang="ts">
-  import { z } from 'zod';
+  import { t, type Static } from 'elysia';
+  import { Value } from '@sinclair/typebox/value';
   
-  const formSchema = z.object({
-    name: z.string().min(1, 'Name is required').max(50, 'Name max 50 characters'),
-    code: z.string().min(1, 'Code is required').regex(/^[A-Z_]+$/, 'Code must be uppercase letters and underscores'),
-    sort: z.number().min(0, 'Sort cannot be negative'),
+  const formSchema = t.Object({
+    name: t.String({ minLength: 1, maxLength: 50, error: 'Name is required (max 50 characters)' }),
+    code: t.String({ minLength: 1, pattern: '^[A-Z_]+$', error: 'Code must be uppercase letters and underscores' }),
+    sort: t.Number({ minimum: 0, error: 'Sort cannot be negative' }),
   });
   
-  let form = $state({
+  type FormData = Static<typeof formSchema>;
+  
+  let form = $state<FormData>({
     name: '',
     code: '',
     sort: 0,
@@ -365,11 +368,13 @@ Use Zod for form validation:
   let errors = $state<Record<string, string>>({});
   
   function validate() {
-    const result = formSchema.safeParse(form);
-    if (!result.success) {
+    const result = Value.Check(formSchema, form);
+    if (!result) {
       errors = {};
-      result.error.errors.forEach(err => {
-        errors[err.path[0] as string] = err.message;
+      const errs = [...Value.Errors(formSchema, form)];
+      errs.forEach(err => {
+        const path = err.path.replace('/', '');
+        errors[path] = err.message;
       });
       return false;
     }

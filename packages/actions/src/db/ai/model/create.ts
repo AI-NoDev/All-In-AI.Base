@@ -2,11 +2,10 @@
  * 创建AI模型
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { model } from '@qiyu-allinai/db/entities/ai';
-import { modelZodSchemas } from './schemas';
-import type { ModelSelect, ModelInsert } from './utils';
+import { model, modelSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ModelSelect, ModelInsert } from '@qiyu-allinai/db/entities/ai/model';
 
 export const modelCreate = defineAction({
   meta: {
@@ -44,8 +43,8 @@ export const modelCreate = defineAction({
     path: '/api/ai/model',
   },
   schemas: {
-    bodySchema: z.object({ data: modelZodSchemas.insert }),
-    outputSchema: modelZodSchemas.select,
+    bodySchema: t.Object({ data: modelSchemas.insert }),
+    outputSchema: modelSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

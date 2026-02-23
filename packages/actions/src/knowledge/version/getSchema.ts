@@ -2,10 +2,10 @@
  * 获取版本 Schema Action
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../core/define';
 import { toJSONSchema } from '../../core/schema';
-import { nodeVersionZodSchemas } from './schemas';
+import { nodeVersionSchemas } from './schemas';
 
 export const versionGetSchema = defineAction({
   meta: {
@@ -25,9 +25,9 @@ export const versionGetSchema = defineAction({
     ignoreTools: true,
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(nodeVersionZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(nodeVersionSchemas.select) as Record<string, unknown>;
   },
 });

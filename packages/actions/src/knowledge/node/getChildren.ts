@@ -2,10 +2,10 @@
  * 获取子节点
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, asc } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
-import { node, nodeZodSchemas, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
 
 export const nodeGetChildren = defineAction({
   meta: {
@@ -33,11 +33,11 @@ GET /api/knowledge/nodes/root/children?type=folder`,
     path: '/api/knowledge/nodes/:id/children',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    querySchema: z.object({
-      type: z.enum(['folder', 'file']).optional(),
-    }).optional(),
-    outputSchema: z.object({ data: z.array(nodeZodSchemas.select) }),
+    paramsSchema: t.Object({ id: t.String() }),
+    querySchema: t.Optional(t.Object({
+      type: t.Optional(t.Union([t.Literal('folder'), t.Literal('file')])),
+    })),
+    outputSchema: t.Object({ data: t.Array(nodeSchemas.select) }),
   },
   execute: async (input, context) => {
     const { db } = context;

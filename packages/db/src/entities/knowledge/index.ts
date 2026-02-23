@@ -6,7 +6,7 @@ export {
   nodeFields, 
   nodeMeta, 
   nodeConfig, 
-  nodeZodSchemas,
+  nodeSchemas,
   NODE_TYPES,
   type NodeType,
   type NodeSelect,
@@ -18,7 +18,7 @@ export {
   nodeVersionFields, 
   nodeVersionMeta, 
   nodeVersionConfig, 
-  nodeVersionZodSchemas,
+  nodeVersionSchemas,
   type NodeVersionSelect,
   type NodeVersionInsert,
 } from './nodeVersion';
@@ -29,15 +29,15 @@ export {
   favoriteFields, 
   favoriteMeta, 
   favoriteConfig, 
-  favoriteZodSchemas,
+  favoriteSchemas,
   type FavoriteSelect,
   type FavoriteInsert,
 } from './favorite';
 
 // 旧实体 (已废弃，将被删除)
-// export { folder, folderFields, folderMeta, folderConfig, folderZodSchemas } from './folder';
-// export { file, fileFields, fileMeta, fileConfig, fileZodSchemas } from './file';
-// export { fileVersion, fileVersionFields, fileVersionMeta, fileVersionConfig, fileVersionZodSchemas } from './fileVersion';
+// export { folder, folderFields, folderMeta, folderConfig, folderSchemas } from './folder';
+// export { file, fileFields, fileMeta, fileConfig, fileSchemas } from './file';
+// export { fileVersion, fileVersionFields, fileVersionMeta, fileVersionConfig, fileVersionSchemas } from './fileVersion';
 
 // Relations
 export * from './relations';

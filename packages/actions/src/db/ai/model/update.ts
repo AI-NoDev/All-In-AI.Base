@@ -2,12 +2,11 @@
  * 更新AI模型
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { model } from '@qiyu-allinai/db/entities/ai';
-import { modelZodSchemas } from './schemas';
-import type { ModelSelect, ModelInsert } from './utils';
+import { model, modelSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ModelSelect, ModelInsert } from '@qiyu-allinai/db/entities/ai/model';
 
 export const modelUpdate = defineAction({
   meta: {
@@ -43,9 +42,9 @@ PUT /api/ai/model/xxx-uuid
     path: '/api/ai/model/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: modelZodSchemas.update }),
-    outputSchema: modelZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: modelSchemas.update }),
+    outputSchema: modelSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

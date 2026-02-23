@@ -2,11 +2,10 @@
  * 创建角色
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { role } from '@qiyu-allinai/db/entities/system';
-import { roleZodSchemas } from './schemas';
-import type { RoleSelect, RoleInsert } from './utils';
+import { role, roleSchemas } from '@qiyu-allinai/db/entities/system';
+import type { RoleSelect, RoleInsert } from '@qiyu-allinai/db/entities/system/role';
 
 export const roleCreate = defineAction({
   meta: {
@@ -39,8 +38,8 @@ export const roleCreate = defineAction({
     path: '/api/system/role',
   },
   schemas: {
-    bodySchema: z.object({ data: roleZodSchemas.insert }),
-    outputSchema: roleZodSchemas.select,
+    bodySchema: t.Object({ data: roleSchemas.insert }),
+    outputSchema: roleSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -109,7 +109,7 @@ async function createApp() {
 
 ## packages/db - Database Layer
 
-Defines database entities, relations, and Zod schemas.
+Defines database entities, relations, and TypeBox schemas (using drizzle-typebox).
 
 ```
 packages/db/
@@ -151,8 +151,8 @@ export const user = pgTable(userMeta.name, getTableFields(userFields));
 // 4. Field config (import/export)
 export const userConfig = getFieldConfigs(userFields);
 
-// 5. Zod Schemas
-export const userZodSchemas = createZodSchemas(user, userFields);
+// 5. TypeBox Schemas (using drizzle-typebox)
+export const userSchemas = createTypeboxSchemas(user, userFields);
 ```
 
 ## packages/actions - Business Logic Layer

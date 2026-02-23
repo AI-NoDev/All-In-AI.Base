@@ -2,10 +2,10 @@
  * 获取登录日志Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { loginInfoZodSchemas } from './schemas';
+import { loginInfoSchemas } from './schemas';
 
 export const loginInfoGetSchema = defineAction({
   meta: {
@@ -28,9 +28,9 @@ export const loginInfoGetSchema = defineAction({
     path: '/api/system/login-info/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(loginInfoZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(loginInfoSchemas.select) as Record<string, unknown>;
   },
 });

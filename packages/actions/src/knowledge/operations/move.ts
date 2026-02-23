@@ -5,7 +5,7 @@
 import { eq, and, isNull, sql } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { ActionError } from '../../core/errors';
-import { node, nodeZodSchemas, NODE_TYPES, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, NODE_TYPES, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
 import { buildPath, buildMaterializedPath, isAncestor, assertNodePermission } from '../utils';
 import { nodeIdParamsSchema, moveBodySchema } from './schemas';
 
@@ -45,7 +45,7 @@ export const nodeMove = defineAction({
   schemas: {
     paramsSchema: nodeIdParamsSchema,
     bodySchema: moveBodySchema,
-    outputSchema: nodeZodSchemas.select,
+    outputSchema: nodeSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

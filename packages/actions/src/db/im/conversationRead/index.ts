@@ -1,31 +1,31 @@
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { conversationRead, conversationReadZodSchemas } from '@qiyu-allinai/db/entities/im';
+import { conversationRead, conversationReadSchemas } from '@qiyu-allinai/db/entities/im';
 
 type ConversationReadSelect = typeof conversationRead.$inferSelect;
 type ConversationReadInsert = typeof conversationRead.$inferInsert;
 
 // ============ Filter Schema ============
-const conversationReadFilterSchema = z.object({
-  conversationId: z.string().optional(),
-  conversationIds: z.array(z.string()).optional(),
-  userId: z.string().optional(),
-  userIds: z.array(z.string()).optional(),
-}).optional();
+const conversationReadFilterSchema = t.Optional(t.Object({
+  conversationId: t.Optional(t.String()),
+  conversationIds: t.Optional(t.Array(t.String())),
+  userId: t.Optional(t.String()),
+  userIds: t.Optional(t.Array(t.String())),
+}));
 
-const paginationBodySchema = z.object({
+const paginationBodySchema = t.Object({
   filter: conversationReadFilterSchema,
-  offset: z.number().int().min(0).default(0),
-  limit: z.number().int().min(1).max(100).default(50),
+  offset: t.Number({ minimum: 0, default: 0 }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 50 }),
 });
 
 export const conversationReadGetByPagination = defineAction({
   meta: { name: 'im.conversationRead.getByPagination', displayName: '分页查询已读状态', description: '分页查询已读状态列表', tags: ['im', 'conversationRead'], method: 'POST', path: '/api/im/conversation-read/query' },
   schemas: {
     bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(conversationReadZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(conversationReadSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -50,8 +50,8 @@ export const conversationReadGetByPagination = defineAction({
 export const conversationReadGetByPk = defineAction({
   meta: { name: 'im.conversationRead.getByPk', displayName: '查询已读状态', description: '根据会话ID和用户ID查询已读状态', tags: ['im', 'conversationRead'], method: 'GET', path: '/api/im/conversation-read/:conversationId/:userId' },
   schemas: {
-    paramsSchema: z.object({ conversationId: z.string(), userId: z.string() }),
-    outputSchema: conversationReadZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ conversationId: t.String(), userId: t.String() }),
+    outputSchema: t.Union([conversationReadSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -64,12 +64,12 @@ export const conversationReadGetByPk = defineAction({
 export const conversationReadMarkRead = defineAction({
   meta: { name: 'im.conversationRead.markRead', displayName: '标记已读', description: '标记会话已读到指定消息序号', tags: ['im', 'conversationRead'], method: 'PUT', path: '/api/im/conversation-read/mark' },
   schemas: {
-    bodySchema: z.object({ 
-      conversationId: z.string(), 
-      userId: z.string(),
-      lastReadSeq: z.number().int().min(0)
+    bodySchema: t.Object({ 
+      conversationId: t.String(), 
+      userId: t.String(),
+      lastReadSeq: t.Integer({ minimum: 0 })
     }),
-    outputSchema: conversationReadZodSchemas.select,
+    outputSchema: conversationReadSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -102,12 +102,12 @@ export const conversationReadMarkRead = defineAction({
 export const conversationReadIncrementUnread = defineAction({
   meta: { name: 'im.conversationRead.incrementUnread', displayName: '增加未读数', description: '增加用户在会话中的未读消息数', tags: ['im', 'conversationRead'], method: 'PUT', path: '/api/im/conversation-read/increment-unread' },
   schemas: {
-    bodySchema: z.object({ 
-      conversationId: z.string(), 
-      userIds: z.array(z.string()),
-      increment: z.number().int().min(1).default(1)
+    bodySchema: t.Object({ 
+      conversationId: t.String(), 
+      userIds: t.Array(t.String()),
+      increment: t.Integer({ minimum: 1, default: 1 })
     }),
-    outputSchema: z.number(),
+    outputSchema: t.Number(),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -129,10 +129,10 @@ export const conversationReadIncrementUnread = defineAction({
 export const conversationReadGetSchema = defineAction({
   meta: { name: 'im.conversationRead.getSchema', ignoreTools: true, displayName: '获取已读状态Schema', description: '获取已读状态表的JSON Schema', tags: ['im', 'conversationRead'], method: 'GET', path: '/api/im/conversation-read/schema' },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(conversationReadZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(conversationReadSchemas.select) as Record<string, unknown>;
   },
 });
 

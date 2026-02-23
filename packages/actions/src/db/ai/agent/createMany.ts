@@ -2,11 +2,11 @@
  * 批量创建智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import type { AgentSelect, AgentInsert } from './utils';
+import { agent } from '@qiyu-allinai/db/entities/ai';
+import { agentSchemas, type AgentSelect, type AgentInsert } from './schemas';
 
 export const agentCreateMany = defineAction({
   meta: {
@@ -19,8 +19,8 @@ export const agentCreateMany = defineAction({
     path: '/api/ai/agent/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(agentZodSchemas.insert) }),
-    outputSchema: z.array(agentZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(agentSchemas.insert) }),
+    outputSchema: t.Array(agentSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

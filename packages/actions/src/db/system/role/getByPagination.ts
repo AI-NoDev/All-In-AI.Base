@@ -2,12 +2,12 @@
  * 分页查询角色
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { role } from '@qiyu-allinai/db/entities/system';
-import { rolePaginationBodySchema, roleZodSchemas } from './schemas';
-import type { RoleSelect } from './utils';
+import { role, roleSchemas } from '@qiyu-allinai/db/entities/system';
+import { rolePaginationBodySchema } from './schemas';
+import type { RoleSelect } from '@qiyu-allinai/db/entities/system/role';
 
 export const roleGetByPagination = defineAction({
   meta: {
@@ -47,7 +47,7 @@ export const roleGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: rolePaginationBodySchema,
-    outputSchema: z.object({ data: z.array(roleZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(roleSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

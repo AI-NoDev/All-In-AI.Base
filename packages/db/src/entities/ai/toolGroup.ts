@@ -1,7 +1,7 @@
 import { pgTable, varchar, text, char, integer, jsonb } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -75,4 +75,8 @@ export const toolGroup = pgTable(toolGroupMeta.name, getTableFields(toolGroupFie
 export const toolGroupConfig = getFieldConfigs(toolGroupFields);
 
 // ============ Schemas ============
-export const toolGroupZodSchemas = createZodSchemas(toolGroup, toolGroupFields);
+export const toolGroupSchemas = createTypeboxSchemas(toolGroup);
+
+// ============ Types ============
+export type ToolGroupSelect = typeof toolGroup.$inferSelect;
+export type ToolGroupInsert = typeof toolGroup.$inferInsert;

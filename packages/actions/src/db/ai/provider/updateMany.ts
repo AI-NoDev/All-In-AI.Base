@@ -2,12 +2,11 @@
  * 批量更新AI提供商
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { provider } from '@qiyu-allinai/db/entities/ai';
-import { providerZodSchemas } from './schemas';
-import type { ProviderSelect, ProviderInsert } from './utils';
+import { provider, providerSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ProviderSelect, ProviderInsert } from '@qiyu-allinai/db/entities/ai/provider';
 
 export const providerUpdateMany = defineAction({
   meta: {
@@ -37,8 +36,8 @@ export const providerUpdateMany = defineAction({
     path: '/api/ai/provider/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: providerZodSchemas.update }),
-    outputSchema: z.array(providerZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: providerSchemas.update }),
+    outputSchema: t.Array(providerSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

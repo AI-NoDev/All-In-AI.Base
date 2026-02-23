@@ -2,11 +2,11 @@
  * 更新API密钥
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { apiKey, apiKeyZodSchemas, apiKeyMcp } from '@qiyu-allinai/db/entities/ai';
-import type { ApiKeySelect, ApiKeyInsert } from './utils';
+import { apiKey, apiKeySchemas, apiKeyMcp } from '@qiyu-allinai/db/entities/ai';
+import type { ApiKeySelect, ApiKeyInsert } from '@qiyu-allinai/db/entities/ai/apiKey';
 
 export const apiKeyUpdate = defineAction({
   meta: {
@@ -18,17 +18,17 @@ export const apiKeyUpdate = defineAction({
     path: '/api/ai/api-key/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ 
-      data: z.object({
-        name: z.string().optional(),
-        accessAll: z.boolean().optional(),
-        mcpServerIds: z.array(z.string()).optional(),
-        expiresAt: z.string().nullable().optional(),
-        remark: z.string().nullable().optional(),
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ 
+      data: t.Object({
+        name: t.Optional(t.String()),
+        accessAll: t.Optional(t.Boolean()),
+        mcpServerIds: t.Optional(t.Array(t.String())),
+        expiresAt: t.Optional(t.Union([t.String(), t.Null()])),
+        remark: t.Optional(t.Union([t.String(), t.Null()])),
       })
     }),
-    outputSchema: apiKeyZodSchemas.select,
+    outputSchema: apiKeySchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserName, currentUserId } = context;

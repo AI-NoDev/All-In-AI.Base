@@ -1,11 +1,10 @@
 import { createOpenAICompatible, type OpenAICompatibleProviderSettings } from '@ai-sdk/openai-compatible';
-import { generateText, streamText, Output, convertToModelMessages, type ModelMessage, type StopCondition, type ToolSet, type StepResult, type UIMessage } from 'ai';
+import { generateText, streamText, Output, convertToModelMessages, jsonSchema, type ModelMessage, type StopCondition, type ToolSet, type StepResult, type UIMessage } from 'ai';
 import { type LanguageModelV3 } from '@ai-sdk/provider';
-import z from 'zod/v4';
-import { createProvider, type ProviderConfig } from '../providers/factory';
+import { type TObject, type TProperties, type Static } from '@sinclair/typebox';
+import type { JSONSchema7 } from 'json-schema';
+import { createProvider } from '../providers/factory';
 import type { ProviderType } from '../providers/types';
-
-type ZodObjectShape = Record<string, z.ZodType>;
 
 interface PrepareStepResult<TOOLS extends ToolSet> {
   toolChoice?: 'auto' | 'none' | 'required';
@@ -40,12 +39,12 @@ interface TextRequestOptions<TOOLS extends ToolSet> extends BaseRequestOptions<T
   output?: 'text';
 }
 
-interface ObjectRequestOptions<TOOLS extends ToolSet, O extends ZodObjectShape> extends BaseRequestOptions<TOOLS> {
+interface ObjectRequestOptions<TOOLS extends ToolSet, O extends TProperties> extends BaseRequestOptions<TOOLS> {
   output: 'object';
-  schema: z.ZodObject<O>;
+  schema: TObject<O>;
 }
 
-type RequestOptions<TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape> = 
+type RequestOptions<TOOLS extends ToolSet, O extends TProperties = TProperties> = 
   | TextRequestOptions<TOOLS> 
   | ObjectRequestOptions<TOOLS, O>;
 
@@ -54,7 +53,7 @@ interface StreamCallbacks {
   onError?: (error: Error) => void;
 }
 
-type StreamRequestOptions<TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape> = 
+type StreamRequestOptions<TOOLS extends ToolSet, O extends TProperties = TProperties> = 
   RequestOptions<TOOLS, O> & StreamCallbacks;
 
 /** 判断是否为新版 typed provider 配置 */
@@ -79,14 +78,14 @@ function getProviderInstance(config: LegacyProviderConfig | TypedProviderConfig,
   }
 }
 
-export const generate = async <TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape>(
+export const generate = async <TOOLS extends ToolSet, O extends TProperties = TProperties>(
   options: RequestOptions<TOOLS, O>
 ) => {
   const model = getProviderInstance(options.provider, options.model);
   const modelMessages = await convertToModelMessages(options.messages);
 
   const outputConfig = options.output === 'object' && 'schema' in options
-    ? Output.object({ schema: options.schema })
+    ? Output.object({ schema: jsonSchema<Static<TObject<O>>>(options.schema as unknown as JSONSchema7) })
     : Output.text();
 
   return await generateText({
@@ -103,14 +102,14 @@ export const generate = async <TOOLS extends ToolSet, O extends ZodObjectShape =
   });
 };
 
-export const stream = async <TOOLS extends ToolSet, O extends ZodObjectShape = ZodObjectShape>(
+export const stream = async <TOOLS extends ToolSet, O extends TProperties = TProperties>(
   options: StreamRequestOptions<TOOLS, O>
 ) => {
   const model = getProviderInstance(options.provider, options.model);
   const modelMessages = await convertToModelMessages(options.messages);
 
   const outputConfig = options.output === 'object' && 'schema' in options
-    ? Output.object({ schema: options.schema })
+    ? Output.object({ schema: jsonSchema<Static<TObject<O>>>(options.schema as unknown as JSONSchema7) })
     : Output.text();
 
   return streamText({

@@ -2,10 +2,10 @@
  * 创建用户记忆
  */
 
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { userMemory, userMemoryZodSchemas, MEMORY_TYPES } from '@qiyu-allinai/db/entities/ai';
+import { userMemory, userMemorySchemas, MEMORY_TYPES } from '@qiyu-allinai/db/entities/ai';
 import { getDefaultSTMExpireTime } from './utils';
-import { z } from 'zod';
 
 export const userMemoryCreate = defineAction({
   meta: {
@@ -17,11 +17,11 @@ export const userMemoryCreate = defineAction({
     path: '/api/ai/user-memory',
   },
   schemas: {
-    bodySchema: z.object({
-      data: userMemoryZodSchemas.insert.describe('记忆数据'),
-      generateEmbedding: z.boolean().default(false).describe('是否自动生成向量嵌入（需要配置嵌入服务）'),
-    }).describe('创建用户记忆请求体'),
-    outputSchema: userMemoryZodSchemas.select,
+    bodySchema: t.Object({
+      data: userMemorySchemas.insert,
+      generateEmbedding: t.Boolean({ default: false, description: '是否自动生成向量嵌入（需要配置嵌入服务）' }),
+    }, { description: '创建用户记忆请求体' }),
+    outputSchema: userMemorySchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;

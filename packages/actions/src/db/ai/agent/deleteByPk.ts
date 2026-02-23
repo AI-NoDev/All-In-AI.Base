@@ -2,7 +2,7 @@
  * 删除智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
@@ -19,8 +19,8 @@ export const agentDeleteByPk = defineAction({
     path: '/api/ai/agent/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db, currentUserId, currentUserType } = context;

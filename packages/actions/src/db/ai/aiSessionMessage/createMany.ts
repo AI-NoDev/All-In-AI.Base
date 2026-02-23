@@ -2,12 +2,11 @@
  * 批量创建AI会话消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { aiSessionMessage, aiSession } from '@qiyu-allinai/db/entities/ai';
-import { aiSessionMessageZodSchemas } from './schemas';
-import type { AISessionMessageSelect, AISessionMessageInsert, TokenUsage } from './utils';
+import { aiSessionMessageSchemas, type AISessionMessageSelect, type AISessionMessageInsert, type TokenUsage } from './schemas';
 
 export const aiSessionMessageCreateMany = defineAction({
   meta: {
@@ -41,11 +40,11 @@ export const aiSessionMessageCreateMany = defineAction({
     path: '/api/ai/session-message/batch',
   },
   schemas: {
-    bodySchema: z.object({
-      sessionId: z.string(),
-      messages: z.array(aiSessionMessageZodSchemas.insert.omit({ sessionId: true, msgSeq: true })),
+    bodySchema: t.Object({
+      sessionId: t.String(),
+      messages: t.Array(t.Omit(aiSessionMessageSchemas.insert, ['sessionId', 'msgSeq'])),
     }),
-    outputSchema: z.array(aiSessionMessageZodSchemas.select),
+    outputSchema: t.Array(aiSessionMessageSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

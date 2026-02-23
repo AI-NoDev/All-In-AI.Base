@@ -3,22 +3,22 @@
  * 用于开发模式下浏览 monorepo 项目代码
  */
 
-import { z } from 'zod';
+import { t, type Static } from 'elysia';
 import { defineAction } from '../core/define';
 import { ActionError } from '../core/errors';
 import * as fs from 'fs';
 import * as path from 'path';
 
 // 文件/目录项 Schema
-const fileItemSchema = z.object({
-  name: z.string(),
-  path: z.string(),
-  type: z.enum(['file', 'directory']),
-  size: z.number().optional(),
-  extension: z.string().optional(),
+const fileItemSchema = t.Object({
+  name: t.String(),
+  path: t.String(),
+  type: t.Union([t.Literal('file'), t.Literal('directory')]),
+  size: t.Optional(t.Number()),
+  extension: t.Optional(t.String()),
 });
 
-type FileItem = z.infer<typeof fileItemSchema>;
+type FileItem = Static<typeof fileItemSchema>;
 
 // 忽略的目录和文件
 const IGNORED_PATTERNS = [
@@ -69,6 +69,7 @@ function getMonorepoRoot(): string {
   // 如果没找到，返回当前工作目录
   return process.cwd();
 }
+
 
 /**
  * 检查是否应该忽略该路径
@@ -124,9 +125,9 @@ export const getProjectRoot = defineAction({
     path: '/api/dev/project-code/root',
   },
   schemas: {
-    outputSchema: z.object({
-      root: z.string(),
-      name: z.string(),
+    outputSchema: t.Object({
+      root: t.String(),
+      name: t.String(),
     }),
   },
   execute: async () => {
@@ -173,12 +174,12 @@ export const readDirectory = defineAction({
     path: '/api/dev/project-code/directory',
   },
   schemas: {
-    bodySchema: z.object({
-      relativePath: z.string().default(''),
+    bodySchema: t.Object({
+      relativePath: t.Optional(t.String({ default: '' })),
     }),
-    outputSchema: z.object({
-      items: z.array(fileItemSchema),
-      currentPath: z.string(),
+    outputSchema: t.Object({
+      items: t.Array(fileItemSchema),
+      currentPath: t.String(),
     }),
   },
   execute: async (input) => {
@@ -243,6 +244,7 @@ export const readDirectory = defineAction({
   },
 });
 
+
 /**
  * 读取文件内容
  */
@@ -282,16 +284,16 @@ export const readFileContent = defineAction({
     path: '/api/dev/project-code/file',
   },
   schemas: {
-    bodySchema: z.object({
-      relativePath: z.string(),
+    bodySchema: t.Object({
+      relativePath: t.String(),
     }),
-    outputSchema: z.object({
-      content: z.string(),
-      path: z.string(),
-      name: z.string(),
-      extension: z.string(),
-      size: z.number(),
-      language: z.string(),
+    outputSchema: t.Object({
+      content: t.String(),
+      path: t.String(),
+      name: t.String(),
+      extension: t.String(),
+      size: t.Number(),
+      language: t.String(),
     }),
   },
   execute: async (input) => {

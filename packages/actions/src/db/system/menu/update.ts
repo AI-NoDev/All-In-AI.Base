@@ -2,12 +2,11 @@
  * 更新菜单
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { menu } from '@qiyu-allinai/db/entities/system';
-import { menuZodSchemas } from './schemas';
-import type { MenuSelect, MenuInsert } from './utils';
+import { menu, menuSchemas } from '@qiyu-allinai/db/entities/system';
+import type { MenuSelect, MenuInsert } from '@qiyu-allinai/db/entities/system/menu';
 
 export const menuUpdate = defineAction({
   meta: {
@@ -42,9 +41,9 @@ PUT /api/system/menu/xxx-uuid
     path: '/api/system/menu/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: menuZodSchemas.update }),
-    outputSchema: menuZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: menuSchemas.update }),
+    outputSchema: menuSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

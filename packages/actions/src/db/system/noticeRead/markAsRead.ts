@@ -2,7 +2,7 @@
  * 标记通知为已读
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { notice, noticeRead, NOTICE_STATUS, NOTICE_TARGET_TYPE } from '@qiyu-allinai/db/entities/system';
@@ -19,7 +19,7 @@ export const noticeReadMarkAsRead = defineAction({
   },
   schemas: {
     bodySchema: markAsReadBodySchema,
-    outputSchema: z.object({ success: z.boolean() }),
+    outputSchema: t.Object({ success: t.Boolean() }),
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;

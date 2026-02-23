@@ -1,89 +1,89 @@
 /**
- * 知识库权限管理 Schemas
+ * 知识库权限管理 Schemas (TypeBox)
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 
 // ============ 基础类型 Schemas ============
-export const subjectTypeSchema = z.enum(['user', 'role', 'dept']).describe('主体类型：user=用户，role=角色，dept=部门');
-export const permissionSchema = z.enum(['read', 'write', 'delete', 'manage']).describe('权限类型：read=读取，write=写入，delete=删除，manage=管理');
-export const effectSchema = z.enum(['allow', 'deny']).describe('权限效果：allow=允许，deny=拒绝');
+export const subjectTypeSchema = t.Union([t.Literal('user'), t.Literal('role'), t.Literal('dept')], { description: '主体类型：user=用户，role=角色，dept=部门' });
+export const permissionSchema = t.Union([t.Literal('read'), t.Literal('write'), t.Literal('delete'), t.Literal('manage')], { description: '权限类型：read=读取，write=写入，delete=删除，manage=管理' });
+export const effectSchema = t.Union([t.Literal('allow'), t.Literal('deny')], { description: '权限效果：allow=允许，deny=拒绝' });
 
 // ============ 权限条目 Schema ============
-export const permissionEntrySchema = z.object({
+export const permissionEntrySchema = t.Object({
   subjectType: subjectTypeSchema,
-  subjectId: z.string().describe('主体 ID'),
+  subjectId: t.String({ description: '主体 ID' }),
   permission: permissionSchema,
-  effect: effectSchema.default('allow'),
+  effect: t.Optional(t.Union([t.Literal('allow'), t.Literal('deny')], { default: 'allow', description: '权限效果：allow=允许，deny=拒绝' })),
 });
 
 // ============ 有效权限 Schema ============
-export const effectivePermissionSchema = z.object({
+export const effectivePermissionSchema = t.Object({
   permission: permissionSchema,
   effect: effectSchema,
-  source: z.enum(['direct', 'inherited', 'role', 'dept']).describe('权限来源：direct=直接授权，inherited=继承，role=角色，dept=部门'),
-  sourceId: z.string().optional().describe('来源 ID'),
+  source: t.Union([t.Literal('direct'), t.Literal('inherited'), t.Literal('role'), t.Literal('dept')], { description: '权限来源：direct=直接授权，inherited=继承，role=角色，dept=部门' }),
+  sourceId: t.Optional(t.String({ description: '来源 ID' })),
 });
 
 // ============ 参数 Schemas ============
-export const nodeIdParamsSchema = z.object({
-  id: z.string().describe('节点 ID'),
+export const nodeIdParamsSchema = t.Object({
+  id: t.String({ description: '节点 ID' }),
 });
 
-export const removePermissionParamsSchema = z.object({
-  id: z.string().describe('节点 ID'),
+export const removePermissionParamsSchema = t.Object({
+  id: t.String({ description: '节点 ID' }),
   subjectType: subjectTypeSchema,
-  subjectId: z.string().describe('主体 ID'),
+  subjectId: t.String({ description: '主体 ID' }),
 });
 
 // ============ 请求体 Schemas ============
-export const setPermissionsBodySchema = z.object({
-  permissions: z.array(permissionEntrySchema).describe('权限条目列表'),
+export const setPermissionsBodySchema = t.Object({
+  permissions: t.Array(permissionEntrySchema, { description: '权限条目列表' }),
 });
 
-export const quickShareBodySchema = z.object({
-  userIds: z.array(z.string().describe('用户 ID')).describe('目标用户 ID 列表'),
-  level: z.enum(['read', 'edit', 'full']).describe('共享级别：read=只读，edit=可编辑，full=完全控制'),
+export const quickShareBodySchema = t.Object({
+  userIds: t.Array(t.String({ description: '用户 ID' }), { description: '目标用户 ID 列表' }),
+  level: t.Union([t.Literal('read'), t.Literal('edit'), t.Literal('full')], { description: '共享级别：read=只读，edit=可编辑，full=完全控制' }),
 });
 
-export const revokeShareBodySchema = z.object({
-  userIds: z.array(z.string().describe('用户 ID')).describe('要撤销共享的用户 ID 列表'),
+export const revokeShareBodySchema = t.Object({
+  userIds: t.Array(t.String({ description: '用户 ID' }), { description: '要撤销共享的用户 ID 列表' }),
 });
 
 // ============ 查询参数 Schemas ============
-export const removePermissionQuerySchema = z.object({
-  permission: permissionSchema.optional().describe('要移除的特定权限，不指定则移除所有'),
-}).optional();
+export const removePermissionQuerySchema = t.Optional(t.Object({
+  permission: t.Optional(permissionSchema),
+}));
 
-export const effectivePermissionQuerySchema = z.object({
-  userId: z.string().optional().describe('用户 ID，不指定则查询当前用户'),
-}).optional();
+export const effectivePermissionQuerySchema = t.Optional(t.Object({
+  userId: t.Optional(t.String({ description: '用户 ID，不指定则查询当前用户' })),
+}));
 
 // ============ 输出 Schemas ============
-export const successOutputSchema = z.object({
-  success: z.boolean().describe('操作是否成功'),
+export const successOutputSchema = t.Object({
+  success: t.Boolean({ description: '操作是否成功' }),
 });
 
-export const permissionsOutputSchema = z.object({
-  permissions: z.array(z.object({
+export const permissionsOutputSchema = t.Object({
+  permissions: t.Array(t.Object({
     subjectType: subjectTypeSchema,
-    subjectId: z.string().describe('主体 ID'),
-    resourceId: z.string().describe('资源 ID'),
+    subjectId: t.String({ description: '主体 ID' }),
+    resourceId: t.String({ description: '资源 ID' }),
     permission: permissionSchema,
     effect: effectSchema,
-  })).describe('权限列表'),
+  }), { description: '权限列表' }),
 });
 
-export const effectivePermissionsOutputSchema = z.object({
-  data: z.array(effectivePermissionSchema).describe('有效权限列表'),
+export const effectivePermissionsOutputSchema = t.Object({
+  data: t.Array(effectivePermissionSchema, { description: '有效权限列表' }),
 });
 
-export const quickShareOutputSchema = z.object({
-  success: z.boolean().describe('操作是否成功'),
-  sharedCount: z.number().describe('成功共享的用户数'),
+export const quickShareOutputSchema = t.Object({
+  success: t.Boolean({ description: '操作是否成功' }),
+  sharedCount: t.Number({ description: '成功共享的用户数' }),
 });
 
-export const revokeShareOutputSchema = z.object({
-  success: z.boolean().describe('操作是否成功'),
-  revokedCount: z.number().describe('成功撤销的用户数'),
+export const revokeShareOutputSchema = t.Object({
+  success: t.Boolean({ description: '操作是否成功' }),
+  revokedCount: t.Number({ description: '成功撤销的用户数' }),
 });

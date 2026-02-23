@@ -94,7 +94,7 @@ const adminMenus = [
 ## packages/db - 数据库层
 
 ### 作用
-定义数据库实体（表结构）、关系和 Zod Schema，使用 Drizzle ORM。
+定义数据库实体（表结构）、关系和 TypeBox Schema，使用 Drizzle ORM 和 drizzle-typebox。
 
 ### 目录结构
 ```
@@ -116,10 +116,10 @@ packages/db/
 ```typescript
 // 每个实体文件导出：
 export const tableName = pgTable('table_name', { ... });
-export const tableNameZodSchemas = {
-  select: z.object({ ... }),   // 查询返回类型
-  insert: z.object({ ... }),   // 插入类型
-  update: z.object({ ... }),   // 更新类型
+export const tableNameSchemas = {
+  select: t.Object({ ... }),   // 查询返回类型
+  insert: t.Object({ ... }),   // 插入类型
+  update: t.Object({ ... }),   // 更新类型
 };
 ```
 
@@ -166,7 +166,7 @@ export const entityGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(entityZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(entitySchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     // 业务逻辑

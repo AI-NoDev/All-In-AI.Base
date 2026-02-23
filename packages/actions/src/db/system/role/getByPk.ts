@@ -2,12 +2,11 @@
  * 根据ID查询角色
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { role } from '@qiyu-allinai/db/entities/system';
-import { roleZodSchemas } from './schemas';
-import type { RoleSelect } from './utils';
+import { role, roleSchemas } from '@qiyu-allinai/db/entities/system';
+import type { RoleSelect } from '@qiyu-allinai/db/entities/system/role';
 
 export const roleGetByPk = defineAction({
   meta: {
@@ -29,8 +28,8 @@ GET /api/system/role/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/system/role/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: roleZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([roleSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

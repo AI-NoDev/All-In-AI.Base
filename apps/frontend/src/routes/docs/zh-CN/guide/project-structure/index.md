@@ -109,7 +109,7 @@ async function createApp() {
 
 ## packages/db - 数据库层
 
-定义数据库实体、关系和 Zod Schema。
+定义数据库实体、关系和 TypeBox Schema（使用 drizzle-typebox）。
 
 ```
 packages/db/
@@ -151,8 +151,8 @@ export const user = pgTable(userMeta.name, getTableFields(userFields));
 // 4. 字段配置（导入导出）
 export const userConfig = getFieldConfigs(userFields);
 
-// 5. Zod Schemas
-export const userZodSchemas = createZodSchemas(user, userFields);
+// 5. TypeBox Schemas（使用 drizzle-typebox）
+export const userSchemas = createTypeboxSchemas(user, userFields);
 ```
 
 ## packages/actions - 业务逻辑层

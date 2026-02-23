@@ -1,12 +1,11 @@
 import { pgTable, varchar, text, char, jsonb } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-import { createZodSchemas } from "../../types";
 
 // ============ Fields ============
 const schemaOwnFields = {
@@ -56,4 +55,8 @@ export const schema = pgTable(schemaMeta.name, getTableFields(schemaFields));
 export const schemaConfig = getFieldConfigs(schemaFields);
 
 // ============ Schemas ============
-export const schemaZodSchemas = createZodSchemas(schema, schemaFields);
+export const schemaSchemas = createTypeboxSchemas(schema);
+
+// ============ Types ============
+export type SchemaSelect = typeof schema.$inferSelect;
+export type SchemaInsert = typeof schema.$inferInsert;

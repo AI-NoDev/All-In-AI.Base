@@ -2,11 +2,10 @@
  * 创建通知公告
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { notice } from '@qiyu-allinai/db/entities/system';
-import { noticeZodSchemas } from './schemas';
-import type { NoticeSelect, NoticeInsert } from './utils';
+import { notice, noticeTypeboxSchemas } from '@qiyu-allinai/db/entities/system';
+import type { NoticeSelect, NoticeInsert } from '@qiyu-allinai/db/entities/system/notice';
 
 export const noticeCreate = defineAction({
   meta: {
@@ -48,8 +47,8 @@ export const noticeCreate = defineAction({
     path: '/api/system/notice',
   },
   schemas: {
-    bodySchema: z.object({ data: noticeZodSchemas.insert }),
-    outputSchema: noticeZodSchemas.select,
+    bodySchema: t.Object({ data: noticeTypeboxSchemas.insert }),
+    outputSchema: noticeTypeboxSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

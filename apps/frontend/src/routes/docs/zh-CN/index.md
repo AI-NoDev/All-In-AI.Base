@@ -24,6 +24,6 @@
 | UI 组件 | shadcn-svelte |
 | 后端框架 | Elysia |
 | 数据库 | PostgreSQL + Drizzle ORM |
-| 验证 | Zod v4 |
+| 验证 | TypeBox (Elysia's `t`) |
 | 国际化 | Paraglide |
 | 构建工具 | Turborepo |

@@ -1,7 +1,7 @@
 import { pgTable, uuid } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 
@@ -51,4 +51,8 @@ export const userRole = pgTable(userRoleMeta.name, getTableFields(userRoleFields
 export const userRoleConfig = getFieldConfigs(userRoleFields);
 
 // ============ Schemas ============
-export const userRoleZodSchemas = createZodSchemas(userRole, userRoleFields);
+export const userRoleSchemas = createTypeboxSchemas(userRole);
+
+// ============ Types ============
+export type UserRoleSelect = typeof userRole.$inferSelect;
+export type UserRoleInsert = typeof userRole.$inferInsert;

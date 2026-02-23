@@ -1,12 +1,10 @@
 /**
  * 通知已读记录实体
- * 记录用户对通知的已读状态
  */
 
 import { pgTable, uuid, timestamp, primaryKey } from "drizzle-orm/pg-core";
 import { 
-  getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -56,5 +54,9 @@ export const noticeRead = pgTable(noticeReadMeta.name, getTableFields(noticeRead
 // ============ Config ============
 export const noticeReadConfig = getFieldConfigs(noticeReadFields);
 
-// ============ Schemas ============
-export const noticeReadZodSchemas = createZodSchemas(noticeRead, noticeReadFields);
+// ============ Schemas (TypeBox) ============
+export const noticeReadSchemas = createTypeboxSchemas(noticeRead);
+
+// ============ Types (从 Drizzle 推导) ============
+export type NoticeReadSelect = typeof noticeRead.$inferSelect;
+export type NoticeReadInsert = typeof noticeRead.$inferInsert;

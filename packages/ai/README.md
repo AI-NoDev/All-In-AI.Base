@@ -21,7 +21,7 @@ bun add @qiyu-allinai/ai
 ```typescript
 import { generate, stream, tool, stepCountIs, convertToModelMessages } from '@qiyu-allinai/ai/server';
 import type { UIMessage } from '@qiyu-allinai/ai/server';
-import { z } from 'zod';
+import { t } from 'elysia';
 
 // 在 SvelteKit API 路由中使用
 export async function POST({ request }) {
@@ -36,7 +36,7 @@ export async function POST({ request }) {
     tools: {
       weather: tool({
         description: 'Get weather',
-        inputSchema: z.object({ location: z.string() }),
+        inputSchema: t.Object({ location: t.String() }),
         execute: async ({ location }) => ({ temp: 20, location }),
       }),
     },

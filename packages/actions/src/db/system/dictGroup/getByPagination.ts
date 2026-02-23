@@ -2,12 +2,12 @@
  * 分页查询字典组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dictGroup } from '@qiyu-allinai/db/entities/system';
-import { dictGroupPaginationBodySchema, dictGroupZodSchemas } from './schemas';
-import type { DictGroupSelect } from './utils';
+import { dictGroup, dictGroupSchemas } from '@qiyu-allinai/db/entities/system';
+import { dictGroupPaginationBodySchema } from './schemas';
+import type { DictGroupSelect } from '@qiyu-allinai/db/entities/system/dictGroup';
 
 export const dictGroupGetByPagination = defineAction({
   meta: {
@@ -29,29 +29,14 @@ export const dictGroupGetByPagination = defineAction({
 
 **分页参数：**
 - offset: 起始位置，默认0
-- limit: 每页数量，1-100，默认20
-
-**使用场景：**
-1. 获取所有正常状态的字典组：filter.status = "0"
-2. 搜索系统相关字典：filter.key = "sys"
-3. 按键名排序：sort = { field: "key", order: "asc" }
-
-**示例：**
-\`\`\`json
-{
-  "filter": { "status": "0", "key": "sys" },
-  "sort": { "field": "key", "order": "asc" },
-  "offset": 0,
-  "limit": 20
-}
-\`\`\``,
+- limit: 每页数量，1-100，默认20`,
     tags: ['system', 'dictGroup'],
     method: 'POST',
     path: '/api/system/dict-group/query',
   },
   schemas: {
     bodySchema: dictGroupPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(dictGroupZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(dictGroupSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

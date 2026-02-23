@@ -2,10 +2,10 @@
  * 根据ID查询部门
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { department, departmentSchemas } from '@qiyu-allinai/db/entities/system';
 import type { DepartmentSelect } from './utils';
 
 export const departmentGetByPk = defineAction({
@@ -18,8 +18,8 @@ export const departmentGetByPk = defineAction({
     path: '/api/system/department/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: departmentZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([departmentSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

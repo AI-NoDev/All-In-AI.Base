@@ -2,12 +2,11 @@
  * 批量更新字典
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { dict } from '@qiyu-allinai/db/entities/system';
-import { dictZodSchemas } from './schemas';
-import type { DictSelect, DictInsert } from './utils';
+import { dict, dictSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictSelect, DictInsert } from '@qiyu-allinai/db/entities/system/dict';
 
 export const dictUpdateMany = defineAction({
   meta: {
@@ -37,8 +36,8 @@ export const dictUpdateMany = defineAction({
     path: '/api/system/dict/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: dictZodSchemas.update }),
-    outputSchema: z.array(dictZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: dictSchemas.update }),
+    outputSchema: t.Array(dictSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

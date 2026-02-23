@@ -2,10 +2,10 @@
  * 获取部门 Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { departmentSchemas } from '@qiyu-allinai/db/entities/system';
 
 export const departmentGetSchema = defineAction({
   meta: {
@@ -18,9 +18,9 @@ export const departmentGetSchema = defineAction({
     path: '/api/system/department/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(departmentZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(departmentSchemas.select) as Record<string, unknown>;
   },
 });

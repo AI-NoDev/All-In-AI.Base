@@ -2,11 +2,11 @@
  * 分页查询部门
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, ilike, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { checkReadPermission, BUSINESS_MODULE, DATA_SCOPE } from '../../../core/deptPermission';
-import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { department, departmentSchemas } from '@qiyu-allinai/db/entities/system';
 import { paginationBodySchema } from './schemas';
 import type { DepartmentSelect } from './utils';
 
@@ -21,7 +21,7 @@ export const departmentGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(departmentZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(departmentSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,10 +2,10 @@
  * 根据ID查询用户
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { user, userZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { user, userSchemas } from '@qiyu-allinai/db/entities/system';
 import { sanitizeUser, type UserSelect } from './utils';
 
 export const userGetByPk = defineAction({
@@ -18,8 +18,8 @@ export const userGetByPk = defineAction({
     path: '/api/system/user/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: userZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([userSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,7 +2,7 @@
  * 记忆系统类型定义
  */
 
-import { z } from 'zod';
+import { t, type Static } from 'elysia';
 
 // ============ 记忆类型 ============
 export const MEMORY_TYPES = {
@@ -32,17 +32,19 @@ export interface ShortTermMemory {
   ttl: number; // 秒
 }
 
-export const shortTermMemorySchema = z.object({
-  id: z.string().describe('记忆ID'),
-  userId: z.string().describe('用户ID'),
-  sessionId: z.string().describe('会话ID'),
-  agentId: z.string().optional().describe('智能体ID'),
-  content: z.string().describe('记忆内容'),
-  metadata: z.record(z.string(), z.unknown()).optional().describe('元数据'),
-  importance: z.number().min(1).max(10).default(5).describe('重要度'),
-  createdAt: z.string().describe('创建时间'),
-  ttl: z.number().default(1800).describe('过期时间(秒)'), // 默认30分钟
+export const shortTermMemorySchema = t.Object({
+  id: t.String({ description: '记忆ID' }),
+  userId: t.String({ description: '用户ID' }),
+  sessionId: t.String({ description: '会话ID' }),
+  agentId: t.Optional(t.String({ description: '智能体ID' })),
+  content: t.String({ description: '记忆内容' }),
+  metadata: t.Optional(t.Record(t.String(), t.Unknown(), { description: '元数据' })),
+  importance: t.Number({ minimum: 1, maximum: 10, default: 5, description: '重要度' }),
+  createdAt: t.String({ description: '创建时间' }),
+  ttl: t.Number({ default: 1800, description: '过期时间(秒)' }), // 默认30分钟
 });
+
+export type ShortTermMemorySchema = Static<typeof shortTermMemorySchema>;
 
 // ============ LTM 长期记忆 (PostgreSQL) ============
 export interface LongTermMemory {

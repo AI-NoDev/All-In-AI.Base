@@ -2,7 +2,7 @@
  * 删除MCP服务
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { mcpServer } from '@qiyu-allinai/db/entities/ai';
@@ -31,8 +31,8 @@ DELETE /api/ai/mcp-server/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/mcp-server/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

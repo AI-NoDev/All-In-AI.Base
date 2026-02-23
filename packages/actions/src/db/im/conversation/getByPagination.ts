@@ -2,12 +2,11 @@
  * 分页查询会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { conversation, conversationZodSchemas } from '@qiyu-allinai/db/entities/im';
-import { paginationBodySchema } from './schemas';
-import type { ConversationSelect } from './utils';
+import { conversation } from '@qiyu-allinai/db/entities/im';
+import { conversationPaginationBodySchema, conversationSchemas, type ConversationSelect } from './schemas';
 
 export const conversationGetByPagination = defineAction({
   meta: {
@@ -19,8 +18,8 @@ export const conversationGetByPagination = defineAction({
     path: '/api/im/conversation/query',
   },
   schemas: {
-    bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(conversationZodSchemas.select), total: z.number() }),
+    bodySchema: conversationPaginationBodySchema,
+    outputSchema: t.Object({ data: t.Array(conversationSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

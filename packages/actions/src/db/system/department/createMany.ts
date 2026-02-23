@@ -2,11 +2,11 @@
  * 批量创建部门
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { department, departmentSchemas } from '@qiyu-allinai/db/entities/system';
 import { buildDeptMaterializedPath, type DepartmentSelect, type DepartmentInsert } from './utils';
 
 export const departmentCreateMany = defineAction({
@@ -20,8 +20,8 @@ export const departmentCreateMany = defineAction({
     path: '/api/system/department/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(departmentZodSchemas.insert) }),
-    outputSchema: z.array(departmentZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(departmentSchemas.insert) }),
+    outputSchema: t.Array(departmentSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

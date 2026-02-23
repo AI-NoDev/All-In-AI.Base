@@ -2,12 +2,11 @@
  * 根据复合主键查询用户岗位关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { userPost } from '@qiyu-allinai/db/entities/system';
-import { userPostZodSchemas } from './schemas';
-import type { UserPostSelect } from './utils';
+import { userPost, userPostSchemas } from '@qiyu-allinai/db/entities/system';
+import type { UserPostSelect } from '@qiyu-allinai/db/entities/system/userPost';
 
 export const userPostGetByPk = defineAction({
   meta: {
@@ -31,8 +30,8 @@ GET /api/system/user-post/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d
     path: '/api/system/user-post/:userId/:postId',
   },
   schemas: {
-    paramsSchema: z.object({ userId: z.string(), postId: z.string() }),
-    outputSchema: userPostZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ userId: t.String(), postId: t.String() }),
+    outputSchema: t.Union([userPostSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

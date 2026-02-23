@@ -2,56 +2,25 @@
  * 分页查询岗位
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { post } from '@qiyu-allinai/db/entities/system';
-import { postPaginationBodySchema, postZodSchemas } from './schemas';
-import type { PostSelect } from './utils';
+import { post, postSchemas } from '@qiyu-allinai/db/entities/system';
+import { postPaginationBodySchema } from './schemas';
+import type { PostSelect } from '@qiyu-allinai/db/entities/system/post';
 
 export const postGetByPagination = defineAction({
   meta: {
     name: 'system.post.getByPagination',
     displayName: '分页查询岗位',
-    description: `分页查询岗位列表，支持多种过滤和排序方式。
-
-**过滤参数 (filter)：**
-- ids: 按ID列表精确查询，如 ["id1", "id2"]
-- codes: 按岗位编码列表精确查询，如 ["CEO", "CTO", "PM"]
-- names: 按岗位名称列表精确查询
-- status: 按状态过滤，"0"=正常，"1"=禁用
-- code: 按岗位编码模糊搜索，如 "C" 匹配 CEO、CTO
-- name: 按岗位名称模糊搜索
-
-**排序参数 (sort)：**
-- field: code | name | sort | createdAt | updatedAt
-- order: asc | desc
-
-**分页参数：**
-- offset: 起始位置，默认0
-- limit: 每页数量，1-100，默认20
-
-**使用场景：**
-1. 获取所有正常状态的岗位：filter.status = "0"
-2. 搜索包含"经理"的岗位：filter.name = "经理"
-3. 按排序号升序排列：sort = { field: "sort", order: "asc" }
-
-**示例：**
-\`\`\`json
-{
-  "filter": { "status": "0", "name": "经理" },
-  "sort": { "field": "sort", "order": "asc" },
-  "offset": 0,
-  "limit": 20
-}
-\`\`\``,
+    description: '分页查询岗位列表，支持多种过滤和排序方式',
     tags: ['system', 'post'],
     method: 'POST',
     path: '/api/system/post/query',
   },
   schemas: {
     bodySchema: postPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(postZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(postSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

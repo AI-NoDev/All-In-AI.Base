@@ -2,12 +2,12 @@
  * 分页查询用户岗位关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { userPost } from '@qiyu-allinai/db/entities/system';
-import { userPostPaginationBodySchema, userPostZodSchemas } from './schemas';
-import type { UserPostSelect } from './utils';
+import { userPost, userPostSchemas } from '@qiyu-allinai/db/entities/system';
+import { userPostPaginationBodySchema } from './schemas';
+import type { UserPostSelect } from '@qiyu-allinai/db/entities/system/userPost';
 
 export const userPostGetByPagination = defineAction({
   meta: {
@@ -50,7 +50,7 @@ export const userPostGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: userPostPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(userPostZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(userPostSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

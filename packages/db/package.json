@@ -7,9 +7,13 @@
 		"./connect": "./src/connect/index.ts",
 		"./entities": "./src/entities/index.ts",
 		"./entities/system": "./src/entities/system/index.ts",
+		"./entities/system/*": "./src/entities/system/*.ts",
 		"./entities/ai": "./src/entities/ai/index.ts",
+		"./entities/ai/*": "./src/entities/ai/*.ts",
 		"./entities/knowledge": "./src/entities/knowledge/index.ts",
+		"./entities/knowledge/*": "./src/entities/knowledge/*.ts",
 		"./entities/im": "./src/entities/im/index.ts",
+		"./entities/im/*": "./src/entities/im/*.ts",
 		"./seedData": "./src/seedData/index.ts",
 		"./casbin": "./src/casbin/index.ts",
 		"./types": "./src/types.ts",
@@ -33,12 +37,12 @@
 	},
 	"dependencies": {
 		"@qiyu-allinai/i18n": "workspace:*",
+		"@sinclair/typebox": "^0.34.33",
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.45.1",
-		"drizzle-zod": "^0.8.3",
+		"drizzle-typebox": "^0.3.3",
 		"elysia": "^1.4.22",
 		"pg": "^8.17.2",
-		"postgres": "^3.4.8",
-		"zod": "^4.3.6"
+		"postgres": "^3.4.8"
 	}
 }

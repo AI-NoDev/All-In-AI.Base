@@ -2,10 +2,10 @@
  * 获取MCP服务Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { mcpServerZodSchemas } from './schemas';
+import { mcpServerSchemas } from './schemas';
 
 export const mcpServerGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ export const mcpServerGetSchema = defineAction({
     path: '/api/ai/mcp-server/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(mcpServerZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(mcpServerSchemas.select) as Record<string, unknown>;
   },
 });

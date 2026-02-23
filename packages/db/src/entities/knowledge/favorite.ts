@@ -1,7 +1,7 @@
 import { pgTable, uuid, varchar, uniqueIndex } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
@@ -55,7 +55,7 @@ export const favorite = pgTable(
 export const favoriteConfig = getFieldConfigs(favoriteFields);
 
 // ============ Schemas ============
-export const favoriteZodSchemas = createZodSchemas(favorite, favoriteFields);
+export const favoriteSchemas = createTypeboxSchemas(favorite);
 
 // ============ 类型导出 ============
 export type FavoriteSelect = typeof favorite.$inferSelect;

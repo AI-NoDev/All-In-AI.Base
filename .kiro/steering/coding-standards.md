@@ -26,7 +26,8 @@ interface UserFormData {
 const data: UserFormData = response.data;
 
 // 如果必须使用类型断言，使用具体类型
-type UserInsertData = z.infer<typeof userZodSchemas.insert>;
+import type { Static } from '@sinclair/typebox';
+type UserInsertData = Static<typeof userSchemas.insert>;
 await api.system.postApiSystemUser({ data: form as UserInsertData });
 ```
 
@@ -53,85 +54,91 @@ interface UserInsert extends Omit<UserSelect, 'id'> {
   id?: string;
 }
 
-// 从 Zod Schema 推导类型
-type UserSelect = z.infer<typeof userZodSchemas.select>;
-type UserInsert = z.infer<typeof userZodSchemas.insert>;
+// 从 TypeBox Schema 推导类型
+import type { Static } from '@sinclair/typebox';
+type UserSelect = Static<typeof userSchemas.select>;
+type UserInsert = Static<typeof userSchemas.insert>;
 ```
 
 ### 类型定义位置
 
 1. **实体类型** - 在 `packages/db/src/entities/` 中定义
-2. **Action 输入/输出类型** - 使用 Zod Schema 推导
+2. **Action 输入/输出类型** - 使用 TypeBox Schema 推导
 3. **前端组件类型** - 在组件文件顶部定义 interface
 4. **共享类型** - 在 `packages/*/src/types.ts` 中定义
 
 ---
 
-## Zod Schema 规范
+## TypeBox Schema 规范
 
 ### 基本原则
 
-1. **Schema 与实体一一对应** - 每个数据库实体都有对应的 Zod Schema
+1. **Schema 与实体一一对应** - 每个数据库实体都有对应的 TypeBox Schema
 2. **复用基础 Schema** - 使用 `pkSchema`, `auditSchema`, `deletedSchema`
-3. **明确可选字段** - 使用 `.optional()` 或 `.nullable()`
+3. **明确可选字段** - 使用 `t.Optional()` 或 `t.Union([..., t.Null()])`
 
 ### Schema 定义示例
 
 ```typescript
-import { z } from 'zod';
+import { t } from 'elysia';
+import type { Static } from '@sinclair/typebox';
 
 // 基础字段 Schema
 const baseFields = {
-  name: z.string().min(1).max(100),
-  status: z.string().default('0'),
-  remark: z.string().nullable().optional(),
+  name: t.String({ minLength: 1, maxLength: 100 }),
+  status: t.String({ default: '0' }),
+  remark: t.Optional(t.Union([t.String(), t.Null()])),
 };
 
 // Select Schema（查询返回）
-export const entitySelectSchema = z.object({
-  id: z.uuid(),
+export const entitySelectSchema = t.Object({
+  id: t.String({ format: 'uuid' }),
   ...baseFields,
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  createdAt: t.String(),
+  updatedAt: t.String(),
 });
 
 // Insert Schema（创建）
-export const entityInsertSchema = z.object({
-  id: z.uuid().optional(),
+export const entityInsertSchema = t.Object({
+  id: t.Optional(t.String({ format: 'uuid' })),
   ...baseFields,
-  createdBy: z.string(),
-  updatedBy: z.string(),
+  createdBy: t.String(),
+  updatedBy: t.String(),
 });
 
 // Update Schema（更新）
-export const entityUpdateSchema = entityInsertSchema.partial().omit({ id: true });
+export const entityUpdateSchema = t.Partial(t.Omit(entityInsertSchema, ['id']));
 
 // 导出统一对象
-export const entityZodSchemas = {
+export const entitySchemas = {
   select: entitySelectSchema,
   insert: entityInsertSchema,
   update: entityUpdateSchema,
 };
+
+// 类型推导
+type EntitySelect = Static<typeof entitySchemas.select>;
+type EntityInsert = Static<typeof entitySchemas.insert>;
 ```
 
 ### 空值处理
 
 ```typescript
-// 空字符串转 undefined（用于可选字段）
-const emptyToUndefined = (val: unknown) => 
-  (val === '' || val === null ? undefined : val);
+import { t } from 'elysia';
 
-// 空数组转 undefined
-const emptyArrayToUndefined = (val: unknown) => {
-  if (!Array.isArray(val)) return val;
-  if (val.length === 0) return undefined;
-  return val;
-};
+// 可选字段
+const optionalString = t.Optional(t.String());
+
+// 可空字段
+const nullableString = t.Union([t.String(), t.Null()]);
+
+// 可选且可空
+const optionalNullableString = t.Optional(t.Union([t.String(), t.Null()]));
 
 // 在 Schema 中使用
-const filterSchema = z.object({
-  name: z.preprocess(emptyToUndefined, z.string().optional()),
-  ids: z.preprocess(emptyArrayToUndefined, z.array(z.uuid()).optional()),
+const filterSchema = t.Object({
+  name: t.Optional(t.String()),
+  ids: t.Optional(t.Array(t.String({ format: 'uuid' }))),
 });
 ```
 

@@ -32,7 +32,7 @@ Qiyu AllInAI 是一个**开箱即用的 AI 应用基座系统**，采用现代�
 ### 设计理念
 
 - **Bun 优先** - 超快的 JavaScript 运行时（比 Node.js 快 4 倍）
-- **类型安全** - 端到端 TypeScript + Zod 验证
+- **类型安全** - 端到端 TypeScript + TypeBox 验证
 - **模块化** - Turborepo Monorepo 架构，包可复用
 - **AI 原生** - 内置 AI Agent、工具编排、模型管理
 
@@ -81,7 +81,7 @@ Qiyu AllInAI 是一个**开箱即用的 AI 应用基座系统**，采用现代�
 | **UI** | [shadcn-svelte](https://shadcn-svelte.com) + Tailwind CSS v4 |
 | **后端** | [Elysia](https://elysiajs.com) |
 | **数据库** | PostgreSQL + [Drizzle ORM](https://orm.drizzle.team) |
-| **验证** | [Zod](https://zod.dev) v4 |
+| **验证** | [TypeBox](https://github.com/sinclairzx81/typebox) (Elysia's `t`) |
 | **存储** | MinIO / S3 兼容 |
 | **国际化** | [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs) |
 
@@ -258,7 +258,7 @@ export const _meta = {
 
 - TypeScript 严格模式，避免 `any`
 - Svelte 5 runes（`$state`、`$derived`、`$effect`）
-- 所有数据验证使用 Zod
+- 所有数据验证使用 TypeBox
 - 保持中英文翻译同步
 
 ---

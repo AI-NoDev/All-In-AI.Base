@@ -2,10 +2,10 @@
  * 创建智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import type { AgentSelect, AgentInsert } from './utils';
+import { agent } from '@qiyu-allinai/db/entities/ai';
+import { agentSchemas, type AgentSelect, type AgentInsert } from './schemas';
 
 export const agentCreate = defineAction({
   meta: {
@@ -17,8 +17,8 @@ export const agentCreate = defineAction({
     path: '/api/ai/agent',
   },
   schemas: {
-    bodySchema: z.object({ data: agentZodSchemas.insert }),
-    outputSchema: agentZodSchemas.select,
+    bodySchema: t.Object({ data: agentSchemas.insert }),
+    outputSchema: agentSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -30,10 +30,10 @@ Use the `defineAction` function to define an Action:
 
 ```typescript
 // packages/actions/src/db/system/post/create.ts
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { post, postZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { post, postSchemas } from '@qiyu-allinai/db/entities/system';
 
 export const postCreate = defineAction({
   meta: {
@@ -45,10 +45,10 @@ export const postCreate = defineAction({
     path: '/api/system/post',           // API path
   },
   schemas: {
-    bodySchema: z.object({
-      data: postZodSchemas.insert,      // Request body schema
+    bodySchema: t.Object({
+      data: postSchemas.insert,         // Request body schema
     }),
-    outputSchema: postZodSchemas.select, // Response schema
+    outputSchema: postSchemas.select,   // Response schema
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -117,21 +117,21 @@ export const postGetByPagination = defineAction({
     path: '/api/system/post/query',
   },
   schemas: {
-    bodySchema: z.object({
-      filter: z.object({
-        name: z.string().optional(),
-        status: z.string().optional(),
-      }).optional(),
-      sort: z.object({
-        field: z.string(),
-        order: z.enum(['asc', 'desc']),
-      }).optional(),
-      limit: z.number().default(20),
-      offset: z.number().default(0),
+    bodySchema: t.Object({
+      filter: t.Optional(t.Object({
+        name: t.Optional(t.String()),
+        status: t.Optional(t.String()),
+      })),
+      sort: t.Optional(t.Object({
+        field: t.String(),
+        order: t.Union([t.Literal('asc'), t.Literal('desc')]),
+      })),
+      limit: t.Number({ default: 20 }),
+      offset: t.Number({ default: 0 }),
     }),
-    outputSchema: z.object({
-      data: z.array(postZodSchemas.select),
-      total: z.number(),
+    outputSchema: t.Object({
+      data: t.Array(postSchemas.select),
+      total: t.Number(),
     }),
   },
   execute: async (input, context) => {
@@ -179,10 +179,10 @@ export const postGetByPk = defineAction({
     path: '/api/system/post/:id',
   },
   schemas: {
-    paramsSchema: z.object({
-      id: z.string().uuid(),
+    paramsSchema: t.Object({
+      id: t.String({ format: 'uuid' }),
     }),
-    outputSchema: postZodSchemas.select.nullable(),
+    outputSchema: t.Union([postSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -212,13 +212,13 @@ export const postUpdate = defineAction({
     path: '/api/system/post/:id',
   },
   schemas: {
-    paramsSchema: z.object({
-      id: z.string().uuid(),
+    paramsSchema: t.Object({
+      id: t.String({ format: 'uuid' }),
     }),
-    bodySchema: z.object({
-      data: postZodSchemas.update,
+    bodySchema: t.Object({
+      data: postSchemas.update,
     }),
-    outputSchema: postZodSchemas.select,
+    outputSchema: postSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -249,11 +249,11 @@ export const postDeleteByPk = defineAction({
     path: '/api/system/post/:id',
   },
   schemas: {
-    paramsSchema: z.object({
-      id: z.string().uuid(),
+    paramsSchema: t.Object({
+      id: t.String({ format: 'uuid' }),
     }),
-    outputSchema: z.object({
-      success: z.boolean(),
+    outputSchema: t.Object({
+      success: t.Boolean(),
     }),
   },
   execute: async (input, context) => {

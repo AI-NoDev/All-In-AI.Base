@@ -2,11 +2,10 @@
  * 批量创建字典
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { dict } from '@qiyu-allinai/db/entities/system';
-import { dictZodSchemas } from './schemas';
-import type { DictSelect, DictInsert } from './utils';
+import { dict, dictSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictSelect, DictInsert } from '@qiyu-allinai/db/entities/system/dict';
 
 export const dictCreateMany = defineAction({
   meta: {
@@ -34,8 +33,8 @@ export const dictCreateMany = defineAction({
     path: '/api/system/dict/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(dictZodSchemas.insert) }),
-    outputSchema: z.array(dictZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(dictSchemas.insert) }),
+    outputSchema: t.Array(dictSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,11 +2,10 @@
  * 创建AI提供商
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { provider } from '@qiyu-allinai/db/entities/ai';
-import { providerZodSchemas } from './schemas';
-import type { ProviderSelect, ProviderInsert } from './utils';
+import { provider, providerSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ProviderSelect, ProviderInsert } from '@qiyu-allinai/db/entities/ai/provider';
 
 export const providerCreate = defineAction({
   meta: {
@@ -39,8 +38,8 @@ export const providerCreate = defineAction({
     path: '/api/ai/provider',
   },
   schemas: {
-    bodySchema: z.object({ data: providerZodSchemas.insert }),
-    outputSchema: providerZodSchemas.select,
+    bodySchema: t.Object({ data: providerSchemas.insert }),
+    outputSchema: providerSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

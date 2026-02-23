@@ -1,7 +1,6 @@
 import { pgTable, char, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -87,5 +86,9 @@ export const job = pgTable(jobMeta.name, getTableFields(jobFields));
 // ============ Config ============
 export const jobConfig = getFieldConfigs(jobFields);
 
-// ============ Schemas ============
-export const jobZodSchemas = createZodSchemas(job, jobFields);
+// ============ Schemas (TypeBox) ============
+export const jobSchemas = createTypeboxSchemas(job);
+
+// ============ Types (从 Drizzle 推导) ============
+export type JobSelect = typeof job.$inferSelect;
+export type JobInsert = typeof job.$inferInsert;

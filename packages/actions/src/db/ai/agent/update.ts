@@ -2,13 +2,13 @@
  * 更新智能体
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { isSystemAdmin } from '../../../core/deptPermission';
-import { agent, agentZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import type { AgentSelect, AgentInsert } from './utils';
+import { agent } from '@qiyu-allinai/db/entities/ai';
+import { agentSchemas, type AgentSelect, type AgentInsert } from './schemas';
 
 export const agentUpdate = defineAction({
   meta: {
@@ -20,9 +20,9 @@ export const agentUpdate = defineAction({
     path: '/api/ai/agent/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: agentZodSchemas.update }),
-    outputSchema: agentZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: agentSchemas.update }),
+    outputSchema: agentSchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserId, currentUserType } = context;

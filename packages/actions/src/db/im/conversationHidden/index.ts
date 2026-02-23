@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { conversationHidden, conversationHiddenZodSchemas } from '@qiyu-allinai/db/entities/im';
+import { conversationHidden, conversationHiddenSchemas } from '@qiyu-allinai/db/entities/im';
 
 type ConversationHiddenSelect = typeof conversationHidden.$inferSelect;
 
@@ -9,8 +9,8 @@ type ConversationHiddenSelect = typeof conversationHidden.$inferSelect;
 export const conversationHiddenHide = defineAction({
   meta: { name: 'im.conversationHidden.hide', displayName: '隐藏会话', description: '隐藏会话（不再显示在消息列表）', tags: ['im', 'conversationHidden'], method: 'POST', path: '/api/im/conversation-hidden/hide' },
   schemas: {
-    bodySchema: z.object({ conversationId: z.string() }),
-    outputSchema: conversationHiddenZodSchemas.select,
+    bodySchema: t.Object({ conversationId: t.String() }),
+    outputSchema: conversationHiddenSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -51,8 +51,8 @@ export const conversationHiddenHide = defineAction({
 export const conversationHiddenUnhide = defineAction({
   meta: { name: 'im.conversationHidden.unhide', displayName: '取消隐藏会话', description: '取消隐藏会话（新消息到达时调用）', tags: ['im', 'conversationHidden'], method: 'POST', path: '/api/im/conversation-hidden/unhide' },
   schemas: {
-    bodySchema: z.object({ conversationId: z.string(), userId: z.string() }),
-    outputSchema: z.boolean(),
+    bodySchema: t.Object({ conversationId: t.String(), userId: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -74,7 +74,7 @@ export const conversationHiddenUnhide = defineAction({
 export const conversationHiddenGetList = defineAction({
   meta: { name: 'im.conversationHidden.getList', displayName: '获取隐藏会话列表', description: '获取当前用户隐藏的会话ID列表', tags: ['im', 'conversationHidden'], method: 'GET', path: '/api/im/conversation-hidden/list' },
   schemas: {
-    outputSchema: z.array(z.string()),
+    outputSchema: t.Array(t.String()),
   },
   execute: async (_input, context) => {
     const { db } = context;

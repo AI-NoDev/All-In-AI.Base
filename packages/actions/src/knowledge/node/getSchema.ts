@@ -2,10 +2,10 @@
  * 获取节点 Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../core/define';
 import { toJSONSchema } from '../../core/schema';
-import { nodeZodSchemas } from '@qiyu-allinai/db/entities/knowledge';
+import { nodeSchemas } from '@qiyu-allinai/db/entities/knowledge';
 
 export const nodeGetSchema = defineAction({
   meta: {
@@ -26,9 +26,9 @@ export const nodeGetSchema = defineAction({
     ignoreTools: true,
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(nodeZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(nodeSchemas.select) as Record<string, unknown>;
   },
 });

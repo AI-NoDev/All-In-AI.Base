@@ -24,6 +24,6 @@ Welcome to the AI Drive System development documentation.
 | UI Components | shadcn-svelte |
 | Backend Framework | Elysia |
 | Database | PostgreSQL + Drizzle ORM |
-| Validation | Zod v4 |
+| Validation | TypeBox (Elysia's `t`) |
 | i18n | Paraglide |
 | Build Tool | Turborepo |

@@ -2,12 +2,11 @@
  * 根据ID查询AI会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { aiSession } from '@qiyu-allinai/db/entities/ai';
-import { aiSessionZodSchemas } from './schemas';
-import type { AISessionSelect } from './utils';
+import { aiSessionSchemas, type AISessionSelect } from './schemas';
 
 export const aiSessionGetByPk = defineAction({
   meta: {
@@ -30,8 +29,8 @@ GET /api/ai/session/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/session/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: aiSessionZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([aiSessionSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

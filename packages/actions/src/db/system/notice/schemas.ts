@@ -1,35 +1,36 @@
 /**
- * 通知公告模块 Schema 定义
+ * 通知公告模块 Schema 定义 (TypeBox)
  */
 
-import { z } from 'zod';
-import { noticeZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { t } from 'elysia';
+
+// Re-export from entity for convenience
+export { noticeTypeboxSchemas, type NoticeSelect, type NoticeInsert } from '@qiyu-allinai/db/entities/system/notice';
 
 /** 通知过滤条件 Schema */
-export const noticeFilterSchema = z.object({
-  ids: z.array(z.string().describe('通知 ID')).optional().describe('通知 ID 列表，批量查询'),
-  titles: z.array(z.string().describe('标题')).optional().describe('标题列表，批量查询'),
-  types: z.array(z.string().describe('类型')).optional().describe('类型列表：1=通知，2=公告'),
-  type: z.string().optional().describe('类型：1=通知，2=公告'),
-  status: z.enum(['0', '1']).optional().describe('状态：0=正常，1=关闭'),
-  title: z.string().optional().describe('标题（模糊匹配）'),
-  createdAtStart: z.string().optional().describe('创建时间起始'),
-  createdAtEnd: z.string().optional().describe('创建时间结束'),
-}).optional().describe('过滤条件');
+export const noticeFilterSchema = t.Optional(t.Object({
+  ids: t.Optional(t.Array(t.String({ description: '通知ID' }), { description: '通知ID列表，批量查询' })),
+  titles: t.Optional(t.Array(t.String({ description: '标题' }), { description: '标题列表，批量查询' })),
+  types: t.Optional(t.Array(t.String({ description: '类型' }), { description: '类型列表：1=通知，2=公告' })),
+  type: t.Optional(t.String({ description: '类型：1=通知，2=公告' })),
+  status: t.Optional(t.Union([t.Literal('0'), t.Literal('1')], { description: '状态：0=正常，1=关闭' })),
+  title: t.Optional(t.String({ description: '标题（模糊匹配）' })),
+  createdAtStart: t.Optional(t.String({ description: '创建时间起始' })),
+  createdAtEnd: t.Optional(t.String({ description: '创建时间结束' })),
+}, { description: '过滤条件' }));
 
 /** 排序 Schema */
-export const noticeSortSchema = z.object({
-  field: z.enum(['title', 'type', 'createdAt', 'updatedAt']).describe('排序字段'),
-  order: z.enum(['asc', 'desc']).describe('排序方向'),
-}).optional().describe('排序配置');
+export const noticeSortSchema = t.Optional(t.Object({
+  field: t.Union([
+    t.Literal('title'), t.Literal('type'), t.Literal('createdAt'), t.Literal('updatedAt'),
+  ], { description: '排序字段' }),
+  order: t.Union([t.Literal('asc'), t.Literal('desc')], { description: '排序方向' }),
+}, { description: '排序配置' }));
 
 /** 分页查询请求体 Schema */
-export const noticePaginationBodySchema = z.object({
+export const noticePaginationBodySchema = t.Object({
   filter: noticeFilterSchema,
   sort: noticeSortSchema,
-  offset: z.number().int().min(0).default(0).describe('偏移量'),
-  limit: z.number().int().min(1).max(100).default(20).describe('每页数量'),
+  offset: t.Number({ minimum: 0, default: 0, description: '偏移量' }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 20, description: '每页数量' }),
 });
-
-// 重新导出实体 Schema
-export { noticeZodSchemas };

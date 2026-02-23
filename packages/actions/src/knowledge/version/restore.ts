@@ -5,10 +5,10 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { ActionError } from '../../core/errors';
-import { node, nodeVersion, type NodeSelect, type NodeVersionInsert } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeVersion, nodeSchemas, type NodeSelect, type NodeVersionInsert } from '@qiyu-allinai/db/entities/knowledge';
 import { assertNodePermission } from '../utils';
 import { DEFAULT_BUCKET } from '../../files/s3Client';
-import { versionIdParamsSchema, nodeZodSchemas } from './schemas';
+import { versionIdParamsSchema } from './schemas';
 
 export const versionRestore = defineAction({
   meta: {
@@ -39,7 +39,7 @@ POST /api/knowledge/versions/version-uuid/restore`,
   },
   schemas: {
     paramsSchema: versionIdParamsSchema,
-    outputSchema: nodeZodSchemas.select,
+    outputSchema: nodeSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

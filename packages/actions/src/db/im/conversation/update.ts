@@ -2,12 +2,13 @@
  * 更新会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { conversation, conversationZodSchemas } from '@qiyu-allinai/db/entities/im';
-import { isConversationMember, type ConversationSelect, type ConversationInsert } from './utils';
+import { conversation } from '@qiyu-allinai/db/entities/im';
+import { conversationSchemas, type ConversationSelect, type ConversationInsert } from './schemas';
+import { isConversationMember } from './utils';
 
 export const conversationUpdate = defineAction({
   meta: {
@@ -19,9 +20,9 @@ export const conversationUpdate = defineAction({
     path: '/api/im/conversation/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: conversationZodSchemas.update }),
-    outputSchema: conversationZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: conversationSchemas.update }),
+    outputSchema: conversationSchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;

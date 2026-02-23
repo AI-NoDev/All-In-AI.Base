@@ -1,8 +1,7 @@
-import { createSchemaFactory as createSchemaZodFactory } from 'drizzle-zod';
-import z from 'zod/v4';
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-typebox';
 
-export const { 
-    createInsertSchema: createInsertZodSchema,
-    createUpdateSchema: createUpdateZodSchema,
-    createSelectSchema: createSelectZodSchema,
-} = createSchemaZodFactory({ zodInstance: z });
+export { 
+    createInsertSchema as createInsertTypeboxSchema,
+    createSelectSchema as createSelectTypeboxSchema,
+    createUpdateSchema as createUpdateTypeboxSchema,
+};

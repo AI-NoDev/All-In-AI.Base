@@ -2,12 +2,13 @@
  * 根据ID查询消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { message, messageZodSchemas } from '@qiyu-allinai/db/entities/im';
-import { isConversationMember, type MessageSelect } from './utils';
+import { message } from '@qiyu-allinai/db/entities/im';
+import { messageSchemas, type MessageSelect } from './schemas';
+import { isConversationMember } from './utils';
 
 export const messageGetByPk = defineAction({
   meta: {
@@ -19,8 +20,8 @@ export const messageGetByPk = defineAction({
     path: '/api/im/message/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: messageZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([messageSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;

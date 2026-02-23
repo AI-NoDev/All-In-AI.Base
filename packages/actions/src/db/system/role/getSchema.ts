@@ -2,10 +2,10 @@
  * 获取角色Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { roleZodSchemas } from './schemas';
+import { roleSchemas } from '@qiyu-allinai/db/entities/system/role';
 
 export const roleGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ export const roleGetSchema = defineAction({
     path: '/api/system/role/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(roleZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(roleSchemas.select) as Record<string, unknown>;
   },
 });

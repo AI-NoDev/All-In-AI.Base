@@ -2,10 +2,10 @@
  * 分页查询节点
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, ilike, sql, inArray, gte, lte, asc, desc } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
-import { node, nodeZodSchemas, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
 import { nodePaginationBodySchema } from './schemas';
 
 export const nodeGetByPagination = defineAction({
@@ -48,7 +48,7 @@ export const nodeGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: nodePaginationBodySchema,
-    outputSchema: z.object({ data: z.array(nodeZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(nodeSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

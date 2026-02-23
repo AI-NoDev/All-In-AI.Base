@@ -2,12 +2,12 @@
  * 批量更新用户
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { user, userZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { user, userSchemas } from '@qiyu-allinai/db/entities/system';
 import { checkIsSystemAdmin, sanitizeUser, type UserSelect, type UserInsert } from './utils';
 
 export const userUpdateMany = defineAction({
@@ -21,8 +21,8 @@ export const userUpdateMany = defineAction({
     path: '/api/system/user/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: userZodSchemas.update }),
-    outputSchema: z.array(userZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: userSchemas.update }),
+    outputSchema: t.Array(userSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

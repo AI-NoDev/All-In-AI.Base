@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, timestamp, boolean, primaryKey } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -75,4 +75,8 @@ export const conversationHidden = pgTable(
 export const conversationHiddenConfig = getFieldConfigs(conversationHiddenFields);
 
 // ============ Schemas ============
-export const conversationHiddenZodSchemas = createZodSchemas(conversationHidden, conversationHiddenFields);
+export const conversationHiddenSchemas = createTypeboxSchemas(conversationHidden);
+
+// ============ Types ============
+export type ConversationHiddenSelect = typeof conversationHidden.$inferSelect;
+export type ConversationHiddenInsert = typeof conversationHidden.$inferInsert;

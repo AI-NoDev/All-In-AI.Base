@@ -2,10 +2,10 @@
  * 获取通知公告Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { noticeZodSchemas } from './schemas';
+import { noticeTypeboxSchemas } from './schemas';
 
 export const noticeGetSchema = defineAction({
   meta: {
@@ -28,9 +28,9 @@ export const noticeGetSchema = defineAction({
     path: '/api/system/notice/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(noticeZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(noticeTypeboxSchemas.select) as Record<string, unknown>;
   },
 });

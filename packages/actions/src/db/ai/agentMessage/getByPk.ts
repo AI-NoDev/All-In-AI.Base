@@ -2,12 +2,11 @@
  * 根据ID查询Agent消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentMessage } from '@qiyu-allinai/db/entities/ai';
-import { agentMessageZodSchemas } from './schemas';
-import type { AgentMessageSelect } from './utils';
+import { agentMessageSchemas, type AgentMessageSelect } from './schemas';
 
 export const agentMessageGetByPk = defineAction({
   meta: {
@@ -35,8 +34,8 @@ GET /api/ai/agent-message/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/agent-message/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: agentMessageZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([agentMessageSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

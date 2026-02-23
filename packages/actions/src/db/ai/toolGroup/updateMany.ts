@@ -2,12 +2,11 @@
  * 批量更新工具组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { toolGroup } from '@qiyu-allinai/db/entities/ai';
-import { toolGroupZodSchemas } from './schemas';
-import type { ToolGroupSelect, ToolGroupInsert } from './utils';
+import { toolGroup, toolGroupSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ToolGroupSelect, ToolGroupInsert } from '@qiyu-allinai/db/entities/ai/toolGroup';
 
 export const toolGroupUpdateMany = defineAction({
   meta: {
@@ -28,8 +27,8 @@ export const toolGroupUpdateMany = defineAction({
     path: '/api/ai/tool-group/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: toolGroupZodSchemas.update }),
-    outputSchema: z.array(toolGroupZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: toolGroupSchemas.update }),
+    outputSchema: t.Array(toolGroupSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,12 +2,12 @@
  * 分页查询MCP服务
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, and, asc, desc, inArray, like } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { mcpServer } from '@qiyu-allinai/db/entities/ai';
-import { mcpServerPaginationBodySchema, mcpServerZodSchemas } from './schemas';
-import type { McpServerSelect } from './utils';
+import { mcpServer, mcpServerSchemas } from '@qiyu-allinai/db/entities/ai';
+import { mcpServerPaginationBodySchema } from './schemas';
+import type { McpServerSelect } from '@qiyu-allinai/db/entities/ai/mcpServer';
 
 export const mcpServerGetByPagination = defineAction({
   meta: {
@@ -44,7 +44,7 @@ export const mcpServerGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: mcpServerPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(mcpServerZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(mcpServerSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

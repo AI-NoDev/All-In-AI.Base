@@ -2,11 +2,11 @@
  * 分页查询用户记忆
  */
 
+import { t } from 'elysia';
 import { and, eq, inArray, like, gte, lte, or, isNull, sql, desc, asc, type SQL } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { userMemory, userMemoryZodSchemas } from '@qiyu-allinai/db/entities/ai';
+import { userMemory, userMemorySchemas } from '@qiyu-allinai/db/entities/ai';
 import { userMemoryPaginationBodySchema } from './schemas';
-import { z } from 'zod';
 
 export const userMemoryGetByPagination = defineAction({
   meta: {
@@ -19,10 +19,10 @@ export const userMemoryGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: userMemoryPaginationBodySchema,
-    outputSchema: z.object({
-      data: z.array(userMemoryZodSchemas.select).describe('记忆列表'),
-      total: z.number().describe('总数'),
-    }).describe('分页查询结果'),
+    outputSchema: t.Object({
+      data: t.Array(userMemorySchemas.select),
+      total: t.Number({ description: '总数' }),
+    }, { description: '分页查询结果' }),
   },
   execute: async (input, context) => {
     const { db } = context;

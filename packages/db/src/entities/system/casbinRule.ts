@@ -1,7 +1,7 @@
 import { pgTable, serial, varchar, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas,
+  createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 
@@ -96,7 +96,11 @@ export const casbinRule = pgTable(
 export const casbinRuleConfig = getFieldConfigs(casbinRuleFields);
 
 // ============ Schemas ============
-export const casbinRuleZodSchemas = createZodSchemas(casbinRule, casbinRuleFields);
+export const casbinRuleSchemas = createTypeboxSchemas(casbinRule);
+
+// ============ Types ============
+export type CasbinRuleSelect = typeof casbinRule.$inferSelect;
+export type CasbinRuleInsert = typeof casbinRule.$inferInsert;
 
 // ============ 策略类型常量 ============
 export const CASBIN_POLICY_TYPES = {

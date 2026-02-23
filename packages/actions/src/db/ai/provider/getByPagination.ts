@@ -2,12 +2,12 @@
  * 分页查询AI提供商
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { provider } from '@qiyu-allinai/db/entities/ai';
-import { providerPaginationBodySchema, providerZodSchemas } from './schemas';
-import type { ProviderSelect } from './utils';
+import { provider, providerSchemas } from '@qiyu-allinai/db/entities/ai';
+import { providerPaginationBodySchema } from './schemas';
+import type { ProviderSelect } from '@qiyu-allinai/db/entities/ai/provider';
 
 export const providerGetByPagination = defineAction({
   meta: {
@@ -45,7 +45,7 @@ export const providerGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: providerPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(providerZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(providerSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

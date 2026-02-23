@@ -2,12 +2,11 @@
  * 创建Agent消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentMessage, agentSession } from '@qiyu-allinai/db/entities/ai';
-import { agentMessageZodSchemas } from './schemas';
-import type { AgentMessageSelect, AgentMessageInsert } from './utils';
+import { agentMessageSchemas, type AgentMessageSelect, type AgentMessageInsert } from './schemas';
 
 export const agentMessageCreate = defineAction({
   meta: {
@@ -52,8 +51,8 @@ export const agentMessageCreate = defineAction({
     path: '/api/ai/agent-message',
   },
   schemas: {
-    bodySchema: z.object({ data: agentMessageZodSchemas.insert.omit({ msgSeq: true }) }),
-    outputSchema: agentMessageZodSchemas.select,
+    bodySchema: t.Object({ data: t.Omit(agentMessageSchemas.insert, ['msgSeq']) }),
+    outputSchema: agentMessageSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;
@@ -68,7 +67,7 @@ export const agentMessageCreate = defineAction({
 
     // Update session stats
     if (result) {
-      const usage = input.data.tokenUsage;
+      const usage = input.data.tokenUsage as { totalTokens?: number; inputTokens?: number; outputTokens?: number } | undefined;
       const totalTokens = usage?.totalTokens ?? 0;
       const inputTokens = usage?.inputTokens ?? 0;
       const outputTokens = usage?.outputTokens ?? 0;

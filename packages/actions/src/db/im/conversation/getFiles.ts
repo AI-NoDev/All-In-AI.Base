@@ -2,7 +2,7 @@
  * 获取会话文件列表
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, inArray, desc } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { conversation, groupMember, message } from '@qiyu-allinai/db/entities/im';
@@ -29,25 +29,25 @@ export const conversationGetFiles = defineAction({
     path: '/api/im/conversation-files',
   },
   schemas: {
-    outputSchema: z.object({
-      files: z.array(z.object({
-        messageId: z.string(),
-        conversationId: z.string(),
-        conversationName: z.string(),
-        conversationType: z.enum(['private', 'group']),
-        fileId: z.string(),
-        fileName: z.string(),
-        fileSize: z.number(),
-        mimeType: z.string(),
-        msgType: z.string(),
-        senderId: z.string(),
-        senderName: z.string(),
-        createdAt: z.string(),
+    outputSchema: t.Object({
+      files: t.Array(t.Object({
+        messageId: t.String(),
+        conversationId: t.String(),
+        conversationName: t.String(),
+        conversationType: t.Union([t.Literal('private'), t.Literal('group')]),
+        fileId: t.String(),
+        fileName: t.String(),
+        fileSize: t.Number(),
+        mimeType: t.String(),
+        msgType: t.String(),
+        senderId: t.String(),
+        senderName: t.String(),
+        createdAt: t.String(),
       })),
-      conversations: z.array(z.object({
-        id: z.string(),
-        name: z.string(),
-        type: z.enum(['private', 'group']),
+      conversations: t.Array(t.Object({
+        id: t.String(),
+        name: t.String(),
+        type: t.Union([t.Literal('private'), t.Literal('group')]),
       })),
     }),
   },

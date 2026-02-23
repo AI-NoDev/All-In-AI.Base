@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { pgTable, uuid, varchar, timestamp, boolean, char, jsonb, primaryKey, index } from "drizzle-orm/pg-core";
 import { 
   getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -94,7 +94,11 @@ export const groupMember = pgTable(
 export const groupMemberConfig = getFieldConfigs(groupMemberFields);
 
 // ============ Schemas ============
-export const groupMemberZodSchemas = createZodSchemas(groupMember, groupMemberFields);
+export const groupMemberSchemas = createTypeboxSchemas(groupMember);
+
+// ============ Types ============
+export type GroupMemberSelect = typeof groupMember.$inferSelect;
+export type GroupMemberInsert = typeof groupMember.$inferInsert;
 
 // ============ Role Constants ============
 export const GROUP_MEMBER_ROLES = {

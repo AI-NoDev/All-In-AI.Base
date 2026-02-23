@@ -2,11 +2,11 @@
  * 批量更新部门
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { checkWritePermission, BUSINESS_MODULE } from '../../../core/deptPermission';
-import { department, departmentZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { department, departmentSchemas } from '@qiyu-allinai/db/entities/system';
 import type { DepartmentSelect, DepartmentInsert } from './utils';
 
 export const departmentUpdateMany = defineAction({
@@ -20,8 +20,8 @@ export const departmentUpdateMany = defineAction({
     path: '/api/system/department/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: departmentZodSchemas.update }),
-    outputSchema: z.array(departmentZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: departmentSchemas.update }),
+    outputSchema: t.Array(departmentSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

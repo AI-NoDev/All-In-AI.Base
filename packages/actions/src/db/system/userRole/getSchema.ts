@@ -2,10 +2,10 @@
  * 获取用户角色关联Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { userRoleZodSchemas } from './schemas';
+import { userRoleSchemas } from '@qiyu-allinai/db/entities/system/userRole';
 
 export const userRoleGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ GET /api/system/user-role/schema`,
     path: '/api/system/user-role/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async (_input, _context) => {
-    return toJSONSchema(userRoleZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(userRoleSchemas.select) as Record<string, unknown>;
   },
 });

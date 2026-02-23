@@ -2,10 +2,10 @@
  * 获取Agent消息Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { agentMessageZodSchemas } from './schemas';
+import { agentMessageSchemas } from './schemas';
 
 export const agentMessageGetSchema = defineAction({
   meta: {
@@ -28,9 +28,9 @@ export const agentMessageGetSchema = defineAction({
     path: '/api/ai/agent-message/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(agentMessageZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(agentMessageSchemas.select) as Record<string, unknown>;
   },
 });

@@ -2,57 +2,25 @@
  * 分页查询系统配置
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { config } from '@qiyu-allinai/db/entities/system';
-import { configPaginationBodySchema, configZodSchemas } from './schemas';
+import { config, configSchemas } from '@qiyu-allinai/db/entities/system';
+import { configPaginationBodySchema } from './schemas';
 import type { ConfigSelect } from './utils';
 
 export const configGetByPagination = defineAction({
   meta: {
     name: 'system.config.getByPagination',
     displayName: '分页查询系统配置',
-    description: `分页查询系统配置列表，支持多种过滤和排序方式。
-
-**过滤参数 (filter)：**
-- ids: 按ID列表精确查询
-- names: 按配置名称列表精确查询
-- keys: 按配置键列表精确查询，如 ["sys.name", "sys.logo"]
-- isSystem: 是否系统内置配置，true=内置，false=自定义
-- name: 按配置名称模糊搜索
-- key: 按配置键模糊搜索，如 "sys" 匹配所有 sys.* 配置
-- createdAtStart/createdAtEnd: 创建时间范围
-
-**排序参数 (sort)：**
-- field: name | key | createdAt | updatedAt
-- order: asc | desc
-
-**分页参数：**
-- offset: 起始位置，默认0
-- limit: 每页数量，1-100，默认20
-
-**使用场景：**
-1. 获取所有系统内置配置：filter.isSystem = true
-2. 搜索包含"邮件"的配置：filter.name = "邮件"
-3. 获取所有 sys.* 开头的配置：filter.key = "sys"
-
-**示例：**
-\`\`\`json
-{
-  "filter": { "isSystem": false, "key": "mail" },
-  "sort": { "field": "key", "order": "asc" },
-  "offset": 0,
-  "limit": 20
-}
-\`\`\``,
+    description: '分页查询系统配置列表，支持多种过滤和排序方式。',
     tags: ['system', 'config'],
     method: 'POST',
     path: '/api/system/config/query',
   },
   schemas: {
     bodySchema: configPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(configZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(configSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

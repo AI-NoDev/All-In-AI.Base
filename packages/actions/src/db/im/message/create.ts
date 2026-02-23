@@ -2,12 +2,13 @@
  * 发送消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { message, messageZodSchemas, conversation } from '@qiyu-allinai/db/entities/im';
-import { isConversationMember, type MessageSelect, type MessageInsert } from './utils';
+import { message, conversation } from '@qiyu-allinai/db/entities/im';
+import { messageSchemas, type MessageSelect, type MessageInsert } from './schemas';
+import { isConversationMember } from './utils';
 
 export const messageCreate = defineAction({
   meta: {
@@ -19,8 +20,8 @@ export const messageCreate = defineAction({
     path: '/api/im/message',
   },
   schemas: {
-    bodySchema: z.object({ data: messageZodSchemas.insert }),
-    outputSchema: messageZodSchemas.select,
+    bodySchema: t.Object({ data: messageSchemas.insert }),
+    outputSchema: messageSchemas.select,
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;

@@ -2,12 +2,11 @@
  * 根据复合主键查询角色菜单关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { roleMenu } from '@qiyu-allinai/db/entities/system';
-import { roleMenuZodSchemas } from './schemas';
-import type { RoleMenuSelect } from './utils';
+import { roleMenu, roleMenuSchemas } from '@qiyu-allinai/db/entities/system';
+import type { RoleMenuSelect } from '@qiyu-allinai/db/entities/system/roleMenu';
 
 export const roleMenuGetByPk = defineAction({
   meta: {
@@ -31,8 +30,8 @@ GET /api/system/role-menu/550e8400-e29b-41d4-a716-446655440001/550e8400-e29b-41d
     path: '/api/system/role-menu/:roleId/:menuId',
   },
   schemas: {
-    paramsSchema: z.object({ roleId: z.string(), menuId: z.string() }),
-    outputSchema: roleMenuZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ roleId: t.String(), menuId: t.String() }),
+    outputSchema: t.Union([roleMenuSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

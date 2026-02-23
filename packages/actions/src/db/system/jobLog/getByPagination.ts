@@ -2,58 +2,25 @@
  * 分页查询任务日志
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { jobLog } from '@qiyu-allinai/db/entities/system';
-import { jobLogPaginationBodySchema, jobLogZodSchemas } from './schemas';
-import type { JobLogSelect } from './utils';
+import { jobLog, jobLogSchemas } from '@qiyu-allinai/db/entities/system';
+import { jobLogPaginationBodySchema } from './schemas';
+import type { JobLogSelect } from '@qiyu-allinai/db/entities/system/jobLog';
 
 export const jobLogGetByPagination = defineAction({
   meta: {
     name: 'system.jobLog.getByPagination',
     displayName: '分页查询任务日志',
-    description: `分页查询定时任务执行日志，用于监控任务执行情况。
-
-**过滤参数 (filter)：**
-- ids: 按ID列表精确查询
-- jobNames: 按任务名称列表精确查询
-- jobGroups: 按任务分组列表精确查询
-- status: 按状态过滤，"0"=成功，"1"=失败
-- jobName: 按任务名称模糊搜索
-- jobGroup: 按任务分组模糊搜索
-- startTimeStart/startTimeEnd: 执行开始时间范围
-- createdAtStart/createdAtEnd: 记录创建时间范围
-
-**排序参数 (sort)：**
-- field: jobName | jobGroup | startTime | stopTime | createdAt
-- order: asc | desc
-
-**分页参数：**
-- offset: 起始位置，默认0
-- limit: 每页数量，1-100，默认20
-
-**使用场景：**
-1. 查看某任务的执行历史：filter.jobName = "清理日志"
-2. 查看执行失败的任务：filter.status = "1"
-3. 查看今日执行记录：设置 startTimeStart/startTimeEnd
-
-**示例：**
-\`\`\`json
-{
-  "filter": { "status": "1", "jobGroup": "SYSTEM" },
-  "sort": { "field": "startTime", "order": "desc" },
-  "offset": 0,
-  "limit": 50
-}
-\`\`\``,
+    description: `分页查询定时任务执行日志。`,
     tags: ['system', 'jobLog'],
     method: 'POST',
     path: '/api/system/job-log/query',
   },
   schemas: {
     bodySchema: jobLogPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(jobLogZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(jobLogSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

@@ -2,10 +2,10 @@
  * 获取菜单Schema
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
 import { toJSONSchema } from '../../../core/schema';
-import { menuZodSchemas } from './schemas';
+import { menuSchemas } from '@qiyu-allinai/db/entities/system';
 
 export const menuGetSchema = defineAction({
   meta: {
@@ -24,9 +24,9 @@ export const menuGetSchema = defineAction({
     path: '/api/system/menu/schema',
   },
   schemas: {
-    outputSchema: z.record(z.string(), z.unknown()),
+    outputSchema: t.Record(t.String(), t.Unknown()),
   },
   execute: async () => {
-    return toJSONSchema(menuZodSchemas.select) as Record<string, unknown>;
+    return toJSONSchema(menuSchemas.select) as Record<string, unknown>;
   },
 });

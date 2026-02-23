@@ -2,12 +2,12 @@
  * 分页查询工具组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, sql, ilike, and, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { toolGroup } from '@qiyu-allinai/db/entities/ai';
-import { toolGroupPaginationBodySchema, toolGroupZodSchemas } from './schemas';
-import type { ToolGroupSelect } from './utils';
+import { toolGroup, toolGroupSchemas } from '@qiyu-allinai/db/entities/ai';
+import { toolGroupPaginationBodySchema } from './schemas';
+import type { ToolGroupSelect } from '@qiyu-allinai/db/entities/ai/toolGroup';
 
 export const toolGroupGetByPagination = defineAction({
   meta: {
@@ -45,7 +45,7 @@ export const toolGroupGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: toolGroupPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(toolGroupZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(toolGroupSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

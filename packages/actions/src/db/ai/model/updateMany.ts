@@ -2,12 +2,11 @@
  * 批量更新AI模型
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { model } from '@qiyu-allinai/db/entities/ai';
-import { modelZodSchemas } from './schemas';
-import type { ModelSelect, ModelInsert } from './utils';
+import { model, modelSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ModelSelect, ModelInsert } from '@qiyu-allinai/db/entities/ai/model';
 
 export const modelUpdateMany = defineAction({
   meta: {
@@ -38,8 +37,8 @@ export const modelUpdateMany = defineAction({
     path: '/api/ai/model/batch',
   },
   schemas: {
-    bodySchema: z.object({ ids: z.array(z.string()), data: modelZodSchemas.update }),
-    outputSchema: z.array(modelZodSchemas.select),
+    bodySchema: t.Object({ ids: t.Array(t.String()), data: modelSchemas.update }),
+    outputSchema: t.Array(modelSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

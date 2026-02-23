@@ -2,7 +2,6 @@
  * 获取当前用户未读通知数量
  */
 
-import { z } from 'zod';
 import { eq, and, sql, notInArray, or, arrayContains } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { notice, noticeRead, NOTICE_STATUS, NOTICE_TARGET_TYPE } from '@qiyu-allinai/db/entities/system';

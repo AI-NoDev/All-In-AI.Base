@@ -2,11 +2,10 @@
  * 创建字典组
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { dictGroup } from '@qiyu-allinai/db/entities/system';
-import { dictGroupZodSchemas } from './schemas';
-import type { DictGroupSelect, DictGroupInsert } from './utils';
+import { dictGroup, dictGroupSchemas } from '@qiyu-allinai/db/entities/system';
+import type { DictGroupSelect, DictGroupInsert } from '@qiyu-allinai/db/entities/system/dictGroup';
 
 export const dictGroupCreate = defineAction({
   meta: {
@@ -20,35 +19,14 @@ export const dictGroupCreate = defineAction({
 
 **可选字段：**
 - status: 状态，"0"=正常（默认），"1"=禁用
-- remark: 备注说明
-
-**键命名规范：**
-- 使用下划线分隔：module_entity_field
-- 系统字典：sys_*
-- 业务字典：biz_*
-
-**使用场景：**
-1. 添加新的字典分类
-2. 系统初始化时创建默认字典组
-
-**示例：**
-\`\`\`json
-{
-  "data": {
-    "key": "sys_user_sex",
-    "name": "用户性别",
-    "status": "0",
-    "remark": "用户性别选项"
-  }
-}
-\`\`\``,
+- remark: 备注说明`,
     tags: ['system', 'dictGroup'],
     method: 'POST',
     path: '/api/system/dict-group',
   },
   schemas: {
-    bodySchema: z.object({ data: dictGroupZodSchemas.insert }),
-    outputSchema: dictGroupZodSchemas.select,
+    bodySchema: t.Object({ data: dictGroupSchemas.insert }),
+    outputSchema: dictGroupSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

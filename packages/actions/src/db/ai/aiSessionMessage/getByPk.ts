@@ -2,12 +2,11 @@
  * 根据ID查询AI会话消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { aiSessionMessage } from '@qiyu-allinai/db/entities/ai';
-import { aiSessionMessageZodSchemas } from './schemas';
-import type { AISessionMessageSelect } from './utils';
+import { aiSessionMessageSchemas, type AISessionMessageSelect } from './schemas';
 
 export const aiSessionMessageGetByPk = defineAction({
   meta: {
@@ -30,8 +29,8 @@ GET /api/ai/session-message/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/session-message/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: aiSessionMessageZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([aiSessionMessageSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

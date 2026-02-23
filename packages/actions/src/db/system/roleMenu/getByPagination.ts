@@ -2,12 +2,12 @@
  * 分页查询角色菜单关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, asc, desc, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { roleMenu } from '@qiyu-allinai/db/entities/system';
-import { roleMenuPaginationBodySchema, roleMenuZodSchemas } from './schemas';
-import type { RoleMenuSelect } from './utils';
+import { roleMenu, roleMenuSchemas } from '@qiyu-allinai/db/entities/system';
+import { roleMenuPaginationBodySchema } from './schemas';
+import type { RoleMenuSelect } from '@qiyu-allinai/db/entities/system/roleMenu';
 
 export const roleMenuGetByPagination = defineAction({
   meta: {
@@ -50,7 +50,7 @@ export const roleMenuGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: roleMenuPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(roleMenuZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(roleMenuSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

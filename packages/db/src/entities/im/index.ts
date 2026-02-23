@@ -1,11 +1,16 @@
 // IM entities - tables, fields, meta, config, schemas
-export { conversation, conversationFields, conversationMeta, conversationConfig, conversationZodSchemas } from './conversation';
-export { message, messageFields, messageMeta, messageConfig, messageZodSchemas, MESSAGE_TYPES } from './message';
-export type { TextContent, LinkContent, ImageContent, VideoContent, AudioContent, FileContent, SystemContent, RecallContent, MessageContent } from './message';
-export { groupMember, groupMemberFields, groupMemberMeta, groupMemberConfig, groupMemberZodSchemas, GROUP_MEMBER_ROLES } from './groupMember';
-export { conversationRead, conversationReadFields, conversationReadMeta, conversationReadConfig, conversationReadZodSchemas } from './conversationRead';
-export { conversationHidden, conversationHiddenFields, conversationHiddenMeta, conversationHiddenConfig, conversationHiddenZodSchemas } from './conversationHidden';
-export { tempFile, tempFileFields, tempFileMeta, tempFileConfig, tempFileZodSchemas } from './tempFile';
+export { conversation, conversationFields, conversationMeta, conversationConfig, conversationSchemas } from './conversation';
+export type { ConversationSelect, ConversationInsert } from './conversation';
+export { message, messageFields, messageMeta, messageConfig, messageSchemas, MESSAGE_TYPES } from './message';
+export type { TextContent, LinkContent, ImageContent, VideoContent, AudioContent, FileContent, SystemContent, RecallContent, MessageContent, MessageSelect, MessageInsert } from './message';
+export { groupMember, groupMemberFields, groupMemberMeta, groupMemberConfig, groupMemberSchemas, GROUP_MEMBER_ROLES } from './groupMember';
+export type { GroupMemberSelect, GroupMemberInsert } from './groupMember';
+export { conversationRead, conversationReadFields, conversationReadMeta, conversationReadConfig, conversationReadSchemas } from './conversationRead';
+export type { ConversationReadSelect, ConversationReadInsert } from './conversationRead';
+export { conversationHidden, conversationHiddenFields, conversationHiddenMeta, conversationHiddenConfig, conversationHiddenSchemas } from './conversationHidden';
+export type { ConversationHiddenSelect, ConversationHiddenInsert } from './conversationHidden';
+export { tempFile, tempFileFields, tempFileMeta, tempFileConfig, tempFileSchemas } from './tempFile';
+export type { TempFileSelect, TempFileInsert } from './tempFile';
 
 // Relations
 export * from './relations';

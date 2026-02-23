@@ -1,4 +1,4 @@
-import type { z, ZodType } from 'zod';
+import type { TSchema, Static } from '@sinclair/typebox';
 import type { PgDatabase } from 'drizzle-orm/pg-core';
 
 /**
@@ -60,13 +60,13 @@ export interface ActionMeta {
 }
 
 /**
- * Action Schemas - Zod 版本 (分离的 query/params/body)
+ * Action Schemas - TypeBox 版本 (分离的 query/params/body)
  */
 export interface ActionSchemas<
-  TQuery extends ZodType = ZodType,
-  TParams extends ZodType = ZodType,
-  TBody extends ZodType = ZodType,
-  TOutput extends ZodType = ZodType,
+  TQuery extends TSchema = TSchema,
+  TParams extends TSchema = TSchema,
+  TBody extends TSchema = TSchema,
+  TOutput extends TSchema = TSchema,
 > {
   querySchema?: TQuery;
   paramsSchema?: TParams;
@@ -78,28 +78,28 @@ export interface ActionSchemas<
  * 合并 query & params & body 的输入类型
  */
 export type MergedInput<
-  TQuery extends ZodType,
-  TParams extends ZodType,
-  TBody extends ZodType,
-> = (TQuery extends ZodType ? z.infer<TQuery> : {}) &
-    (TParams extends ZodType ? z.infer<TParams> : {}) &
-    (TBody extends ZodType ? z.infer<TBody> : {});
+  TQuery extends TSchema,
+  TParams extends TSchema,
+  TBody extends TSchema,
+> = (TQuery extends TSchema ? Static<TQuery> : object) &
+    (TParams extends TSchema ? Static<TParams> : object) &
+    (TBody extends TSchema ? Static<TBody> : object);
 
 /**
  * Action 定义
  */
 export interface ActionDefinition<
-  TQuery extends ZodType = ZodType,
-  TParams extends ZodType = ZodType,
-  TBody extends ZodType = ZodType,
-  TOutput extends ZodType = ZodType,
+  TQuery extends TSchema = TSchema,
+  TParams extends TSchema = TSchema,
+  TBody extends TSchema = TSchema,
+  TOutput extends TSchema = TSchema,
 > {
   meta: ActionMeta;
   schemas: ActionSchemas<TQuery, TParams, TBody, TOutput>;
   execute: (
     input: MergedInput<TQuery, TParams, TBody>,
     context: ActionContext
-  ) => Promise<z.infer<TOutput>>;
+  ) => Promise<Static<TOutput>>;
 }
 
 /**

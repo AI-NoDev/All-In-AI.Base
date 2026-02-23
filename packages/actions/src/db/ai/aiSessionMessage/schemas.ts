@@ -1,39 +1,45 @@
 /**
- * AI会话消息模块 Schema 定义
+ * AI会话消息模块 Schema 定义 (TypeBox)
  */
 
-import { z } from 'zod';
-import { aiSessionMessageZodSchemas } from '@qiyu-allinai/db/entities/ai';
+import { t } from 'elysia';
+
+// Re-export from entity for convenience
+export { aiSessionMessageSchemas, type AISessionMessageSelect, type AISessionMessageInsert } from '@qiyu-allinai/db/entities/ai/aiSessionMessage';
+
+/** Token使用量类型 */
+export interface TokenUsage {
+  totalTokens?: number;
+  inputTokens?: number;
+  outputTokens?: number;
+}
 
 /** AI会话消息过滤条件 Schema */
-export const aiSessionMessageFilterSchema = z.object({
-  ids: z.array(z.string().describe('消息ID')).optional().describe('按ID列表精确匹配'),
-  sessionId: z.string().optional().describe('按会话ID精确匹配'),
-  sessionIds: z.array(z.string().describe('会话ID')).optional().describe('按会话ID列表精确匹配'),
-  role: z.string().optional().describe('按角色精确匹配：user=用户, assistant=助手, system=系统'),
-  roles: z.array(z.string().describe('角色')).optional().describe('按角色列表精确匹配'),
-  contentType: z.string().optional().describe('按内容类型精确匹配'),
-  contentTypes: z.array(z.string().describe('内容类型')).optional().describe('按内容类型列表精确匹配'),
-  finishReason: z.string().optional().describe('按完成原因精确匹配'),
-  msgSeqStart: z.number().optional().describe('消息序号范围-开始'),
-  msgSeqEnd: z.number().optional().describe('消息序号范围-结束'),
-  createdAtStart: z.string().optional().describe('创建时间范围-开始，ISO 8601格式'),
-  createdAtEnd: z.string().optional().describe('创建时间范围-结束，ISO 8601格式'),
-}).optional().describe('AI会话消息过滤条件');
+export const aiSessionMessageFilterSchema = t.Optional(t.Object({
+  ids: t.Optional(t.Array(t.String({ description: '消息ID' }), { description: '按ID列表精确匹配' })),
+  sessionId: t.Optional(t.String({ description: '按会话ID精确匹配' })),
+  sessionIds: t.Optional(t.Array(t.String({ description: '会话ID' }), { description: '按会话ID列表精确匹配' })),
+  role: t.Optional(t.String({ description: '按角色精确匹配：user=用户, assistant=助手, system=系统' })),
+  roles: t.Optional(t.Array(t.String({ description: '角色' }), { description: '按角色列表精确匹配' })),
+  contentType: t.Optional(t.String({ description: '按内容类型精确匹配' })),
+  contentTypes: t.Optional(t.Array(t.String({ description: '内容类型' }), { description: '按内容类型列表精确匹配' })),
+  finishReason: t.Optional(t.String({ description: '按完成原因精确匹配' })),
+  msgSeqStart: t.Optional(t.Number({ description: '消息序号范围-开始' })),
+  msgSeqEnd: t.Optional(t.Number({ description: '消息序号范围-结束' })),
+  createdAtStart: t.Optional(t.String({ description: '创建时间范围-开始，ISO 8601格式' })),
+  createdAtEnd: t.Optional(t.String({ description: '创建时间范围-结束，ISO 8601格式' })),
+}, { description: 'AI会话消息过滤条件' }));
 
 /** 排序 Schema */
-export const aiSessionMessageSortSchema = z.object({
-  field: z.enum(['msgSeq', 'createdAt']).describe('排序字段'),
-  order: z.enum(['asc', 'desc']).describe('排序方向：asc=升序，desc=降序'),
-}).optional().describe('排序配置');
+export const aiSessionMessageSortSchema = t.Optional(t.Object({
+  field: t.Union([t.Literal('msgSeq'), t.Literal('createdAt')], { description: '排序字段' }),
+  order: t.Union([t.Literal('asc'), t.Literal('desc')], { description: '排序方向：asc=升序，desc=降序' }),
+}, { description: '排序配置' }));
 
 /** 分页查询请求体 Schema */
-export const aiSessionMessagePaginationBodySchema = z.object({
+export const aiSessionMessagePaginationBodySchema = t.Object({
   filter: aiSessionMessageFilterSchema,
   sort: aiSessionMessageSortSchema,
-  offset: z.number().int().min(0).default(0).describe('分页偏移量，从0开始'),
-  limit: z.number().int().min(1).max(100).default(50).describe('每页数量，1-100'),
-}).describe('AI会话消息分页查询请求体');
-
-// 重新导出实体 Schema
-export { aiSessionMessageZodSchemas };
+  offset: t.Number({ minimum: 0, default: 0, description: '分页偏移量，从0开始' }),
+  limit: t.Number({ minimum: 1, maximum: 100, default: 50, description: '每页数量，1-100' }),
+});

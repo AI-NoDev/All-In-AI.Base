@@ -1,7 +1,7 @@
 import { pgTable, char, varchar, text, timestamp } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
@@ -69,4 +69,8 @@ export const jobLog = pgTable(jobLogMeta.name, getTableFields(jobLogFields));
 export const jobLogConfig = getFieldConfigs(jobLogFields);
 
 // ============ Schemas ============
-export const jobLogZodSchemas = createZodSchemas(jobLog, jobLogFields);
+export const jobLogSchemas = createTypeboxSchemas(jobLog);
+
+// ============ Types ============
+export type JobLogSelect = typeof jobLog.$inferSelect;
+export type JobLogInsert = typeof jobLog.$inferInsert;

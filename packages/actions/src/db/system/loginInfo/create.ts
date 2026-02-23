@@ -2,11 +2,10 @@
  * 创建登录日志
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { loginInfo } from '@qiyu-allinai/db/entities/system';
-import { loginInfoZodSchemas } from './schemas';
-import type { LoginInfoSelect, LoginInfoInsert } from './utils';
+import { loginInfo, loginInfoSchemas } from '@qiyu-allinai/db/entities/system';
+import type { LoginInfoSelect, LoginInfoInsert } from '@qiyu-allinai/db/entities/system/loginInfo';
 
 export const loginInfoCreate = defineAction({
   meta: {
@@ -51,8 +50,8 @@ export const loginInfoCreate = defineAction({
     path: '/api/system/login-info',
   },
   schemas: {
-    bodySchema: z.object({ data: loginInfoZodSchemas.insert }),
-    outputSchema: loginInfoZodSchemas.select,
+    bodySchema: t.Object({ data: loginInfoSchemas.insert }),
+    outputSchema: loginInfoSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

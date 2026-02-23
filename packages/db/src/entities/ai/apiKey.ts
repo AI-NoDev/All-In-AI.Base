@@ -1,7 +1,7 @@
 import { pgTable, varchar, text, char, boolean, timestamp } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -94,5 +94,9 @@ export const apiKey = pgTable(apiKeyMeta.name, getTableFields(apiKeyFields));
 // ============ Config ============
 export const apiKeyConfig = getFieldConfigs(apiKeyFields);
 
-// ============ Schemas ============
-export const apiKeyZodSchemas = createZodSchemas(apiKey, apiKeyFields);
+// ============ Schemas (TypeBox) ============
+export const apiKeySchemas = createTypeboxSchemas(apiKey);
+
+// ============ Types ============
+export type ApiKeySelect = typeof apiKey.$inferSelect;
+export type ApiKeyInsert = typeof apiKey.$inferInsert;

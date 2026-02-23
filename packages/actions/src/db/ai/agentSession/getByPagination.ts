@@ -2,12 +2,11 @@
  * 分页查询Agent会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull, sql, ilike, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentSession } from '@qiyu-allinai/db/entities/ai';
-import { agentSessionPaginationBodySchema, agentSessionZodSchemas } from './schemas';
-import type { AgentSessionSelect } from './utils';
+import { agentSessionPaginationBodySchema, agentSessionSchemas, type AgentSessionSelect } from './schemas';
 
 export const agentSessionGetByPagination = defineAction({
   meta: {
@@ -57,7 +56,7 @@ export const agentSessionGetByPagination = defineAction({
   },
   schemas: {
     bodySchema: agentSessionPaginationBodySchema,
-    outputSchema: z.object({ data: z.array(agentSessionZodSchemas.select), total: z.number() }),
+    outputSchema: t.Object({ data: t.Array(agentSessionSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db } = context;

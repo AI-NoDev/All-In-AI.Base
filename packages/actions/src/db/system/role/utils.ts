@@ -6,10 +6,6 @@ import { eq } from 'drizzle-orm';
 import type { DrizzleDB } from '../../../core/types';
 import { role } from '@qiyu-allinai/db/entities/system';
 
-/** 角色类型定义 */
-export type RoleSelect = typeof role.$inferSelect;
-export type RoleInsert = typeof role.$inferInsert;
-
 /** 管理员角色标识 */
 export const ADMIN_ROLE_KEY = 'admin';
 

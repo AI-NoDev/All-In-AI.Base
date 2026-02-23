@@ -2,13 +2,12 @@
  * 分页查询消息
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, sql, asc, desc, inArray, gte, lte } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { ActionError } from '../../../core/errors';
-import { message, messageZodSchemas, groupMember } from '@qiyu-allinai/db/entities/im';
-import { paginationBodySchema } from './schemas';
-import type { MessageSelect } from './utils';
+import { message, groupMember } from '@qiyu-allinai/db/entities/im';
+import { messagePaginationBodySchema, messageSchemas, type MessageSelect } from './schemas';
 
 export const messageGetByPagination = defineAction({
   meta: {
@@ -20,8 +19,8 @@ export const messageGetByPagination = defineAction({
     path: '/api/im/message/query',
   },
   schemas: {
-    bodySchema: paginationBodySchema,
-    outputSchema: z.object({ data: z.array(messageZodSchemas.select), total: z.number() }),
+    bodySchema: messagePaginationBodySchema,
+    outputSchema: t.Object({ data: t.Array(messageSchemas.select), total: t.Number() }),
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;

@@ -1,24 +1,23 @@
 /**
- * 通知已读记录模块 Schema 定义
+ * 通知已读记录模块 Schema 定义 (TypeBox)
  */
 
-import { z } from 'zod';
-import { noticeReadZodSchemas } from '@qiyu-allinai/db/entities/system';
+import { t } from 'elysia';
+
+// Re-export from entity for convenience
+export { noticeReadSchemas, type NoticeReadSelect, type NoticeReadInsert } from '@qiyu-allinai/db/entities/system/noticeRead';
 
 /** 标记已读请求体 Schema */
-export const markAsReadBodySchema = z.object({
-  noticeId: z.string().uuid().describe('通知 ID'),
+export const markAsReadBodySchema = t.Object({
+  noticeId: t.String({ format: 'uuid', description: '通知ID' }),
 });
 
 /** 批量标记已读请求体 Schema */
-export const markManyAsReadBodySchema = z.object({
-  noticeIds: z.array(z.string().uuid()).describe('通知 ID 列表'),
+export const markManyAsReadBodySchema = t.Object({
+  noticeIds: t.Array(t.String({ format: 'uuid' }), { description: '通知ID列表' }),
 });
 
 /** 获取未读数量响应 Schema */
-export const unreadCountOutputSchema = z.object({
-  count: z.number().describe('未读数量'),
+export const unreadCountOutputSchema = t.Object({
+  count: t.Number({ description: '未读数量' }),
 });
-
-// 重新导出实体 Schema
-export { noticeReadZodSchemas };

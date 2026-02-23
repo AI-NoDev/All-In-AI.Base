@@ -1,7 +1,6 @@
 import { pgTable, uuid, varchar, text, boolean, integer } from "drizzle-orm/pg-core";
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -35,7 +34,7 @@ const departmentOwnFields = {
   },
   materializedPath: {
     field: text("materialized_path").notNull().default(''),
-    comment: () => 'UUID物化路径（用于高效查询祖先/后代）',
+    comment: () => 'UUID物化路径',
     config: { canExport: false, canImport: false }
   },
   name: {
@@ -87,5 +86,9 @@ export const department = pgTable(departmentMeta.name, getTableFields(department
 // ============ Config ============
 export const departmentConfig = getFieldConfigs(departmentFields);
 
-// ============ Schemas ============
-export const departmentZodSchemas = createZodSchemas(department, departmentFields);
+// ============ Schemas (TypeBox) ============
+export const departmentSchemas = createTypeboxSchemas(department);
+
+// ============ Types (从 Drizzle 推导) ============
+export type DepartmentSelect = typeof department.$inferSelect;
+export type DepartmentInsert = typeof department.$inferInsert;

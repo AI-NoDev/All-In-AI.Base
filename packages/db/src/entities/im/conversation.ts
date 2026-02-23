@@ -1,7 +1,7 @@
 import { pgTable, uuid, varchar, text, integer, timestamp, boolean, char, jsonb } from "drizzle-orm/pg-core";
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
@@ -113,4 +113,8 @@ export const conversation = pgTable(conversationMeta.name, getTableFields(conver
 export const conversationConfig = getFieldConfigs(conversationFields);
 
 // ============ Schemas ============
-export const conversationZodSchemas = createZodSchemas(conversation, conversationFields);
+export const conversationSchemas = createTypeboxSchemas(conversation);
+
+// ============ Types ============
+export type ConversationSelect = typeof conversation.$inferSelect;
+export type ConversationInsert = typeof conversation.$inferInsert;

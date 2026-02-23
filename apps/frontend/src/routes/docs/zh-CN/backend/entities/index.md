@@ -1,6 +1,6 @@
 # 实体开发
 
-实体（Entity）是数据库表的 TypeScript 定义，使用 Drizzle ORM 和 Zod 进行类型安全的数据库操作。
+实体（Entity）是数据库表的 TypeScript 定义，使用 Drizzle ORM 和 TypeBox（通过 drizzle-typebox）进行类型安全的数据库操作。
 
 ## 文件位置
 
@@ -30,7 +30,7 @@ packages/db/src/entities/
 import { pgTable, uuid, varchar, integer } from 'drizzle-orm/pg-core';
 import { 
   mergeFields, getTableFields, getFieldConfigs, 
-  createZodSchemas, createPermissions,
+  createTypeboxSchemas, createPermissions,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import { pkSchema } from '../base/pkSchema';
@@ -101,8 +101,8 @@ export const post = pgTable(postMeta.name, getTableFields(postFields));
 // 获取字段配置（用于导入导出）
 export const postConfig = getFieldConfigs(postFields);
 
-// 创建 Zod Schemas
-export const postZodSchemas = createZodSchemas(post, postFields);
+// 创建 TypeBox Schemas（使用 drizzle-typebox）
+export const postSchemas = createTypeboxSchemas(post, postFields);
 ```
 
 ### 4. 导出 Schema
@@ -184,35 +184,42 @@ export const deletedSchema = {
 | importExcelColumnName | TranslateFn | 导入列名（翻译函数） |
 | cellType | string | 单元格类型：STRING, NUMERIC, IMAGE, TEXT |
 
-## 生成的 Zod Schemas
+## 生成的 TypeBox Schemas
 
-`createZodSchemas` 自动生成三个 Schema：
+`createTypeboxSchemas` 使用 drizzle-typebox 自动生成三个 Schema：
 
 ```typescript
-export const postZodSchemas = {
+import { t } from 'elysia';
+import type { Static } from '@sinclair/typebox';
+
+export const postSchemas = {
   // 查询返回类型
-  select: z.object({
-    id: z.string().uuid(),
-    name: z.string(),
-    code: z.string(),
+  select: t.Object({
+    id: t.String({ format: 'uuid' }),
+    name: t.String(),
+    code: t.String(),
     // ... 所有字段
   }),
   
   // 创建类型
-  insert: z.object({
-    id: z.string().uuid().optional(),
-    name: z.string(),
-    code: z.string(),
+  insert: t.Object({
+    id: t.Optional(t.String({ format: 'uuid' })),
+    name: t.String(),
+    code: t.String(),
     // ... 必填字段
   }),
   
   // 更新类型
-  update: z.object({
-    name: z.string().optional(),
-    code: z.string().optional(),
+  update: t.Partial(t.Object({
+    name: t.String(),
+    code: t.String(),
     // ... 所有字段可选
-  }),
+  })),
 };
+
+// 类型推导
+type PostSelect = Static<typeof postSchemas.select>;
+type PostInsert = Static<typeof postSchemas.insert>;
 ```
 
 ## 数据库迁移

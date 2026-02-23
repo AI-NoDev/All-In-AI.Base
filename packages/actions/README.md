@@ -14,7 +14,7 @@ bun add @qiyu-allinai/actions
 
 ```typescript
 import { defineAction, success, failure } from '@qiyu-allinai/actions';
-import { z } from 'zod';
+import { t } from 'elysia';
 
 const getUserAction = defineAction({
   meta: {
@@ -87,8 +87,8 @@ const anthropicTools = toAnthropicTools([getUserAction]);
 // Action 定义
 interface ActionDefinition<TInput, TOutput> {
   meta: ActionMeta;
-  inputSchema: ZodType<TInput>;
-  outputSchema: ZodType<TOutput>;
+  inputSchema: TSchema;
+  outputSchema: TSchema;
   execute: (input: TInput, context?: ActionContext) => Promise<ActionResult<TOutput>>;
 }
 

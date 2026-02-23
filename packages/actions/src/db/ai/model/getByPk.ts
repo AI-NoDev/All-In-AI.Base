@@ -2,12 +2,11 @@
  * 根据ID查询AI模型
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { model } from '@qiyu-allinai/db/entities/ai';
-import { modelZodSchemas } from './schemas';
-import type { ModelSelect } from './utils';
+import { model, modelSchemas } from '@qiyu-allinai/db/entities/ai';
+import type { ModelSelect } from '@qiyu-allinai/db/entities/ai/model';
 
 export const modelGetByPk = defineAction({
   meta: {
@@ -29,8 +28,8 @@ GET /api/ai/model/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/ai/model/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: modelZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([modelSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

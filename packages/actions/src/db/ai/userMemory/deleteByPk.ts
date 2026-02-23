@@ -2,10 +2,10 @@
  * 删除用户记忆（软删除）
  */
 
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { userMemory, userMemoryZodSchemas } from '@qiyu-allinai/db/entities/ai';
-import { z } from 'zod';
+import { userMemory } from '@qiyu-allinai/db/entities/ai';
 
 export const userMemoryDeleteByPk = defineAction({
   meta: {
@@ -17,12 +17,12 @@ export const userMemoryDeleteByPk = defineAction({
     path: '/api/ai/user-memory/:id',
   },
   schemas: {
-    paramsSchema: z.object({
-      id: z.string().describe('记忆ID'),
-    }).describe('路径参数'),
-    outputSchema: z.object({
-      success: z.boolean().describe('是否成功'),
-    }).describe('删除结果'),
+    paramsSchema: t.Object({
+      id: t.String({ description: '记忆ID' }),
+    }, { description: '路径参数' }),
+    outputSchema: t.Object({
+      success: t.Boolean({ description: '是否成功' }),
+    }, { description: '删除结果' }),
   },
   execute: async (input, context) => {
     const { db } = context;

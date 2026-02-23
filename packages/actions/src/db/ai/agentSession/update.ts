@@ -2,12 +2,11 @@
  * 更新Agent会话
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { agentSession } from '@qiyu-allinai/db/entities/ai';
-import { agentSessionZodSchemas } from './schemas';
-import type { AgentSessionSelect, AgentSessionInsert } from './utils';
+import { agentSessionSchemas, type AgentSessionSelect, type AgentSessionInsert } from './schemas';
 
 export const agentSessionUpdate = defineAction({
   meta: {
@@ -45,9 +44,9 @@ export const agentSessionUpdate = defineAction({
     path: '/api/ai/agent-session/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    bodySchema: z.object({ data: agentSessionZodSchemas.update }),
-    outputSchema: agentSessionZodSchemas.select,
+    paramsSchema: t.Object({ id: t.String() }),
+    bodySchema: t.Object({ data: agentSessionSchemas.update }),
+    outputSchema: agentSessionSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

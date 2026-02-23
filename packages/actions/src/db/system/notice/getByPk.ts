@@ -2,12 +2,11 @@
  * 根据ID查询通知公告
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
-import { notice } from '@qiyu-allinai/db/entities/system';
-import { noticeZodSchemas } from './schemas';
-import type { NoticeSelect } from './utils';
+import { notice, noticeTypeboxSchemas } from '@qiyu-allinai/db/entities/system';
+import type { NoticeSelect } from '@qiyu-allinai/db/entities/system/notice';
 
 export const noticeGetByPk = defineAction({
   meta: {
@@ -34,8 +33,8 @@ GET /api/system/notice/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/system/notice/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: noticeZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([noticeTypeboxSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

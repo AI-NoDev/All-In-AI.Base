@@ -2,7 +2,7 @@
  * 删除角色部门关联
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { roleDepartment } from '@qiyu-allinai/db/entities/system';
@@ -29,8 +29,8 @@ DELETE /api/system/role-department/550e8400-e29b-41d4-a716-446655440001/550e8400
     path: '/api/system/role-department/:roleId/:departmentId',
   },
   schemas: {
-    paramsSchema: z.object({ roleId: z.string(), departmentId: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ roleId: t.String(), departmentId: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

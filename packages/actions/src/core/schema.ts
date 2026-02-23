@@ -1,12 +1,8 @@
-import { z } from 'zod/v4';
+import type { TSchema } from '@sinclair/typebox';
 
 /**
- * Convert Zod schema to JSON Schema with Date type handling
- * Date types are converted to string with date-time format
+ * TypeBox schema 已经是 JSON Schema 兼容的，直接返回
  */
-export function toJSONSchema(schema: z.ZodTypeAny): Record<string, unknown> {
-  return z.toJSONSchema(schema, {
-    unrepresentable: 'any',
-
-  }) as Record<string, unknown>;
+export function toJSONSchema(schema: TSchema): Record<string, unknown> {
+  return schema as unknown as Record<string, unknown>;
 }

@@ -2,11 +2,11 @@
  * 设置角色的菜单列表（全量替换）
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { roleMenu } from '@qiyu-allinai/db/entities/system';
-import type { RoleMenuInsert } from './utils';
+import type { RoleMenuInsert } from '@qiyu-allinai/db/entities/system/roleMenu';
 
 export const roleMenuSetByRoleId = defineAction({
   meta: {
@@ -48,9 +48,9 @@ PUT /api/system/role-menu/role/550e8400-e29b-41d4-a716-446655440000
     path: '/api/system/role-menu/role/:roleId',
   },
   schemas: {
-    paramsSchema: z.object({ roleId: z.string() }),
-    bodySchema: z.object({ menuIds: z.array(z.string()) }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ roleId: t.String() }),
+    bodySchema: t.Object({ menuIds: t.Array(t.String()) }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

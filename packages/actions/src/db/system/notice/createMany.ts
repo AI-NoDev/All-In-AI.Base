@@ -2,11 +2,10 @@
  * 批量创建通知公告
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { defineAction } from '../../../core/define';
-import { notice } from '@qiyu-allinai/db/entities/system';
-import { noticeZodSchemas } from './schemas';
-import type { NoticeSelect, NoticeInsert } from './utils';
+import { notice, noticeTypeboxSchemas } from '@qiyu-allinai/db/entities/system';
+import type { NoticeSelect, NoticeInsert } from '@qiyu-allinai/db/entities/system/notice';
 
 export const noticeCreateMany = defineAction({
   meta: {
@@ -37,8 +36,8 @@ export const noticeCreateMany = defineAction({
     path: '/api/system/notice/batch',
   },
   schemas: {
-    bodySchema: z.object({ data: z.array(noticeZodSchemas.insert) }),
-    outputSchema: z.array(noticeZodSchemas.select),
+    bodySchema: t.Object({ data: t.Array(noticeTypeboxSchemas.insert) }),
+    outputSchema: t.Array(noticeTypeboxSchemas.select),
   },
   execute: async (input, context) => {
     const { db } = context;

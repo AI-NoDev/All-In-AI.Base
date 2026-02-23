@@ -3,11 +3,12 @@
  */
 
 import { tool, jsonSchema, type UIMessage, type ToolSet } from '@qiyu-allinai/ai';
+import { t } from 'elysia';
+import type { TSchema, TObject, TProperties } from '@sinclair/typebox';
 import { model, provider, agent, tool as toolTable } from '@qiyu-allinai/db';
 import db from '@qiyu-allinai/db/connect';
 import { eq, inArray } from 'drizzle-orm';
 import { dbActions, filesActions, type ActionDefinition, type ActionContext } from '@qiyu-allinai/actions';
-import { z } from 'zod/v4';
 import { FlowExecutor } from './flow-executor';
 import type {
   InputMessage,
@@ -123,13 +124,21 @@ function buildActionsMap() {
   return actionsMap;
 }
 
-/** 合并 Action Schemas */
-function mergeActionSchemas(action: ActionDefinition) {
-  return z.object({
-    query: action.schemas.querySchema,
-    params: action.schemas.paramsSchema,
-    body: action.schemas.bodySchema
-  });
+/** 合并 Action Schemas - 使用 TypeBox */
+function mergeActionSchemas(action: ActionDefinition): TObject {
+  const properties: TProperties = {};
+  
+  if (action.schemas.querySchema) {
+    properties.query = action.schemas.querySchema;
+  }
+  if (action.schemas.paramsSchema) {
+    properties.params = action.schemas.paramsSchema;
+  }
+  if (action.schemas.bodySchema) {
+    properties.body = action.schemas.bodySchema;
+  }
+  
+  return t.Object(properties);
 }
 
 /** 将 Action 转换为 AI Tool */
@@ -138,7 +147,7 @@ function actionToAITool(action: ActionDefinition, context: ActionContext) {
   
   return tool({
     description: action.meta.description,
-    inputSchema,
+    inputSchema: jsonSchema(inputSchema),
     execute: async (input) => {
       return action.execute(input, context);
     },

@@ -2,11 +2,11 @@
  * 更新节点
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { ActionError } from '../../core/errors';
-import { node, nodeZodSchemas, NODE_TYPES, type NodeSelect, type NodeInsert } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, NODE_TYPES, type NodeSelect, type NodeInsert } from '@qiyu-allinai/db/entities/knowledge';
 import { assertNodePermission } from '../utils';
 import { nodeUpdateBodySchema } from './schemas';
 
@@ -47,9 +47,9 @@ export const nodeUpdate = defineAction({
     path: '/api/knowledge/nodes/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
+    paramsSchema: t.Object({ id: t.String() }),
     bodySchema: nodeUpdateBodySchema,
-    outputSchema: nodeZodSchemas.select,
+    outputSchema: nodeSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

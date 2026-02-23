@@ -2,7 +2,7 @@
  * 删除通知公告
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { notice } from '@qiyu-allinai/db/entities/system';
@@ -35,8 +35,8 @@ DELETE /api/system/notice/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/system/notice/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

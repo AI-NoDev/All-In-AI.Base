@@ -2,11 +2,11 @@
  * 设置用户的角色列表（全量替换）
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { userRole } from '@qiyu-allinai/db/entities/system';
-import type { UserRoleInsert } from './utils';
+import type { UserRoleInsert } from '@qiyu-allinai/db/entities/system/userRole';
 
 export const userRoleSetByUserId = defineAction({
   meta: {
@@ -48,9 +48,9 @@ PUT /api/system/user-role/user/550e8400-e29b-41d4-a716-446655440000
     path: '/api/system/user-role/user/:userId',
   },
   schemas: {
-    paramsSchema: z.object({ userId: z.string() }),
-    bodySchema: z.object({ roleIds: z.array(z.string()) }),
-    outputSchema: z.boolean(),
+    paramsSchema: t.Object({ userId: t.String() }),
+    bodySchema: t.Object({ roleIds: t.Array(t.String()) }),
+    outputSchema: t.Boolean(),
   },
   execute: async (input, context) => {
     const { db } = context;

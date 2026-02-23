@@ -2,10 +2,10 @@
  * 根据ID查询节点
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
-import { node, nodeZodSchemas, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, type NodeSelect } from '@qiyu-allinai/db/entities/knowledge';
 import { assertNodePermission } from '../utils';
 
 export const nodeGetByPk = defineAction({
@@ -31,8 +31,8 @@ GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000`,
     path: '/api/knowledge/nodes/:id',
   },
   schemas: {
-    paramsSchema: z.object({ id: z.string() }),
-    outputSchema: nodeZodSchemas.select.nullable(),
+    paramsSchema: t.Object({ id: t.String() }),
+    outputSchema: t.Union([nodeSchemas.select, t.Null()]),
   },
   execute: async (input, context) => {
     const { db } = context;

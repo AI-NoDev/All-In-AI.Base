@@ -1,40 +1,32 @@
 import { pgTable, uuid, varchar, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { 
-  mergeFields, getTableFields, getFieldConfigs, 
-  createPermissions, createDescribeRefinements,
+  mergeFields, getTableFields, getFieldConfigs, createPermissions, createTypeboxSchemas,
   type FieldMap, type EntityMeta 
 } from '../../utils/entity';
 import {
-  "db_system_token_meta_displayName" as meta_displayName,
-  "db_system_token_meta_verboseName" as meta_verboseName,
-  "db_system_token_meta_verboseNamePlural" as meta_verboseNamePlural,
-  "db_system_token_userId" as f_userId,
-  "db_system_token_name" as f_name,
-  "db_system_token_description" as f_description,
-  "db_system_token_tokenType" as f_jti,
-  "db_system_token_tokenValue" as f_sub,
-  "db_system_token_issuedAt" as f_iat,
-  "db_system_token_expiresAt" as f_exp,
-  "db_system_token_scopes" as f_scopes,
-  "db_system_token_isRevoked" as f_isRevoked,
-  "db_system_token_revokedAt" as f_revokedAt,
+  db_system_token_meta_displayName as meta_displayName,
+  db_system_token_meta_verboseName as meta_verboseName,
+  db_system_token_meta_verboseNamePlural as meta_verboseNamePlural,
+  db_system_token_userId as f_userId,
+  db_system_token_tokenType as f_jti,
+  db_system_token_tokenValue as f_sub,
+  db_system_token_issuedAt as f_iat,
+  db_system_token_expiresAt as f_exp,
+  db_system_token_scopes as f_scopes,
+  db_system_token_isRevoked as f_isRevoked,
+  db_system_token_revokedAt as f_revokedAt,
 } from '@qiyu-allinai/i18n';
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
-import { z } from "zod/v4";
 
 // ============ Fields ============
 const tokenOwnFields = {
-  // 授权人
   userId: {
     field: uuid("user_id").notNull(),
     comment: f_userId,
     config: { canExport: false, canImport: false }
   },
-  
-  // JWT 标准字段
   jti: {
     field: varchar("jti", { length: 64 }).notNull(),
     comment: f_jti,
@@ -55,15 +47,11 @@ const tokenOwnFields = {
     comment: f_exp,
     config: { canExport: true, canImport: false, exportExcelColumnName: f_exp, cellType: "STRING" as const }
   },
-  
-  // 权限范围
   scopes: {
     field: jsonb("scopes").$type<string[]>().default([]),
     comment: f_scopes,
     config: { canExport: false, canImport: false }
   },
-  
-  // 状态
   isRevoked: {
     field: boolean("is_revoked").notNull().default(false),
     comment: f_isRevoked,
@@ -93,21 +81,9 @@ export const token = pgTable(tokenMeta.name, getTableFields(tokenFields));
 // ============ Config ============
 export const tokenConfig = getFieldConfigs(tokenFields);
 
-// ============ Schemas ============
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const describeRefinements = createDescribeRefinements(tokenFields) as any;
+// ============ Schemas (TypeBox) ============
+export const tokenSchemas = createTypeboxSchemas(token);
 
-export const tokenZodSchemas = {
-  insert: createInsertZodSchema(token, {
-    ...describeRefinements,
-    scopes: z.array(z.string()).describe(tokenFields.scopes.comment()),
-  }),
-  select: createSelectZodSchema(token, {
-    ...describeRefinements,
-    scopes: z.array(z.string()).nullable().describe(tokenFields.scopes.comment()),
-  }),
-  update: createUpdateZodSchema(token, {
-    ...describeRefinements,
-    scopes: z.array(z.string()).optional().describe(tokenFields.scopes.comment()),
-  }),
-};
+// ============ Types (从 Drizzle 推导) ============
+export type TokenSelect = typeof token.$inferSelect;
+export type TokenInsert = typeof token.$inferInsert;

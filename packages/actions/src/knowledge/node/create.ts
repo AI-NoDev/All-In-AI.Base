@@ -5,7 +5,7 @@
 import { eq, and, isNull } from 'drizzle-orm';
 import { defineAction } from '../../core/define';
 import { ActionError } from '../../core/errors';
-import { node, nodeZodSchemas, NODE_TYPES, type NodeSelect, type NodeInsert } from '@qiyu-allinai/db/entities/knowledge';
+import { node, nodeSchemas, NODE_TYPES, type NodeSelect, type NodeInsert } from '@qiyu-allinai/db/entities/knowledge';
 import { buildPath, buildMaterializedPath, assertNodePermission } from '../utils';
 import { nodeCreateBodySchema } from './schemas';
 
@@ -45,7 +45,7 @@ export const nodeCreate = defineAction({
   },
   schemas: {
     bodySchema: nodeCreateBodySchema,
-    outputSchema: nodeZodSchemas.select,
+    outputSchema: nodeSchemas.select,
   },
   execute: async (input, context) => {
     const { db } = context;

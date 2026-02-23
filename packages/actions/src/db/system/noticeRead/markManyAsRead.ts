@@ -2,7 +2,7 @@
  * 批量标记通知为已读
  */
 
-import { z } from 'zod';
+import { t } from 'elysia';
 import { eq, and, inArray } from 'drizzle-orm';
 import { defineAction } from '../../../core/define';
 import { notice, noticeRead, NOTICE_STATUS, NOTICE_TARGET_TYPE } from '@qiyu-allinai/db/entities/system';
@@ -19,7 +19,7 @@ export const noticeReadMarkManyAsRead = defineAction({
   },
   schemas: {
     bodySchema: markManyAsReadBodySchema,
-    outputSchema: z.object({ success: z.boolean(), count: z.number() }),
+    outputSchema: t.Object({ success: t.Boolean(), count: t.Number() }),
   },
   execute: async (input, context) => {
     const { db, currentUserId } = context;
@@ -52,6 +52,7 @@ export const noticeReadMarkManyAsRead = defineAction({
     if (accessibleNoticeIds.length === 0) {
       return { success: true, count: 0 };
     }
+
 
     // 获取已经标记为已读的记录
     const existingReads = await db.select().from(noticeRead)

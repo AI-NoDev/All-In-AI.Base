@@ -18,8 +18,7 @@ import {
 import { pkSchema } from '../base/pkSchema';
 import { auditSchema } from '../base/auditSchema';
 import { deletedSchema } from '../base/deletedSchema';
-import { createInsertZodSchema, createSelectZodSchema, createUpdateZodSchema } from "../../types";
-import { z } from "zod/v4";
+import { createTypeboxSchemas } from '../../utils/entity';
 
 // ============ 节点类型 ============
 export const NODE_TYPES = {
@@ -213,20 +212,7 @@ export const node = pgTable(
 export const nodeConfig = getFieldConfigs(nodeFields);
 
 // ============ Schemas ============
-export const nodeZodSchemas = {
-  insert: createInsertZodSchema(node, {
-    type: z.enum(['folder', 'file']).describe(nodeFields.type.comment()),
-    tags: z.array(z.string()).describe(nodeFields.tags.comment()),
-  }),
-  select: createSelectZodSchema(node, {
-    type: z.enum(['folder', 'file']).describe(nodeFields.type.comment()),
-    tags: z.array(z.string()).nullable().describe(nodeFields.tags.comment()),
-  }),
-  update: createUpdateZodSchema(node, {
-    type: z.enum(['folder', 'file']).optional().describe(nodeFields.type.comment()),
-    tags: z.array(z.string()).optional().describe(nodeFields.tags.comment()),
-  }),
-};
+export const nodeSchemas = createTypeboxSchemas(node);
 
 // ============ 类型导出 ============
 export type NodeSelect = typeof node.$inferSelect;
