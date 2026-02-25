@@ -1,13 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import { FileIcon } from '@qiyu-allinai/file-icons';
-  import * as Select from '$lib/components/ui/select';
-  import { Button } from '$lib/components/ui/button';
-  import * as Empty from '$lib/components/ui/empty';
-  import { DataTable } from '$lib/components/common';
-  import { authStore } from '$lib/stores/auth.svelte';
-  import { t } from '$lib/stores/i18n.svelte';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface ConversationFile {
     messageId: string;
@@ -30,11 +22,71 @@
     type: 'private' | 'group';
   }
 
-  let loading = $state(true);
-  let files = $state<ConversationFile[]>([]);
-  let conversations = $state<ConversationOption[]>([]);
-  let selectedConversationId = $state<string | null>(null);
-  let filterType = $state<'all' | 'image' | 'video' | 'audio' | 'file'>('all');
+  interface PageSnapshot {
+    files: ConversationFile[];
+    conversations: ConversationOption[];
+    selectedConversationId: string | null;
+    filterType: 'all' | 'image' | 'video' | 'audio' | 'file';
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    files: [],
+    conversations: [],
+    selectedConversationId: null,
+    filterType: 'all',
+    dataLoaded: false,
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  import { FileIcon } from '@qiyu-allinai/file-icons';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import * as Empty from '$lib/components/ui/empty';
+  import { DataTable } from '$lib/components/common';
+  import { authStore } from '$lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
+
+  let loading = $state(!pageState.dataLoaded);
+  let files = $state<ConversationFile[]>(pageState.files);
+  let conversations = $state<ConversationOption[]>(pageState.conversations);
+  let selectedConversationId = $state<string | null>(pageState.selectedConversationId);
+  let filterType = $state<typeof pageState.filterType>(pageState.filterType);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    files = value.files;
+    conversations = value.conversations;
+    selectedConversationId = value.selectedConversationId;
+    filterType = value.filterType;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state changes back to module-level state for snapshot
+  $effect(() => {
+    pageState = {
+      files,
+      conversations,
+      selectedConversationId,
+      filterType,
+      dataLoaded: !loading,
+    };
+  });
 
   const api = authStore.createApi(true);
 
@@ -126,7 +178,9 @@
   }
 
   onMount(() => {
-    loadConversationFiles();
+    if (!snapshotRestored) {
+      loadConversationFiles();
+    }
   });
 </script>
 

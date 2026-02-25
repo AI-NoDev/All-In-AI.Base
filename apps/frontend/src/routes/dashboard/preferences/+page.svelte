@@ -1,3 +1,40 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface AIProvider {
+    id: string;
+    name: string;
+  }
+
+  interface AIModel {
+    id: string;
+    name: string;
+    modelId: string;
+    providerId: string;
+  }
+
+  interface PageSnapshot {
+    providers: AIProvider[];
+    models: AIModel[];
+    modelsLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    providers: [],
+    models: [],
+    modelsLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { Button } from '$lib/components/ui/button';
@@ -20,23 +57,22 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { onMount } from 'svelte';
 
-  // AI 模型相关类型
-  interface AIProvider {
-    id: string;
-    name: string;
-  }
-
-  interface AIModel {
-    id: string;
-    name: string;
-    modelId: string;
-    providerId: string;
-  }
-
   // AI 模型数据
-  let providers = $state<AIProvider[]>([]);
-  let models = $state<AIModel[]>([]);
-  let loadingModels = $state(false);
+  let providers = $state<AIProvider[]>(pageState.providers);
+  let models = $state<AIModel[]>(pageState.models);
+  let loadingModels = $state(!pageState.modelsLoaded);
+  let snapshotRestored = $state(pageState.modelsLoaded);
+
+  restoreCallback = (value) => {
+    providers = value.providers;
+    models = value.models;
+    snapshotRestored = value.modelsLoaded;
+    loadingModels = !value.modelsLoaded;
+  };
+
+  $effect(() => {
+    pageState = { providers, models, modelsLoaded: !loadingModels };
+  });
 
   // 模型选择 Dialog 状态
   let modelDialogOpen = $state(false);
@@ -132,7 +168,9 @@
   });
 
   onMount(() => {
-    loadProvidersAndModels();
+    if (!snapshotRestored) {
+      loadProvidersAndModels();
+    }
   });
 
   let _ = $derived(i18n.version);

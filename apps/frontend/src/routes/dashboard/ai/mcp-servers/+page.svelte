@@ -1,3 +1,49 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface McpServer {
+    id: string;
+    name: string;
+    description: string | null;
+    actions: string[];
+    isPublic: boolean;
+    status: string;
+    createdAt: string;
+  }
+
+  interface ApiKey {
+    id: string;
+    name: string;
+    tokenPrefix: string;
+    accessAll: boolean;
+    mcpServerIds: string[];
+    isRevoked: boolean;
+    expiresAt: string | null;
+  }
+
+  interface PageSnapshot {
+    servers: McpServer[];
+    apiKeys: ApiKey[];
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    servers: [],
+    apiKeys: [],
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -18,16 +64,6 @@
   import { toast } from 'svelte-sonner';
   import ActionsSelector from '$lib/components/common/actions-selector.svelte';
 
-  interface McpServer {
-    id: string;
-    name: string;
-    description: string | null;
-    actions: string[];
-    isPublic: boolean;
-    status: string;
-    createdAt: string;
-  }
-
   interface McpServerForm {
     name: string;
     description: string;
@@ -36,19 +72,27 @@
     status: string;
   }
 
-  interface ApiKey {
-    id: string;
-    name: string;
-    tokenPrefix: string;
-    accessAll: boolean;
-    mcpServerIds: string[];
-    isRevoked: boolean;
-    expiresAt: string | null;
-  }
+  let servers = $state<McpServer[]>(pageState.servers);
+  let apiKeys = $state<ApiKey[]>(pageState.apiKeys);
+  let loading = $state(!pageState.dataLoaded);
+  let snapshotRestored = $state(pageState.dataLoaded);
 
-  let servers = $state<McpServer[]>([]);
-  let apiKeys = $state<ApiKey[]>([]);
-  let loading = $state(true);
+  // Register restore callback
+  restoreCallback = (value) => {
+    servers = value.servers;
+    apiKeys = value.apiKeys;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      servers,
+      apiKeys,
+      dataLoaded: !loading
+    };
+  });
   
   let serverDialogOpen = $state(false);
   let editingServer = $state<McpServer | null>(null);
@@ -207,7 +251,13 @@
     return action?.displayName || actionName.split('.').pop() || actionName;
   }
 
-  onMount(() => { loadServers(); loadApiKeys(); actionsStore.load(); });
+  onMount(() => {
+    actionsStore.load();
+    if (!snapshotRestored) {
+      loadServers();
+      loadApiKeys();
+    }
+  });
 </script>
 
 <div class="flex flex-1 flex-col min-h-0 px-4 lg:px-6 pb-4">

@@ -11,6 +11,7 @@ export { jobLog } from './jobLog';
 export { loginInfo } from './loginInfo';
 export { menu } from './menu';
 export { notice } from './notice';
+export { noticeRead } from './noticeRead';
 export { operationLog } from './operationLog';
 export { post } from './post';
 export { role } from './role';

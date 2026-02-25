@@ -1,3 +1,34 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface PageSnapshot {
+    fileName: string;
+    content: string;
+  }
+
+  let pageState: PageSnapshot = {
+    fileName: '',
+    content: ''
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+
+  export const _meta = {
+    title: 'page.knowledge.newTextFile',
+    icon: 'tdesign:file-add',
+    group: 'page.knowledge.myFiles',
+    order: 101,
+    hidden: true,
+  };
+</script>
+
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -10,10 +41,19 @@
 
   let folderId = $derived($page.params.folderId);
   
-  let fileName = $state('');
-  let content = $state('');
+  let fileName = $state(pageState.fileName);
+  let content = $state(pageState.content);
   let saving = $state(false);
   let error = $state<string | null>(null);
+
+  restoreCallback = (value) => {
+    fileName = value.fileName;
+    content = value.content;
+  };
+
+  $effect(() => {
+    pageState = { fileName, content };
+  });
 
   const api = authStore.createApi(true);
 
@@ -49,16 +89,6 @@
     const targetFolder = folderId === 'root' ? '' : folderId;
     goto(`/dashboard/knowledge/my-files${targetFolder ? `?folder=${targetFolder}` : ''}`);
   }
-</script>
-
-<script lang="ts" module>
-  export const _meta = {
-    title: 'page.knowledge.newTextFile',
-    icon: 'tdesign:file-add',
-    group: 'page.knowledge.myFiles',
-    order: 101,
-    hidden: true,
-  };
 </script>
 
 <div class="flex flex-col h-full">

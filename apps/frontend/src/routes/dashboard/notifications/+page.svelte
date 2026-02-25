@@ -1,3 +1,46 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface NoticeItem {
+    id: string;
+    title: string;
+    type: string;
+    content: string;
+    status: string;
+    targetType: string;
+    targetUserIds: string[] | null;
+    publishedAt: string | null;
+    createdAt: string;
+    createdBy: string;
+    isRead?: boolean;
+    readAt?: string | null;
+  }
+
+  interface PageSnapshot {
+    notices: NoticeItem[];
+    activeTab: 'my' | 'manage';
+    showUnreadOnly: boolean;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    notices: [],
+    activeTab: 'my',
+    showUnreadOnly: false,
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
@@ -20,34 +63,39 @@
 
   let _ = $derived(i18n.version);
 
-  interface NoticeItem {
-    id: string;
-    title: string;
-    type: string;
-    content: string;
-    status: string;
-    targetType: string;
-    targetUserIds: string[] | null;
-    publishedAt: string | null;
-    createdAt: string;
-    createdBy: string;
-    isRead?: boolean;
-    readAt?: string | null;
-  }
-
   const NOTICE_TYPE = { NOTICE: '1', ANNOUNCEMENT: '2' };
   const NOTICE_STATUS = { DRAFT: '0', PUBLISHED: '1', WITHDRAWN: '2' };
 
   // State
-  let notices = $state<NoticeItem[]>([]);
-  let loading = $state(false);
-  let activeTab = $state<'my' | 'manage'>('my');
-  let showUnreadOnly = $state(false);
+  let notices = $state<NoticeItem[]>(pageState.notices);
+  let loading = $state(!pageState.dataLoaded);
+  let activeTab = $state<'my' | 'manage'>(pageState.activeTab);
+  let showUnreadOnly = $state(pageState.showUnreadOnly);
   let dialogOpen = $state(false);
   let editingNotice = $state<NoticeItem | null>(null);
   let viewingNotice = $state<NoticeItem | null>(null);
   let deleteConfirmOpen = $state(false);
   let deletingId = $state<string | null>(null);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    notices = value.notices;
+    activeTab = value.activeTab;
+    showUnreadOnly = value.showUnreadOnly;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      notices,
+      activeTab,
+      showUnreadOnly,
+      dataLoaded: !loading
+    };
+  });
 
   const api = authStore.createApi(true);
 
@@ -220,6 +268,9 @@
 
   onMount(() => {
     notificationStore.fetchUnreadCount();
+    if (!snapshotRestored) {
+      loadNotices();
+    }
   });
 </script>
 

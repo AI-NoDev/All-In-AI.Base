@@ -1,20 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/select';
-  import * as Alert from '$lib/components/ui/alert';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Switch } from '$lib/components/ui/switch';
-  import { DataTable } from '$lib/components/common';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { t } from '@/lib/stores/i18n.svelte';
-  import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@qiyu-allinai/api';
-  import { pages } from '@/lib/generated-pages';
-  import MissingMenuDialog from './components/missing-menu-dialog.svelte';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface Menu {
     id: string;
@@ -34,24 +19,87 @@
     createdAt: string;
   }
 
+  interface PageSnapshot {
+    flatMenus: Menu[];
+    searchForm: { name: string; visible: string };
+    allExpanded: boolean;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    flatMenus: [],
+    searchForm: { name: '', visible: '' },
+    allExpanded: true,
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import * as Alert from '$lib/components/ui/alert';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Switch } from '$lib/components/ui/switch';
+  import { DataTable } from '$lib/components/common';
+  import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
+  import { PostApiSystemMenuQueryFieldEnum, PostApiSystemMenuQueryOrderEnum } from '@qiyu-allinai/api';
+  import { pages } from '@/lib/generated-pages';
+  import MissingMenuDialog from './components/missing-menu-dialog.svelte';
+
   interface MenuNode extends Menu {
     children?: MenuNode[];
     expanded?: boolean;
     level?: number;
   }
 
-  let flatMenus = $state<Menu[]>([]);
+  let flatMenus = $state<Menu[]>(pageState.flatMenus);
   let menuTree = $state<MenuNode[]>([]);
-  let loading = $state(true);
+  let loading = $state(!pageState.dataLoaded);
   let saving = $state(false);
   let dialogOpen = $state(false);
   let editingMenu = $state<Menu | null>(null);
-  let allExpanded = $state(true);
+  let allExpanded = $state(pageState.allExpanded);
   let showFilter = $state(true);
+  let snapshotRestored = $state(pageState.dataLoaded);
 
-  let searchForm = $state({
-    name: '',
-    visible: '',
+  let searchForm = $state({ ...pageState.searchForm });
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    flatMenus = value.flatMenus;
+    searchForm = { ...value.searchForm };
+    allExpanded = value.allExpanded;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+    if (value.dataLoaded) {
+      menuTree = buildTree(flatMenus);
+    }
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      flatMenus,
+      searchForm: { ...searchForm },
+      allExpanded,
+      dataLoaded: !loading
+    };
   });
 
   // 缺失菜单检测
@@ -269,7 +317,13 @@
     loadMenus().then(() => detectMissingMenus());
   }
 
-  onMount(() => loadMenus().then(() => detectMissingMenus()));
+  onMount(() => {
+    if (!snapshotRestored) {
+      loadMenus().then(() => detectMissingMenus());
+    } else {
+      detectMissingMenus();
+    }
+  });
 </script>
 
 {#snippet nameRender({ row })}

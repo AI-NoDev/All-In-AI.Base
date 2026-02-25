@@ -1,3 +1,65 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface PathItem {
+    id: string | null;
+    name: string;
+    permission?: 'read' | 'write';
+  }
+
+  interface SharedFolder {
+    id: string;
+    name: string;
+    parentId: string | null;
+    icon?: string | null;
+    color?: string | null;
+    createdAt: string;
+    sharedBy?: string;
+    permission?: 'read' | 'write';
+  }
+
+  interface SharedFile {
+    id: string;
+    name: string;
+    folderId: string | null;
+    extension?: string | null;
+    mimeType?: string | null;
+    size: number;
+    createdAt: string;
+    sharedBy?: string;
+    permission?: 'read' | 'write';
+  }
+
+  interface PageSnapshot {
+    folders: SharedFolder[];
+    files: SharedFile[];
+    pathStack: PathItem[];
+    currentFolderId: string | null;
+    favoritedFolderIds: string[];
+    favoritedFileIds: string[];
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    folders: [],
+    files: [],
+    pathStack: [],
+    currentFolderId: null,
+    favoritedFolderIds: [],
+    favoritedFileIds: [],
+    dataLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -12,12 +74,6 @@
     type GenericFolder,
     type GenericFile,
   } from '../components';
-
-  interface PathItem {
-    id: string | null;
-    name: string;
-    permission?: 'read' | 'write';
-  }
 
   interface SharedWithMeItem {
     node: {
@@ -37,13 +93,37 @@
     permissionSource?: 'direct' | 'inherited';
   }
 
-  let loading = $state(true);
-  let folders = $state<GenericFolder[]>([]);
-  let files = $state<GenericFile[]>([]);
-  let pathStack = $state<PathItem[]>([{ id: null, name: t('page.knowledge.sharedWithMe') }]);
-  let currentFolderId = $state<string | null>(null);
-  let favoritedFolderIds = $state<Set<string>>(new Set());
-  let favoritedFileIds = $state<Set<string>>(new Set());
+  let loading = $state(!pageState.dataLoaded);
+  let folders = $state<GenericFolder[]>(pageState.folders);
+  let files = $state<GenericFile[]>(pageState.files);
+  let pathStack = $state<PathItem[]>(pageState.pathStack.length > 0 ? pageState.pathStack : [{ id: null, name: t('page.knowledge.sharedWithMe') }]);
+  let currentFolderId = $state<string | null>(pageState.currentFolderId);
+  let favoritedFolderIds = $state<Set<string>>(new Set(pageState.favoritedFolderIds));
+  let favoritedFileIds = $state<Set<string>>(new Set(pageState.favoritedFileIds));
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  restoreCallback = (value) => {
+    folders = value.folders;
+    files = value.files;
+    pathStack = value.pathStack.length > 0 ? value.pathStack : [{ id: null, name: t('page.knowledge.sharedWithMe') }];
+    currentFolderId = value.currentFolderId;
+    favoritedFolderIds = new Set(value.favoritedFolderIds);
+    favoritedFileIds = new Set(value.favoritedFileIds);
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  $effect(() => {
+    pageState = {
+      folders: folders as SharedFolder[],
+      files: files as SharedFile[],
+      pathStack,
+      currentFolderId,
+      favoritedFolderIds: Array.from(favoritedFolderIds),
+      favoritedFileIds: Array.from(favoritedFileIds),
+      dataLoaded: !loading
+    };
+  });
 
   const api = authStore.createApi(true);
 
@@ -181,7 +261,11 @@
     }
   }
 
-  onMount(() => loadData());
+  onMount(() => {
+    if (!snapshotRestored) {
+      loadData();
+    }
+  });
 </script>
 
 <div class="px-4 lg:px-6 flex-1 flex flex-col min-h-0">

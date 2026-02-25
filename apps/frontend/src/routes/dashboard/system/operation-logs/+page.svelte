@@ -36,6 +36,7 @@
   import * as Pagination from '$lib/components/ui/pagination';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
@@ -372,76 +373,80 @@
 
 <!-- 详情弹窗 -->
 <Dialog.Root bind:open={detailOpen}>
-  <Dialog.Content class="max-w-2xl max-h-[80vh] overflow-y-auto">
+  <Dialog.Content class="max-w-2xl">
     <Dialog.Header>
       <Dialog.Title>{t('page.system.operationLogDetail')}</Dialog.Title>
     </Dialog.Header>
     {#if detailLog}
-      <div class="grid grid-cols-2 gap-4 py-4">
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.systemModule')}</div>
-          <div class="font-medium">{detailLog.title}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.operationType')}</div>
-          <Badge variant="outline">{getBusinessType(detailLog.businessType)}</Badge>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.operator')}</div>
-          <div class="font-medium">{detailLog.name || '-'}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.department')}</div>
-          <div class="font-medium">{detailLog.departmentName || '-'}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.requestMethod')}</div>
-          <div class="font-medium">{detailLog.requestMethod || '-'}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('common.fields.status')}</div>
-          <Badge variant={getStatusBadge(detailLog.status).variant}>
-            {getStatusBadge(detailLog.status).text}
-          </Badge>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.ipAddress')}</div>
-          <div class="font-medium">{detailLog.ip || '-'}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.operationLocation')}</div>
-          <div class="font-medium">{detailLog.location || '-'}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.operationTime')}</div>
-          <div class="font-medium">{formatTime(detailLog.time)}</div>
-        </div>
-        <div>
-          <div class="text-sm text-muted-foreground">{t('page.system.costTime')}</div>
-          <div class="font-medium">{detailLog.costTime ? `${detailLog.costTime}${t('common.unit.ms')}` : '-'}</div>
-        </div>
-        <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">{t('page.system.requestUrl')}</div>
-          <div class="font-medium break-all">{detailLog.url || '-'}</div>
-        </div>
-        <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">{t('page.system.requestMethodName')}</div>
-          <div class="font-medium break-all">{detailLog.method || '-'}</div>
-        </div>
-        <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">{t('page.system.requestParams')}</div>
-          <pre class="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto max-h-32">{detailLog.param || '-'}</pre>
-        </div>
-        <div class="col-span-2">
-          <div class="text-sm text-muted-foreground">{t('page.system.responseResult')}</div>
-          <pre class="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto max-h-32">{detailLog.jsonResult || '-'}</pre>
-        </div>
-        {#if detailLog.status === '1' && detailLog.errorMsg}
-          <div class="col-span-2">
-            <div class="text-sm text-muted-foreground">{t('page.system.errorMessage')}</div>
-            <pre class="mt-1 p-2 bg-destructive/10 text-destructive rounded text-xs overflow-x-auto max-h-32">{detailLog.errorMsg}</pre>
+      <div class="h-[calc(80vh-180px)]">
+        <ScrollArea class="h-full">
+          <div class="grid grid-cols-2 gap-4 py-4 pr-4">
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.systemModule')}</div>
+            <div class="font-medium">{detailLog.title}</div>
           </div>
-        {/if}
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.operationType')}</div>
+            <Badge variant="outline">{getBusinessType(detailLog.businessType)}</Badge>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.operator')}</div>
+            <div class="font-medium">{detailLog.name || '-'}</div>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.department')}</div>
+            <div class="font-medium">{detailLog.departmentName || '-'}</div>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.requestMethod')}</div>
+            <div class="font-medium">{detailLog.requestMethod || '-'}</div>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('common.fields.status')}</div>
+            <Badge variant={getStatusBadge(detailLog.status).variant}>
+              {getStatusBadge(detailLog.status).text}
+            </Badge>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.ipAddress')}</div>
+            <div class="font-medium">{detailLog.ip || '-'}</div>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.operationLocation')}</div>
+            <div class="font-medium">{detailLog.location || '-'}</div>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.operationTime')}</div>
+            <div class="font-medium">{formatTime(detailLog.time)}</div>
+          </div>
+          <div>
+            <div class="text-sm text-muted-foreground">{t('page.system.costTime')}</div>
+            <div class="font-medium">{detailLog.costTime ? `${detailLog.costTime}${t('common.unit.ms')}` : '-'}</div>
+          </div>
+          <div class="col-span-2">
+            <div class="text-sm text-muted-foreground">{t('page.system.requestUrl')}</div>
+            <div class="font-medium break-all">{detailLog.url || '-'}</div>
+          </div>
+          <div class="col-span-2">
+            <div class="text-sm text-muted-foreground">{t('page.system.requestMethodName')}</div>
+            <div class="font-medium break-all">{detailLog.method || '-'}</div>
+          </div>
+          <div class="col-span-2">
+            <div class="text-sm text-muted-foreground">{t('page.system.requestParams')}</div>
+            <pre class="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto max-h-32">{detailLog.param || '-'}</pre>
+          </div>
+          <div class="col-span-2">
+            <div class="text-sm text-muted-foreground">{t('page.system.responseResult')}</div>
+            <pre class="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto max-h-32">{detailLog.jsonResult || '-'}</pre>
+          </div>
+          {#if detailLog.status === '1' && detailLog.errorMsg}
+            <div class="col-span-2">
+              <div class="text-sm text-muted-foreground">{t('page.system.errorMessage')}</div>
+              <pre class="mt-1 p-2 bg-destructive/10 text-destructive rounded text-xs overflow-x-auto max-h-32">{detailLog.errorMsg}</pre>
+            </div>
+          {/if}
+        </div>
+        </ScrollArea>
       </div>
     {/if}
     <Dialog.Footer>

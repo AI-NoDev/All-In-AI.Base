@@ -1,3 +1,64 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface PathItem {
+    id: string | null;
+    name: string;
+  }
+
+  interface FavoriteFolder {
+    id: string;
+    name: string;
+    parentId: string | null;
+    icon?: string | null;
+    color?: string | null;
+    createdAt: string;
+    isOwner?: boolean;
+    permission?: 'read' | 'write' | 'manage' | 'none';
+  }
+
+  interface FavoriteFile {
+    id: string;
+    name: string;
+    folderId: string | null;
+    extension?: string | null;
+    mimeType?: string | null;
+    size: number;
+    createdAt: string;
+    isOwner?: boolean;
+    permission?: 'read' | 'write' | 'manage' | 'none';
+  }
+
+  interface PageSnapshot {
+    folders: FavoriteFolder[];
+    files: FavoriteFile[];
+    pathStack: PathItem[];
+    currentFolderId: string | null;
+    favoritedFolderIds: string[];
+    favoritedFileIds: string[];
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    folders: [],
+    files: [],
+    pathStack: [],
+    currentFolderId: null,
+    favoritedFolderIds: [],
+    favoritedFileIds: [],
+    dataLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -14,21 +75,6 @@
     type GenericFile,
   } from '../components';
 
-  interface PathItem {
-    id: string | null;
-    name: string;
-  }
-
-  interface FavoriteFolder extends GenericFolder {
-    isOwner?: boolean;
-    permission?: 'read' | 'write' | 'manage' | 'none';
-  }
-
-  interface FavoriteFile extends GenericFile {
-    isOwner?: boolean;
-    permission?: 'read' | 'write' | 'manage' | 'none';
-  }
-
   interface FavoriteItem {
     nodeId: string;
     type: 'folder' | 'file';
@@ -42,13 +88,37 @@
     createdAt: string;
   }
 
-  let loading = $state(true);
-  let folders = $state<FavoriteFolder[]>([]);
-  let files = $state<FavoriteFile[]>([]);
-  let pathStack = $state<PathItem[]>([{ id: null, name: t('page.knowledge.favorites') }]);
-  let currentFolderId = $state<string | null>(null);
-  let favoritedFolderIds = $state<Set<string>>(new Set());
-  let favoritedFileIds = $state<Set<string>>(new Set());
+  let loading = $state(!pageState.dataLoaded);
+  let folders = $state<FavoriteFolder[]>(pageState.folders);
+  let files = $state<FavoriteFile[]>(pageState.files);
+  let pathStack = $state<PathItem[]>(pageState.pathStack.length > 0 ? pageState.pathStack : [{ id: null, name: t('page.knowledge.favorites') }]);
+  let currentFolderId = $state<string | null>(pageState.currentFolderId);
+  let favoritedFolderIds = $state<Set<string>>(new Set(pageState.favoritedFolderIds));
+  let favoritedFileIds = $state<Set<string>>(new Set(pageState.favoritedFileIds));
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  restoreCallback = (value) => {
+    folders = value.folders;
+    files = value.files;
+    pathStack = value.pathStack.length > 0 ? value.pathStack : [{ id: null, name: t('page.knowledge.favorites') }];
+    currentFolderId = value.currentFolderId;
+    favoritedFolderIds = new Set(value.favoritedFolderIds);
+    favoritedFileIds = new Set(value.favoritedFileIds);
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  $effect(() => {
+    pageState = {
+      folders,
+      files,
+      pathStack,
+      currentFolderId,
+      favoritedFolderIds: Array.from(favoritedFolderIds),
+      favoritedFileIds: Array.from(favoritedFileIds),
+      dataLoaded: !loading
+    };
+  });
 
   const api = authStore.createApi(true);
 
@@ -226,7 +296,11 @@
     }
   }
 
-  onMount(() => loadData());
+  onMount(() => {
+    if (!snapshotRestored) {
+      loadData();
+    }
+  });
 </script>
 
 <div class="px-4 lg:px-6 flex-1 flex flex-col min-h-0">

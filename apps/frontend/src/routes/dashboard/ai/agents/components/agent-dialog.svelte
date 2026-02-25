@@ -168,11 +168,13 @@
 </script>
 
 <Dialog.Root {open} onOpenChange={onOpenChange}>
-  <Dialog.Content class="sm:max-w-6xl max-h-[90vh] overflow-y-auto" interactOutsideBehavior="ignore">
+  <Dialog.Content class="sm:max-w-6xl" interactOutsideBehavior="ignore">
     <Dialog.Header>
       <Dialog.Title>{editing ? t('common.actions.edit') : t('common.actions.add')} {t('page.ai.agents')}</Dialog.Title>
     </Dialog.Header>
-    <div class="grid grid-cols-2 gap-6 py-4">
+    <div class="h-[calc(90vh-180px)]">
+      <ScrollArea class="h-full">
+        <div class="grid grid-cols-2 gap-6 py-4 pr-4">
       <!-- 左侧：基础信息 -->
       <div class="grid gap-4">
         <!-- 头像上传区域 -->
@@ -308,6 +310,8 @@
           </ScrollArea>
         </div>
       </div>
+      </div>
+      </ScrollArea>
     </div>
     <Dialog.Footer>
       <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.actions.cancel')}</Button>

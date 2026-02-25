@@ -1,15 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/select';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Badge } from '$lib/components/ui/badge';
-  import { DataTable } from '$lib/components/common';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { t } from '@/lib/stores/i18n.svelte';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface Permission {
     id: string;
@@ -29,12 +19,63 @@
     level?: number;
   }
 
-  let permissions = $state<Permission[]>([]);
+  interface PageSnapshot {
+    permissions: Permission[];
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    permissions: [],
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Select from '$lib/components/ui/select';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Badge } from '$lib/components/ui/badge';
+  import { DataTable } from '$lib/components/common';
+  import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
+
+  let permissions = $state<Permission[]>(pageState.permissions);
   let flatPermissions = $state<Permission[]>([]);
-  let loading = $state(true);
+  let loading = $state(!pageState.dataLoaded);
   let saving = $state(false);
   let dialogOpen = $state(false);
   let editingPermission = $state<Permission | null>(null);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    permissions = value.permissions;
+    flatPermissions = flattenTree(permissions);
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      permissions,
+      dataLoaded: !loading
+    };
+  });
 
   let form = $state({
     code: '',
@@ -217,7 +258,11 @@
     }
   }
 
-  onMount(() => loadPermissions());
+  onMount(() => {
+    if (!snapshotRestored) {
+      loadPermissions();
+    }
+  });
 </script>
 
 {#snippet nameRender({ row })}

@@ -1,3 +1,37 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface FileData {
+    id: string;
+    name: string;
+    content: string;
+    mimeType: string | null;
+    extension: string | null;
+    folderId: string | null;
+  }
+
+  interface PageSnapshot {
+    fileData: FileData | null;
+    content: string;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    fileData: null,
+    content: '',
+    dataLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -9,21 +43,24 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { t } from '$lib/stores/i18n.svelte';
 
-  interface FileData {
-    id: string;
-    name: string;
-    content: string;
-    mimeType: string | null;
-    extension: string | null;
-    folderId: string | null;
-  }
-
-  let fileData = $state<FileData | null>(null);
-  let content = $state('');
-  let loading = $state(true);
+  let fileData = $state<FileData | null>(pageState.fileData);
+  let content = $state(pageState.content);
+  let loading = $state(!pageState.dataLoaded);
   let saving = $state(false);
   let error = $state<string | null>(null);
   let hasChanges = $state(false);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  restoreCallback = (value) => {
+    fileData = value.fileData;
+    content = value.content;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  $effect(() => {
+    pageState = { fileData, content, dataLoaded: !loading };
+  });
 
   const api = authStore.createApi(true);
 
@@ -31,7 +68,7 @@
   let folderId = $derived(page.params.folderId === 'root' ? null : page.params.folderId);
 
   onMount(() => {
-    if (fileId) {
+    if (fileId && !snapshotRestored) {
       loadFile();
     }
   });

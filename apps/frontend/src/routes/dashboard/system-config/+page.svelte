@@ -1,3 +1,38 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface ConfigItem {
+    id: string;
+    name: string;
+    key: string;
+    value: string;
+    isSystem: boolean;
+    createdAt: string;
+  }
+
+  interface PageSnapshot {
+    configs: ConfigItem[];
+    searchForm: { name: string; key: string };
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    configs: [],
+    searchForm: { name: '', key: '' },
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
@@ -11,27 +46,33 @@
   import { t } from '@/lib/stores/i18n.svelte';
   import { PostApiSystemConfigQueryFieldEnum, PostApiSystemConfigQueryOrderEnum } from '@qiyu-allinai/api';
 
-  interface ConfigItem {
-    id: string;
-    name: string;
-    key: string;
-    value: string;
-    isSystem: boolean;
-    createdAt: string;
-  }
-
-  let configs = $state<ConfigItem[]>([]);
-  let loading = $state(true);
+  let configs = $state<ConfigItem[]>(pageState.configs);
+  let loading = $state(!pageState.dataLoaded);
   let saving = $state(false);
   let dialogOpen = $state(false);
   let editingConfig = $state<ConfigItem | null>(null);
   let selectedIds = $state<Set<string>>(new Set());
   let deleting = $state(false);
   let showFilter = $state(true);
+  let snapshotRestored = $state(pageState.dataLoaded);
 
-  let searchForm = $state({
-    name: '',
-    key: '',
+  let searchForm = $state({ ...pageState.searchForm });
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    configs = value.configs;
+    searchForm = { ...value.searchForm };
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      configs,
+      searchForm: { ...searchForm },
+      dataLoaded: !loading
+    };
   });
 
   let form = $state({ name: '', key: '', value: '' });
@@ -176,7 +217,11 @@
     }
   }
 
-  onMount(() => loadConfigs());
+  onMount(() => {
+    if (!snapshotRestored) {
+      loadConfigs();
+    }
+  });
 </script>
 
 {#snippet nameRender({ value })}

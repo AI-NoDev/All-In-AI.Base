@@ -1,8 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { t } from '$lib/stores/i18n.svelte';
-  import { MemoryList, MemoryDialog } from './components';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface UserMemory {
     id: string;
@@ -30,6 +27,45 @@
     name: string;
   }
 
+  interface PageSnapshot {
+    memories: UserMemory[];
+    users: User[];
+    agents: Agent[];
+    total: number;
+    page: number;
+    filterUserId: string;
+    filterMemoryType: string;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    memories: [],
+    users: [],
+    agents: [],
+    total: 0,
+    page: 1,
+    filterUserId: '',
+    filterMemoryType: '',
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
+  import { MemoryList, MemoryDialog } from './components';
+
   interface MemoryForm {
     userId: string;
     agentId: string;
@@ -40,17 +76,45 @@
     metadata: string;
   }
 
-  let memories = $state<UserMemory[]>([]);
-  let users = $state<User[]>([]);
-  let agents = $state<Agent[]>([]);
-  let loading = $state(true);
-  let total = $state(0);
-  let page = $state(1);
+  let memories = $state<UserMemory[]>(pageState.memories);
+  let users = $state<User[]>(pageState.users);
+  let agents = $state<Agent[]>(pageState.agents);
+  let loading = $state(!pageState.dataLoaded);
+  let total = $state(pageState.total);
+  let page = $state(pageState.page);
   let pageSize = $state(20);
+  let snapshotRestored = $state(pageState.dataLoaded);
 
   // Filter
-  let filterUserId = $state('');
-  let filterMemoryType = $state('');
+  let filterUserId = $state(pageState.filterUserId);
+  let filterMemoryType = $state(pageState.filterMemoryType);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    memories = value.memories;
+    users = value.users;
+    agents = value.agents;
+    total = value.total;
+    page = value.page;
+    filterUserId = value.filterUserId;
+    filterMemoryType = value.filterMemoryType;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      memories,
+      users,
+      agents,
+      total,
+      page,
+      filterUserId,
+      filterMemoryType,
+      dataLoaded: !loading
+    };
+  });
 
   // Dialog
   let dialogOpen = $state(false);
@@ -209,8 +273,10 @@
   }
 
   onMount(async () => {
-    await Promise.all([loadUsers(), loadAgents()]);
-    await loadMemories();
+    if (!snapshotRestored) {
+      await Promise.all([loadUsers(), loadAgents()]);
+      await loadMemories();
+    }
   });
 </script>
 

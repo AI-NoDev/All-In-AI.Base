@@ -13,7 +13,7 @@ COPY packages/api/ packages/api/
 COPY packages/cache/ packages/cache/
 COPY packages/storage/ packages/storage/
 COPY packages/file-icons/ packages/file-icons/
-COPY packages/zod-visual-editor/ packages/zod-visual-editor/
+COPY packages/json-schema-editor/ packages/json-schema-editor/
 COPY packages/flow-editor/ packages/flow-editor/
 COPY packages/i18n/package.json packages/i18n/package.json
 COPY packages/i18n/paraglide/ packages/i18n/paraglide/

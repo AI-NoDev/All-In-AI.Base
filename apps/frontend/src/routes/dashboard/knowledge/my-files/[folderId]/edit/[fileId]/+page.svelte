@@ -1,13 +1,5 @@
-<script lang="ts">
-  import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
-  import * as AlertDialog from '$lib/components/ui/alert-dialog';
-  import { authStore } from '$lib/stores/auth.svelte';
-  import { t } from '$lib/stores/i18n.svelte';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface ApiError {
     message?: string;
@@ -23,23 +15,79 @@
     size: number;
   }
 
+  interface PageSnapshot {
+    fileData: FileData | null;
+    content: string;
+    downloadUrl: string | null;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    fileData: null,
+    content: '',
+    downloadUrl: null,
+    dataLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+
+  export const _meta = {
+    title: 'page.knowledge.editFile',
+    icon: 'tdesign:edit',
+    group: 'page.knowledge.myFiles',
+    order: 100,
+    hidden: true,
+  };
+</script>
+
+<script lang="ts">
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
+  import * as AlertDialog from '$lib/components/ui/alert-dialog';
+  import { authStore } from '$lib/stores/auth.svelte';
+  import { t } from '$lib/stores/i18n.svelte';
+
   type FileType = 'text' | 'image' | 'video' | 'audio' | 'other';
 
   let fileId = $derived($page.params.fileId);
   let folderId = $derived($page.params.folderId);
   let isReadonly = $derived($page.url.searchParams.get('readonly') === 'true');
   
-  let loading = $state(true);
+  let loading = $state(!pageState.dataLoaded);
   let saving = $state(false);
   let uploading = $state(false);
-  let fileData = $state<FileData | null>(null);
-  let content = $state('');
-  let downloadUrl = $state<string | null>(null);
+  let fileData = $state<FileData | null>(pageState.fileData);
+  let content = $state(pageState.content);
+  let downloadUrl = $state<string | null>(pageState.downloadUrl);
   let error = $state<string | null>(null);
   let uploadError = $state<string | null>(null);
   let fileInputRef = $state<HTMLInputElement | null>(null);
   let confirmDialogOpen = $state(false);
   let pendingFile = $state<File | null>(null);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  restoreCallback = (value) => {
+    fileData = value.fileData;
+    content = value.content;
+    downloadUrl = value.downloadUrl;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  $effect(() => {
+    pageState = { fileData, content, downloadUrl, dataLoaded: !loading };
+  });
 
   const api = authStore.createApi(true);
 
@@ -191,18 +239,10 @@
   }
 
   onMount(() => {
-    loadFile();
+    if (!snapshotRestored) {
+      loadFile();
+    }
   });
-</script>
-
-<script lang="ts" module>
-  export const _meta = {
-    title: 'page.knowledge.editFile',
-    icon: 'tdesign:edit',
-    group: 'page.knowledge.myFiles',
-    order: 100,
-    hidden: true,
-  };
 </script>
 
 {#if loading}

@@ -1,3 +1,29 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface FormData {
+    name: string;
+    content: string;
+  }
+
+  interface PageSnapshot {
+    form: FormData;
+  }
+
+  let pageState: PageSnapshot = {
+    form: { name: '', content: '' }
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -9,14 +35,14 @@
   import { authStore } from '@/lib/stores/auth.svelte';
   import { t } from '$lib/stores/i18n.svelte';
 
-  interface FormData {
-    name: string;
-    content: string;
-  }
+  let form = $state<FormData>(pageState.form);
 
-  let form = $state<FormData>({
-    name: '',
-    content: '',
+  restoreCallback = (value) => {
+    form = value.form;
+  };
+
+  $effect(() => {
+    pageState = { form };
   });
 
   let saving = $state(false);

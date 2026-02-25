@@ -2,6 +2,7 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
   import * as Tabs from '$lib/components/ui/tabs';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Label } from '$lib/components/ui/label';
@@ -84,7 +85,7 @@
 </script>
 
 <Dialog.Root {open} onOpenChange={onOpenChange}>
-  <Dialog.Content class="sm:max-w-2xl max-h-[85vh] overflow-y-auto" interactOutsideBehavior="ignore">
+  <Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
     <Dialog.Header>
       <Dialog.Title>{editing ? t('page.ai.model_editTitle') : t('page.ai.model_addTitle')}</Dialog.Title>
       <Dialog.Description class="text-muted-foreground">
@@ -92,7 +93,10 @@
       </Dialog.Description>
     </Dialog.Header>
     
-    <Tabs.Root value="basic" class="w-full">
+    <div class="h-[calc(85vh-200px)]">
+      <ScrollArea class="h-full">
+        <div class="pr-4">
+          <Tabs.Root value="basic" class="w-full">
       <Tabs.List class="grid w-full grid-cols-4">
         <Tabs.Trigger value="basic">{t('page.ai.model_basicInfo')}</Tabs.Trigger>
         <Tabs.Trigger value="capabilities">{t('page.ai.model_capabilities')}</Tabs.Trigger>
@@ -274,6 +278,9 @@
         </div>
       </Tabs.Content>
     </Tabs.Root>
+        </div>
+      </ScrollArea>
+    </div>
     
     <Dialog.Footer class="mt-4">
       <Button variant="outline" onclick={() => onOpenChange(false)}>{t('common.cancel')}</Button>

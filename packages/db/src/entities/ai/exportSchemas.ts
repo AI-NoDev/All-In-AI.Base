@@ -13,9 +13,11 @@ export { provider } from './provider';
 export { tool } from './tool';
 export { toolGroup } from './toolGroup';
 export { schema } from './schema';
+export { dataModel } from './dataModel';
 export { mcpServer } from './mcpServer';
 export { apiKey } from './apiKey';
 export { apiKeyMcp } from './apiKeyMcp';
+export { workflow } from './workflow';
 
 // Relations
 export * from './relations';

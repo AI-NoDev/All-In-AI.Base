@@ -1,12 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { t } from '@/lib/stores/i18n.svelte';
-  import { ProviderList, ModelList, ProviderDialog, ModelDialog } from './components';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
-  import { Badge } from '$lib/components/ui/badge';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface Provider {
     id: string;
@@ -26,31 +19,61 @@
     status: string;
     remark: string | null;
     createdAt: string;
-    // 能力支持
     supportTools: boolean;
     supportThinking: boolean;
     supportPrefixCompletion: boolean;
     supportFIM: boolean;
     supportJsonOutput: boolean;
-    // 输入能力
     supportImageInput: boolean;
     supportVideoInput: boolean;
     supportAudioInput: boolean;
-    // 输出能力
     supportImageOutput: boolean;
     supportVideoOutput: boolean;
     supportAudioOutput: boolean;
-    // Token 限制
     contextWindow: number | null;
     maxInputTokens: number | null;
     maxOutputTokens: number | null;
     maxThinkingTokens: number | null;
-    // 成本
     inputPricePerMillion: string | null;
     outputPricePerMillion: string | null;
     cacheHitPricePerMillion: string | null;
     cacheMissPricePerMillion: string | null;
   }
+
+  interface PageSnapshot {
+    providers: Provider[];
+    models: Model[];
+    selectedProviderId: string | null;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    providers: [],
+    models: [],
+    selectedProviderId: null,
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
+  import { ProviderList, ModelList, ProviderDialog, ModelDialog } from './components';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Button } from '$lib/components/ui/button';
+  import { Badge } from '$lib/components/ui/badge';
 
   interface ProviderForm {
     name: string;
@@ -67,26 +90,21 @@
     modelId: string;
     status: string;
     remark: string;
-    // 能力支持
     supportTools: boolean;
     supportThinking: boolean;
     supportPrefixCompletion: boolean;
     supportFIM: boolean;
     supportJsonOutput: boolean;
-    // 输入能力
     supportImageInput: boolean;
     supportVideoInput: boolean;
     supportAudioInput: boolean;
-    // 输出能力
     supportImageOutput: boolean;
     supportVideoOutput: boolean;
     supportAudioOutput: boolean;
-    // Token 限制
     contextWindow: number | null;
     maxInputTokens: number | null;
     maxOutputTokens: number | null;
     maxThinkingTokens: number | null;
-    // 成本
     inputPricePerMillion: string | null;
     outputPricePerMillion: string | null;
     cacheHitPricePerMillion: string | null;
@@ -120,12 +138,32 @@
     cacheMissPricePerMillion: null,
   };
 
-  let providers = $state<Provider[]>([]);
-  let models = $state<Model[]>([]);
-  let loading = $state(true);
+  let providers = $state<Provider[]>(pageState.providers);
+  let models = $state<Model[]>(pageState.models);
+  let loading = $state(!pageState.dataLoaded);
   let modelLoading = $state(false);
-  let selectedProviderId = $state<string | null>(null);
+  let selectedProviderId = $state<string | null>(pageState.selectedProviderId);
   let selectedModelIds = $state<Set<string>>(new Set());
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    providers = value.providers;
+    models = value.models;
+    selectedProviderId = value.selectedProviderId;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      providers,
+      models,
+      selectedProviderId,
+      dataLoaded: !loading
+    };
+  });
 
   // Provider dialog
   let providerDialogOpen = $state(false);
@@ -385,9 +423,11 @@
   }
 
   onMount(async () => {
-    await loadProviders();
-    await loadModels();
-    loading = false;
+    if (!snapshotRestored) {
+      await loadProviders();
+      await loadModels();
+      loading = false;
+    }
   });
 </script>
 

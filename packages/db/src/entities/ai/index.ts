@@ -22,12 +22,16 @@ export { toolGroup, toolGroupFields, toolGroupMeta, toolGroupConfig, toolGroupSc
 export type { ToolGroupSelect, ToolGroupInsert } from './toolGroup';
 export { schema, schemaFields, schemaMeta, schemaConfig, schemaSchemas } from './schema';
 export type { SchemaSelect, SchemaInsert } from './schema';
+export { dataModel, dataModelFields, dataModelMeta, dataModelConfig, dataModelSchemas, DATA_MODEL_STATUS } from './dataModel';
+export type { DataModelSelect, DataModelInsert } from './dataModel';
 export { mcpServer, mcpServerFields, mcpServerMeta, mcpServerConfig, mcpServerSchemas } from './mcpServer';
 export type { McpServerSelect, McpServerInsert } from './mcpServer';
 export { apiKey, apiKeyFields, apiKeyMeta, apiKeyConfig, apiKeySchemas } from './apiKey';
 export type { ApiKeySelect, ApiKeyInsert } from './apiKey';
 export { apiKeyMcp, apiKeyMcpMeta, apiKeyMcpSchemas, apiKeyMcpFieldComments } from './apiKeyMcp';
 export type { ApiKeyMcpSelect, ApiKeyMcpInsert } from './apiKeyMcp';
+export { workflow, workflowFields, workflowMeta, workflowConfig, workflowSchemas, WORKFLOW_STATUS } from './workflow';
+export type { WorkflowNode, WorkflowEdge, WorkflowGraph, WorkflowSelect, WorkflowInsert } from './workflow';
 
 // Relations
 export * from './relations';

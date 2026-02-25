@@ -1,20 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import Icon from '@iconify/svelte';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { t } from '@/lib/stores/i18n.svelte';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  import { Label } from '$lib/components/ui/label';
-  import { Checkbox } from '$lib/components/ui/checkbox';
-  import { Switch } from '$lib/components/ui/switch';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Card from '$lib/components/ui/card';
-  import * as Sheet from '$lib/components/ui/sheet';
-  import { Badge } from '$lib/components/ui/badge';
-  import { ScrollArea } from '$lib/components/ui/scroll-area';
-  import * as Table from '$lib/components/ui/table';
-  import { toast } from 'svelte-sonner';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface McpServer {
     id: string;
@@ -37,6 +22,47 @@
     remark: string | null;
   }
 
+  interface PageSnapshot {
+    apiKeys: ApiKey[];
+    mcpServers: McpServer[];
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    apiKeys: [],
+    mcpServers: [],
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import Icon from '@iconify/svelte';
+  import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
+  import { Checkbox } from '$lib/components/ui/checkbox';
+  import { Switch } from '$lib/components/ui/switch';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Card from '$lib/components/ui/card';
+  import * as Sheet from '$lib/components/ui/sheet';
+  import { Badge } from '$lib/components/ui/badge';
+  import { ScrollArea } from '$lib/components/ui/scroll-area';
+  import * as Table from '$lib/components/ui/table';
+  import { toast } from 'svelte-sonner';
+
   interface ApiKeyForm {
     name: string;
     accessAll: boolean;
@@ -45,9 +71,27 @@
     remark: string;
   }
 
-  let apiKeys = $state<ApiKey[]>([]);
-  let mcpServers = $state<McpServer[]>([]);
-  let loading = $state(true);
+  let apiKeys = $state<ApiKey[]>(pageState.apiKeys);
+  let mcpServers = $state<McpServer[]>(pageState.mcpServers);
+  let loading = $state(!pageState.dataLoaded);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    apiKeys = value.apiKeys;
+    mcpServers = value.mcpServers;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      apiKeys,
+      mcpServers,
+      dataLoaded: !loading
+    };
+  });
   
   // Create Dialog state
   let createDialogOpen = $state(false);
@@ -245,8 +289,10 @@
   }
 
   onMount(() => {
-    loadMcpServers();
-    loadApiKeys();
+    if (!snapshotRestored) {
+      loadMcpServers();
+      loadApiKeys();
+    }
   });
 </script>
 

@@ -129,6 +129,7 @@
   "tips_uploadSuccess": "Uploaded successfully",
   "tips_uploadFailed": "Upload failed",
   "tips_loadFailed": "Load failed",
+  "tips_createSuccess": "Created successfully",
   "tips_createFailed": "Create failed",
   "tips_updateFailed": "Update failed",
   "tips_copySuccess": "Copied successfully",

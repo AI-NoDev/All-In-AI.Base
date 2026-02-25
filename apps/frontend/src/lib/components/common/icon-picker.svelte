@@ -78,7 +78,7 @@
         <span class="truncate text-sm">{value}</span>
       {:else}
         <Icon icon="mdi:image-outline" class="size-5 text-muted-foreground" />
-        <span class="text-muted-foreground">{placeholder || t('fields.icon')}</span>
+        <span class="text-muted-foreground">{placeholder || t('common.fields.icon')}</span>
       {/if}
     </Button>
   </Popover.Trigger>
@@ -86,7 +86,7 @@
     <div class="p-3 border-b">
       <Input
         bind:value={search}
-        placeholder={t('tips.searchPlaceholder')}
+        placeholder={t('common.tips.searchPlaceholder')}
         class="h-8"
       />
     </div>
@@ -99,7 +99,7 @@
         </div>
       {:else if filteredIcons.length === 0}
         <div class="flex items-center justify-center h-32 text-muted-foreground text-sm">
-          {t('tips.noData')}
+          {t('common.tips.noData')}
         </div>
       {:else}
         <div class="grid grid-cols-8 gap-1 p-3">
@@ -125,7 +125,7 @@
           class="h-6 px-2 text-xs"
           onclick={clearValue}
         >
-          {t('actions.clear')}
+          {t('common.actions.clear')}
         </Button>
       </div>
     {/if}

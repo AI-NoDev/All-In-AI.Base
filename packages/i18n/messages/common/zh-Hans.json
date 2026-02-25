@@ -129,6 +129,7 @@
   "tips_uploadSuccess": "上传成功",
   "tips_uploadFailed": "上传失败",
   "tips_loadFailed": "加载失败",
+  "tips_createSuccess": "创建成功",
   "tips_createFailed": "创建失败",
   "tips_updateFailed": "更新失败",
   "tips_copySuccess": "复制成功",

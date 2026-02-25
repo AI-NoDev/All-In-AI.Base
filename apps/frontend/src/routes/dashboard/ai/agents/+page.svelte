@@ -1,8 +1,5 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { authStore } from '@/lib/stores/auth.svelte';
-  import { t } from '@/lib/stores/i18n.svelte';
-  import { AgentList, AgentDialog } from './components';
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
 
   interface Agent {
     id: string;
@@ -31,6 +28,37 @@
     providerId: string;
   }
 
+  interface PageSnapshot {
+    agents: Agent[];
+    providers: Provider[];
+    models: Model[];
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    agents: [],
+    providers: [],
+    models: [],
+    dataLoaded: false
+  };
+
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { authStore } from '@/lib/stores/auth.svelte';
+  import { t } from '@/lib/stores/i18n.svelte';
+  import { AgentList, AgentDialog } from './components';
+
   interface AgentForm {
     name: string;
     description: string;
@@ -45,10 +73,30 @@
     status: string;
   }
 
-  let agents = $state<Agent[]>([]);
-  let providers = $state<Provider[]>([]);
-  let models = $state<Model[]>([]);
-  let loading = $state(true);
+  let agents = $state<Agent[]>(pageState.agents);
+  let providers = $state<Provider[]>(pageState.providers);
+  let models = $state<Model[]>(pageState.models);
+  let loading = $state(!pageState.dataLoaded);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  // Register restore callback
+  restoreCallback = (value) => {
+    agents = value.agents;
+    providers = value.providers;
+    models = value.models;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  // Sync state to module-level for snapshot
+  $effect(() => {
+    pageState = {
+      agents,
+      providers,
+      models,
+      dataLoaded: !loading
+    };
+  });
 
   // Dialog
   let dialogOpen = $state(false);
@@ -167,9 +215,11 @@
   }
 
   onMount(async () => {
-    await Promise.all([loadProviders(), loadModels()]);
-    await loadAgents();
-    loading = false;
+    if (!snapshotRestored) {
+      await Promise.all([loadProviders(), loadModels()]);
+      await loadAgents();
+      loading = false;
+    }
   });
 </script>
 

@@ -1,3 +1,41 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface FormData {
+    name: string;
+    email: string;
+    phone: string;
+  }
+
+  interface Statistics {
+    filesCount: number;
+    foldersCount: number;
+    sharedCount: number;
+    favoritesCount: number;
+  }
+
+  interface PageSnapshot {
+    form: FormData;
+    stats: Statistics;
+    statsLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    form: { name: '', email: '', phone: '' },
+    stats: { filesCount: 0, foldersCount: 0, sharedCount: 0, favoritesCount: 0 },
+    statsLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import Icon from '@iconify/svelte';
   import { Button } from '$lib/components/ui/button';
@@ -16,28 +54,27 @@
 
   let _ = $derived(i18n.version);
 
-  interface FormData {
-    name: string;
-    email: string;
-    phone: string;
-  }
-
-  interface Statistics {
-    filesCount: number;
-    foldersCount: number;
-    sharedCount: number;
-    favoritesCount: number;
-  }
-
   let form = $state<FormData>({
-    name: authStore.user?.name || '',
-    email: authStore.user?.email || '',
-    phone: ''
+    name: pageState.form.name || authStore.user?.name || '',
+    email: pageState.form.email || authStore.user?.email || '',
+    phone: pageState.form.phone || ''
   });
 
   let saving = $state(false);
-  let stats = $state<Statistics>({ filesCount: 0, foldersCount: 0, sharedCount: 0, favoritesCount: 0 });
-  let loadingStats = $state(false);
+  let stats = $state<Statistics>(pageState.stats);
+  let loadingStats = $state(!pageState.statsLoaded);
+  let snapshotRestored = $state(pageState.statsLoaded);
+
+  restoreCallback = (value) => {
+    form = value.form;
+    stats = value.stats;
+    snapshotRestored = value.statsLoaded;
+    loadingStats = !value.statsLoaded;
+  };
+
+  $effect(() => {
+    pageState = { form, stats, statsLoaded: !loadingStats };
+  });
 
   const user = $derived(authStore.user);
   const initials = $derived(user?.name ? user.name.slice(0, 2).toUpperCase() : 'U');
@@ -160,7 +197,9 @@
   });
 
   onMount(() => {
-    loadStatistics();
+    if (!snapshotRestored) {
+      loadStatistics();
+    }
   });
 </script>
 

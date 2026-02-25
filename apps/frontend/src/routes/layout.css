@@ -6,7 +6,7 @@
 
 /* 扫描 workspace 包中的 Tailwind 类 */
 @source "../../../../packages/actions-flow-editor/dist";
-@source "../../../../packages/zod-visual-editor/dist";
+@source "../../../../packages/json-schema-editor/dist";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,6 +44,13 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  /* Toast colors */
+  --success: oklch(0.723 0.191 142.5);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-foreground: oklch(0.129 0.042 264.695);
+  --info: oklch(0.623 0.214 259.1);
+  --info-foreground: oklch(1 0 0);
 }
 
 .dark {
@@ -79,6 +86,13 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Toast colors */
+  --success: oklch(0.723 0.191 142.5);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-foreground: oklch(0.129 0.042 264.695);
+  --info: oklch(0.623 0.214 259.1);
+  --info-foreground: oklch(1 0 0);
 }
 
 @theme inline {

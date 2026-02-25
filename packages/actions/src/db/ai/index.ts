@@ -7,6 +7,8 @@ export * from './aiSessionMessage';
 export * from './mcpServer';
 export * from './apiKey';
 export * from './userMemory';
+export * from './dataModel';
+export * from './workflow';
 // Legacy exports (deprecated)
 export * from './agentSession';
 export * from './agentMessage';
@@ -21,6 +23,8 @@ import { aiSessionMessageActions } from './aiSessionMessage';
 import { mcpServerActions } from './mcpServer';
 import { apiKeyActions } from './apiKey';
 import { userMemoryActions } from './userMemory';
+import { dataModelActions } from './dataModel';
+import { workflowActions } from './workflow';
 // Legacy actions (deprecated)
 import { agentSessionActions } from './agentSession';
 import { agentMessageActions } from './agentMessage';
@@ -35,6 +39,8 @@ export const aiActions = [
   ...mcpServerActions,
   ...apiKeyActions,
   ...userMemoryActions,
+  ...dataModelActions,
+  ...workflowActions,
   // Legacy actions (deprecated)
   ...agentSessionActions,
   ...agentMessageActions,

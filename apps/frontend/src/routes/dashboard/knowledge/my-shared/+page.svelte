@@ -1,3 +1,60 @@
+<script lang="ts" module>
+  import type { Snapshot } from './$types';
+
+  interface PathItem {
+    id: string | null;
+    name: string;
+  }
+
+  interface SharedFolder {
+    id: string;
+    name: string;
+    parentId: string | null;
+    icon?: string | null;
+    color?: string | null;
+    isPublic?: boolean;
+    createdAt: string;
+    sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
+  }
+
+  interface SharedFile {
+    id: string;
+    name: string;
+    folderId: string | null;
+    extension?: string | null;
+    mimeType?: string | null;
+    size: number;
+    isPublic?: boolean;
+    createdAt: string;
+    sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
+  }
+
+  interface PageSnapshot {
+    folders: SharedFolder[];
+    files: SharedFile[];
+    pathStack: PathItem[];
+    currentFolderId: string | null;
+    dataLoaded: boolean;
+  }
+
+  let pageState: PageSnapshot = {
+    folders: [],
+    files: [],
+    pathStack: [],
+    currentFolderId: null,
+    dataLoaded: false
+  };
+  let restoreCallback: ((value: PageSnapshot) => void) | null = null;
+
+  export const snapshot: Snapshot<PageSnapshot> = {
+    capture: () => pageState,
+    restore: (value) => {
+      pageState = value;
+      if (restoreCallback) restoreCallback(value);
+    }
+  };
+</script>
+
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -14,11 +71,6 @@
     type GenericFile,
     type PermissionGrantee,
   } from '../components';
-
-  interface PathItem {
-    id: string | null;
-    name: string;
-  }
 
   interface SharedItem {
     node: {
@@ -37,12 +89,32 @@
     sharedTo?: Array<{ subjectType: string; subjectId: string; permission: string }>;
   }
 
-  let loading = $state(true);
-  let folders = $state<GenericFolder[]>([]);
-  let files = $state<GenericFile[]>([]);
-  let pathStack = $state<PathItem[]>([{ id: null, name: t('page.knowledge.myShared') }]);
-  let currentFolderId = $state<string | null>(null);
+  let loading = $state(!pageState.dataLoaded);
+  let folders = $state<GenericFolder[]>(pageState.folders);
+  let files = $state<GenericFile[]>(pageState.files);
+  let pathStack = $state<PathItem[]>(pageState.pathStack.length > 0 ? pageState.pathStack : [{ id: null, name: t('page.knowledge.myShared') }]);
+  let currentFolderId = $state<string | null>(pageState.currentFolderId);
   let permissionSheetOpen = $state(false);
+  let snapshotRestored = $state(pageState.dataLoaded);
+
+  restoreCallback = (value) => {
+    folders = value.folders;
+    files = value.files;
+    pathStack = value.pathStack.length > 0 ? value.pathStack : [{ id: null, name: t('page.knowledge.myShared') }];
+    currentFolderId = value.currentFolderId;
+    snapshotRestored = value.dataLoaded;
+    loading = !value.dataLoaded;
+  };
+
+  $effect(() => {
+    pageState = {
+      folders: folders as SharedFolder[],
+      files: files as SharedFile[],
+      pathStack,
+      currentFolderId,
+      dataLoaded: !loading
+    };
+  });
 
   interface PermissionTarget {
     type: 'folder' | 'file';
@@ -168,7 +240,11 @@
     }
   }
 
-  onMount(() => loadData());
+  onMount(() => {
+    if (!snapshotRestored) {
+      loadData();
+    }
+  });
 </script>
 
 <div class="px-4 lg:px-6 flex-1 flex flex-col min-h-0">
