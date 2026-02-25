@@ -21,12 +21,12 @@
   import { Button } from "$lib/components/ui/button";
   import * as ButtonGroup from "$lib/components/ui/button-group";
   import Icon from "@iconify/svelte";
+  import { preferencesStore, THEME_COLORS } from '$lib/stores/preferences.svelte';
 
   let {
     position = 'bottom-right',
     ariaLabel,
     nodeStrokeColor = 'transparent',
-    nodeColor = 'hsl(var(--muted-foreground))',
     nodeClass = '',
     nodeBorderRadius = 5,
     nodeStrokeWidth = 2,
@@ -57,7 +57,7 @@
     flow.zoomOut();
   }
 
-  let nodeColorFunc = $derived(getAttrFunction(nodeColor));
+  let nodeColorFunc = $derived(getAttrFunction(minimapNodeColor));
   let nodeStrokeColorFunc = $derived(getAttrFunction(nodeStrokeColor));
   let nodeClassFunc = $derived(getAttrFunction(nodeClass));
   const shapeRendering =
@@ -90,9 +90,10 @@
 
   const getViewScale = () => viewScale;
 
-  // 主题相关颜色
-  const minimapBgColor = $derived(mode.current === 'dark' ? 'hsl(var(--card))' : 'hsl(var(--background))');
-  const minimapMaskColor = $derived(mode.current === 'dark' ? 'hsl(var(--background) / 0.6)' : 'hsl(var(--muted) / 0.6)');
+  // 主题相关颜色 - 从 store 获取主题色
+  const minimapBgColor = $derived(mode.current === 'dark' ? '#1e293b' : '#f8fafc');
+  const minimapMaskColor = $derived(mode.current === 'dark' ? 'rgba(15, 23, 42, 0.7)' : 'rgba(226, 232, 240, 0.6)');
+  const minimapNodeColor = $derived(THEME_COLORS[preferencesStore.themeColor].preview);
 
 
 </script>

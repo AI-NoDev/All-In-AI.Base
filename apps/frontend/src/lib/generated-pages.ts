@@ -183,14 +183,6 @@ export const pages: PageMeta[] = [
     "order": 30
   },
   {
-    "path": "/dashboard/workflow",
-    "title": "nav.title.workflow",
-    "permission": "ai:workflow:view",
-    "icon": "tdesign:flow",
-    "group": "nav.group.ai",
-    "order": 30
-  },
-  {
     "path": "/dashboard/ai/user-memory",
     "title": "nav.title.userMemory",
     "icon": "mdi:head-lightbulb-outline",
@@ -352,22 +344,6 @@ export const pages: PageMeta[] = [
     "hidden": true
   },
   {
-    "path": "/dashboard/workflow/[id]",
-    "title": "nav.title.editWorkflow",
-    "permission": "ai:workflow:edit",
-    "icon": "tdesign:flow",
-    "group": "nav.group.ai",
-    "hidden": true
-  },
-  {
-    "path": "/dashboard/workflow/new",
-    "title": "nav.title.newWorkflow",
-    "permission": "ai:workflow:create",
-    "icon": "tdesign:flow",
-    "group": "nav.group.ai",
-    "hidden": true
-  },
-  {
     "path": "/docs/[...slug]"
   },
   {
@@ -398,7 +374,6 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/operation-logs': "nav.title.operationLogs",
   '/dashboard/system/login-logs': "nav.title.loginLogs",
   '/dashboard/ai/agents': "nav.title.agents",
-  '/dashboard/workflow': "nav.title.workflow",
   '/dashboard/ai/user-memory': "nav.title.userMemory",
   '/dashboard/ai/mcp-servers': "nav.title.mcpServers",
   '/dashboard/ai/api-keys': "nav.title.apiKeys",
@@ -421,8 +396,6 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/server-monitor/processes': "nav.title.processManagement",
   '/dashboard/system/users/[id]': "nav.title.editUser",
   '/dashboard/system/users/new': "nav.title.addUser",
-  '/dashboard/workflow/[id]': "nav.title.editWorkflow",
-  '/dashboard/workflow/new': "nav.title.newWorkflow",
   '/login': "nav.title.login"
 };
 
@@ -528,14 +501,6 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "order": 30
     },
     {
-      "path": "/dashboard/workflow",
-      "title": "nav.title.workflow",
-      "permission": "ai:workflow:view",
-      "icon": "tdesign:flow",
-      "group": "nav.group.ai",
-      "order": 30
-    },
-    {
       "path": "/dashboard/ai/user-memory",
       "title": "nav.title.userMemory",
       "icon": "mdi:head-lightbulb-outline",
@@ -572,22 +537,6 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "icon": "mdi:sitemap-outline",
       "group": "nav.group.ai",
       "order": 120
-    },
-    {
-      "path": "/dashboard/workflow/[id]",
-      "title": "nav.title.editWorkflow",
-      "permission": "ai:workflow:edit",
-      "icon": "tdesign:flow",
-      "group": "nav.group.ai",
-      "hidden": true
-    },
-    {
-      "path": "/dashboard/workflow/new",
-      "title": "nav.title.newWorkflow",
-      "permission": "ai:workflow:create",
-      "icon": "tdesign:flow",
-      "group": "nav.group.ai",
-      "hidden": true
     }
   ],
   "nav.group.system": [
@@ -811,17 +760,15 @@ export const permissions = [
   "system:dict:view",
   "system:operlog:view",
   "system:loginlog:view",
-  "ai:workflow:view",
   "ai:apiKey:view",
   "settings:preferences:view",
   "system:config:view",
   "ai:dataModel:view",
+  "ai:workflow:view",
   "dev:project-code:view",
   "knowledge:file:create",
   "system:user:edit",
-  "system:user:add",
-  "ai:workflow:edit",
-  "ai:workflow:create"
+  "system:user:add"
 ] as const;
 
 /** 权限类型 */
@@ -845,7 +792,6 @@ export const permissionRouteMap: Record<string, { path: string; title?: string }
   "system:dict:view": { path: "/dashboard/system/dicts", title: "nav.title.dicts" },
   "system:operlog:view": { path: "/dashboard/system/operation-logs", title: "nav.title.operationLogs" },
   "system:loginlog:view": { path: "/dashboard/system/login-logs", title: "nav.title.loginLogs" },
-  "ai:workflow:view": { path: "/dashboard/workflow", title: "nav.title.workflow" },
   "ai:apiKey:view": { path: "/dashboard/ai/api-keys", title: "nav.title.apiKeys" },
   "settings:preferences:view": { path: "/dashboard/preferences", title: "nav.title.preferences" },
   "system:config:view": { path: "/dashboard/system-config", title: "nav.title.systemConfig" },
@@ -855,9 +801,7 @@ export const permissionRouteMap: Record<string, { path: string; title?: string }
   "knowledge:view": { path: "/dashboard/files", title: "nav.title.fileManagement" },
   "knowledge:file:create": { path: "/dashboard/files/[folderId]/create-text-file", title: "nav.title.createTextFile" },
   "system:user:edit": { path: "/dashboard/system/users/[id]", title: "nav.title.editUser" },
-  "system:user:add": { path: "/dashboard/system/users/new", title: "nav.title.addUser" },
-  "ai:workflow:edit": { path: "/dashboard/workflow/[id]", title: "nav.title.editWorkflow" },
-  "ai:workflow:create": { path: "/dashboard/workflow/new", title: "nav.title.newWorkflow" }
+  "system:user:add": { path: "/dashboard/system/users/new", title: "nav.title.addUser" }
 };
 
 /** 路由与权限映射 */
@@ -878,7 +822,6 @@ export const routePermissionMap: Record<string, string> = {
   "/dashboard/system/dicts": "system:dict:view",
   "/dashboard/system/operation-logs": "system:operlog:view",
   "/dashboard/system/login-logs": "system:loginlog:view",
-  "/dashboard/workflow": "ai:workflow:view",
   "/dashboard/ai/api-keys": "ai:apiKey:view",
   "/dashboard/preferences": "settings:preferences:view",
   "/dashboard/system-config": "system:config:view",
@@ -888,7 +831,5 @@ export const routePermissionMap: Record<string, string> = {
   "/dashboard/files": "knowledge:view",
   "/dashboard/files/[folderId]/create-text-file": "knowledge:file:create",
   "/dashboard/system/users/[id]": "system:user:edit",
-  "/dashboard/system/users/new": "system:user:add",
-  "/dashboard/workflow/[id]": "ai:workflow:edit",
-  "/dashboard/workflow/new": "ai:workflow:create"
+  "/dashboard/system/users/new": "system:user:add"
 };

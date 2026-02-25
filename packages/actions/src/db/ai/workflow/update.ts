@@ -20,7 +20,7 @@ export const workflowUpdate = defineAction({
 **请求体 (data)：** 要更新的字段，所有字段均为可选
 - name: 工作流名称
 - description: 描述
-- icon: 图标
+- icon: 图标 iconify ,例如：mdi:robot
 - graph: 工作流图定义
 - version: 版本号（通常自动递增）
 - publishedVersion: 已发布版本号

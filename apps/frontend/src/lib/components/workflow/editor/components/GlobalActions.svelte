@@ -1,12 +1,11 @@
 ﻿<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Popover from '$lib/components/ui/popover';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Kbd from '$lib/components/ui/kbd';
 	import { Separator } from '$lib/components/ui/separator';
 	import Icon from '@iconify/svelte';
-	import { workflowState } from '$lib/components/workflow/editor/contexts/index';
+	import { workflowState, utilityPanelState } from '$lib/components/workflow/editor/contexts/index';
 	import { useStore } from '@xyflow/svelte';
 
 	interface Props {
@@ -145,72 +144,39 @@
 				<Tooltip.Content>导出 DSL</Tooltip.Content>
 			</Tooltip.Root>
 			<Separator orientation="vertical" class="h-5" />
-			<Popover.Root>
-				<Tooltip.Root>
-					<Popover.Trigger>
-						{#snippet child({ props })}
-							<Tooltip.Trigger>
-								{#snippet child({ props: tooltipProps })}
-									<Button {...props} {...tooltipProps} variant="ghost" size="icon" class="h-8 w-8 rounded-r-none">
-										<Icon icon="mdi:variable" class="w-4 h-4" />
-									</Button>
-								{/snippet}
-							</Tooltip.Trigger>
-						{/snippet}
-					</Popover.Trigger>
-					<Tooltip.Content>环境变量</Tooltip.Content>
-				</Tooltip.Root>
-				<Popover.Content class="w-80" align="end">
-					<div class="space-y-3">
-						<div class="flex items-center justify-between">
-							<h4 class="text-sm font-medium">环境变量</h4>
-							<Button variant="ghost" size="sm" class="h-7 text-xs">
-								<Icon icon="mdi:plus" class="w-3.5 h-3.5 mr-1" />
-								添加
-							</Button>
-						</div>
-						<div class="text-xs text-muted-foreground py-4 text-center border border-dashed rounded">
-							暂无环境变量
-						</div>
-					</div>
-				</Popover.Content>
-			</Popover.Root>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props })}
+						<Button 
+							{...props} 
+							variant={utilityPanelState.isOpen('environment') ? 'secondary' : 'ghost'} 
+							size="icon" 
+							class="h-8 w-8 rounded-none"
+							onclick={() => utilityPanelState.toggle('environment')}
+						>
+							<Icon icon="mdi:variable" class="w-4 h-4" />
+						</Button>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>环境变量</Tooltip.Content>
+			</Tooltip.Root>
 			<Separator orientation="vertical" class="h-5" />
-			<Popover.Root>
-				<Tooltip.Root>
-					<Popover.Trigger>
-						{#snippet child({ props })}
-							<Tooltip.Trigger>
-								{#snippet child({ props: tooltipProps })}
-									<Button {...props} {...tooltipProps} variant="ghost" size="icon" class="h-8 w-8 rounded-l-none">
-										<Icon icon="mdi:cog-outline" class="w-4 h-4" />
-									</Button>
-								{/snippet}
-							</Tooltip.Trigger>
-						{/snippet}
-					</Popover.Trigger>
-					<Tooltip.Content>系统变量</Tooltip.Content>
-				</Tooltip.Root>
-				<Popover.Content class="w-80" align="end">
-					<div class="space-y-3">
-						<h4 class="text-sm font-medium">系统变量</h4>
-						<div class="space-y-2 text-xs">
-							<div class="flex items-center justify-between p-2 bg-muted/50 rounded">
-								<span class="font-mono text-muted-foreground">sys.user_id</span>
-								<span class="text-foreground">当前用户 ID</span>
-							</div>
-							<div class="flex items-center justify-between p-2 bg-muted/50 rounded">
-								<span class="font-mono text-muted-foreground">sys.conversation_id</span>
-								<span class="text-foreground">会话 ID</span>
-							</div>
-							<div class="flex items-center justify-between p-2 bg-muted/50 rounded">
-								<span class="font-mono text-muted-foreground">sys.app_id</span>
-								<span class="text-foreground">应用 ID</span>
-							</div>
-						</div>
-					</div>
-				</Popover.Content>
-			</Popover.Root>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props })}
+						<Button 
+							{...props} 
+							variant={utilityPanelState.isOpen('system') ? 'secondary' : 'ghost'} 
+							size="icon" 
+							class="h-8 w-8 rounded-l-none"
+							onclick={() => utilityPanelState.toggle('system')}
+						>
+							<Icon icon="mdi:cog-outline" class="w-4 h-4" />
+						</Button>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>系统变量</Tooltip.Content>
+			</Tooltip.Root>
 		</div>
 
 		<!-- 发布下拉菜单 -->

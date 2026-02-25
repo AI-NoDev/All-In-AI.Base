@@ -3,6 +3,22 @@
  * 从环境变量读取，提供默认值
  */
 
+import { dbActions, filesActions, devActions, wsActions } from "@qiyu-allinai/actions";
+import type { ActionDefinition } from "@qiyu-allinai/actions";
+
+// 合并所有 actions - 统一导出，确保全局一致
+export const allActions: ActionDefinition[] = [
+  ...dbActions,
+  ...filesActions,
+  ...devActions,
+  ...wsActions,
+];
+
+// 构建 actions Map 用于快速查找
+export const actionsMap = new Map<string, ActionDefinition>(
+  allActions.map(a => [a.meta.name, a])
+);
+
 export const config = {
   // 服务器配置
   port: parseInt(Bun.env.PORT || "3000"),

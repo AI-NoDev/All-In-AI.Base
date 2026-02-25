@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
 import { createMcpRoutes, initializeMcpServers } from "./routes";
+import { createStdioRoutes } from "./stdio";
 
 // Re-export types
 export type {
@@ -39,8 +40,13 @@ export async function createMcpPlugin(): Promise<Elysia> {
   // Initialize servers from database
   await initializeMcpServers();
   
-  // Create and return routes
-  return createMcpRoutes();
+  // Create and return routes (core + stdio)
+  const coreRoutes = createMcpRoutes();
+  const stdioRoutes = createStdioRoutes();
+  
+  return new Elysia({ name: "mcp-plugin" })
+    .use(coreRoutes)
+    .use(stdioRoutes);
 }
 
 // Placeholder plugin for lazy loading

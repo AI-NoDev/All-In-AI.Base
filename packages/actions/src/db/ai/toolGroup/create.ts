@@ -18,7 +18,7 @@ export const toolGroupCreate = defineAction({
 
 **可选字段：**
 - description: 描述
-- icon: 图标
+- icon: 图标 iconify ,例如：mdi:robot
 - orderNum: 排序号
 - status: 状态
 

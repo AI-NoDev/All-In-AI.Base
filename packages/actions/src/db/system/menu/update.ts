@@ -24,7 +24,7 @@ export const menuUpdate = defineAction({
 - path: 路由路径
 - component: 组件路径
 - permission: 权限标识
-- icon: 图标
+- icon: 图标 iconify ,例如：mdi:robot
 - orderNum: 排序号
 - visible: 是否可见
 - status: 状态

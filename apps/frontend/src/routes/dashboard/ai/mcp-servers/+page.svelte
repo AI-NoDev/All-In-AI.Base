@@ -60,6 +60,7 @@
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Sheet from '$lib/components/ui/sheet';
   import * as Card from '$lib/components/ui/card';
+  import * as Tabs from '$lib/components/ui/tabs';
   import { Badge } from '$lib/components/ui/badge';
   import { toast } from 'svelte-sonner';
   import ActionsSelector from '$lib/components/common/actions-selector.svelte';
@@ -106,6 +107,28 @@
   let configMcpServer = $state<McpServer | null>(null);
   let configLoading = $state(false);
   let mcpConfig = $state<{ endpoint: string; configJson: string } | null>(null);
+  
+  // Config Sheet 模式切换: 'http' | 'stdio'
+  let configMode = $state<'http' | 'stdio'>('http');
+  
+  // STDIO 模式数据
+  interface StdioData {
+    serverName: string;
+    serverJs: string;
+    configJson: string;
+    usage: string;
+  }
+  let stdioData = $state<StdioData | null>(null);
+  let stdioLoading = $state(false);
+
+  // Skills Sheet 状态
+  interface SkillData {
+    skillName: string;
+  }
+  let skillsSheetOpen = $state(false);
+  let skillsMcpServer = $state<McpServer | null>(null);
+  let skillsLoading = $state(false);
+  let skillsData = $state<SkillData | null>(null);
 
   async function loadServers() {
     try {
@@ -216,6 +239,8 @@
   function openConfigSheet(server: McpServer) {
     configMcpServer = server;
     mcpConfig = null;
+    stdioData = null;
+    configMode = 'http';
     configSheetOpen = true;
     loadMcpConfig(server.id);
   }
@@ -234,6 +259,68 @@
     }
   }
 
+  async function loadStdioData(id: string) {
+    stdioLoading = true;
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (authStore.accessToken) {
+        headers['Authorization'] = `Bearer ${authStore.accessToken}`;
+      }
+      const res = await fetch(`${baseUrl}/mcp/${id}/stdio`, { headers });
+      const json = await res.json() as { data: StdioData; status: number; message: string };
+      if (json.data) {
+        stdioData = json.data;
+      }
+    } catch (err) {
+      console.error('Failed to load STDIO data:', err);
+      toast.error(t('page.ai.stdio_loadFailed'));
+    } finally {
+      stdioLoading = false;
+    }
+  }
+
+  function switchConfigMode(mode: 'http' | 'stdio') {
+    configMode = mode;
+    if (mode === 'stdio' && !stdioData && configMcpServer) {
+      loadStdioData(configMcpServer.id);
+    }
+  }
+
+  async function downloadStdioServer() {
+    if (!configMcpServer) return;
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030';
+      const headers: Record<string, string> = {};
+      if (authStore.accessToken) {
+        headers['Authorization'] = `Bearer ${authStore.accessToken}`;
+      }
+      const res = await fetch(`${baseUrl}/mcp/${configMcpServer.id}/stdio/download`, { headers });
+      if (!res.ok) throw new Error('Download failed');
+      
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${stdioData?.serverName || configMcpServer.name}-mcp-server.js`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success(t('page.ai.stdio_downloadSuccess'));
+    } catch (err) {
+      console.error('Failed to download STDIO server:', err);
+      toast.error(t('page.ai.stdio_downloadFailed'));
+    }
+  }
+
+  function copyStdioConfig() {
+    if (!stdioData) return;
+    navigator.clipboard.writeText(stdioData.configJson);
+    toast.success(t('page.ai.mcp_configCopied'));
+  }
+
   function copyEndpoint() {
     if (!mcpConfig) return;
     navigator.clipboard.writeText(mcpConfig.endpoint);
@@ -249,6 +336,67 @@
   function getActionDisplayName(actionName: string): string {
     const action = actionsStore.getByName(actionName);
     return action?.displayName || actionName.split('.').pop() || actionName;
+  }
+
+  // Skills 相关函数
+  function openSkillsSheet(server: McpServer) {
+    skillsMcpServer = server;
+    skillsData = null;
+    skillsSheetOpen = true;
+    loadSkillsData(server.id);
+  }
+
+  async function loadSkillsData(id: string) {
+    skillsLoading = true;
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (authStore.accessToken) {
+        headers['Authorization'] = `Bearer ${authStore.accessToken}`;
+      }
+      const res = await fetch(`${baseUrl}/api/ai/mcp-server/${id}/skill`, { headers });
+      const json = await res.json() as { data: { skillName: string }; status: number; message: string };
+      if (json.data) {
+        skillsData = { skillName: json.data.skillName };
+      }
+    } catch (err) {
+      console.error('Failed to load skills data:', err);
+      toast.error(t('page.ai.skill_loadFailed'));
+    } finally {
+      skillsLoading = false;
+    }
+  }
+
+  async function downloadSkills() {
+    if (!skillsMcpServer) return;
+    
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3030';
+      const headers: Record<string, string> = {};
+      if (authStore.accessToken) {
+        headers['Authorization'] = `Bearer ${authStore.accessToken}`;
+      }
+      
+      const res = await fetch(`${baseUrl}/api/ai/mcp-server/${skillsMcpServer.id}/skill/download`, { headers });
+      if (!res.ok) {
+        throw new Error('Download failed');
+      }
+      
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${skillsData?.skillName || skillsMcpServer.name}-skill.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success(t('page.ai.skill_downloadSuccess'));
+    } catch (err) {
+      console.error('Failed to download skills:', err);
+      toast.error(t('page.ai.skill_downloadFailed'));
+    }
   }
 
   onMount(() => {
@@ -322,6 +470,9 @@
             <div class="flex w-full gap-2">
               <Button variant="ghost" size="icon" onclick={() => openConfigSheet(server)} title={t('page.ai.mcp_viewConfig')}>
                 <Icon icon="mdi:code-json" class="size-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onclick={() => openSkillsSheet(server)} title={t('page.ai.skill_title')}>
+                <Icon icon="mdi:robot" class="size-4" />
               </Button>
               <Button variant="ghost" size="icon" onclick={() => openApiKeysSheet(server)} title={t('page.ai.mcp_manageApiKeys')}>
                 <Icon icon="mdi:key-variant" class="size-4" />
@@ -470,55 +621,224 @@
     </Sheet.Header>
     {#if configMcpServer}
       <div class="flex-1 overflow-y-auto p-1 space-y-4">
-        {#if configLoading}
+        <!-- 模式切换 Tabs -->
+        <Tabs.Root value={configMode} onValueChange={(v) => switchConfigMode(v as 'http' | 'stdio')}>
+          <Tabs.List class="grid w-full grid-cols-2">
+            <Tabs.Trigger value="http">
+              <Icon icon="mdi:web" class="mr-1.5 size-4" />
+              {t('page.ai.mcp_httpMode')}
+            </Tabs.Trigger>
+            <Tabs.Trigger value="stdio">
+              <Icon icon="mdi:console" class="mr-1.5 size-4" />
+              {t('page.ai.mcp_stdioMode')}
+            </Tabs.Trigger>
+          </Tabs.List>
+
+          <!-- HTTP 模式 -->
+          <Tabs.Content value="http" class="mt-4 space-y-4">
+            {#if configLoading}
+              <div class="flex items-center justify-center py-12 text-muted-foreground">
+                <Icon icon="mdi:loading" class="size-6 animate-spin mr-2" />{t('common.tips.loading')}
+              </div>
+            {:else if mcpConfig}
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <Label>{t('page.ai.mcp_endpoint')}</Label>
+                  <Button variant="ghost" size="sm" onclick={copyEndpoint}>
+                    <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('common.copy')}
+                  </Button>
+                </div>
+                <code class="block p-3 bg-muted rounded-md text-sm break-all">{mcpConfig.endpoint}</code>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <Label>{t('page.ai.mcp_configJson')}</Label>
+                  <Button variant="ghost" size="sm" onclick={copyConfig}>
+                    <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('common.copy')}
+                  </Button>
+                </div>
+                <pre class="p-3 bg-muted rounded-md text-sm overflow-x-auto max-h-48"><code>{mcpConfig.configJson}</code></pre>
+              </div>
+              {#if !configMcpServer.isPublic}
+                <div class="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <div class="flex items-start gap-2 text-amber-700 dark:text-amber-300">
+                    <Icon icon="mdi:information" class="size-5 shrink-0 mt-0.5" />
+                    <div class="text-sm space-y-1">
+                      <p>{t('page.ai.mcp_apiKeyRequired')}</p>
+                      <p class="text-xs opacity-80">{t('page.ai.mcp_replaceApiKey')}</p>
+                    </div>
+                  </div>
+                </div>
+              {/if}
+            {/if}
+          </Tabs.Content>
+
+          <!-- STDIO 模式 -->
+          <Tabs.Content value="stdio" class="mt-4 space-y-4">
+            {#if stdioLoading}
+              <div class="flex items-center justify-center py-12 text-muted-foreground">
+                <Icon icon="mdi:loading" class="size-6 animate-spin mr-2" />{t('common.tips.loading')}
+              </div>
+            {:else if stdioData}
+              <!-- 使用说明 -->
+              <div class="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div class="flex items-start gap-3">
+                  <Icon icon="mdi:information" class="size-5 shrink-0 mt-0.5 text-blue-600 dark:text-blue-400" />
+                  <div class="text-sm space-y-2 text-blue-800 dark:text-blue-200">
+                    <p class="font-medium">{t('page.ai.stdio_usage')}</p>
+                    <ol class="list-decimal list-inside space-y-1 text-xs">
+                      <li>{t('page.ai.stdio_step1')}</li>
+                      <li>{t('page.ai.stdio_step2')}</li>
+                      <li>{t('page.ai.stdio_step3')}</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Claude Desktop 配置 -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <Label>{t('page.ai.stdio_claudeConfig')}</Label>
+                  <Button variant="ghost" size="sm" onclick={copyStdioConfig}>
+                    <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('common.copy')}
+                  </Button>
+                </div>
+                <pre class="p-3 bg-muted rounded-md text-sm overflow-x-auto max-h-32"><code>{stdioData.configJson}</code></pre>
+              </div>
+
+              <!-- Token 配置说明 -->
+              {#if !configMcpServer.isPublic}
+                <div class="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <div class="flex items-start gap-3">
+                    <Icon icon="mdi:key" class="size-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                    <div class="text-sm space-y-2 text-amber-800 dark:text-amber-200">
+                      <p class="font-medium">{t('page.ai.stdio_tokenConfig')}</p>
+                      <div class="p-2 bg-amber-100/50 dark:bg-amber-900/30 rounded text-xs">
+                        <code class="block text-amber-900 dark:text-amber-100">export QIYUAI_AUTH_TOKEN=your_token</code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {/if}
+
+              <!-- 运行命令 -->
+              <div class="space-y-2">
+                <Label>{t('page.ai.stdio_runCommand')}</Label>
+                <div class="p-3 bg-muted rounded-md">
+                  <code class="text-sm">node {stdioData.serverName}-mcp-server.js</code>
+                </div>
+              </div>
+            {/if}
+          </Tabs.Content>
+        </Tabs.Root>
+
+        <!-- 包含的工具列表（两种模式共用） -->
+        <div class="space-y-2">
+          <Label>{t('page.ai.mcp_includedTools')} ({configMcpServer.actions.length})</Label>
+          <div class="flex flex-wrap gap-1 p-3 rounded-md border bg-muted/50 max-h-40 overflow-y-auto">
+            {#each configMcpServer.actions as action}
+              <Badge variant="secondary" class="text-xs">{getActionDisplayName(action)}</Badge>
+            {/each}
+          </div>
+        </div>
+      </div>
+      <Sheet.Footer class="border-t pt-4">
+        <Button variant="outline" onclick={() => configSheetOpen = false}>{t('common.close')}</Button>
+        {#if configMode === 'http' && mcpConfig}
+          <Button onclick={copyConfig}>
+            <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('page.ai.mcp_copyConfig')}
+          </Button>
+        {:else if configMode === 'stdio' && stdioData}
+          <Button onclick={downloadStdioServer}>
+            <Icon icon="mdi:download" class="mr-1 size-4" />{t('page.ai.stdio_download')}
+          </Button>
+        {/if}
+      </Sheet.Footer>
+    {/if}
+  </Sheet.Content>
+</Sheet.Root>
+
+<Sheet.Root bind:open={skillsSheetOpen}>
+  <Sheet.Content side="right" class="w-full sm:max-w-md flex flex-col">
+    <Sheet.Header>
+      <Sheet.Title>{t('page.ai.skill_title')}</Sheet.Title>
+      <Sheet.Description>
+        {#if skillsMcpServer}{t('page.ai.skill_desc').replace('${name}', skillsMcpServer.name)}{/if}
+      </Sheet.Description>
+    </Sheet.Header>
+    {#if skillsMcpServer}
+      <div class="flex-1 overflow-y-auto p-1 space-y-4">
+        {#if skillsLoading}
           <div class="flex items-center justify-center py-12 text-muted-foreground">
             <Icon icon="mdi:loading" class="size-6 animate-spin mr-2" />{t('common.tips.loading')}
           </div>
-        {:else if mcpConfig}
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <Label>{t('page.ai.mcp_endpoint')}</Label>
-              <Button variant="ghost" size="sm" onclick={copyEndpoint}>
-                <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('common.copy')}
-              </Button>
+        {:else if skillsData}
+          <!-- 使用说明 -->
+          <div class="p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div class="flex items-start gap-3">
+              <Icon icon="mdi:information" class="size-5 shrink-0 mt-0.5 text-blue-600 dark:text-blue-400" />
+              <div class="text-sm space-y-2 text-blue-800 dark:text-blue-200">
+                <p class="font-medium">{t('page.ai.skill_usage')}</p>
+                <ol class="list-decimal list-inside space-y-1 text-xs">
+                  <li>{t('page.ai.skill_step1')}</li>
+                  <li>{t('page.ai.skill_step2')}</li>
+                  <li>{t('page.ai.skill_step3')}</li>
+                </ol>
+              </div>
             </div>
-            <code class="block p-3 bg-muted rounded-md text-sm break-all">{mcpConfig.endpoint}</code>
           </div>
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <Label>{t('page.ai.mcp_configJson')}</Label>
-              <Button variant="ghost" size="sm" onclick={copyConfig}>
-                <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('common.copy')}
-              </Button>
-            </div>
-            <pre class="p-3 bg-muted rounded-md text-sm overflow-x-auto"><code>{mcpConfig.configJson}</code></pre>
-          </div>
-          {#if !configMcpServer.isPublic}
-            <div class="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
-              <div class="flex items-start gap-2 text-amber-700 dark:text-amber-300">
-                <Icon icon="mdi:information" class="size-5 shrink-0 mt-0.5" />
-                <div class="text-sm space-y-1">
-                  <p>{t('page.ai.mcp_apiKeyRequired')}</p>
-                  <p class="text-xs opacity-80">{t('page.ai.mcp_replaceApiKey')}</p>
+
+          <!-- Token 配置说明 -->
+          {#if !skillsMcpServer.isPublic}
+            <div class="p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <div class="flex items-start gap-3">
+                <Icon icon="mdi:key" class="size-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                <div class="text-sm space-y-2 text-amber-800 dark:text-amber-200">
+                  <p class="font-medium">{t('page.ai.skill_tokenConfig')}</p>
+                  <div class="space-y-2 text-xs">
+                    <div class="p-2 bg-amber-100/50 dark:bg-amber-900/30 rounded">
+                      <p class="font-medium mb-1">{t('page.ai.skill_envVar')}</p>
+                      <code class="block text-amber-900 dark:text-amber-100">export QIYUAI_AUTH_TOKEN=your_token</code>
+                    </div>
+                    <div class="p-2 bg-amber-100/50 dark:bg-amber-900/30 rounded">
+                      <p class="font-medium mb-1">{t('page.ai.skill_constVar')}</p>
+                      <code class="block text-amber-900 dark:text-amber-100">const AUTH_TOKEN = 'your_token';</code>
+                    </div>
+                    <div class="p-2 bg-amber-100/50 dark:bg-amber-900/30 rounded">
+                      <p class="font-medium mb-1">{t('page.ai.skill_cmdArg')}</p>
+                      <code class="block text-amber-900 dark:text-amber-100">--authtoken your_token</code>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           {/if}
+
+          <!-- 命令示例 -->
           <div class="space-y-2">
-            <Label>{t('page.ai.mcp_includedTools')} ({configMcpServer.actions.length})</Label>
-            <div class="flex flex-wrap gap-1 p-3 rounded-md border bg-muted/50 max-h-40 overflow-y-auto">
-              {#each configMcpServer.actions as action}
-                <Badge variant="secondary" class="text-xs">{getActionDisplayName(action)}</Badge>
-              {/each}
+            <Label>{t('page.ai.skill_commandExample')}</Label>
+            <div class="space-y-2">
+              <div class="p-3 bg-muted rounded-md">
+                <p class="text-xs text-muted-foreground mb-1">{t('page.ai.skill_helpCmd')}</p>
+                <code class="text-sm">node .claude/skills/{skillsData.skillName}/scripts/fetch.js -h</code>
+              </div>
+              <div class="p-3 bg-muted rounded-md">
+                <p class="text-xs text-muted-foreground mb-1">{t('page.ai.skill_actionHelpCmd')}</p>
+                <code class="text-sm">node .claude/skills/{skillsData.skillName}/scripts/fetch.js --action {"<name>"} -h</code>
+              </div>
+              <div class="p-3 bg-muted rounded-md">
+                <p class="text-xs text-muted-foreground mb-1">{t('page.ai.skill_callCmd')}</p>
+                <code class="text-sm">node .claude/skills/{skillsData.skillName}/scripts/fetch.js {"<action>"} --input '{"{}"}'</code>
+              </div>
             </div>
           </div>
         {/if}
       </div>
       <Sheet.Footer class="border-t pt-4">
-        <Button variant="outline" onclick={() => configSheetOpen = false}>{t('common.close')}</Button>
-        {#if mcpConfig}
-          <Button onclick={copyConfig}>
-            <Icon icon="mdi:content-copy" class="mr-1 size-4" />{t('page.ai.mcp_copyConfig')}
+        <Button variant="outline" onclick={() => skillsSheetOpen = false}>{t('common.close')}</Button>
+        {#if skillsData}
+          <Button onclick={downloadSkills}>
+            <Icon icon="mdi:download" class="mr-1 size-4" />{t('page.ai.skill_download')}
           </Button>
         {/if}
       </Sheet.Footer>

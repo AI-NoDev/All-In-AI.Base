@@ -138,9 +138,9 @@
 <Sheet.Root bind:open onOpenChange={(isOpen) => { if (isOpen) return; /* 只允许通过按钮关闭 */ }}>
   <Sheet.Content side="right" class="w-full sm:max-w-2xl flex flex-col" onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
     <Sheet.Header class="flex-shrink-0">
-      <Sheet.Title>{t('actions.selectActions')}</Sheet.Title>
+      <Sheet.Title>{t('common.actions_selectActions')}</Sheet.Title>
       <Sheet.Description>
-        {t('actions.selectedCount').replace('${selected}', String(localSelected.length)).replace('${total}', String(availableActions.length))}
+        {t('common.actions_selectedCount').replace('${selected}', String(localSelected.length)).replace('${total}', String(availableActions.length))}
       </Sheet.Description>
     </Sheet.Header>
 
@@ -149,13 +149,13 @@
       <div class="flex items-center gap-2 flex-shrink-0">
         <Button variant="outline" size="sm" onclick={selectAllInGroup}>
           <Icon icon={isGroupAllSelected() ? 'mdi:checkbox-marked' : 'mdi:checkbox-blank-outline'} class="size-4 mr-1" />
-          {isGroupAllSelected() ? t('actions.deselectAllInGroup') : t('actions.selectAllInGroup')}
+          {isGroupAllSelected() ? t('common.actions_deselectAllInGroup') : t('common.actions_selectAllInGroup')}
         </Button>
 
         <Select.Root type="single" bind:value={activeGroup}>
           <Select.Trigger class="w-48">
             {@const stats = getGroupStats(activeGroup)}
-            <span class="capitalize">{activeGroup || t('actions.selectGroup')}</span>
+            <span class="capitalize">{activeGroup || t('common.actions_selectGroup')}</span>
             <span class="ml-2 text-xs text-muted-foreground">({stats.selected}/{stats.total})</span>
           </Select.Trigger>
           <Select.Content>
@@ -173,7 +173,7 @@
           <Icon icon="mdi:magnify" class="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input 
             class="pl-8" 
-            placeholder={t('tips.searchNameDesc')} 
+            placeholder={t('common.tips_searchNameDesc')} 
             bind:value={search}
           />
         </div>
@@ -213,7 +213,7 @@
           {:else}
             <div class="text-center py-8 text-muted-foreground">
               <Icon icon="mdi:magnify-close" class="size-8 mx-auto mb-2 opacity-50" />
-              <p>{t('actions.noMatchingActions')}</p>
+              <p>{t('common.actions_noMatchingActions')}</p>
             </div>
           {/each}
         </div>
@@ -221,9 +221,9 @@
     </div>
 
     <Sheet.Footer class="flex-shrink-0">
-      <Button variant="outline" onclick={handleCancel}>{t('actions.cancel')}</Button>
+      <Button variant="outline" onclick={handleCancel}>{t('common.cancel')}</Button>
       <Button onclick={handleConfirm}>
-        {t('actions.confirm')} ({localSelected.length})
+        {t('common.confirm')} ({localSelected.length})
       </Button>
     </Sheet.Footer>
   </Sheet.Content>

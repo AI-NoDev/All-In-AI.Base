@@ -1,17 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import db from "@qiyu-allinai/db/connect";
-import { dbActions, filesActions, devActions } from "@qiyu-allinai/actions";
+import { allActions, actionsMap } from "../../../config";
 import type { ActionDefinition } from "@qiyu-allinai/actions";
 import type { McpServerConfig, McpSession, McpUserContext } from "./types";
 import { buildInputSchemaShape, flattenMcpArgs } from "./utils";
-
-// All available actions
-const allActions = [...dbActions, ...filesActions, ...devActions];
-const actionsMap = new Map<string, ActionDefinition>();
-for (const action of allActions) {
-  actionsMap.set(action.meta.name, action);
-}
 
 // Session storage: sessionId -> McpSession
 const sessions = new Map<string, McpSession>();

@@ -64,11 +64,15 @@
 	// 初始快照 - 用于脏状态检测
 	let initialSnapshot = $state<string>('');
 	
-	// 计算当前状态快照
+	// 计算当前状态快照 - 包含所有可配置内容
 	function getCurrentSnapshot(): string {
 		return JSON.stringify({
 			nodes: workflowState.nodes.map(n => ({ id: n.id, type: n.type, position: n.position, data: n.data, parentId: n.parentId })),
 			edges: workflowState.edges.map(e => ({ id: e.id, source: e.source, target: e.target, sourceHandle: e.sourceHandle, targetHandle: e.targetHandle })),
+			variables: workflowState.variables,
+			inputVariables: workflowState.inputVariables,
+			environmentVariables: workflowState.environmentVariables,
+			metadata: workflowState.metadata,
 		});
 	}
 	
@@ -113,9 +117,19 @@
 			workflowState.variables = initialGraph.variables;
 		}
 		
+		// 加载输入变量
+		if (initialGraph.input_variables) {
+			workflowState.inputVariables = initialGraph.input_variables;
+		}
+		
 		// 加载环境变量
 		if (initialGraph.environment_variables) {
 			workflowState.environmentVariables = initialGraph.environment_variables;
+		}
+		
+		// 加载元数据
+		if (initialGraph.metadata) {
+			workflowState.metadata = initialGraph.metadata;
 		}
 	}
 	
@@ -125,7 +139,9 @@
 			nodes: workflowState.nodes,
 			edges: workflowState.edges,
 			variables: workflowState.variables,
+			input_variables: workflowState.inputVariables,
 			environment_variables: workflowState.environmentVariables,
+			metadata: workflowState.metadata,
 			conversation_variables: [],
 			features: {},
 		};

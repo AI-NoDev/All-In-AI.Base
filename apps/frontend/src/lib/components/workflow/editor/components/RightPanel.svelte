@@ -1,18 +1,15 @@
 ﻿<script lang="ts">
-	import { workflowState, configPanelRegistry } from '$lib/components/workflow/editor/contexts/index';
+	import { workflowState, configPanelRegistry, utilityPanelState } from '$lib/components/workflow/editor/contexts/index';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Card from '$lib/components/ui/card';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Resizable from '$lib/components/ui/resizable';
 	import Icon from '@iconify/svelte';
 	import MiniMapPanel from './MiniMap/MiniMapPanel.svelte';
+	import { UtilityPanelContainer } from './UtilityPanel/index';
 
 	// 面板宽度状态（像素）
-	const MIN_WIDTH = 320;
-	const MAX_WIDTH = 800;
-	const DEFAULT_WIDTH = 400;
-	let panelWidth = $state(DEFAULT_WIDTH);
+	const PANEL_WIDTH = 360;
 
 	// 节点类型配置
 	interface NodeTypeConfig {
@@ -47,6 +44,17 @@
 
 	// 面板是否展开：有选中节点 + 有对应的配置组件
 	let isExpanded = $derived(!!selectedNode && !!PanelComponent);
+
+	// 工具面板是否展开
+	let isUtilityPanelOpen = $derived(utilityPanelState.activePanel !== null);
+
+	// 计算容器总宽度
+	let containerWidth = $derived.by(() => {
+		let width = 0;
+		if (isExpanded) width += PANEL_WIDTH + 16;
+		if (isUtilityPanelOpen) width += PANEL_WIDTH + 16;
+		return width;
+	});
 
 	// 节点类型配置
 	let nodeConfig = $derived(selectedNode ? nodeTypeConfigs[selectedNode.type ?? ''] : null);
@@ -109,49 +117,20 @@
 		configPanelRegistry.closePanel();
 	}
 
-	// 处理拖拽调整宽度
-	function handleResize(e: MouseEvent) {
-		e.preventDefault();
-		const startX = e.clientX;
-		const startWidth = panelWidth;
-
-		function onMouseMove(moveEvent: MouseEvent) {
-			const delta = startX - moveEvent.clientX;
-			const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + delta));
-			panelWidth = newWidth;
-		}
-
-		function onMouseUp() {
-			document.removeEventListener('mousemove', onMouseMove);
-			document.removeEventListener('mouseup', onMouseUp);
-			document.body.style.cursor = '';
-			document.body.style.userSelect = '';
-		}
-
-		document.addEventListener('mousemove', onMouseMove);
-		document.addEventListener('mouseup', onMouseUp);
-		document.body.style.cursor = 'col-resize';
-		document.body.style.userSelect = 'none';
-	}
 </script>
 
 <!-- 容器：始终存在，用于定位 MiniMap -->
-<div class="absolute top-0 right-0 bottom-0 pointer-events-none" style:width={isExpanded ? `${panelWidth + 16}px` : '0px'}>
+<div class="absolute top-0 right-0 bottom-0 pointer-events-none" style:width={containerWidth > 0 ? `${containerWidth}px` : '0px'}>
 	<!-- MiniMap 始终可见，在左下角外部 -->
 	<div class="absolute bottom-4 pointer-events-auto" style:left="-{133 + 16}px">
 		<MiniMapPanel />
 	</div>
 
-	<!-- 配置面板：悬空 Card 样式 -->
-	{#if isExpanded && PanelComponent && selectedNode && nodeConfig}
-		<Card.Root class="absolute top-16 right-4 bottom-4 gap-0 flex flex-col pointer-events-auto shadow-lg" style="width: {panelWidth}px">
-			<!-- 左侧拖拽手柄 -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div 
-				class="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/30 transition-colors z-20"
-				onmousedown={handleResize}
-			></div>
-
+	<!-- 右侧面板容器：包含配置面板和工具面板 -->
+	<div class="absolute top-16 right-4 bottom-4 flex gap-4 pointer-events-none">
+		<!-- 配置面板（左侧） -->
+		{#if isExpanded && PanelComponent && selectedNode && nodeConfig}
+		<Card.Root class="h-full gap-0 flex flex-col pointer-events-auto shadow-lg relative" style="width: {PANEL_WIDTH}px">
 			<!-- 关闭按钮在右上角外部 -->
 			<Button 
 				variant="secondary" 
@@ -238,5 +217,13 @@
 				<PanelComponent nodeId={selectedNode.id} data={selectedNode.data} />
 			</Card.Content>
 		</Card.Root>
-	{/if}
+		{/if}
+
+		<!-- 工具面板（右侧） -->
+		{#if isUtilityPanelOpen}
+			<div class="pointer-events-auto h-full" style="width: {PANEL_WIDTH}px">
+				<UtilityPanelContainer />
+			</div>
+		{/if}
+	</div>
 </div>

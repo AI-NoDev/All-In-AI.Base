@@ -18,7 +18,7 @@ export const workflowCreate = defineAction({
 
 **可选字段：**
 - description: 描述
-- icon: 图标
+- icon: 图标 iconify ,例如：mdi:robot
 - graph: 工作流图定义（默认空图）
 - status: 状态，"0"=草稿（默认），"1"=已发布，"2"=已禁用
 - remark: 备注

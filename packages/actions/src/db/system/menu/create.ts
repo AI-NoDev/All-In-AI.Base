@@ -22,7 +22,7 @@ export const menuCreate = defineAction({
 - path: 路由路径（菜单类型需要）
 - component: 组件路径
 - permission: 权限标识（按钮类型需要）
-- icon: 图标
+- icon: 图标 iconify ,例如：mdi:robot
 - orderNum: 排序号，默认0
 - visible: 是否可见，默认true
 - status: 状态，"0"=正常，"1"=禁用

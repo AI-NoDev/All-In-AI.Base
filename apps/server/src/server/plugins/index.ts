@@ -12,3 +12,4 @@ export { initSeedDataPlugin } from "./initSeedData";
 export { actionsPlugin } from "./actions";
 export { aiPlugin } from "./ai";
 export { i18nPlugin } from "./i18n";
+export { skillsPlugin } from "./skills";

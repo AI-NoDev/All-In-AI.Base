@@ -1,5 +1,5 @@
 ﻿import type { OnNodeRunning, NodeRunningParams, NodeRunStatus, NodeRunData } from '$lib/components/workflow/types/index';
-import { workflowState } from './editor-state.svelte';
+import { workflowState } from './workflow-state/index.svelte';
 
 export type { NodeRunStatus };
 
