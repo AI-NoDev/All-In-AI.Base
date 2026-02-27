@@ -4,6 +4,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import * as Alert from '$lib/components/ui/alert';
 	import Icon from '@iconify/svelte';
 	import { toast } from 'svelte-sonner';
 	import { workflowState } from '../../contexts/index';
@@ -22,7 +23,13 @@
 		{ value: 'secret', label: '密钥' },
 	];
 
-	let envVars = $derived(workflowState.environmentVariables);
+	// 直接从 workflowState 获取，确保响应性
+	let envVars = $derived.by(() => workflowState.environmentVariables);
+	
+	// 获取值为空的环境变量列表
+	let emptyEnvVars = $derived.by(() => 
+		workflowState.environmentVariables.filter(v => !v.value || v.value.trim() === '')
+	);
 	
 	let dialogOpen = $state(false);
 	let editingEnvVar = $state<EnvironmentVariable | null>(null);
@@ -80,6 +87,16 @@
 		toast.success('已复制到剪贴板');
 	}
 </script>
+
+{#if emptyEnvVars.length > 0}
+	<Alert.Root class="mb-3 border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400">
+		<Icon icon="mdi:alert" class="h-4 w-4" />
+		<Alert.Title class="text-amber-700 dark:text-amber-400">未设置值的环境变量</Alert.Title>
+		<Alert.Description class="text-amber-600 dark:text-amber-500">
+			{emptyEnvVars.map(v => v.name).join(', ')}
+		</Alert.Description>
+	</Alert.Root>
+{/if}
 
 {#if envVars.length === 0}
 	<div class="text-center py-12 text-muted-foreground">

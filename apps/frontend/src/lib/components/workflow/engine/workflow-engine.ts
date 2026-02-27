@@ -13,7 +13,6 @@ import type {
 	ExecutionOptions,
 	ExecutionEvent,
 	NodeExecutionResult,
-	NodeExecutor,
 	NodeExecutorRegistry,
 } from './types';
 
@@ -55,7 +54,13 @@ export class WorkflowEngine {
 			environmentVariables: options.environmentVariables ?? {},
 			systemVariables: options.systemVariables ?? {},
 			userInputs: options.userInputs ?? {},
+			userFiles: options.userFiles,
 		};
+		
+		console.log('[WorkflowEngine] execute context initialized:', {
+			userInputs: this.context.userInputs,
+			systemVariables: this.context.systemVariables,
+		});
 
 		this.emitEvent('workflow:start', undefined, { options });
 
@@ -157,19 +162,29 @@ export class WorkflowEngine {
 		const startTime = Date.now();
 		const nodeType = node.type ?? 'unknown';
 
-		this.emitEvent('node:start', node.id, { nodeType });
+		// 获取节点执行器
+		const executor = this.executors.get(nodeType);
+		if (!executor) {
+			this.emitEvent('node:error', node.id, { error: `未找到节点类型 "${nodeType}" 的执行器` });
+			return {
+				nodeId: node.id,
+				nodeType,
+				status: 'error',
+				error: `未找到节点类型 "${nodeType}" 的执行器`,
+				startTime,
+				endTime: Date.now(),
+				elapsed: Date.now() - startTime,
+			};
+		}
+
+		// 解析输入变量
+		const resolver = new VariableResolver(this.context!);
+		const inputs = this.resolveNodeInputs(node, resolver);
+
+		// 发送 node:start 事件（包含 inputs）
+		this.emitEvent('node:start', node.id, { nodeType, inputs });
 
 		try {
-			// 获取节点执行器
-			const executor = this.executors.get(nodeType);
-			if (!executor) {
-				throw new Error(`未找到节点类型 "${nodeType}" 的执行器`);
-			}
-
-			// 解析输入变量
-			const resolver = new VariableResolver(this.context!);
-			const inputs = this.resolveNodeInputs(node, resolver);
-
 			// 执行节点
 			const outputs = await executor.execute(node, inputs, this.context!);
 
@@ -200,19 +215,26 @@ export class WorkflowEngine {
 				nodeId: node.id,
 				nodeType,
 				status: 'error',
+				inputs,
 				error: errorMessage,
 				startTime,
 				endTime,
 				elapsed: endTime - startTime,
 			};
 
-			this.emitEvent('node:error', node.id, { error: errorMessage });
+			this.emitEvent('node:error', node.id, { error: errorMessage, inputs });
 			return result;
 		}
 	}
 
 	/**
 	 * 解析节点输入变量
+	 * 
+	 * 输入包含：
+	 * 1. 流程输入变量（input.xxx）- 来自开始节点的用户输入
+	 * 2. 前置节点输出（{nodeId}.xxx）- 来自上游节点的输出
+	 * 3. 上下文变量引用（节点配置的 context）
+	 * 4. 模板字符串解析
 	 */
 	private resolveNodeInputs(
 		node: WorkflowNode<BaseNodeData>,
@@ -221,29 +243,83 @@ export class WorkflowEngine {
 		const data = node.data as Record<string, unknown>;
 		const inputs: Record<string, unknown> = {};
 
-		// 处理上下文变量引用
-		if (data.context && Array.isArray(data.context)) {
-			for (const ctx of data.context as Array<{ path: string }>) {
-				const value = resolver.resolve(ctx.path);
-				const name = ctx.path.split('.').pop() ?? ctx.path;
-				inputs[name] = value;
+		// 1. 添加流程输入变量（来自开始节点的用户输入）
+		if (this.context?.userInputs) {
+			for (const [key, value] of Object.entries(this.context.userInputs)) {
+				inputs[`input.${key}`] = value;
 			}
 		}
 
-		// 处理模板字符串
-		if (data.systemPrompt && typeof data.systemPrompt === 'string') {
-			inputs.systemPrompt = resolver.resolveTemplate(data.systemPrompt);
-		}
-		if (data.userPromptTemplate && typeof data.userPromptTemplate === 'string') {
-			inputs.userPromptTemplate = resolver.resolveTemplate(data.userPromptTemplate);
+		// 2. 添加前置节点的输出变量
+		const predecessorIds = this.getPredecessorNodeIds(node.id);
+		for (const predId of predecessorIds) {
+			const predOutputs = resolver.getNodeOutputs(predId);
+			if (predOutputs) {
+				// 将前置节点的输出添加到 inputs，格式为 {nodeId}.{outputKey}
+				for (const [key, value] of Object.entries(predOutputs)) {
+					// 跳过内部字段（以 _ 开头）
+					if (!key.startsWith('_')) {
+						inputs[`${predId}.${key}`] = value;
+					}
+				}
+			}
 		}
 
-		// 处理输入变量引用
+		// 3. 处理上下文变量引用（节点配置的显式引用）
+		if (data.context && Array.isArray(data.context)) {
+			for (const ctx of data.context as Array<{ path: string }>) {
+				const value = resolver.resolve(ctx.path);
+				// 使用完整路径作为 key
+				inputs[ctx.path] = value;
+			}
+		}
+
+		// 4. 处理模板字符串（已解析的提示词）
+		if (data.systemPrompt && typeof data.systemPrompt === 'string') {
+			inputs._resolvedSystemPrompt = resolver.resolveTemplate(data.systemPrompt);
+		}
+		if (data.userPromptTemplate && typeof data.userPromptTemplate === 'string') {
+			inputs._resolvedUserPrompt = resolver.resolveTemplate(data.userPromptTemplate);
+		}
+		// Agent 节点的指令提示词
+		if (data.instructionPrompt && typeof data.instructionPrompt === 'string') {
+			inputs._resolvedInstructionPrompt = resolver.resolveTemplate(data.instructionPrompt);
+		}
+
+		// 5. 处理输入变量引用（单个变量引用）
 		if (data.inputVariable && typeof data.inputVariable === 'string') {
-			inputs.input = resolver.resolve(data.inputVariable);
+			inputs._resolvedInput = resolver.resolve(data.inputVariable);
 		}
 
 		return inputs;
+	}
+
+	/**
+	 * 获取节点的前置节点 ID 列表
+	 */
+	private getPredecessorNodeIds(nodeId: string): string[] {
+		const predecessorIds: string[] = [];
+		const visited = new Set<string>();
+
+		const traverse = (id: string) => {
+			if (visited.has(id)) return;
+			visited.add(id);
+
+			// 找到所有指向当前节点的边（排除异常分支）
+			const incomingEdges = this.edges.filter(
+				e => e.target === id && e.sourceHandle !== 'exception'
+			);
+
+			for (const edge of incomingEdges) {
+				if (!predecessorIds.includes(edge.source)) {
+					predecessorIds.push(edge.source);
+				}
+				traverse(edge.source);
+			}
+		};
+
+		traverse(nodeId);
+		return predecessorIds;
 	}
 
 	/**

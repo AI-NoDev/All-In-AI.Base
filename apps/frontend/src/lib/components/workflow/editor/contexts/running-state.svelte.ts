@@ -19,6 +19,9 @@ function createRunningState() {
 	
 	// 当前正在运行的节点 ID
 	let currentNodeId = $state<string | null>(null);
+	
+	// 中断控制器
+	let abortController = $state<AbortController | null>(null);
 
 	/** 更新节点的 _run 数据 */
 	function updateNodeRunData(nodeId: string, runData: NodeRunData) {
@@ -52,6 +55,7 @@ function createRunningState() {
 		get isRunning() { return isRunning; },
 		get isTestMode() { return isTestMode; },
 		get currentNodeId() { return currentNodeId; },
+		get abortSignal() { return abortController?.signal; },
 
 		// Setters
 		set onNodeRunning(v: OnNodeRunning | undefined) { onNodeRunning = v; },
@@ -70,12 +74,41 @@ function createRunningState() {
 		startRun(isTest: boolean = false) {
 			isRunning = true;
 			isTestMode = isTest;
+			abortController = new AbortController();
 		},
 
 		/** 结束工作流运行 */
 		endRun() {
 			isRunning = false;
 			currentNodeId = null;
+			abortController = null;
+		},
+		
+		/** 中断运行 */
+		abort() {
+			if (abortController) {
+				abortController.abort();
+			}
+			// 将当前运行中的节点标记为错误
+			if (currentNodeId) {
+				const existing = getNodeRunData(currentNodeId);
+				if (existing?.status === 'running') {
+					const endTime = Date.now();
+					updateNodeRunData(currentNodeId, {
+						...existing,
+						status: 'error',
+						endTime,
+						elapsed: endTime - (existing.startTime ?? endTime),
+						error: '执行已取消'
+					});
+				}
+			}
+			this.endRun();
+		},
+		
+		/** 检查是否已中断 */
+		isAborted(): boolean {
+			return abortController?.signal.aborted ?? false;
 		},
 
 		/** 设置节点等待运行 */
@@ -92,6 +125,17 @@ function createRunningState() {
 				startTime,
 				inputs: input as Record<string, unknown> | undefined
 			});
+		},
+
+		/** 更新节点运行输入（用于存储解析后的输入） */
+		updateNodeRunInputs(nodeId: string, inputs: Record<string, unknown>) {
+			const existing = getNodeRunData(nodeId);
+			if (existing) {
+				updateNodeRunData(nodeId, {
+					...existing,
+					inputs
+				});
+			}
 		},
 
 		/** 设置节点运行成功 */
@@ -140,6 +184,11 @@ function createRunningState() {
 			if (!onNodeRunning) {
 				throw new Error('onNodeRunning callback not provided');
 			}
+			
+			// 检查是否已中断
+			if (this.isAborted()) {
+				throw new Error('执行已取消');
+			}
 
 			this.setNodeRunning(nodeId, input);
 
@@ -180,6 +229,7 @@ function createRunningState() {
 			isRunning = false;
 			isTestMode = false;
 			currentNodeId = null;
+			abortController = null;
 		},
 
 		/** 完全重置（包括清除所有节点状态） */

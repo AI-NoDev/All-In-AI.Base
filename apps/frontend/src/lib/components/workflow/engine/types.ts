@@ -39,6 +39,8 @@ export interface ExecutionContext {
 	systemVariables: Record<string, unknown>;
 	/** 用户输入（开始节点的输入） */
 	userInputs: Record<string, unknown>;
+	/** 用户上传的文件列表 */
+	userFiles?: File[];
 	/** 当前循环上下文（如果在循环内） */
 	loopContext?: {
 		loopId: string;
@@ -64,6 +66,8 @@ export interface ExecutionOptions {
 	isTest?: boolean;
 	/** 用户输入 */
 	userInputs?: Record<string, unknown>;
+	/** 用户上传的文件列表 */
+	userFiles?: File[];
 	/** 环境变量 */
 	environmentVariables?: Record<string, string>;
 	/** 系统变量 */

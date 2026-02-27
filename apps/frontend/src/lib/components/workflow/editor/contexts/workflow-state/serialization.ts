@@ -1,6 +1,6 @@
 import YAML from 'yaml';
 import type { WorkflowNode, WorkflowEdge, Variable, BaseNodeData, EnvironmentVariable } from '$lib/components/workflow/types/index';
-import type { WorkflowMetadata, InputVariable } from './types';
+import type { WorkflowMetadata, InputVariable, TestInputData } from './types';
 import { BUILTIN_INPUT_VARIABLES } from './types';
 import { createStartNode } from './nodes';
 
@@ -17,6 +17,8 @@ interface SerializationDeps<T extends BaseNodeData> {
 	setEnvironmentVariables: (variables: EnvironmentVariable[]) => void;
 	getMetadata: () => WorkflowMetadata;
 	setMetadata: (metadata: WorkflowMetadata) => void;
+	getTestInputs: () => TestInputData;
+	setTestInputs: (testInputs: TestInputData) => void;
 }
 
 /** 序列化操作方法 */
@@ -26,7 +28,8 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 		getVariables, setVariables,
 		getInputVariables, setInputVariables,
 		getEnvironmentVariables, setEnvironmentVariables,
-		getMetadata, setMetadata
+		getMetadata, setMetadata,
+		getTestInputs, setTestInputs
 	} = deps;
 
 	return {
@@ -38,7 +41,8 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 				edges: getEdges(), 
 				variables: getVariables(),
 				inputVariables: getInputVariables(),
-				environmentVariables: getEnvironmentVariables()
+				environmentVariables: getEnvironmentVariables(),
+				testInputs: getTestInputs()
 			};
 		},
 
@@ -50,6 +54,7 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 			variables?: Variable[];
 			inputVariables?: InputVariable[];
 			environmentVariables?: EnvironmentVariable[];
+			testInputs?: TestInputData;
 		}) {
 			if (json.metadata) setMetadata(json.metadata);
 			if (json.nodes) setNodes(json.nodes);
@@ -57,6 +62,7 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 			if (json.variables) setVariables(json.variables);
 			if (json.inputVariables) setInputVariables(json.inputVariables);
 			if (json.environmentVariables) setEnvironmentVariables(json.environmentVariables);
+			if (json.testInputs) setTestInputs(json.testInputs);
 		},
 
 		/** 转换为 YAML (兼容 Dify DSL 格式) */
@@ -65,6 +71,7 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 			const edges = getEdges();
 			const environmentVariables = getEnvironmentVariables();
 			const inputVariables = getInputVariables();
+			const testInputs = getTestInputs();
 
 			const getDefaultSourceHandle = (nodeId: string): string | undefined => {
 				const node = nodes.find(n => n.id === nodeId);
@@ -76,13 +83,16 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 			const data = {
 				version: '1.0.0',
 				workflow: {
+					// 环境变量只导出 name 和 value_type，不导出 value（安全考虑）
 					environment_variables: environmentVariables.map(v => ({
-						id: v.id, name: v.name, value: v.value, value_type: v.value_type,
+						id: v.id, name: v.name, value_type: v.value_type,
 					})),
 					input_variables: inputVariables.map(v => ({
 						id: v.id, name: v.name, label: v.label, type: v.type,
 						description: v.description, required: v.required,
 					})),
+					// 测试输入数据
+					test_inputs: testInputs.values && Object.keys(testInputs.values).length > 0 ? testInputs : undefined,
 					conversation_variables: [],
 					graph: {
 						edges: edges.map(e => {
@@ -204,11 +214,11 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 						interface YAMLEnvVar {
 							id: string;
 							name: string;
-							value: string;
+							value?: string;
 							value_type: 'string' | 'secret';
 						}
 						setEnvironmentVariables(data.workflow.environment_variables.map((v: YAMLEnvVar) => ({
-							id: v.id, name: v.name, value: v.value, value_type: v.value_type ?? 'string',
+							id: v.id, name: v.name, value: v.value ?? '', value_type: v.value_type ?? 'string',
 						})));
 					}
 
@@ -230,6 +240,11 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 								description: v.description, required: v.required,
 							}))
 						);
+					}
+
+					// 恢复测试输入数据
+					if (data.workflow.test_inputs) {
+						setTestInputs(data.workflow.test_inputs);
 					}
 				}
 				
@@ -272,6 +287,7 @@ export function createSerializationOperations<T extends BaseNodeData>(deps: Seri
 			setVariables([]);
 			setInputVariables([]);
 			setEnvironmentVariables([]);
+			setTestInputs({ values: {} });
 		}
 	};
 }

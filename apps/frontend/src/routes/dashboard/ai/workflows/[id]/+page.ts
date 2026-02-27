@@ -1,5 +1,5 @@
 export const _meta = {
-  title: '编辑工作流',
+  title: 'nav.title.editWorkflow',
   icon: 'mdi:sitemap',
   hidden: true,
 };

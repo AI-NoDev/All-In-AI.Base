@@ -11,28 +11,30 @@ export const uploadGetUrl = defineAction({
   meta: {
     name: 'knowledge.upload.getUrl',
     displayName: '获取上传URL',
-    description: `获取预签名上传URL，用于大文件分片上传。
+    description: `获取预签名上传URL，用于文件上传。
+
+**这是创建文件的第一步！**
+创建文件的完整流程：
+1. 调用此接口获取 uploadUrl 和 storageKey
+2. 使用 uploadUrl 上传文件内容（HTTP PUT 请求，Body 为文件内容）
+3. 调用 knowledge.node.create 创建文件节点，传入 storageKey
 
 **请求体参数：**
 - parentId: 父文件夹ID，可选，null表示根目录
 - filename: 文件名，必填，1-255字符
-- mimeType: MIME类型，必填
+- mimeType: MIME类型，必填（如 text/markdown, text/plain, application/json）
 
 **返回：**
-- uploadUrl: 预签名上传URL（直接PUT到此URL）
-- storageKey: 存储路径，用于后续确认上传
+- uploadUrl: 预签名上传URL（使用 HTTP PUT 方法上传文件内容到此URL）
+- storageKey: 存储路径，创建文件节点时必须传入此值
 - expiresAt: URL过期时间（ISO 8601）
-
-**使用场景：**
-- 大文件上传（>5MB）
-- 前端直传S3/MinIO
 
 **示例：**
 \`\`\`json
 {
   "parentId": "folder-uuid",
-  "filename": "large-file.zip",
-  "mimeType": "application/zip"
+  "filename": "readme.md",
+  "mimeType": "text/markdown"
 }
 \`\`\``,
     tags: ['knowledge', 'upload'],

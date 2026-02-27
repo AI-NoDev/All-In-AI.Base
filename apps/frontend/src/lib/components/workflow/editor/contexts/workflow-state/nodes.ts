@@ -9,6 +9,7 @@ import {
 	DEFAULT_NODE_SIZE,
 	LOOP_NODE_PADDING
 } from '$lib/components/workflow/constants/index';
+import { generateNodeId, generateEdgeId } from '$lib/components/workflow/utils/uuid';
 
 /** 创建默认开始节点 */
 export function createStartNode<T extends BaseNodeData>(): WorkflowNode<T> {
@@ -40,7 +41,8 @@ export function createNodeOperations<T extends BaseNodeData>(
 		/** 开始放置节点 */
 		startPendingNode(template: PendingNodeTemplate, initialPosition?: { x: number; y: number }) {
 			const nodes = getNodes();
-			const id = crypto.randomUUID();
+			const existingIds = nodes.map(n => n.id);
+			const id = generateNodeId(template.type, existingIds);
 			const pos = initialPosition ?? { x: 0, y: 0 };
 			
 			let nodeData: Record<string, unknown>;
@@ -144,7 +146,8 @@ export function createNodeOperations<T extends BaseNodeData>(
 			const parentNode = nodes.find(n => n.id === parentId);
 			if (!parentNode || parentNode.type !== 'loop') return null;
 			
-			const id = crypto.randomUUID();
+			const existingIds = nodes.map(n => n.id);
+			const id = generateNodeId(template.type, existingIds);
 			const nodeData: Record<string, unknown> = { title: template.label, type: template.type, desc: '' };
 			
 			const childNode: WorkflowNode<T> = {
@@ -177,7 +180,8 @@ export function createNodeOperations<T extends BaseNodeData>(
 			const sourceNode = nodes.find(n => n.id === sourceNodeId);
 			if (!sourceNode) return;
 			
-			const id = crypto.randomUUID();
+			const existingIds = nodes.map(n => n.id);
+			const id = generateNodeId(template.type, existingIds);
 			let nodeData: Record<string, unknown> = { title: template.label, type: template.type, desc: '' };
 			
 			if (template.type === 'loop-break') {
@@ -222,7 +226,7 @@ export function createNodeOperations<T extends BaseNodeData>(
 				setNodes([...nodes, { id, type: template.type, position: newPosition, data: nodeData as T }]);
 			}
 			
-			const edgeId = crypto.randomUUID();
+			const edgeId = generateEdgeId(sourceNodeId, id);
 			const targetHandleId = (template.type === 'loop' || template.type === 'loop-break') ? 'input' : 'target';
 			setEdges([...edges, { id: edgeId, source: sourceNodeId, sourceHandle: sourceHandleId, target: id, targetHandle: targetHandleId }]);
 			

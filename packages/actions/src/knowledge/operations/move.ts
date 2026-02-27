@@ -85,6 +85,24 @@ export const nodeMove = defineAction({
       newMaterializedPath = buildMaterializedPath(targetParent.materializedPath, targetParent.id);
     }
     
+    // 检查目标位置是否存在同名节点
+    const parentCondition = input.targetParentId === null 
+      ? isNull(node.parentId) 
+      : eq(node.parentId, input.targetParentId);
+    
+    const [existingNode] = await db.select({ id: node.id }).from(node)
+      .where(and(
+        parentCondition,
+        eq(node.name, existing.name),
+        eq(node.createdById, context.currentUserId),
+        isNull(node.deletedAt)
+      ))
+      .limit(1);
+    
+    if (existingNode && existingNode.id !== existing.id) {
+      throw ActionError.badRequest('error.knowledge.nameConflict');
+    }
+    
     const [result] = await db.update(node)
       .set({
         parentId: input.targetParentId,

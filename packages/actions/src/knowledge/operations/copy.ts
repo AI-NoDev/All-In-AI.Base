@@ -87,13 +87,19 @@ export const nodeCopy = defineAction({
     const { baseName, extension } = parseFileName(existing.name);
     const newName = generateUniqueName(baseName, extension, existingNames);
     
+    // 确保 description 是字符串
+    let description = existing.description;
+    if (description && typeof description === 'object') {
+      description = JSON.stringify(description);
+    }
+    
     const [result] = await db.insert(node).values({
       type: existing.type,
       parentId: input.targetParentId,
       name: newName,
       path: newPath,
       materializedPath: newMaterializedPath,
-      description: existing.description,
+      description,
       icon: existing.icon,
       color: existing.color,
       originalName: existing.type === NODE_TYPES.FILE ? newName : null,

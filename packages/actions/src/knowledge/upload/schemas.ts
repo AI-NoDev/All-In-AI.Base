@@ -22,8 +22,8 @@ export const uploadConfirmBodySchema = t.Object({
 export const uploadDirectBodySchema = t.Object({
   parentId: t.Optional(t.Union([t.String(), t.Null()], { description: '父文件夹 ID，null 表示根目录' })),
   name: t.String({ minLength: 1, maxLength: 255, description: '文件名' }),
-  content: t.String({ description: '文件内容（Base64 编码）' }),
-  mimeType: t.Optional(t.String({ description: '文件 MIME 类型' })),
+  content: t.String({ maxLength: 100000, description: '文件内容（纯文本，建议不超过50000字符）' }),
+  mimeType: t.Optional(t.String({ description: '文件 MIME 类型，默认 text/plain' })),
   description: t.Optional(t.String({ description: '文件描述' })),
 });
 

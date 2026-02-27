@@ -54,6 +54,7 @@
   "knowledge_cannotMoveToDescendant": "Cannot move to descendant folder",
   "knowledge_noStorageKey": "File storage information not found",
   "knowledge_notTextFile": "Not a text file",
+  "knowledge_nameConflict": "A file or folder with the same name already exists at the target location",
   "files_permissionDenied": "File access denied",
   "upload_invalidImageType": "Invalid image type",
   "upload_fileTooLarge": "File size exceeds limit",

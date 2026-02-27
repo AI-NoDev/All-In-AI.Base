@@ -273,7 +273,7 @@ export const pages: PageMeta[] = [
   },
   {
     "path": "/dashboard/ai/workflows/[id]",
-    "title": "编辑工作流",
+    "title": "nav.title.editWorkflow",
     "icon": "mdi:sitemap",
     "hidden": true
   },
@@ -386,7 +386,7 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/dev-docs': "nav.title.devDocs",
   '/dashboard/api-docs': "nav.title.apiDocs",
   '/dashboard/account': "nav.title.account",
-  '/dashboard/ai/workflows/[id]': "编辑工作流",
+  '/dashboard/ai/workflows/[id]': "nav.title.editWorkflow",
   '/dashboard/files': "nav.title.fileManagement",
   '/dashboard/files/[folderId]/create-text-file': "nav.title.createTextFile",
   '/dashboard/files/[folderId]/edit/[fileId]': "nav.title.editFile",
@@ -680,7 +680,7 @@ export const groupedPages: Record<string, PageMeta[]> = {
     },
     {
       "path": "/dashboard/ai/workflows/[id]",
-      "title": "编辑工作流",
+      "title": "nav.title.editWorkflow",
       "icon": "mdi:sitemap",
       "hidden": true
     },

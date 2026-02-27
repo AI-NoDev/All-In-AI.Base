@@ -1,12 +1,12 @@
 import type { WorkflowNode, WorkflowEdge, Variable, BaseNodeData, EnvironmentVariable } from '$lib/components/workflow/types/index';
-import type { PendingNodeTemplate, NodePickerState, WorkflowMetadata, InputVariable } from './types';
+import type { PendingNodeTemplate, NodePickerState, WorkflowMetadata, InputVariable, TestInputData } from './types';
 import { createStartNode, createNodeOperations } from './nodes';
 import { createEdgeOperations } from './edges';
 import { createVariableOperations } from './variables';
 import { createSerializationOperations } from './serialization';
 
 // 导出类型
-export type { PendingNodeTemplate, NodePickerState, WorkflowMetadata, InputVariable } from './types';
+export type { PendingNodeTemplate, NodePickerState, WorkflowMetadata, InputVariable, TestInputData } from './types';
 export { BUILTIN_INPUT_VARIABLES } from './types';
 
 /**
@@ -19,6 +19,7 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 	let variables = $state<Variable[]>([]);
 	let inputVariables = $state<InputVariable[]>([]);
 	let environmentVariables = $state<EnvironmentVariable[]>([]);
+	let testInputs = $state<TestInputData>({ values: {} });
 
 	// 元数据
 	let metadata = $state<WorkflowMetadata>({
@@ -66,7 +67,8 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 		getVariables: () => variables, setVariables: (v) => variables = v,
 		getInputVariables: () => inputVariables, setInputVariables: (v) => inputVariables = v,
 		getEnvironmentVariables: () => environmentVariables, setEnvironmentVariables: (v) => environmentVariables = v,
-		getMetadata: () => metadata, setMetadata: (v) => metadata = v
+		getMetadata: () => metadata, setMetadata: (v) => metadata = v,
+		getTestInputs: () => testInputs, setTestInputs: (v) => testInputs = v
 	});
 
 	return {
@@ -76,6 +78,7 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 		get variables() { return variables; },
 		get inputVariables() { return inputVariables; },
 		get environmentVariables() { return environmentVariables; },
+		get testInputs() { return testInputs; },
 		get metadata() { return metadata; },
 		get selectedNodeIds() { return selectedNodeIds; },
 		get selectedEdgeIds() { return selectedEdgeIds; },
@@ -91,6 +94,7 @@ function createWorkflowState<T extends BaseNodeData = BaseNodeData>() {
 		set variables(v: Variable[]) { variables = v; },
 		set inputVariables(v: InputVariable[]) { inputVariables = v; },
 		set environmentVariables(v: EnvironmentVariable[]) { environmentVariables = v; },
+		set testInputs(v: TestInputData) { testInputs = v; },
 		set metadata(v: WorkflowMetadata) { metadata = v; },
 		set selectedNodeIds(v: string[]) { selectedNodeIds = v; },
 		set selectedEdgeIds(v: string[]) { selectedEdgeIds = v; },

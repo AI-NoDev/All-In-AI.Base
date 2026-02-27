@@ -67,7 +67,6 @@ export {
 export {
   contentGetDownloadUrl,
   contentGetText,
-  contentSaveText,
   contentGetRaw,
   contentActions,
 } from './content';

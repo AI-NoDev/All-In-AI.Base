@@ -7,12 +7,19 @@
 	import VariablesPanel from './VariablesPanel.svelte';
 	import EnvironmentPanel from './EnvironmentPanel.svelte';
 	import SystemPanel from './SystemPanel.svelte';
+	import IssuesPanel from './IssuesPanel.svelte';
+
+	interface Props {
+		onSelectNode?: (nodeId: string) => void;
+	}
+
+	let { onSelectNode }: Props = $props();
 
 	interface PanelConfig {
 		title: string;
 		description: string;
 		icon: string;
-		component: typeof VariablesPanel | typeof EnvironmentPanel | typeof SystemPanel;
+		component: typeof VariablesPanel | typeof EnvironmentPanel | typeof SystemPanel | typeof IssuesPanel;
 		hasAdd?: boolean;
 	}
 
@@ -36,6 +43,13 @@
 			description: '只读系统参数',
 			icon: 'mdi:cog-outline',
 			component: SystemPanel,
+			hasAdd: false
+		},
+		issues: {
+			title: '问题列表',
+			description: '验证错误和警告',
+			icon: 'mdi:alert-circle-outline',
+			component: IssuesPanel,
 			hasAdd: false
 		}
 	};
@@ -89,7 +103,11 @@
 
 		<!-- Content -->
 		<Card.Content class="flex-1 overflow-auto pt-4">
-			<svelte:component this={config.component} {addTrigger} />
+			{#if activePanel === 'issues'}
+				<IssuesPanel {onSelectNode} />
+			{:else}
+				<svelte:component this={config.component} {addTrigger} />
+			{/if}
 		</Card.Content>
 	</Card.Root>
 {/if}

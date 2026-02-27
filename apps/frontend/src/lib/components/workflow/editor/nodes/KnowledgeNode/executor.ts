@@ -1,29 +1,13 @@
-﻿/**
+/**
  * 知识检索节点执行器
- * 
- * 从知识库中检索相关内容
  */
-import type { WorkflowNode, BaseNodeData } from '$lib/components/workflow/types/index';
-import type { NodeExecutor, ExecutionContext } from '../types';
-import { VariableResolver } from '../variable-resolver';
-
-/** 知识库引用 */
-interface KnowledgeBaseRef {
-	id: string;
-	name: string;
-	topK?: number;
-	scoreThreshold?: number;
-}
-
-/** 元数据过滤条件 */
-interface MetadataFilter {
-	field: string;
-	operator: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'in';
-	value: string | number | boolean | string[];
-}
+import type { WorkflowNode } from '$lib/components/workflow/types/index';
+import type { NodeExecutor, ExecutionContext } from '$lib/components/workflow/engine/types';
+import { VariableResolver } from '$lib/components/workflow/engine/variable-resolver';
+import type { KnowledgeNodeData, KnowledgeBaseRef, MetadataFilter } from './types';
 
 /** 检索结果项 */
-interface RetrievalResult {
+export interface RetrievalResult {
 	content: string;
 	title?: string;
 	url?: string;
@@ -32,17 +16,23 @@ interface RetrievalResult {
 	metadata?: Record<string, unknown>;
 }
 
-/** 知识库检索函数类型 */
-export type KnowledgeRetrievalFunction = (params: {
+/** 知识库检索参数 */
+export interface KnowledgeRetrievalParams {
 	knowledgeBaseIds: string[];
 	query: string;
 	topK: number;
 	scoreThreshold?: number;
 	metadataFilters?: MetadataFilter[];
-}) => Promise<{
+}
+
+/** 知识库检索结果 */
+export interface KnowledgeRetrievalResult {
 	results: RetrievalResult[];
 	files?: Array<{ id: string; name: string; url: string }>;
-}>;
+}
+
+/** 知识库检索函数类型 */
+export type KnowledgeRetrievalFunction = (params: KnowledgeRetrievalParams) => Promise<KnowledgeRetrievalResult>;
 
 export class KnowledgeNodeExecutor implements NodeExecutor {
 	private retrievalFn?: KnowledgeRetrievalFunction;
@@ -52,19 +42,18 @@ export class KnowledgeNodeExecutor implements NodeExecutor {
 	}
 
 	async execute(
-		node: WorkflowNode<BaseNodeData>,
-		inputs: Record<string, unknown>,
+		node: WorkflowNode<KnowledgeNodeData>,
+		_inputs: Record<string, unknown>,
 		context: ExecutionContext
 	): Promise<Record<string, unknown>> {
-		const data = node.data as Record<string, unknown>;
-		const queryVariable = data.queryVariable as string | undefined;
-		const knowledgeBases = data.knowledgeBases as KnowledgeBaseRef[] | undefined;
-		const topK = (data.topK as number) ?? 5;
-		const scoreThreshold = data.scoreThreshold as number | undefined;
-		const metadataFilterMode = data.metadataFilterMode as string | undefined;
-		const metadataFilters = data.metadataFilters as MetadataFilter[] | undefined;
+		const data = node.data;
+		const queryVariable = data.queryVariable;
+		const knowledgeBases = data.knowledgeBases;
+		const topK = data.topK ?? 5;
+		const scoreThreshold = data.scoreThreshold;
+		const metadataFilterMode = data.metadataFilterMode;
+		const metadataFilters = data.metadataFilters;
 
-		// 获取查询文本
 		const resolver = new VariableResolver(context);
 		let query = '';
 		if (queryVariable) {
@@ -79,12 +68,10 @@ export class KnowledgeNodeExecutor implements NodeExecutor {
 			throw new Error('知识检索节点未配置知识库');
 		}
 
-		// 如果没有提供检索函数，返回模拟数据
 		if (!this.retrievalFn) {
 			return this.getMockResults(query, knowledgeBases, topK);
 		}
 
-		// 调用检索函数
 		const filters = metadataFilterMode === 'manual' ? metadataFilters : undefined;
 		const result = await this.retrievalFn({
 			knowledgeBaseIds: knowledgeBases.map(kb => kb.id),
@@ -101,7 +88,6 @@ export class KnowledgeNodeExecutor implements NodeExecutor {
 		};
 	}
 
-	/** 返回模拟检索结果（用于测试） */
 	private getMockResults(
 		query: string,
 		knowledgeBases: KnowledgeBaseRef[],
@@ -115,17 +101,10 @@ export class KnowledgeNodeExecutor implements NodeExecutor {
 				content: `[模拟结果 ${i + 1}] 这是从知识库 "${kbNames}" 中检索到的与 "${query}" 相关的内容片段。`,
 				title: `相关文档 ${i + 1}`,
 				score: 0.9 - i * 0.1,
-				metadata: {
-					source: knowledgeBases[0]?.name,
-					page: i + 1,
-				},
+				metadata: { source: knowledgeBases[0]?.name, page: i + 1 },
 			});
 		}
 
-		return {
-			result: mockResults,
-			files: [],
-			count: mockResults.length,
-		};
+		return { result: mockResults, files: [], count: mockResults.length };
 	}
 }

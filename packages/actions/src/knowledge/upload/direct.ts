@@ -12,37 +12,33 @@ import { uploadDirectBodySchema } from './schemas';
 
 export const uploadDirect = defineAction({
   meta: {
-    ignoreTools: true,
     name: 'knowledge.upload.direct',
     displayName: '直接上传',
-    description: `直接上传小文件（Base64编码），自动检测同名冲突。
+    description: `直接上传文件并创建节点，支持纯文本内容。
+
+**重要限制：**
+- content 内容长度建议不超过 50000 字符
+- 超长内容可能导致 JSON 解析失败
+- 对于大文件，建议分多次调用或精简内容
 
 **请求体参数：**
 - parentId: 父文件夹ID，可选，null表示根目录
 - name: 文件名，必填，1-255字符
-- content: 文件内容，必填，Base64编码
-- mimeType: MIME类型，可选，默认 application/octet-stream
+- content: 文件内容，必填，纯文本（建议<50000字符）
+- mimeType: MIME类型，可选，默认 text/plain
 - description: 描述，可选
 
 **返回：**
 - success: 是否成功
 - node: 创建的节点（成功时）
 - conflict: 冲突信息（存在同名文件时）
-  - nodeId: 已存在节点ID
-  - name: 文件名
-  - size: 文件大小
-  - updatedAt: 更新时间
-
-**使用场景：**
-- 小文件快速上传（<5MB）
-- 文本文件创建
 
 **示例：**
 \`\`\`json
 {
-  "parentId": null,
+  "parentId": "folder-uuid",
   "name": "readme.md",
-  "content": "IyBIZWxsbyBXb3JsZA==",
+  "content": "# Hello\\n\\n内容",
   "mimeType": "text/markdown"
 }
 \`\`\``,
@@ -107,11 +103,17 @@ export const uploadDirect = defineAction({
       }
     }
     
-    const buffer = Buffer.from(input.content, 'base64');
+    const buffer = Buffer.from(input.content, 'utf-8');
     const mimeType = input.mimeType || 'application/octet-stream';
     const storageKey = generateStorageKey(context.currentUserId, parentId, input.name);
 
     const uploadResult = await uploadFile(storageKey, buffer, mimeType);
+
+    // 确保 description 是字符串
+    let description = input.description;
+    if (description && typeof description === 'object') {
+      description = JSON.stringify(description);
+    }
 
     const [result] = await db.insert(node).values({
       type: NODE_TYPES.FILE,
@@ -127,7 +129,7 @@ export const uploadDirect = defineAction({
       bucket: uploadResult.bucket,
       etag: uploadResult.etag,
       versionId: uploadResult.versionId,
-      description: input.description,
+      description,
       createdBy: context.currentUserName,
       createdById: context.currentUserId,
       updatedBy: context.currentUserName,

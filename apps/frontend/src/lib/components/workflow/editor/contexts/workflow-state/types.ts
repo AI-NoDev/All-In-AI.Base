@@ -50,6 +50,14 @@ export const BUILTIN_INPUT_VARIABLES: InputVariable[] = [
 	}
 ];
 
+/** 测试输入数据 */
+export interface TestInputData {
+	/** 表单值 */
+	values: Record<string, string | number | boolean>;
+	/** 最后更新时间 */
+	updatedAt?: string;
+}
+
 /** 工作流状态核心数据 */
 export interface WorkflowStateData<T extends BaseNodeData = BaseNodeData> {
 	nodes: WorkflowNode<T>[];

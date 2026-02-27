@@ -3,6 +3,8 @@
  */
 import type { BaseNodeData, WorkflowNode } from '$lib/components/workflow/types/index';
 import { LOOP_HEADER_HEIGHT, LOOP_NODE_SIZE, NODE_SPACING, TARGET_HANDLE_OFFSET } from '$lib/components/workflow/constants/index';
+import { LLM_DEFAULT_OUTPUTS, LLM_ERROR_OUTPUTS } from '$lib/components/workflow/editor/nodes/LLMNode/types';
+import { generateNodeId, generateEdgeId } from '$lib/components/workflow/utils/uuid';
 
 /** 待放置节点模板 */
 export interface PendingNodeTemplate {
@@ -69,9 +71,10 @@ export function createEditorUIState<T extends BaseNodeData = BaseNodeData>(
 
 		// 节点放置操作
 		startPendingNode(template: PendingNodeTemplate, initialPosition?: { x: number; y: number }) {
-			const id = crypto.randomUUID();
-			const pos = initialPosition ?? { x: 0, y: 0 };
 			const nodes = getNodes();
+			const existingIds = nodes.map(n => n.id);
+			const id = generateNodeId(template.type, existingIds);
+			const pos = initialPosition ?? { x: 0, y: 0 };
 			
 			let nodeData: Record<string, unknown>;
 			
@@ -106,6 +109,14 @@ export function createEditorUIState<T extends BaseNodeData = BaseNodeData>(
 				placingNodeId = id;
 				placingNodeTemplate = template;
 				return;
+			} else if (template.type === 'llm') {
+				nodeData = {
+					title: template.label,
+					type: template.type,
+					desc: '',
+					outputs: LLM_DEFAULT_OUTPUTS,
+					errorOutputs: LLM_ERROR_OUTPUTS
+				};
 			} else {
 				nodeData = { title: template.label, type: template.type, desc: '' };
 			}
@@ -153,7 +164,8 @@ export function createEditorUIState<T extends BaseNodeData = BaseNodeData>(
 			const sourceNode = nodes.find(n => n.id === sourceNodeId);
 			if (!sourceNode) return;
 
-			const id = crypto.randomUUID();
+			const existingIds = nodes.map(n => n.id);
+			const id = generateNodeId(template.type, existingIds);
 			let nodeData: Record<string, unknown> = { title: template.label, type: template.type, desc: '' };
 
 			if (template.type === 'loop-break') {
@@ -164,6 +176,14 @@ export function createEditorUIState<T extends BaseNodeData = BaseNodeData>(
 					type: template.type,
 					desc: '',
 					cases: [{ id: crypto.randomUUID(), type: 'if', conditions: [], logicalOperator: 'and' }]
+				};
+			} else if (template.type === 'llm') {
+				nodeData = {
+					title: template.label,
+					type: template.type,
+					desc: '',
+					outputs: LLM_DEFAULT_OUTPUTS,
+					errorOutputs: LLM_ERROR_OUTPUTS
 				};
 			}
 
@@ -200,7 +220,7 @@ export function createEditorUIState<T extends BaseNodeData = BaseNodeData>(
 
 			const targetHandleId = (template.type === 'loop' || template.type === 'loop-break') ? 'input' : 'target';
 			setEdges([...edges, {
-				id: crypto.randomUUID(),
+				id: generateEdgeId(sourceNodeId, id),
 				source: sourceNodeId,
 				sourceHandle: sourceHandleId,
 				target: id,
@@ -216,7 +236,8 @@ export function createEditorUIState<T extends BaseNodeData = BaseNodeData>(
 			const parentNode = nodes.find(n => n.id === parentId);
 			if (!parentNode || parentNode.type !== 'loop') return null;
 
-			const id = crypto.randomUUID();
+			const existingIds = nodes.map(n => n.id);
+			const id = generateNodeId(template.type, existingIds);
 			const nodeData: Record<string, unknown> = { title: template.label, type: template.type, desc: '' };
 
 			setNodes([...nodes, {

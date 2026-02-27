@@ -11,6 +11,7 @@
   import { Checkbox } from '$lib/components/ui/checkbox';
   import MarkdownEditor from '$lib/components/common/markdown-editor.svelte';
   import MarkdownPreview from '$lib/components/common/markdown-preview.svelte';
+  import AIGeneratorModal from '$lib/components/ai-generator/ai-generator-modal.svelte';
   import { authStore } from '@/lib/stores/auth.svelte';
   import { t } from '$lib/stores/i18n.svelte';
 
@@ -83,6 +84,9 @@
   let editorSheetOpen = $state(false);
   let editor: MarkdownEditor;
   let editorReady = $state(false);
+  
+  // AI 生成器状态
+  let aiGeneratorOpen = $state(false);
 
   function handleEditorReady() {
     editorReady = true;
@@ -102,6 +106,14 @@
   function closeEditorSheet() {
     editorSheetOpen = false;
     editorReady = false;
+  }
+
+  function openAIGenerator() {
+    aiGeneratorOpen = true;
+  }
+
+  function handleAIGeneratorApply(result: string) {
+    form.systemPrompt = result;
   }
 
   async function handleAvatarUpload(event: Event) {
@@ -294,9 +306,14 @@
       <div class="flex flex-col gap-1.5">
         <div class="flex items-center justify-between">
           <Label class="text-xs">{t('page.ai.systemPrompt')}</Label>
-          <Button variant="ghost" size="sm" onclick={openEditorSheet} class="h-6 px-2 text-xs">
-            <Icon icon="mdi:pencil" class="size-3 mr-1" />{t('common.actions.edit')}
-          </Button>
+          <div class="flex items-center gap-1">
+            <Button variant="ghost" size="sm" onclick={openAIGenerator} class="h-6 px-2 text-xs">
+              <Icon icon="mdi:sparkles" class="size-3 mr-1" />AI
+            </Button>
+            <Button variant="ghost" size="sm" onclick={openEditorSheet} class="h-6 px-2 text-xs">
+              <Icon icon="mdi:pencil" class="size-3 mr-1" />{t('common.actions.edit')}
+            </Button>
+          </div>
         </div>
         <div class="border rounded-[var(--radius)] h-[380px] bg-muted/30">
           <ScrollArea class="h-full p-4">
@@ -351,3 +368,24 @@
     </Sheet.Footer>
   </Sheet.Content>
 </Sheet.Root>
+
+<!-- AI 生成器 -->
+<AIGeneratorModal
+  bind:open={aiGeneratorOpen}
+  type="text"
+  title="AI 生成系统提示词"
+  description="描述您的 Agent 用途，AI 将帮您生成专业的系统提示词"
+  prompt={`请根据以下信息生成一个专业的 AI Agent 系统提示词：
+
+Agent 名称：${form.name || '未命名'}
+Agent 描述：${form.description || '无描述'}
+
+要求：
+1. 明确定义 Agent 的角色和职责
+2. 设定清晰的行为准则和限制
+3. 包含输出格式要求（如适用）
+4. 使用专业、清晰的语言
+5. 适当使用 Markdown 格式增强可读性`}
+  onOpenChange={(v) => aiGeneratorOpen = v}
+  onApply={handleAIGeneratorApply}
+/>

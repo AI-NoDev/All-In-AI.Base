@@ -9,7 +9,7 @@
  * - WebSocket 操作 ws.*
  * - 开发工具 dev.*
  * - 文件上传内部操作：files.*, public.*
- * - 知识库复杂操作：permission.*, share.*, version.*, upload.confirm/force/direct, checkExists, updateOrder
+ * - 知识库复杂操作：permission.*, share.*, version.*, upload.confirm/force, checkExists, updateOrder
  * - IM 内部操作：groupMember.*, conversationRead.*, conversationHidden.*, tempFile.*, createGroup, dissolveGroup, findOrCreatePrivate
  * - AI 内部会话操作：agentMessage.*, agentSession.*, aiSession.*, aiSessionMessage.*
  * - 系统关联表操作：userRole.*, userPost.*, roleMenu.*, roleDepartment.*, casbinRule.*
@@ -17,7 +17,7 @@
  * 
  * 保留给 AI 使用的 actions（不设置 ignoreTools）：
  * - 所有模块的基本 CRUD：create, update, deleteByPk, getByPk, getByPagination
- * - 知识库：node 基本操作、content 读写、favorite、search、move、copy、getPath、getChildren、upload.getUrl
+ * - 知识库：node 基本操作、content 读取、favorite、search、move、copy、getPath、getChildren、upload.getUrl、upload.direct
  * - AI 模块：agent, model, provider, userMemory, apiKey, mcpServer, toolGroup 的基本 CRUD
  * - IM 模块：conversation, message 的基本操作
  * - 系统模块：user, role, menu, department, config, dict, dictGroup, post, notice, job, jobLog, loginInfo, operationLog, permission 的基本 CRUD
@@ -50,7 +50,6 @@ const IGNORE_PATTERNS = [
   /\/knowledge\/version\//,
   /\/knowledge\/upload\/confirm\.ts$/,
   /\/knowledge\/upload\/force\.ts$/,
-  /\/knowledge\/upload\/direct\.ts$/,
   /\/knowledge\/operations\/checkExists\.ts$/,
   /\/knowledge\/operations\/updateOrder\.ts$/,
   

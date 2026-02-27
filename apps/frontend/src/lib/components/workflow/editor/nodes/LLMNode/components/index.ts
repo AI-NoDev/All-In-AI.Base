@@ -6,3 +6,4 @@ export { default as RetrySettings } from './RetrySettings.svelte';
 export { default as ExceptionHandling } from './ExceptionHandling.svelte';
 export { default as LastRunTab } from './LastRunTab.svelte';
 export { default as SchemaEditorDialog } from './SchemaEditorDialog.svelte';
+export { default as PromptMessages } from './PromptMessages.svelte';

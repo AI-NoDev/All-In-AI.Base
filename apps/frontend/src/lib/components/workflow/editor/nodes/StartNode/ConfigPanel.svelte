@@ -18,9 +18,12 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Icon from '@iconify/svelte';
 	import NodeRunResult from '../../components/NodeRunResult.svelte';
 	import SortableFieldItem from './SortableFieldItem.svelte';
+	import { AIGeneratorModal } from '$lib/components/ai-generator';
+	import { toast } from 'svelte-sonner';
 	import { DndContext, type DragEndEvent } from '@dnd-kit-svelte/core';
 	import { SortableContext, arrayMove } from '@dnd-kit-svelte/sortable';
 	import { createSchema, type JsonSchema, JsonSchemaEditor } from '@qiyu-allinai/json-schema-editor';
@@ -76,6 +79,32 @@
 	let formDefaultValue = $state<string>('');
 	let formJsonSchema = $state<JsonSchema>(createSchema());
 	let isJsonSchemaSheetOpen = $state(false);
+	let isAiDialogOpen = $state(false);
+
+	// AI 生成字段的 prompt
+	const AI_FIELDS_PROMPT = `你是一个工作流输入字段设计专家。根据用户的需求描述，生成合适的输入字段配置。
+
+请返回一个 JSON 数组，每个元素包含以下字段：
+- variable: 变量名，英文 snake_case 格式，如 user_name
+- label: 显示名称，中文
+- uiType: 字段类型，可选值：text(单行文本), textarea(多行文本), number(数字), select(下拉选择), checkbox(复选框), json(JSON对象)
+- description: 字段描述（可选）
+- required: 是否必填，布尔值
+- placeholder: 占位符文本（可选）
+- options: 下拉选项数组，仅 uiType=select 时需要，格式 [{value: "xxx", label: "显示文本"}]
+
+示例输出：
+[
+  {"variable": "user_name", "label": "用户名", "uiType": "text", "required": true, "placeholder": "请输入用户名"},
+  {"variable": "gender", "label": "性别", "uiType": "select", "required": true, "options": [{"value": "male", "label": "男"}, {"value": "female", "label": "女"}]}
+]
+
+只返回 JSON 数组，不要其他内容。`;
+
+	const AI_IDEAL_OUTPUT = `[
+  {"variable": "field_name", "label": "字段名称", "uiType": "text", "required": true, "placeholder": "请输入..."},
+  {"variable": "field_type", "label": "字段类型", "uiType": "select", "required": true, "options": [{"value": "opt1", "label": "选项1"}]}
+]`;
 
 	// 表单验证
 	let variableError = $derived.by(() => {
@@ -236,6 +265,69 @@
 			formVariable = generateUniqueVariable(allInputs);
 		}
 	}
+
+	function handleAiGeneratedFields(result: string) {
+		try {
+			// 尝试从结果中提取 JSON 数组
+			let jsonStr = result.trim();
+			
+			// 如果包含 markdown 代码块，提取其中的内容
+			const codeBlockMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+			if (codeBlockMatch) {
+				jsonStr = codeBlockMatch[1].trim();
+			}
+			
+			const parsed = JSON.parse(jsonStr);
+			
+			if (!Array.isArray(parsed)) {
+				toast.error('AI 返回的格式不正确，请重试');
+				return;
+			}
+
+			// 转换为 InputField 并过滤已存在的变量名
+			const newFields: InputField[] = [];
+			const usedVariables = new Set(allInputs.map(f => f.variable));
+
+			for (const field of parsed) {
+				if (!field.variable || !field.label || !field.uiType) continue;
+				
+				// 验证 uiType 是否有效
+				if (!UI_TYPE_CONFIG[field.uiType as InputFieldUIType]) continue;
+
+				// 检查变量名是否已存在
+				let variable = field.variable;
+				if (usedVariables.has(variable)) {
+					let suffix = 1;
+					while (usedVariables.has(`${field.variable}_${suffix}`)) {
+						suffix++;
+					}
+					variable = `${field.variable}_${suffix}`;
+				}
+				usedVariables.add(variable);
+
+				newFields.push(createInputField({
+					variable,
+					label: field.label,
+					uiType: field.uiType as InputFieldUIType,
+					type: UI_TYPE_TO_VARIABLE_TYPE[field.uiType as InputFieldUIType],
+					description: field.description,
+					required: field.required ?? false,
+					placeholder: field.placeholder,
+					options: field.options,
+				}));
+			}
+
+			if (newFields.length > 0) {
+				workflowState.updateNode(nodeId, { inputs: [...userInputs, ...newFields] });
+				toast.success(`已添加 ${newFields.length} 个字段`);
+			} else {
+				toast.warning('未能解析出有效的字段');
+			}
+		} catch (err) {
+			console.error('Failed to parse AI result:', err);
+			toast.error('解析 AI 结果失败，请重试');
+		}
+	}
 </script>
 
 
@@ -255,10 +347,22 @@
 			<div class="space-y-3">
 				<div class="flex items-center justify-between">
 					<Field.Label class="text-xs font-medium">输入字段</Field.Label>
-					<Button variant="outline" size="sm" class="h-7 text-xs" onclick={openAddModal}>
-						<Icon icon="mdi:plus" class="w-3.5 h-3.5 mr-1" />
-						添加字段
-					</Button>
+					<div class="flex items-center gap-1">
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								{#snippet child({ props })}
+									<Button {...props} variant="outline" size="sm" class="h-7 w-7 p-0" onclick={() => isAiDialogOpen = true}>
+										<Icon icon="mdi:robot" class="w-3.5 h-3.5" />
+									</Button>
+								{/snippet}
+							</Tooltip.Trigger>
+							<Tooltip.Content>AI 生成字段</Tooltip.Content>
+						</Tooltip.Root>
+						<Button variant="outline" size="sm" class="h-7 text-xs" onclick={openAddModal}>
+							<Icon icon="mdi:plus" class="w-3.5 h-3.5 mr-1" />
+							添加字段
+						</Button>
+					</div>
 				</div>
 
 				<div class="space-y-1.5">
@@ -650,4 +754,16 @@
 	schema={formJsonSchema}
 	onOpenChange={(open) => isJsonSchemaSheetOpen = open}
 	onSave={(schema) => formJsonSchema = schema}
+/>
+
+<AIGeneratorModal
+	bind:open={isAiDialogOpen}
+	type="object"
+	title="AI 生成输入字段"
+	description="描述你需要的输入字段，AI 将自动生成配置"
+	prompt={AI_FIELDS_PROMPT}
+	idealOutput={AI_IDEAL_OUTPUT}
+	idealOutputPlaceholder="输入期望的字段 JSON 格式示例..."
+	onOpenChange={(v) => isAiDialogOpen = v}
+	onApply={handleAiGeneratedFields}
 />

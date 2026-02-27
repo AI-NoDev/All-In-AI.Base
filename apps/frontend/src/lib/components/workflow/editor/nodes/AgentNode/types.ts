@@ -1,7 +1,45 @@
 import type { Node } from '@xyflow/svelte';
+import type { VariableType } from '$lib/components/workflow/types/workflow';
 
-/** 运行状态 */
-export type RunStatus = 'idle' | 'running' | 'success' | 'failed';
+/** 工具调用步骤 */
+export interface ToolCallStep {
+	/** 调用 ID */
+	id: string;
+	/** 工具名称 */
+	name: string;
+	/** 调用参数 */
+	args: Record<string, unknown>;
+	/** 调用状态 */
+	status: 'pending' | 'running' | 'success' | 'error';
+	/** 调用结果 */
+	result?: unknown;
+	/** 错误信息 */
+	error?: string;
+	/** 开始时间 */
+	startTime?: number;
+	/** 结束时间 */
+	endTime?: number;
+}
+
+/** 节点输出变量定义 */
+export interface NodeOutputVariable {
+	/** 变量路径（相对于节点，如 output, structured_output） */
+	path: string;
+	/** 显示名称 */
+	label: string;
+	/** 数据类型 */
+	type: VariableType;
+	/** 描述 */
+	description?: string;
+}
+
+/** Agent 节点默认输出变量 */
+export const AGENT_DEFAULT_OUTPUTS: NodeOutputVariable[] = [
+	{ path: 'text', label: '生成内容', type: 'string', description: 'Agent 生成的内容' },
+	{ path: 'usage', label: '用量信息', type: 'object', description: '模型用量信息' },
+	{ path: 'files', label: '文件列表', type: 'file-list', description: 'Agent 生成的文件' },
+	{ path: 'json', label: 'JSON 数据', type: 'array-object', description: 'Agent 生成的 JSON' },
+];
 
 /** Agent 信息（从数据库获取） */
 export interface AgentInfo {
@@ -23,25 +61,11 @@ export interface OutputVariable {
 
 /** 内置输出变量 */
 export const BUILTIN_OUTPUT_VARIABLES: OutputVariable[] = [
-	{ name: 'output', type: 'string', description: 'Agent 输出结果' },
-	{ name: 'structured_output', type: 'object', description: '结构化输出（如果配置了 outputSchema）' },
+	{ name: 'text', type: 'string', description: 'Agent 生成的内容' },
+	{ name: 'usage', type: 'object', description: '模型用量信息' },
+	{ name: 'files', type: 'Array<File>', description: 'Agent 生成的文件' },
+	{ name: 'json', type: 'Array<Object>', description: 'Agent 生成的 JSON' },
 ];
-
-/** 运行结果数据 */
-export interface AgentRunResult {
-	status: RunStatus;
-	startedAt?: string;
-	endedAt?: string;
-	duration?: number;
-	tokenUsage?: {
-		prompt: number;
-		completion: number;
-		total: number;
-	};
-	inputs?: Record<string, unknown>;
-	outputs?: Record<string, unknown>;
-	error?: string;
-}
 
 /** Agent节点数据 */
 export interface AgentNodeData extends Record<string, unknown> {
@@ -60,10 +84,12 @@ export interface AgentNodeData extends Record<string, unknown> {
 	agentInputSchema?: Record<string, unknown>;
 	/** Agent 输出 Schema */
 	agentOutputSchema?: Record<string, unknown>;
-	/** 最大迭代次数 */
-	maxIterations?: number;
-	/** 上次运行结果 */
-	lastRun?: AgentRunResult;
+	/** 选中的 MCP 服务器 ID 列表 */
+	mcpServerIds?: string[];
+	/** 指令提示词 */
+	instructionPrompt?: string;
+	/** 最大步骤数 */
+	maxSteps?: number;
 }
 
 /** Agent节点类型 */

@@ -14,12 +14,18 @@
 		placeholder?: string;
 		/** Minimum rows */
 		rows?: number;
+		/** Maximum height (CSS value, e.g., '200px', '10rem') */
+		maxHeight?: string;
 		/** Whether disabled */
 		disabled?: boolean;
 		/** Filter variable types */
 		filterTypes?: VariableType[];
 		/** Custom class */
 		class?: string;
+		/** Whether used inside a Dialog (disables portal for proper z-index) */
+		inDialog?: boolean;
+		/** Current node ID (for getting predecessor node outputs) */
+		currentNodeId?: string;
 	}
 
 	let {
@@ -27,9 +33,12 @@
 		onValueChange,
 		placeholder = '输入内容，输入 { 或 / 插入变量',
 		rows = 2,
+		maxHeight,
 		disabled = false,
 		filterTypes,
-		class: className = ''
+		class: className = '',
+		inDialog = false,
+		currentNodeId
 	}: Props = $props();
 
 	let editorRef = $state<HTMLDivElement | null>(null);
@@ -142,19 +151,55 @@
 	// Check for trigger characters
 	function checkTrigger() {
 		const selection = window.getSelection();
-		if (!selection || !selection.rangeCount) return;
+		if (!selection || !selection.rangeCount) {
+			// No selection, close popover if open
+			if (popoverOpen) {
+				popoverOpen = false;
+				triggerInfo = null;
+			}
+			return;
+		}
 		
 		const range = selection.getRangeAt(0);
-		if (!range.collapsed) return;
+		if (!range.collapsed) {
+			// Selection is not collapsed, close popover
+			if (popoverOpen) {
+				popoverOpen = false;
+				triggerInfo = null;
+			}
+			return;
+		}
 		
 		const node = range.startContainer;
-		if (node.nodeType !== Node.TEXT_NODE) return;
+		if (node.nodeType !== Node.TEXT_NODE) {
+			// Not in a text node, close popover if open
+			if (popoverOpen) {
+				popoverOpen = false;
+				triggerInfo = null;
+			}
+			return;
+		}
 		
 		const textNode = node as Text;
 		const text = textNode.textContent || '';
 		const offset = range.startOffset;
 		
-		// Check for { or /
+		// If popover is open, check if trigger character still exists
+		if (popoverOpen && triggerInfo) {
+			// Check if we're still in the same context (trigger char exists before cursor)
+			const charBeforeCursor = offset >= 1 ? text.charAt(offset - 1) : '';
+			const isTriggerChar = charBeforeCursor === '{' || charBeforeCursor === '/';
+			
+			// Also check if the node is still the same or cursor moved
+			if (!isTriggerChar) {
+				// Trigger character was deleted or cursor moved away
+				popoverOpen = false;
+				triggerInfo = null;
+				return;
+			}
+		}
+		
+		// Check for { or / to open popover
 		if (offset >= 1 && text.charAt(offset - 1) === '{') {
 			triggerInfo = { node: textNode, startOffset: offset - 1, endOffset: offset };
 			showPopover(range);
@@ -252,15 +297,27 @@
 	// Handle blur
 	function handleBlur(e: FocusEvent) {
 		const relatedTarget = e.relatedTarget as HTMLElement | null;
-		if (relatedTarget && popoverRef?.contains(relatedTarget)) {
+		
+		// If clicking inside popover, don't close it
+		if (popoverRef && (relatedTarget === popoverRef || popoverRef.contains(relatedTarget))) {
 			return;
 		}
 		
+		// Close popover when focus leaves editor (unless clicking popover)
 		setTimeout(() => {
-			if (!popoverOpen) {
-				syncToValue();
+			// Check if focus is now inside popover
+			const activeElement = document.activeElement;
+			if (popoverRef && (activeElement === popoverRef || popoverRef.contains(activeElement))) {
+				return;
 			}
-		}, 150);
+			
+			// Close popover if open
+			if (popoverOpen) {
+				popoverOpen = false;
+				triggerInfo = null;
+			}
+			syncToValue();
+		}, 100);
 	}
 
 	// Close popover when clicking outside
@@ -303,13 +360,13 @@
 	});
 </script>
 
-<div class="variable-tag-editor {className}">
+<div class="variable-tag-editor {className}" class:relative={inDialog}>
 	<!-- Editor - textarea style -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		bind:this={editorRef}
-		class="editor w-full p-2 text-sm border border-input rounded-md bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 overflow-auto whitespace-pre-wrap break-words"
-		style="min-height: {rows * 1.5 + 1}rem;"
+		class="editor w-full p-2 text-sm border border-input rounded-md bg-background resize-none focus:outline-none focus-visible:ring-1 focus-visible:ring-ring overflow-auto whitespace-pre-wrap break-words"
+		style="min-height: {rows * 1.5 + 1}rem;{maxHeight ? ` max-height: ${maxHeight};` : ''}"
 		class:opacity-50={disabled}
 		class:pointer-events-none={disabled}
 		contenteditable={!disabled}
@@ -322,7 +379,7 @@
 		onfocusout={handleBlur}
 	></div>
 
-	<!-- Variable Selector Popover - Portal to body -->
+	<!-- Variable Selector Popover -->
 	{#if popoverOpen}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -330,13 +387,14 @@
 			use:portal
 			bind:this={popoverRef}
 			class="fixed bg-popover border border-border rounded-lg shadow-lg w-72"
-			style="top: {popoverPosition.top}px; left: {popoverPosition.left}px; z-index: 9999;"
+			style="top: {popoverPosition.top}px; left: {popoverPosition.left}px; z-index: {inDialog ? 999999 : 99999};"
 			onclick={(e) => e.stopPropagation()}
-			onmousedown={(e) => e.preventDefault()}
+			onmousedown={(e) => e.stopPropagation()}
 		>
 			<VariableSelectorList
 				onSelect={handleVariableSelect}
 				{filterTypes}
+				{currentNodeId}
 			/>
 		</div>
 	{/if}

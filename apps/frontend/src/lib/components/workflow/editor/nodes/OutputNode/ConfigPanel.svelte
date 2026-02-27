@@ -20,6 +20,11 @@
 
 	let variables = $derived(currentData?.variables ?? []);
 
+	// 检查变量名是否为空（直接显示错误，不需要等待失焦）
+	function isNameEmpty(name: string): boolean {
+		return !name || name.trim() === '';
+	}
+
 	function updateField(field: string, value: unknown) {
 		workflowState.updateNode(nodeId, { [field]: value });
 	}
@@ -61,28 +66,35 @@
 
 	<div class="space-y-2">
 		{#each variables as variable (variable.id)}
-			<div class="flex items-center gap-2">
-				<Input
-					value={variable.name}
-					oninput={(e) => updateVariable(variable.id, 'name', (e.target as HTMLInputElement).value)}
-					placeholder="变量名"
-					class="flex-1"
-				/>
-				<div class="flex-1">
-					<VariableSelect
-						value={variable.value}
-						onValueChange={(v: string | undefined) => updateVariable(variable.id, 'value', v ?? '')}
-						placeholder="设置变量值"
+			{@const nameError = isNameEmpty(variable.name)}
+			<div class="space-y-1">
+				<div class="flex items-center gap-2">
+					<Input
+						value={variable.name}
+						oninput={(e) => updateVariable(variable.id, 'name', (e.target as HTMLInputElement).value)}
+						placeholder="变量名 *"
+						class="flex-1 {nameError ? 'border-destructive focus-visible:ring-destructive' : ''}"
 					/>
+					<div class="flex-1">
+						<VariableSelect
+							value={variable.value}
+							onValueChange={(v: string | undefined) => updateVariable(variable.id, 'value', v ?? '')}
+							placeholder="设置变量值"
+							currentNodeId={nodeId}
+						/>
+					</div>
+					<Button
+						variant="ghost"
+						size="icon"
+						class="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+						onclick={() => removeVariable(variable.id)}
+					>
+						<Icon icon="mdi:delete-outline" class="w-4 h-4" />
+					</Button>
 				</div>
-				<Button
-					variant="ghost"
-					size="icon"
-					class="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
-					onclick={() => removeVariable(variable.id)}
-				>
-					<Icon icon="mdi:delete-outline" class="w-4 h-4" />
-				</Button>
+				{#if nameError}
+					<p class="text-xs text-destructive pl-1">变量名不能为空</p>
+				{/if}
 			</div>
 		{:else}
 			<div class="text-sm text-muted-foreground py-4 text-center border border-dashed rounded-md">

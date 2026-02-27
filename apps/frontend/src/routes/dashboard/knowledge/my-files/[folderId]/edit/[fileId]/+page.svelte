@@ -323,7 +323,7 @@
     {/if}
 
     <!-- Content area -->
-    <div class="flex-1 overflow-auto p-4">
+    <div class="flex-1 p-4">
       {#if fileType === 'text'}
         {#if isReadonly}
           <pre class="w-full h-full p-4 bg-muted rounded-md overflow-auto whitespace-pre-wrap font-mono text-sm">{content}</pre>

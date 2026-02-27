@@ -10,7 +10,7 @@
 
 import { Elysia, t } from 'elysia';
 import { stream, stepCountIs, type UIMessage, type ProviderType } from '@qiyu-allinai/ai';
-import { agentMessage, agentSession } from '@qiyu-allinai/db';
+import { agentMessage, agentSession, user } from '@qiyu-allinai/db';
 import db from '@qiyu-allinai/db/connect';
 import { eq, asc, gte, and, desc, sql } from 'drizzle-orm';
 import type { ActionContext } from '@qiyu-allinai/actions';
@@ -54,6 +54,8 @@ const chatRequestSchema = t.Object({
   toolChoice: t.Optional(t.Union([t.Literal('auto'), t.Literal('none'), t.Literal('required')])),
   /** 最大步数 */
   maxSteps: t.Optional(t.Number()),
+  /** MCP 服务器 ID 列表（可选，用于加载额外的工具） */
+  mcpServerIds: t.Optional(t.Array(t.String({ format: 'uuid' }))),
 });
 
 /**
@@ -165,7 +167,7 @@ export const aiPlugin = new Elysia({ name: 'plugin/ai' })
   .use(jwtPlugin)
   .post('/api/ai/chat', async (ctx) => {
     const { body, bearer, jwt } = ctx as typeof ctx & JwtContext & BearerContext;
-    const { modelId, agentId, sessionId, rewriteFromMsgSeq, messages, system, tools: clientTools, toolChoice, maxSteps } = body;
+    const { modelId, agentId, sessionId, rewriteFromMsgSeq, messages, system, tools: clientTools, toolChoice, maxSteps, mcpServerIds } = body;
 
     // 构建 ActionContext
     const actionContext: ActionContext = {
@@ -178,8 +180,19 @@ export const aiPlugin = new Elysia({ name: 'plugin/ai' })
     if (bearer) {
       const payload = await jwt.verify(bearer);
       if (payload && typeof payload === 'object' && 'sub' in payload) {
-        actionContext.currentUserId = payload.sub as string;
-        actionContext.currentUserName = (payload as Record<string, unknown>).name as string || '';
+        const userId = payload.sub as string;
+        actionContext.currentUserId = userId;
+        
+        // 从数据库查询用户名（与 actions plugin 保持一致）
+        const [userResult] = await db
+          .select({ name: user.name, loginName: user.loginName })
+          .from(user)
+          .where(eq(user.id, userId))
+          .limit(1);
+        
+        if (userResult) {
+          actionContext.currentUserName = userResult.name || userResult.loginName;
+        }
       }
     }
 
@@ -202,11 +215,12 @@ export const aiPlugin = new Elysia({ name: 'plugin/ai' })
 
     // Agent 模式
     if (agentId) {
-      const config = await getAgentConfig(agentId, actionContext);
+      const config = await getAgentConfig(agentId, actionContext, mcpServerIds);
       const mergedTools = {
         ...config.tools,
         ...convertClientTools(clientTools as Record<string, ClientToolDefinition>),
       };
+      console.log(JSON.stringify(mergedTools,null,2))
 
       const result = await stream({
         provider: {

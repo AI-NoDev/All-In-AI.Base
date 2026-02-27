@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
 	import { workflowState, START_NODE_ID } from '$lib/components/workflow/editor/contexts/index';
 	import { type InputField, type StartNodeData } from '../../nodes/StartNode/types';
-	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, VARIABLE_TYPE_LABELS, type Variable, type VariableGroup } from './types';
+	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, VARIABLE_TYPE_LABELS, createInputVariable, type Variable, type VariableGroup } from './types';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import * as Popover from '$lib/components/ui/popover';
@@ -38,8 +38,8 @@
 	let open = $state(false);
 	let searchQuery = $state('');
 
-	// 从开始节点获取用户输入字段
-	let userInputVariables = $derived.by(() => {
+	// 从开始节点获取流程输入变量（使用 input.xxx 格式）
+	let flowInputVariables = $derived.by(() => {
 		const startNode = workflowState.getNode(START_NODE_ID);
 		if (!startNode) return [];
 		
@@ -48,22 +48,24 @@
 		
 		return inputs
 			.filter((field: InputField) => !field.hidden)
-			.map((field: InputField): Variable => ({
-				path: `start.${field.variable}`,
-				label: field.label,
-				type: field.type,
-				description: field.description ?? field.placeholder,
-			}));
+			.map((field: InputField): Variable => 
+				createInputVariable(
+					field.variable,
+					field.label,
+					field.type,
+					field.description ?? field.placeholder
+				)
+			);
 	});
 
 	// 构建变量分组
 	let variableGroups = $derived.by((): VariableGroup[] => {
 		const groups: VariableGroup[] = [
 			{
-				id: 'user_input',
-				label: '用户输入',
-				icon: 'mdi:form-textbox',
-				variables: userInputVariables,
+				id: 'flow_input',
+				label: '流程输入',
+				icon: 'mdi:import',
+				variables: flowInputVariables,
 			},
 			{
 				id: 'env',

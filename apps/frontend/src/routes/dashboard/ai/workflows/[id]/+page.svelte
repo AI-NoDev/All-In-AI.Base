@@ -45,6 +45,7 @@
   import { Label } from '$lib/components/ui/label';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as Select from '$lib/components/ui/select';
+  import * as Tooltip from '$lib/components/ui/tooltip';
   import { toast } from 'svelte-sonner';
   import { WorkflowEditor } from '$lib/components/workflow';
   import { IconPicker } from '$lib/components/common';
@@ -91,11 +92,16 @@
 
   // 注册 restore 回调
   restoreCallback = (value) => {
-    if (value.workflow) {
+    // 只有当快照的 workflow ID 与当前路由 ID 匹配时才恢复
+    if (value.workflow && value.workflow.id === workflowId) {
       workflow = value.workflow;
       isDirty = value.isDirty;
       snapshotRestored = true;
       loading = false;
+    } else {
+      // ID 不匹配，清空快照状态，重新加载
+      pageState = { workflow: null, isDirty: false };
+      snapshotRestored = false;
     }
   };
 
@@ -110,6 +116,14 @@
   });
 
   onMount(() => {
+    // 检查快照的 workflow ID 是否与当前路由 ID 匹配
+    if (snapshotRestored && pageState.workflow?.id !== workflowId) {
+      // ID 不匹配，需要重新加载
+      snapshotRestored = false;
+      workflow = null;
+      pageState = { workflow: null, isDirty: false };
+    }
+    
     // 只有没有从快照恢复时才加载数据
     if (!snapshotRestored && workflowId) {
       loadWorkflow();
@@ -234,6 +248,16 @@
           <Icon icon={workflow.icon} class="size-5" />
         {/if}
         <h1 class="text-lg font-semibold">{workflow.name}</h1>
+        {#if workflow.description}
+          <Tooltip.Root>
+            <Tooltip.Trigger>
+              <Icon icon="mdi:information-outline" class="size-4 text-muted-foreground cursor-help" />
+            </Tooltip.Trigger>
+            <Tooltip.Content side="bottom" class="max-w-xs">
+              <p class="text-sm">{workflow.description}</p>
+            </Tooltip.Content>
+          </Tooltip.Root>
+        {/if}
       </div>
     {:else}
       <h1 class="text-lg font-semibold">{t('page.ai.workflow_editTitle')}</h1>

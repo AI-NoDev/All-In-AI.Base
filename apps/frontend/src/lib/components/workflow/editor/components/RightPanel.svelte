@@ -1,7 +1,9 @@
 ﻿<script lang="ts">
-	import { workflowState, configPanelRegistry, utilityPanelState } from '$lib/components/workflow/editor/contexts/index';
+	import { goto } from '$app/navigation';
+	import { workflowState, configPanelRegistry, utilityPanelState, runningState } from '$lib/components/workflow/editor/contexts/index';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
+	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as Card from '$lib/components/ui/card';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Icon from '@iconify/svelte';
@@ -99,12 +101,29 @@
 		workflowState.updateNode(selectedNode.id, { desc: descValue.trim() || undefined });
 	}
 
-	function handleRun() {
-		console.log('Run node:', selectedNode?.id);
+	// 是否正在运行
+	let isRunning = $derived(runningState.isRunning);
+
+	async function handleRun() {
+		if (!selectedNode || isRunning) return;
+		
+		try {
+			// 清除之前的运行状态
+			runningState.clearAllRunStatus();
+			runningState.startRun(true);
+			await runningState.runNode(selectedNode.id, selectedNode.type ?? 'unknown', selectedNode.data);
+		} catch (error) {
+			console.error('Node run failed:', error);
+		} finally {
+			runningState.endRun();
+		}
 	}
 
 	function handleViewDocs() {
-		console.log('View docs for:', selectedNode?.type);
+		if (!selectedNode?.type) return;
+		// 跳转到文档页面：/dashboard/docs/workflow/nodes/{nodeType}
+		const nodeType = selectedNode.type;
+		goto(`/dashboard/docs/workflow/nodes/${nodeType}`);
 	}
 
 	function handleDuplicate() {
@@ -115,6 +134,13 @@
 		if (!selectedNode) return;
 		workflowState.removeNode(selectedNode.id);
 		configPanelRegistry.closePanel();
+	}
+
+	function handleSelectNode(nodeId: string) {
+		// 选中节点并打开配置面板
+		if (nodeId) {
+			configPanelRegistry.selectNode(nodeId);
+		}
 	}
 
 </script>
@@ -149,7 +175,7 @@
 						<Icon icon={nodeConfig.icon} width="18" height="18" />
 					</div>
 
-					<!-- 节点名称 -->
+					<!-- 节点名称和 ID -->
 					<div class="flex-1 min-w-0">
 						<input
 							type="text"
@@ -159,6 +185,7 @@
 							class="w-full h-5 text-sm font-semibold bg-transparent border-0 p-0 outline-none text-foreground placeholder:text-muted-foreground focus:shadow-[inset_0_-1px_0_0_hsl(var(--primary))]"
 							placeholder="节点名称"
 						/>
+						<span class="text-[10px] text-muted-foreground font-mono">{selectedNode.id}</span>
 					</div>
 
 					<!-- 分隔线 -->
@@ -213,8 +240,10 @@
 
 			<Separator />
 
-			<Card.Content class="flex-1 overflow-auto pt-4">
-				<PanelComponent nodeId={selectedNode.id} data={selectedNode.data} />
+			<Card.Content class="flex-1 min-h-0 pt-0 px-0 pb-0">
+				<ScrollArea class="h-full px-6 py-4">
+					<PanelComponent nodeId={selectedNode.id} data={selectedNode.data} />
+				</ScrollArea>
 			</Card.Content>
 		</Card.Root>
 		{/if}
@@ -222,7 +251,7 @@
 		<!-- 工具面板（右侧） -->
 		{#if isUtilityPanelOpen}
 			<div class="pointer-events-auto h-full" style="width: {PANEL_WIDTH}px">
-				<UtilityPanelContainer />
+				<UtilityPanelContainer onSelectNode={handleSelectNode} />
 			</div>
 		{/if}
 	</div>

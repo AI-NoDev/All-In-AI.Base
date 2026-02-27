@@ -3,7 +3,7 @@
  * 用于管理环境变量、系统变量等面板的显示状态
  */
 
-export type UtilityPanelType = 'variables' | 'environment' | 'system' | null;
+export type UtilityPanelType = 'variables' | 'environment' | 'system' | 'issues' | null;
 
 function createUtilityPanelState() {
 	let activePanel = $state<UtilityPanelType>(null);

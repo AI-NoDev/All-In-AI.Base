@@ -30,10 +30,7 @@ export const rawContentOutputSchema = t.Object({
   mimeType: t.Union([t.String(), t.Null()], { description: 'MIME 类型' }),
 });
 
-// ============ 请求体 Schemas ============
-export const saveTextBodySchema = t.Object({
-  content: t.String({ description: '要保存的文本内容' }),
-});
+
 
 // ============ 导出节点 Schema ============
 export { nodeSchemas };

@@ -7,9 +7,12 @@
 	import { authStore } from '$lib/stores/auth.svelte';
 
 	interface ModelConfig {
-		provider: string;
-		model: string;
-		displayName?: string;
+		id: string;          // 模型 UUID
+		provider: string;    // 提供商 UUID
+		model: string;       // 模型标识 (如 deepseek-chat)
+		displayName?: string; // 显示名称
+		supportImageInput?: boolean; // 是否支持图片输入
+		supportVideoInput?: boolean; // 是否支持视频输入
 	}
 
 	interface AIModel {
@@ -17,7 +20,14 @@
 		name: string;
 		modelId: string;
 		providerId: string;
-		providerName?: string;
+		status: string;
+		supportImageInput: boolean;
+		supportVideoInput: boolean;
+	}
+
+	interface AIProvider {
+		id: string;
+		name: string;
 		status: string;
 	}
 
@@ -38,19 +48,27 @@
 	}: Props = $props();
 
 	let models = $state<AIModel[]>([]);
+	let providers = $state<AIProvider[]>([]);
+	let providerMap = $derived.by(() => {
+		const map: Record<string, string> = {};
+		for (const p of providers) {
+			map[p.id] = p.name;
+		}
+		return map;
+	});
 	let loading = $state(true);
 	let searching = $state(false);
 	let searchQuery = $state('');
 	let open = $state(false);
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-	// 按 provider 分组
+	// 按 provider 分组，使用 provider 名称
 	let groupedModels = $derived.by(() => {
 		const groups: Record<string, AIModel[]> = {};
 		for (const model of models) {
-			const provider = model.providerName ?? model.providerId;
-			if (!groups[provider]) groups[provider] = [];
-			groups[provider].push(model);
+			const providerName = providerMap[model.providerId] ?? model.providerId;
+			if (!groups[providerName]) groups[providerName] = [];
+			groups[providerName].push(model);
 		}
 		return groups;
 	});
@@ -58,9 +76,25 @@
 	// 当前选中的显示名称
 	let selectedDisplay = $derived.by(() => {
 		if (!value) return null;
-		const found = models.find(m => m.providerId === value.provider && m.modelId === value.model);
+		const found = models.find(m => m.id === value.id);
 		return found?.name ?? value.displayName ?? value.model;
 	});
+
+	async function loadProviders() {
+		try {
+			const api = authStore.createApi(true);
+			const res = await api.ai.postApiAiProviderQuery({
+				filter: { status: '0' },
+				limit: 100,
+				offset: 0
+			});
+			if (res.data?.data) {
+				providers = res.data.data as AIProvider[];
+			}
+		} catch (err) {
+			console.error('Failed to load providers:', err);
+		}
+	}
 
 	async function loadModels(keyword?: string) {
 		if (keyword) {
@@ -89,6 +123,12 @@
 		}
 	}
 
+	async function loadData() {
+		loading = true;
+		await Promise.all([loadProviders(), loadModels()]);
+		loading = false;
+	}
+
 	// 防抖搜索
 	function handleSearchInput(e: Event) {
 		const target = e.target as HTMLInputElement;
@@ -107,9 +147,12 @@
 
 	function handleSelect(model: AIModel) {
 		onValueChange({
+			id: model.id,
 			provider: model.providerId,
 			model: model.modelId,
-			displayName: model.name
+			displayName: model.name,
+			supportImageInput: model.supportImageInput,
+			supportVideoInput: model.supportVideoInput
 		});
 		open = false;
 		searchQuery = '';
@@ -123,12 +166,12 @@
 	$effect(() => {
 		if (open) {
 			searchQuery = '';
-			loadModels();
+			loadData();
 		}
 	});
 
 	onMount(() => {
-		loadModels();
+		loadData();
 		return () => {
 			if (debounceTimer) clearTimeout(debounceTimer);
 		};
@@ -216,12 +259,12 @@
 							{#each providerModels as model (model.id)}
 								<button
 									type="button"
-									class="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded hover:bg-muted transition-colors text-left {value?.provider === model.providerId && value?.model === model.modelId ? 'bg-muted' : ''}"
+									class="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded hover:bg-muted transition-colors text-left {value?.id === model.id ? 'bg-muted' : ''}"
 									onclick={() => handleSelect(model)}
 								>
 									<Icon icon="mdi:robot" class="w-4 h-4 text-muted-foreground shrink-0" />
 									<span class="truncate">{model.name}</span>
-									{#if value?.provider === model.providerId && value?.model === model.modelId}
+									{#if value?.id === model.id}
 										<Icon icon="mdi:check" class="w-4 h-4 text-primary ml-auto shrink-0" />
 									{/if}
 								</button>

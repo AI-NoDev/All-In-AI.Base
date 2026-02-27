@@ -1,7 +1,9 @@
 ﻿<script lang="ts">
-	import type { LLMNodeData, ExceptionHandling as ExceptionHandlingType, ModelConfig } from './types';
-	import { createRootSchema, type RootSchema } from './schema-types';
+	import type { LLMNodeData, ExceptionHandling as ExceptionHandlingType, ModelConfig, PromptMessage, NodeOutputVariable } from './types';
+	import { LLM_DEFAULT_OUTPUTS, LLM_ERROR_OUTPUTS } from './types';
+	import { createRootSchema, type RootSchema, type Field } from './schema-types';
 	import { workflowState } from '$lib/components/workflow/editor/contexts/index';
+	import type { VariableType } from '$lib/components/workflow/types/workflow';
 	import { SYSTEM_VARIABLES, DEFAULT_ENV_VARIABLES, type Variable } from '../../components/VariableSelector/index';
 	import { type InputField, type StartNodeData } from '../../nodes/StartNode/types';
 	import { START_NODE_ID } from '$lib/components/workflow/editor/contexts/index';
@@ -19,6 +21,7 @@
 		RetrySettings,
 		ExceptionHandling,
 		SchemaEditorDialog,
+		PromptMessages,
 	} from './components/index';
 
 	interface Props {
@@ -50,6 +53,40 @@
 	let exceptionHandling = $derived(currentData?.exceptionHandling ?? 'none');
 	let defaultValue = $derived(currentData?.defaultValue ?? '');
 	let runData = $derived<NodeRunData | undefined>(currentData?._run as NodeRunData | undefined);
+	
+	// 模型是否支持视觉（图片/视频输入）
+	let supportsVision = $derived(modelConfig?.supportImageInput || modelConfig?.supportVideoInput || false);
+	
+	// 提示词消息（兼容旧数据）
+	let promptMessages = $derived.by((): PromptMessage[] => {
+		if (currentData?.promptMessages && currentData.promptMessages.length > 0) {
+			return currentData.promptMessages;
+		}
+		// 兼容旧数据：从 systemPrompt 和 userPromptTemplate 迁移
+		const messages: PromptMessage[] = [];
+		if (currentData?.systemPrompt || currentData?.userPromptTemplate) {
+			messages.push({
+				id: crypto.randomUUID(),
+				role: 'system',
+				content: currentData?.systemPrompt ?? ''
+			});
+			if (currentData?.userPromptTemplate) {
+				messages.push({
+					id: crypto.randomUUID(),
+					role: 'user',
+					content: currentData.userPromptTemplate
+				});
+			}
+		} else {
+			// 默认添加一个空的 system 消息
+			messages.push({
+				id: crypto.randomUUID(),
+				role: 'system',
+				content: ''
+			});
+		}
+		return messages;
+	});
 
 	// 上下文变量路径列表
 	let contextPaths = $derived(context.map(c => c.path));
@@ -92,13 +129,7 @@
 		workflowState.updateNode(nodeId, { [field]: value });
 	}
 
-	function handleModelChange(value: string) {
-		const [provider, model] = value.split(':');
-		const config: ModelConfig = {
-			provider,
-			model,
-			displayName: model,
-		};
+	function handleModelChange(config: ModelConfig | undefined) {
 		updateField('modelConfig', config);
 	}
 
@@ -124,6 +155,79 @@
 	function handleSchemaChange(schema: RootSchema) {
 		updateField('outputSchema', schema);
 	}
+
+	function handlePromptMessagesChange(messages: PromptMessage[]) {
+		updateField('promptMessages', messages);
+		// 清除旧字段
+		if (currentData?.systemPrompt !== undefined) {
+			workflowState.updateNode(nodeId, { systemPrompt: undefined });
+		}
+		if (currentData?.userPromptTemplate !== undefined) {
+			workflowState.updateNode(nodeId, { userPromptTemplate: undefined });
+		}
+	}
+
+	// 将 schema field type 转换为 VariableType
+	function schemaTypeToVariableType(type: string): VariableType {
+		switch (type) {
+			case 'string': return 'string';
+			case 'number': return 'number';
+			case 'boolean': return 'boolean';
+			case 'object': return 'object';
+			case 'array': return 'array-object';
+			default: return 'string';
+		}
+	}
+
+	// 从 outputSchema 生成结构化输出变量
+	function getStructuredOutputVariables(schema: RootSchema): NodeOutputVariable[] {
+		if (!schema.fields || schema.fields.length === 0) return [];
+		
+		return schema.fields.map((field: Field) => ({
+			path: `structured_output.${field.name}`,
+			label: field.name,
+			type: schemaTypeToVariableType(field.type),
+			description: field.description || `结构化输出字段: ${field.name}`,
+		}));
+	}
+
+	// 计算当前应该有的输出变量
+	let computedOutputs = $derived.by((): NodeOutputVariable[] => {
+		const outputs = [...LLM_DEFAULT_OUTPUTS];
+		
+		// 如果启用了结构化输出，添加结构化输出变量
+		if (structuredOutput && outputSchema.fields.length > 0) {
+			outputs.push(...getStructuredOutputVariables(outputSchema));
+		}
+		
+		return outputs;
+	});
+
+	// 当输出变量变化时，更新节点数据
+	$effect(() => {
+		const currentOutputs = currentData?.outputs;
+		const newOutputs = computedOutputs;
+		
+		// 比较是否需要更新
+		const currentPaths = currentOutputs?.map(o => o.path).sort().join(',') ?? '';
+		const newPaths = newOutputs.map(o => o.path).sort().join(',');
+		
+		if (currentPaths !== newPaths) {
+			workflowState.updateNode(nodeId, { outputs: newOutputs });
+		}
+	});
+
+	// 当异常处理方式变化时，更新错误输出变量
+	$effect(() => {
+		const currentErrorOutputs = currentData?.errorOutputs;
+		const shouldHaveErrorOutputs = exceptionHandling === 'fail_branch';
+		
+		if (shouldHaveErrorOutputs && (!currentErrorOutputs || currentErrorOutputs.length === 0)) {
+			workflowState.updateNode(nodeId, { errorOutputs: LLM_ERROR_OUTPUTS });
+		} else if (!shouldHaveErrorOutputs && currentErrorOutputs && currentErrorOutputs.length > 0) {
+			workflowState.updateNode(nodeId, { errorOutputs: [] });
+		}
+	});
 </script>
 
 <Tooltip.Provider>
@@ -156,10 +260,18 @@
 					onRemoveVariable={removeContextVariable}
 				/>
 
+				<!-- 提示词消息 -->
+				<PromptMessages 
+					messages={promptMessages}
+					onMessagesChange={handlePromptMessagesChange}
+					{nodeId}
+				/>
+
 				<!-- 视觉 & 推理标签 -->
 				<ToggleSettings 
 					{visionEnabled}
 					{reasoningTagsEnabled}
+					{supportsVision}
 					onVisionChange={(v) => updateField('visionEnabled', v)}
 					onReasoningTagsChange={(v) => updateField('reasoningTagsEnabled', v)}
 				/>

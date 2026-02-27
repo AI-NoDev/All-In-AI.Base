@@ -115,6 +115,13 @@
 			default: return 'text-muted-foreground';
 		}
 	}
+
+	// 渲染带变量标签的 JSON（用于输入/输出显示）
+	function renderJsonWithVariables(data: unknown): string {
+		const json = JSON.stringify(data, null, 2);
+		// 渲染变量标签 {{#xxx.xxx#}}
+		return json.replace(/\{\{#([^#]+)#\}\}/g, '<span class="inline-flex items-center gap-0.5 px-1 py-0 mx-0.5 rounded bg-primary/15 text-primary text-[10px] font-mono whitespace-nowrap align-middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5 inline-block"><path d="M7 4V2H17V4H20.0066C20.5552 4 21 4.44495 21 4.9934V21.0066C21 21.5552 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5551 3 21.0066V4.9934C3 4.44476 3.44495 4 3.9934 4H7ZM7 6H5V20H19V6H17V8H7V6ZM9 4V6H15V4H9Z"/></svg>$1</span>');
+	}
 </script>
 
 <Tooltip.Provider>
@@ -398,7 +405,7 @@
 								输入
 							</div>
 							<div class="p-2 bg-muted/30 rounded">
-								<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{JSON.stringify(lastRun.inputs, null, 2)}</pre>
+								<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{@html renderJsonWithVariables(lastRun.inputs)}</pre>
 							</div>
 						</div>
 					{/if}
@@ -411,7 +418,7 @@
 								输出结果
 							</div>
 							<div class="p-2 bg-muted/30 rounded max-h-64 overflow-auto">
-								<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{JSON.stringify(lastRun.outputs, null, 2)}</pre>
+								<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{@html renderJsonWithVariables(lastRun.outputs)}</pre>
 							</div>
 						</div>
 					{/if}

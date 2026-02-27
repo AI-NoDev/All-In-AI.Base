@@ -6,17 +6,19 @@
 	interface Props {
 		visionEnabled: boolean;
 		reasoningTagsEnabled: boolean;
+		/** 模型是否支持图片/视频输入 */
+		supportsVision?: boolean;
 		onVisionChange: (value: boolean) => void;
 		onReasoningTagsChange: (value: boolean) => void;
 	}
 
-	let { visionEnabled, reasoningTagsEnabled, onVisionChange, onReasoningTagsChange }: Props = $props();
+	let { visionEnabled, reasoningTagsEnabled, supportsVision = false, onVisionChange, onReasoningTagsChange }: Props = $props();
 </script>
 
 <!-- 视觉 -->
 <div class="flex items-center justify-between">
 	<div class="flex items-center gap-1">
-		<span class="text-xs font-medium">视觉</span>
+		<span class="text-xs font-medium {!supportsVision ? 'text-muted-foreground' : ''}">视觉</span>
 		<Tooltip.Root>
 			<Tooltip.Trigger>
 				{#snippet child({ props })}
@@ -25,12 +27,19 @@
 					</button>
 				{/snippet}
 			</Tooltip.Trigger>
-			<Tooltip.Content>启用后可处理图像输入</Tooltip.Content>
+			<Tooltip.Content>
+				{#if supportsVision}
+					启用后可处理图像输入
+				{:else}
+					当前模型不支持图像/视频输入
+				{/if}
+			</Tooltip.Content>
 		</Tooltip.Root>
 	</div>
 	<Switch 
 		checked={visionEnabled}
 		onCheckedChange={onVisionChange}
+		disabled={!supportsVision}
 	/>
 </div>
 

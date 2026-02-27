@@ -108,6 +108,8 @@
 		if (!node) return;
 		
 		try {
+			// 清除之前的运行状态
+			runningState.clearAllRunStatus();
 			runningState.startRun(true);
 			await runningState.runNode(nodeId, node.type ?? 'unknown', node.data);
 		} catch (error) {

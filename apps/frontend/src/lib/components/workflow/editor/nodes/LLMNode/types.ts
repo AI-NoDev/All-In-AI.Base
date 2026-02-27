@@ -1,17 +1,24 @@
 ﻿import type { Node } from '@xyflow/svelte';
 import type { RootSchema } from './schema-types';
+import type { VariableType } from '$lib/components/workflow/types/workflow';
 
 /** 运行状态 */
 export type RunStatus = 'idle' | 'running' | 'success' | 'failed';
 
 /** 模型配置 */
 export interface ModelConfig {
-	/** 模型提供商 */
+	/** 模型 UUID */
+	id: string;
+	/** 模型提供商 UUID */
 	provider: string;
-	/** 模型名称 */
+	/** 模型标识 (如 deepseek-chat) */
 	model: string;
 	/** 模型显示名称 */
 	displayName?: string;
+	/** 是否支持图片输入 */
+	supportImageInput?: boolean;
+	/** 是否支持视频输入 */
+	supportVideoInput?: boolean;
 }
 
 /** 上下文变量引用 */
@@ -20,6 +27,18 @@ export interface ContextVariable {
 	path: string;
 	/** 变量显示名称 */
 	displayName?: string;
+}
+
+/** 节点输出变量定义 */
+export interface NodeOutputVariable {
+	/** 变量路径（相对于节点，如 text, usage.total_tokens） */
+	path: string;
+	/** 显示名称 */
+	label: string;
+	/** 数据类型 */
+	type: VariableType;
+	/** 描述 */
+	description?: string;
 }
 
 /** 内置输出变量 */
@@ -32,6 +51,18 @@ export interface BuiltinOutputVariable {
 	description: string;
 }
 
+/** LLM 节点默认输出变量 */
+export const LLM_DEFAULT_OUTPUTS: NodeOutputVariable[] = [
+	{ path: 'text', label: '生成内容', type: 'string', description: 'LLM 生成的文本内容' },
+	{ path: 'reasoning_content', label: '推理内容', type: 'string', description: '模型的推理过程（如果启用）' },
+	{ path: 'usage', label: '用量信息', type: 'object', description: '模型 token 用量统计' },
+];
+
+/** LLM 节点异常输出变量 */
+export const LLM_ERROR_OUTPUTS: NodeOutputVariable[] = [
+	{ path: 'error_message', label: '异常信息', type: 'string', description: '异常错误消息' },
+];
+
 /** 内置输出变量列表 */
 export const BUILTIN_OUTPUT_VARIABLES: BuiltinOutputVariable[] = [
 	{ name: 'text', type: 'string', description: '生成内容' },
@@ -41,6 +72,19 @@ export const BUILTIN_OUTPUT_VARIABLES: BuiltinOutputVariable[] = [
 
 /** 异常处理方式 */
 export type ExceptionHandling = 'none' | 'default_value' | 'fail_branch';
+
+/** 提示词消息角色 */
+export type PromptRole = 'system' | 'user' | 'assistant';
+
+/** 提示词消息 */
+export interface PromptMessage {
+	/** 消息ID */
+	id: string;
+	/** 角色 */
+	role: PromptRole;
+	/** 内容 */
+	content: string;
+}
 
 /** 运行结果数据 */
 export interface LLMRunResult {
@@ -78,6 +122,12 @@ export interface LLMNodeData extends Record<string, unknown> {
 	/** 上下文变量列表 */
 	context?: ContextVariable[];
 	
+	/** 输出变量定义（供后续节点引用） */
+	outputs?: NodeOutputVariable[];
+	
+	/** 异常输出变量定义（异常分支使用） */
+	errorOutputs?: NodeOutputVariable[];
+	
 	/** 是否启用视觉（图像输入） */
 	visionEnabled?: boolean;
 	
@@ -105,10 +155,13 @@ export interface LLMNodeData extends Record<string, unknown> {
 	/** 异常时的默认值 */
 	defaultValue?: string;
 	
-	/** 系统提示词 */
+	/** 提示词消息列表（第一个固定为 system，后续为 user/assistant） */
+	promptMessages?: PromptMessage[];
+	
+	/** @deprecated 使用 promptMessages 代替 */
 	systemPrompt?: string;
 	
-	/** 用户提示词模板 */
+	/** @deprecated 使用 promptMessages 代替 */
 	userPromptTemplate?: string;
 	
 	/** 温度 */

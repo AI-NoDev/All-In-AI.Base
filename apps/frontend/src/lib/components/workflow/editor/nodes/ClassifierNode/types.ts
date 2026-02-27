@@ -1,13 +1,32 @@
 import type { Node } from '@xyflow/svelte';
+import type { VariableType } from '$lib/components/workflow/types/workflow';
 
-/** 运行状态 */
-export type RunStatus = 'idle' | 'running' | 'success' | 'failed';
+/** 节点输出变量定义 */
+export interface NodeOutputVariable {
+	/** 变量路径（相对于节点，如 class_name, usage） */
+	path: string;
+	/** 显示名称 */
+	label: string;
+	/** 数据类型 */
+	type: VariableType;
+	/** 描述 */
+	description?: string;
+}
+
+/** 分类器节点默认输出变量 */
+export const CLASSIFIER_DEFAULT_OUTPUTS: NodeOutputVariable[] = [
+	{ path: 'target', label: '分类ID', type: 'string', description: '选中分类的 ID（用于条件分支）' },
+	{ path: 'class_name', label: '分类名称', type: 'string', description: '分类结果的名称' },
+	{ path: 'usage', label: '用量信息', type: 'object', description: '模型 token 用量统计' },
+];
 
 /** 模型配置 */
 export interface ModelConfig {
-	/** 模型提供商 */
+	/** 模型 UUID */
+	id: string;
+	/** 模型提供商 UUID */
 	provider: string;
-	/** 模型名称 */
+	/** 模型标识 (如 deepseek-chat) */
 	model: string;
 	/** 模型显示名称 */
 	displayName?: string;
@@ -29,25 +48,10 @@ export interface BuiltinOutputVariable {
 
 /** 内置输出变量列表 */
 export const BUILTIN_OUTPUT_VARIABLES: BuiltinOutputVariable[] = [
+	{ name: 'target', type: 'string', description: '分类 ID（用于条件分支）' },
 	{ name: 'class_name', type: 'string', description: '分类名称' },
 	{ name: 'usage', type: 'object', description: '模型用量信息' },
 ];
-
-/** 运行结果数据 */
-export interface ClassifierRunResult {
-	status: RunStatus;
-	startedAt?: string;
-	endedAt?: string;
-	duration?: number;
-	tokenUsage?: {
-		prompt: number;
-		completion: number;
-		total: number;
-	};
-	inputs?: Record<string, unknown>;
-	outputs?: Record<string, unknown>;
-	error?: string;
-}
 
 /** 问题分类器节点数据 */
 export interface ClassifierNodeData extends Record<string, unknown> {
@@ -69,9 +73,6 @@ export interface ClassifierNodeData extends Record<string, unknown> {
 	
 	/** 高级设置：指令/系统提示词 */
 	instruction?: string;
-	
-	/** 上次运行结果 */
-	lastRun?: ClassifierRunResult;
 }
 
 /** 问题分类器节点类型 */

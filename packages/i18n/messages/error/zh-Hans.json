@@ -54,6 +54,7 @@
   "knowledge_cannotMoveToDescendant": "不能移动到子文件夹",
   "knowledge_noStorageKey": "文件存储信息不存在",
   "knowledge_notTextFile": "不是文本文件",
+  "knowledge_nameConflict": "目标位置已存在同名文件或文件夹",
   "files_permissionDenied": "没有文件访问权限",
   "upload_invalidImageType": "不支持的图片类型",
   "upload_fileTooLarge": "文件大小超出限制",

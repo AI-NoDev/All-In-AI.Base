@@ -1,13 +1,23 @@
 ﻿/**
  * 变量解析器 - 解析变量引用并获取值
+ * 
+ * 变量命名格式：
+ * - input.xxx: 流程输入变量（开始节点的用户输入）
+ * - sys.xxx: 系统变量
+ * - env.xxx: 环境变量
+ * - loop.xxx: 循环变量
+ * - {nodeId}.xxx: 节点输出变量
  */
 import type { ExecutionContext } from './types';
 
-/** 变量路径格式: nodeId.variableName 或 sys.variableName 或 env.variableName */
-const VARIABLE_PATH_REGEX = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_]+)$/;
+/** 变量路径格式: source.variableName（支持嵌套路径如 nodeId.usage.total） */
+const VARIABLE_PATH_REGEX = /^([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_.]+)$/;
 
-/** 模板变量格式: {{nodeId.variableName}} */
-const TEMPLATE_VARIABLE_REGEX = /\{\{([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_]+)\}\}/g;
+/** 
+ * 模板变量格式: {{source.variableName}} 或 {{#source.variableName#}}
+ * 注意：使用非全局正则表达式，在 replace 中会自动处理所有匹配
+ */
+const TEMPLATE_VARIABLE_REGEX = /\{\{#?([a-zA-Z0-9_-]+)\.([a-zA-Z0-9_.]+)#?\}\}/g;
 
 export class VariableResolver {
 	private context: ExecutionContext;
@@ -18,29 +28,35 @@ export class VariableResolver {
 
 	/**
 	 * 解析单个变量路径，返回值
-	 * @param path 变量路径，如 "start.input_1" 或 "sys.user_id" 或 "env.API_KEY"
+	 * @param path 变量路径，如 "input.query" 或 "sys.user_id" 或 "env.API_KEY" 或 "llm_1.text"
 	 */
 	resolve(path: string): unknown {
 		const match = path.match(VARIABLE_PATH_REGEX);
 		if (!match) {
+			console.warn('[VariableResolver] invalid path format:', path);
 			return undefined;
 		}
 
-		const [, source, name] = match;
+		const [, source, namePath] = match;
+
+		// 流程输入变量（开始节点的用户输入）
+		if (source === 'input') {
+			return this.getNestedValue(this.context.userInputs, namePath);
+		}
 
 		// 系统变量
 		if (source === 'sys') {
-			return this.context.systemVariables[name];
+			return this.getNestedValue(this.context.systemVariables, namePath);
 		}
 
 		// 环境变量
 		if (source === 'env') {
-			return this.context.environmentVariables[name];
+			return this.context.environmentVariables[namePath];
 		}
 
 		// 循环变量
 		if (source === 'loop' && this.context.loopContext) {
-			switch (name) {
+			switch (namePath) {
 				case 'index':
 					return this.context.loopContext.index;
 				case 'item':
@@ -52,28 +68,54 @@ export class VariableResolver {
 			}
 		}
 
-		// 开始节点的用户输入
+		// 兼容旧格式：start.xxx -> input.xxx
 		if (source === 'start') {
-			return this.context.userInputs[name];
+			return this.getNestedValue(this.context.userInputs, namePath);
 		}
 
 		// 其他节点的输出变量
 		const nodeOutputs = this.context.variables.get(source);
 		if (nodeOutputs) {
-			return nodeOutputs[name];
+			return this.getNestedValue(nodeOutputs, namePath);
 		}
 
 		return undefined;
 	}
 
 	/**
+	 * 获取嵌套对象的值
+	 * @param obj 对象
+	 * @param path 路径，如 "usage.total" 或 "text"
+	 */
+	private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+		const parts = path.split('.');
+		let current: unknown = obj;
+
+		for (const part of parts) {
+			if (current === null || current === undefined) {
+				return undefined;
+			}
+			if (typeof current !== 'object') {
+				return undefined;
+			}
+			current = (current as Record<string, unknown>)[part];
+		}
+
+		return current;
+	}
+
+	/**
 	 * 解析模板字符串中的所有变量引用
-	 * @param template 模板字符串，如 "Hello {{start.name}}, your id is {{sys.user_id}}"
+	 * @param template 模板字符串，如 "Hello {{input.name}}, your id is {{sys.user_id}}"
 	 */
 	resolveTemplate(template: string): string {
-		return template.replace(TEMPLATE_VARIABLE_REGEX, (match, source, name) => {
-			const value = this.resolve(`${source}.${name}`);
+		return template.replace(TEMPLATE_VARIABLE_REGEX, (match, source, namePath) => {
+			const fullPath = `${source}.${namePath}`;
+			const value = this.resolve(fullPath);
+			
 			if (value === undefined || value === null) {
+				// 变量未找到时返回空字符串
+				console.warn('[VariableResolver] variable not found:', fullPath);
 				return '';
 			}
 			if (typeof value === 'object') {

@@ -8,7 +8,7 @@
 	WorkflowMetadata,
 	BaseNodeData
 } from './workflow';
-import type { InputVariable } from '$lib/components/workflow/editor/contexts/workflow-state/types';
+import type { InputVariable, TestInputData } from '$lib/components/workflow/editor/contexts/workflow-state/types';
 
 /**
  * 工作流图数据结构 - 对应 Dify DSL 的顶级结构
@@ -39,6 +39,9 @@ export class WorkflowGraph<TNodeData extends BaseNodeData = BaseNodeData> {
 	/** 工作流特性配置 */
 	features: WorkflowFeatures;
 
+	/** 测试输入数据 */
+	test_inputs?: TestInputData;
+
 	constructor(options?: Partial<WorkflowGraphOptions<TNodeData>>) {
 		this.metadata = options?.metadata ?? { name: 'Untitled Workflow' };
 		this.nodes = options?.nodes ?? [];
@@ -48,6 +51,7 @@ export class WorkflowGraph<TNodeData extends BaseNodeData = BaseNodeData> {
 		this.environment_variables = options?.environment_variables ?? [];
 		this.conversation_variables = options?.conversation_variables ?? [];
 		this.features = options?.features ?? {};
+		this.test_inputs = options?.test_inputs;
 	}
 
 	// ============ 节点操作 ============
@@ -176,7 +180,8 @@ export class WorkflowGraph<TNodeData extends BaseNodeData = BaseNodeData> {
 			input_variables: this.input_variables,
 			environment_variables: this.environment_variables,
 			conversation_variables: this.conversation_variables,
-			features: this.features
+			features: this.features,
+			test_inputs: this.test_inputs
 		};
 	}
 
@@ -209,6 +214,7 @@ export interface WorkflowGraphOptions<TNodeData extends BaseNodeData = BaseNodeD
 	environment_variables: EnvironmentVariable[];
 	conversation_variables: ConversationVariable[];
 	features: WorkflowFeatures;
+	test_inputs?: TestInputData;
 }
 
 /**

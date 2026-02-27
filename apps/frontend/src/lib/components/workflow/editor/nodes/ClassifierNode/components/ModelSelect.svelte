@@ -4,20 +4,14 @@
 
 	interface Props {
 		modelConfig: ModelConfig | undefined;
-		onModelChange: (value: string) => void;
+		onModelChange: (config: ModelConfig | undefined) => void;
 	}
 
 	let { modelConfig, onModelChange }: Props = $props();
-
-	function handleModelChange(config: ModelConfig | undefined) {
-		if (config) {
-			onModelChange(`${config.provider}:${config.model}`);
-		}
-	}
 </script>
 
 <ModelSelector 
 	value={modelConfig}
-	onValueChange={handleModelChange}
+	onValueChange={onModelChange}
 	required
 />

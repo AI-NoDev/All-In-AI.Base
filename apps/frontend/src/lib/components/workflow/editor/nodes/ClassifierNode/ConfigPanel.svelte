@@ -1,7 +1,8 @@
 ﻿<script lang="ts">
-	import type { ClassifierNodeData, ClassifierOption } from './types';
+	import type { ClassifierNodeData, ClassifierOption, ModelConfig } from './types';
 	import { BUILTIN_OUTPUT_VARIABLES } from './types';
 	import { workflowState } from '$lib/components/workflow/editor/contexts/index';
+	import type { NodeRunData } from '$lib/components/workflow/types/index';
 	import { VariableSelect } from '../../components/VariableSelector/index';
 	import { VariableTagEditor } from '../../components/VariableTagEditor/index';
 	import { ModelSelector } from '../../components/selectors/index';
@@ -13,12 +14,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Icon from '@iconify/svelte';
 	import RunStatusBadge from '../../components/RunStatusBadge.svelte';
-
-	interface ModelConfig {
-		provider: string;
-		model: string;
-		displayName?: string;
-	}
 
 	interface Props {
 		nodeId: string;
@@ -43,7 +38,9 @@
 	let visionEnabled = $derived(currentData?.visionEnabled ?? false);
 	let options = $derived(currentData?.options ?? []);
 	let instruction = $derived(currentData?.instruction ?? '');
-	let lastRun = $derived(currentData?.lastRun);
+	
+	// 使用 _run 数据（由 workflow engine 更新）
+	let runData = $derived<NodeRunData | undefined>(currentData?._run as NodeRunData | undefined);
 
 	// 计算指令字符数
 	let instructionLength = $derived(instruction.length);
@@ -104,6 +101,31 @@
 	function handleInstructionChange(value: string) {
 		updateField('instruction', value);
 	}
+
+	// 格式化时间
+	function formatDuration(ms: number): string {
+		if (ms < 1000) return `${ms}ms`;
+		if (ms < 60000) return `${(ms / 1000).toFixed(2)}s`;
+		return `${(ms / 60000).toFixed(2)}min`;
+	}
+
+	function formatDateTime(timestamp: number): string {
+		const date = new Date(timestamp);
+		return date.toLocaleString('zh-CN', {
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+		});
+	}
+
+	// 渲染带变量标签的 JSON（用于输入/输出显示）
+	function renderJsonWithVariables(data: unknown): string {
+		const json = JSON.stringify(data, null, 2);
+		// 渲染变量标签 {{#xxx.xxx#}}
+		return json.replace(/\{\{#([^#]+)#\}\}/g, '<span class="inline-flex items-center gap-0.5 px-1 py-0 mx-0.5 rounded bg-primary/15 text-primary text-[10px] font-mono whitespace-nowrap align-middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5 inline-block"><path d="M7 4V2H17V4H20.0066C20.5552 4 21 4.44495 21 4.9934V21.0066C21 21.5552 20.5551 22 20.0066 22H3.9934C3.44476 22 3 21.5551 3 21.0066V4.9934C3 4.44476 3.44495 4 3.9934 4H7ZM7 6H5V20H19V6H17V8H7V6ZM9 4V6H15V4H9Z"/></svg>$1</span>');
+	}
 </script>
 
 <Tooltip.Provider>
@@ -112,9 +134,9 @@
 			<Tabs.Trigger value="settings">设置</Tabs.Trigger>
 			<Tabs.Trigger value="lastRun">
 				上次运行
-				{#if lastRun && lastRun.status !== 'idle'}
+				{#if runData && runData.status !== 'idle'}
 					<span class="ml-1.5">
-						<RunStatusBadge status={lastRun.status} size="sm" />
+						<RunStatusBadge status={runData.status} size="sm" />
 					</span>
 				{/if}
 			</Tabs.Trigger>
@@ -141,6 +163,7 @@
 						onValueChange={handleInputVariableChange}
 						placeholder="选择要分类的变量"
 						filterTypes={['string']}
+						currentNodeId={nodeId}
 					/>
 				</div>
 
@@ -331,65 +354,88 @@
 
 		<!-- 上次运行 Tab -->
 		<Tabs.Content value="lastRun" class="mt-0">
-			{#if lastRun && lastRun.status !== 'idle'}
-				<div class="space-y-4">
-					<div class="flex items-center justify-between">
-						<span class="text-xs font-medium">状态</span>
-						<RunStatusBadge status={lastRun.status} />
-					</div>
-
-					{#if lastRun.duration !== undefined}
-						<div class="flex items-center justify-between">
-							<span class="text-xs font-medium">耗时</span>
-							<span class="text-xs text-muted-foreground">{lastRun.duration}ms</span>
-						</div>
-					{/if}
-
-					{#if lastRun.tokenUsage}
-						<div class="space-y-2">
-							<span class="text-xs font-medium">Token 用量</span>
-							<div class="grid grid-cols-3 gap-2 text-xs">
-								<div class="p-2 bg-muted/50 rounded">
-									<div class="text-muted-foreground">输入</div>
-									<div class="font-medium">{lastRun.tokenUsage.prompt}</div>
-								</div>
-								<div class="p-2 bg-muted/50 rounded">
-									<div class="text-muted-foreground">输出</div>
-									<div class="font-medium">{lastRun.tokenUsage.completion}</div>
-								</div>
-								<div class="p-2 bg-muted/50 rounded">
-									<div class="text-muted-foreground">总计</div>
-									<div class="font-medium">{lastRun.tokenUsage.total}</div>
-								</div>
-							</div>
-						</div>
-					{/if}
-
-					{#if lastRun.outputs}
-						<div class="space-y-2">
-							<span class="text-xs font-medium">输出</span>
-							<div class="p-2 bg-muted/50 rounded text-xs font-mono">
-								{#if lastRun.outputs.class_name}
-									<div>class_name: {lastRun.outputs.class_name}</div>
-								{/if}
-							</div>
-						</div>
-					{/if}
-
-					{#if lastRun.error}
-						<div class="space-y-2">
-							<span class="text-xs font-medium text-destructive">错误</span>
-							<div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-xs text-destructive">
-								{lastRun.error}
-							</div>
-						</div>
-					{/if}
-				</div>
-			{:else}
-				<div class="flex flex-col items-center justify-center py-8 text-center">
-					<Icon icon="mdi:play-circle-outline" class="w-12 h-12 text-muted-foreground/50 mb-2" />
+			{#if !runData || runData.status === 'idle'}
+				<div class="py-12 text-center">
+					<Icon icon="mdi:play-circle-outline" class="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
 					<p class="text-sm text-muted-foreground">暂无运行记录</p>
 					<p class="text-xs text-muted-foreground mt-1">运行工作流后将在此显示结果</p>
+				</div>
+			{:else}
+				<div class="space-y-4">
+					<!-- 运行状态概览 -->
+					<div class="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+						<div class="flex items-center gap-3">
+							<RunStatusBadge status={runData.status} size="md" />
+							{#if runData.startTime}
+								<span class="text-xs text-muted-foreground">
+									{formatDateTime(runData.startTime)}
+								</span>
+							{/if}
+						</div>
+					</div>
+
+					<!-- 运行统计 -->
+					{#if runData.elapsed !== undefined || runData.tokens !== undefined}
+						<div class="grid grid-cols-2 gap-3">
+							{#if runData.elapsed !== undefined}
+								<div class="p-3 border border-border rounded-lg">
+									<div class="flex items-center gap-2 text-muted-foreground mb-1">
+										<Icon icon="mdi:timer-outline" class="w-4 h-4" />
+										<span class="text-xs">运行时间</span>
+									</div>
+									<span class="text-sm font-semibold">{formatDuration(runData.elapsed)}</span>
+								</div>
+							{/if}
+							{#if runData.tokens !== undefined}
+								<div class="p-3 border border-border rounded-lg">
+									<div class="flex items-center gap-2 text-muted-foreground mb-1">
+										<Icon icon="mdi:chip" class="w-4 h-4" />
+										<span class="text-xs">Token 消耗</span>
+									</div>
+									<span class="text-sm font-semibold">{runData.tokens.total.toLocaleString()}</span>
+								</div>
+							{/if}
+						</div>
+					{/if}
+
+					<!-- 输入 -->
+					{#if runData.inputs && Object.keys(runData.inputs).length > 0}
+						<div class="space-y-2">
+							<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+								<Icon icon="mdi:import" class="w-4 h-4" />
+								输入
+							</div>
+							<div class="p-2 bg-muted/30 rounded">
+								<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{@html renderJsonWithVariables(runData.inputs)}</pre>
+							</div>
+						</div>
+					{/if}
+
+					<!-- 输出结果 -->
+					{#if runData.outputs && Object.keys(runData.outputs).length > 0}
+						<div class="space-y-2">
+							<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+								<Icon icon="mdi:export" class="w-4 h-4" />
+								输出结果
+							</div>
+							<div class="p-2 bg-muted/30 rounded max-h-64 overflow-auto">
+								<pre class="text-xs text-foreground whitespace-pre-wrap break-all">{@html renderJsonWithVariables(runData.outputs)}</pre>
+							</div>
+						</div>
+					{/if}
+
+					<!-- 错误信息 -->
+					{#if runData.error}
+						<div class="space-y-2">
+							<div class="flex items-center gap-2 text-xs font-medium text-destructive">
+								<Icon icon="mdi:alert-circle" class="w-4 h-4" />
+								错误信息
+							</div>
+							<div class="p-2 bg-destructive/10 border border-destructive/20 rounded">
+								<pre class="text-xs text-destructive whitespace-pre-wrap break-all">{runData.error}</pre>
+							</div>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		</Tabs.Content>

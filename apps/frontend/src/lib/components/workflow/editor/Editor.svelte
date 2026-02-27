@@ -18,21 +18,20 @@
 	import TestRunDialog from './components/TestRunDialog.svelte';
 	import RunResultPanel from './components/RunResultPanel.svelte';
 	import type { NodeTemplate } from './components/NodePicker.svelte';
-	import type { Variable, WorkflowNode, WorkflowEdge } from '$lib/components/workflow/types/index';
+	import type { WorkflowNode, WorkflowEdge, BaseNodeData } from '$lib/components/workflow/types/index';
+	import type { InputField, StartNodeData } from './nodes/StartNode/types';
 	import type { WorkflowGraph } from '$lib/components/workflow/types/workflow-graph';
 	import { WorkflowEngine } from '$lib/components/workflow/engine/workflow-engine';
 	import { createDefaultExecutors } from '$lib/components/workflow/engine/executors/registry';
 	import type { ExecutorOptions } from '$lib/components/workflow/engine/executors/registry';
-	import type { ExecutionResult, ExecutionEvent } from '$lib/components/workflow/engine/types';
-	import type { LLMCallFunction } from '$lib/components/workflow/engine/executors/llm-executor';
-	import type { AgentCallFunction } from '$lib/components/workflow/engine/executors/agent-executor';
-	import type { KnowledgeRetrievalFunction } from '$lib/components/workflow/engine/executors/knowledge-executor';
+	import type { ExecutionResult, ExecutionEvent, ExecutionContext } from '$lib/components/workflow/engine/types';
+	import type { AgentCallFunction, KnowledgeRetrievalFunction } from '$lib/components/workflow/engine/executors/registry';
+	import { VariableResolver } from '$lib/components/workflow/engine/variable-resolver';
+	import { authStore } from '$lib/stores/auth.svelte';
 
 	interface Props {
 		/** 初始图数据 */
 		initialGraph?: WorkflowGraph | null;
-		/** LLM 调用函数 */
-		llmCall?: LLMCallFunction;
 		/** Agent 调用函数 */
 		agentCall?: AgentCallFunction;
 		/** 知识库检索函数 */
@@ -51,7 +50,6 @@
 
 	let { 
 		initialGraph,
-		llmCall, 
 		agentCall, 
 		knowledgeRetrieval,
 		onPublish,
@@ -131,6 +129,11 @@
 		if (initialGraph.metadata) {
 			workflowState.metadata = initialGraph.metadata;
 		}
+		
+		// 加载测试输入数据
+		if (initialGraph.test_inputs) {
+			workflowState.testInputs = initialGraph.test_inputs;
+		}
 	}
 	
 	// 获取当前图数据（用于保存）- 返回简单对象格式
@@ -142,6 +145,7 @@
 			input_variables: workflowState.inputVariables,
 			environment_variables: workflowState.environmentVariables,
 			metadata: workflowState.metadata,
+			test_inputs: workflowState.testInputs,
 			conversation_variables: [],
 			features: {},
 		};
@@ -155,7 +159,166 @@
 	// 组件挂载时加载初始数据
 	onMount(() => {
 		loadInitialGraph();
+		
+		// 设置单节点运行回调
+		runningState.onNodeRunning = async (params) => {
+			const { nodeType, input, isTest } = params;
+			
+			// 获取节点 ID（从 runningState.currentNodeId）
+			const nodeId = runningState.currentNodeId;
+			if (!nodeId) {
+				throw new Error('No node is currently running');
+			}
+			
+			// 获取节点
+			const node = workflowState.getNode(nodeId);
+			if (!node) {
+				throw new Error(`Node ${nodeId} not found`);
+			}
+			
+			// 创建执行器
+			const executorOptions: ExecutorOptions = {
+				agentCall,
+				knowledgeRetrieval,
+			};
+			const executors = createDefaultExecutors(executorOptions);
+			
+			// 获取对应的执行器
+			const executor = executors.get(nodeType);
+			if (!executor) {
+				throw new Error(`No executor found for node type: ${nodeType}`);
+			}
+			
+			// 构建执行上下文
+			// 收集前置节点的输出作为输入
+			const nodeInputs = collectNodeInputs(nodeId);
+			
+			// 合并用户输入（如果有）
+			const mergedInputs = { ...nodeInputs };
+			if (input && typeof input === 'object') {
+				Object.assign(mergedInputs, input);
+			}
+			
+			// 从 workflowState.testInputs 获取用户输入（测试表单中填写的值）
+			const userInputs: Record<string, unknown> = { ...workflowState.testInputs.values };
+			
+			// 构建系统变量
+			const systemVariables: Record<string, unknown> = {
+				user_id: authStore.user?.id ?? 'test-user',
+				workflow_id: workflowState.metadata?.id ?? 'test-workflow',
+				timestamp: new Date().toISOString(),
+			};
+			
+			// 执行节点 - 使用完整的 ExecutionContext
+			const context: ExecutionContext = {
+				workflowId: workflowState.metadata?.id ?? 'test-workflow',
+				executionId: crypto.randomUUID(),
+				isTest,
+				variables: new Map<string, Record<string, unknown>>(),
+				userInputs,
+				userFiles: [],
+				environmentVariables: Object.fromEntries(
+					workflowState.environmentVariables.map(v => [v.name, v.value])
+				),
+				systemVariables,
+			};
+			
+			// 解析节点输入变量（包括模板字符串）
+			const resolvedInputs = resolveNodeInputsForSingleRun(node, mergedInputs, context);
+			
+			// 更新节点运行数据中的 inputs，以便 ConfigPanel 显示解析后的值
+			runningState.updateNodeRunInputs(nodeId, resolvedInputs);
+			
+			const result = await executor.execute(node, resolvedInputs, context);
+			return result;
+		};
+		
+		return () => {
+			// 清理回调
+			runningState.onNodeRunning = undefined;
+		};
 	});
+	
+	// 收集节点的输入（从前置节点的输出）
+	function collectNodeInputs(nodeId: string): Record<string, unknown> {
+		const inputs: Record<string, unknown> = {};
+		
+		// 获取所有指向当前节点的边
+		const incomingEdges = workflowState.edges.filter(e => e.target === nodeId);
+		
+		for (const edge of incomingEdges) {
+			const sourceNode = workflowState.getNode(edge.source);
+			if (!sourceNode) continue;
+			
+			// 获取源节点的运行输出
+			const sourceRunData = sourceNode.data._run;
+			if (sourceRunData?.outputs) {
+				// 将源节点的输出合并到输入中
+				// 使用 {nodeId}.{outputKey} 格式
+				for (const [key, value] of Object.entries(sourceRunData.outputs)) {
+					inputs[`${edge.source}.${key}`] = value;
+				}
+			}
+		}
+		
+		// 同时获取开始节点的输入（如果有）
+		const startNode = workflowState.getNode(START_NODE_ID);
+		if (startNode?.data._run?.outputs) {
+			for (const [key, value] of Object.entries(startNode.data._run.outputs)) {
+				inputs[`input.${key}`] = value;
+			}
+		}
+		
+		return inputs;
+	}
+	
+	/**
+	 * 解析单节点执行时的输入变量
+	 * 类似于 WorkflowEngine.resolveNodeInputs，但用于单节点执行场景
+	 */
+	function resolveNodeInputsForSingleRun(
+		node: WorkflowNode,
+		mergedInputs: Record<string, unknown>,
+		context: ExecutionContext
+	): Record<string, unknown> {
+		const resolver = new VariableResolver(context);
+		const data = node.data as Record<string, unknown>;
+		const inputs = { ...mergedInputs };
+		
+		// 1. 添加流程输入变量（来自开始节点的用户输入）
+		if (context.userInputs) {
+			for (const [key, value] of Object.entries(context.userInputs)) {
+				inputs[`input.${key}`] = value;
+			}
+		}
+		
+		// 2. 处理上下文变量引用（节点配置的显式引用）
+		if (data.context && Array.isArray(data.context)) {
+			for (const ctx of data.context as Array<{ path: string }>) {
+				const value = resolver.resolve(ctx.path);
+				inputs[ctx.path] = value;
+			}
+		}
+		
+		// 3. 处理模板字符串（已解析的提示词）
+		if (data.systemPrompt && typeof data.systemPrompt === 'string') {
+			inputs._resolvedSystemPrompt = resolver.resolveTemplate(data.systemPrompt);
+		}
+		if (data.userPromptTemplate && typeof data.userPromptTemplate === 'string') {
+			inputs._resolvedUserPrompt = resolver.resolveTemplate(data.userPromptTemplate);
+		}
+		// Agent 节点的指令提示词
+		if (data.instructionPrompt && typeof data.instructionPrompt === 'string') {
+			inputs._resolvedInstructionPrompt = resolver.resolveTemplate(data.instructionPrompt);
+		}
+		
+		// 4. 处理输入变量引用（单个变量引用）
+		if (data.inputVariable && typeof data.inputVariable === 'string') {
+			inputs._resolvedInput = resolver.resolve(data.inputVariable);
+		}
+		
+		return inputs;
+	}
 
 	const nodeTypes = {
 		start: StartNode,
@@ -241,14 +404,18 @@
 	
 	// 测试运行对话框状态
 	let testRunDialogOpen = $state(false);
+	let testRunDialogMode = $state<'run' | 'inputs'>('run');
 	let executionResult = $state<ExecutionResult | null>(null);
 	
-	// 获取开始节点的输入变量
-	function getStartNodeVariables(): Variable[] {
+	// 当前工作流引擎实例（用于中断）
+	let currentEngine = $state<WorkflowEngine | null>(null);
+	
+	// 获取开始节点的输入字段
+	function getStartNodeInputFields(): InputField[] {
 		const startNode = workflowState.getNode(START_NODE_ID);
 		if (!startNode) return [];
-		const variables = startNode.data.variables as Variable[] | undefined;
-		return variables ?? [];
+		const data = startNode.data as StartNodeData;
+		return data.inputs ?? [];
 	}
 	
 	// 使用 requestAnimationFrame 检测 placingNodeId 变化并立即更新位置
@@ -394,7 +561,8 @@
 		switch (event.type) {
 			case 'node:start':
 				if (event.nodeId) {
-					runningState.setNodeRunning(event.nodeId);
+					const startData = event.data as { inputs?: Record<string, unknown> } | undefined;
+					runningState.setNodeRunning(event.nodeId, startData?.inputs);
 				}
 				break;
 			case 'node:complete':
@@ -414,12 +582,30 @@
 
 	// 全局操作回调
 	function handleTestRun() {
-		// 打开测试运行对话框
+		// 打开测试运行对话框（运行模式）
+		testRunDialogMode = 'run';
 		testRunDialogOpen = true;
 	}
 	
+	// 设置输入参数（仅设置参数，不运行）
+	function handleSetInputs() {
+		testRunDialogMode = 'inputs';
+		testRunDialogOpen = true;
+	}
+	
+	// 终止运行
+	function handleStopRun() {
+		if (currentEngine) {
+			currentEngine.cancel();
+			currentEngine = null;
+		}
+		runningState.abort();
+	}
+	
 	// 执行测试运行
-	async function executeTestRun(userInputs: Record<string, unknown>) {
+	async function executeTestRun(userInputs: Record<string, unknown>, files: File[]) {
+		console.log('[executeTestRun] called with userInputs:', userInputs);
+		
 		testRunDialogOpen = false;
 		executionResult = null;
 		
@@ -430,7 +616,6 @@
 		try {
 			// 创建执行器
 			const executorOptions: ExecutorOptions = {
-				llmCall,
 				agentCall,
 				knowledgeRetrieval,
 			};
@@ -443,12 +628,26 @@
 				executors
 			);
 			
+			// 保存引擎实例用于中断
+			currentEngine = engine;
+			
+			// 构建系统变量
+			const systemVariables: Record<string, unknown> = {
+				user_id: authStore.user?.id ?? 'test-user',
+				workflow_id: workflowState.metadata?.id ?? 'test-workflow',
+				timestamp: new Date().toISOString(),
+			};
+			
+			console.log('[executeTestRun] executing with:', { userInputs, systemVariables });
+			
 			const result = await engine.execute({
 				isTest: true,
 				userInputs,
+				userFiles: files,
 				environmentVariables: Object.fromEntries(
 					workflowState.environmentVariables.map(v => [v.name, v.value])
 				),
+				systemVariables,
 				onEvent: handleExecutionEvent,
 			});
 			
@@ -466,6 +665,7 @@
 				error: errorMessage,
 			};
 		} finally {
+			currentEngine = null;
 			runningState.endRun();
 		}
 	}
@@ -591,6 +791,8 @@
 		<!-- 全局操作栏 -->
 		<GlobalActions
 			onTestRun={handleTestRun}
+			onStopRun={handleStopRun}
+			onSetInputs={handleSetInputs}
 			onViewHistory={handleViewHistory}
 			onViewIssues={handleViewIssues}
 			onPublish={handlePublish}
@@ -601,12 +803,13 @@
 		<!-- 右侧配置面板 -->
 		<RightPanel />
 		
-		<!-- 测试运行对话框 -->
+		<!-- 输入参数设置对话框 -->
 		<TestRunDialog
 			open={testRunDialogOpen}
-			variables={getStartNodeVariables()}
+			inputFields={getStartNodeInputFields()}
 			onClose={() => testRunDialogOpen = false}
 			onRun={executeTestRun}
+			mode={testRunDialogMode}
 		/>
 		
 		<!-- 运行结果面板 -->

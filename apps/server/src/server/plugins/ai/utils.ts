@@ -5,7 +5,7 @@
 import { tool, jsonSchema, type UIMessage, type ToolSet } from '@qiyu-allinai/ai';
 import { t } from 'elysia';
 import type { TSchema, TObject, TProperties } from '@sinclair/typebox';
-import { model, provider, agent, tool as toolTable } from '@qiyu-allinai/db';
+import { model, provider, agent, tool as toolTable, mcpServer } from '@qiyu-allinai/db';
 import db from '@qiyu-allinai/db/connect';
 import { eq, inArray } from 'drizzle-orm';
 import { dbActions, filesActions, type ActionDefinition, type ActionContext } from '@qiyu-allinai/actions';
@@ -141,6 +141,16 @@ function mergeActionSchemas(action: ActionDefinition): TObject {
   return t.Object(properties);
 }
 
+/** 将 action 名称转换为合法的工具名称（OpenAI 要求 ^[a-zA-Z0-9_-]+$） */
+function toToolName(actionName: string): string {
+  return actionName.replace(/\./g, '_');
+}
+
+/** 将工具名称转换回 action 名称 */
+function toActionName(toolName: string): string {
+  return toolName.replace(/_/g, '.');
+}
+
 /** 将 Action 转换为 AI Tool */
 function actionToAITool(action: ActionDefinition, context: ActionContext) {
   const inputSchema = mergeActionSchemas(action);
@@ -149,13 +159,21 @@ function actionToAITool(action: ActionDefinition, context: ActionContext) {
     description: action.meta.description,
     inputSchema: jsonSchema(inputSchema),
     execute: async (input) => {
-      return action.execute(input, context);
+      // 扁平化输入：将 { params, query, body } 合并为单个对象
+      // 与 actions plugin 的 handlers.ts 保持一致
+      const typedInput = input as { params?: Record<string, unknown>; query?: Record<string, unknown>; body?: Record<string, unknown> };
+      const flatInput = {
+        ...(typedInput.query ?? {}),
+        ...(typedInput.params ?? {}),
+        ...(typedInput.body ?? {}),
+      };
+      return action.execute(flatInput, context);
     },
   });
 }
 
 /** 获取 Agent 配置 */
-export async function getAgentConfig(agentId: string, actionContext: ActionContext): Promise<AgentConfig> {
+export async function getAgentConfig(agentId: string, actionContext: ActionContext, mcpServerIds?: string[]): Promise<AgentConfig> {
   const [agentRecord] = await db
     .select()
     .from(agent)
@@ -174,7 +192,8 @@ export async function getAgentConfig(agentId: string, actionContext: ActionConte
     for (const actionName of nativeTools) {
       const action = actionsMap.get(actionName);
       if (!action) continue;
-      agentTools[actionName] = actionToAITool(action, actionContext);
+      const toolName = toToolName(actionName);
+      agentTools[toolName] = actionToAITool(action, actionContext);
     }
   }
 
@@ -227,6 +246,31 @@ export async function getAgentConfig(agentId: string, actionContext: ActionConte
           return result.output;
         },
       });
+    }
+  }
+
+  // 加载 MCP 服务器的工具（如果指定了 mcpServerIds）
+  if (mcpServerIds && mcpServerIds.length > 0) {
+    const mcpServers = await db
+      .select()
+      .from(mcpServer)
+      .where(inArray(mcpServer.id, mcpServerIds));
+
+    for (const server of mcpServers) {
+      if (server.status !== '0') continue;
+      
+      const serverActions = server.actions as string[] | null;
+      if (serverActions && serverActions.length > 0) {
+        for (const actionName of serverActions) {
+          const toolName = toToolName(actionName);
+          // 避免重复添加
+          if (agentTools[toolName]) continue;
+          
+          const action = actionsMap.get(actionName);
+          if (!action) continue;
+          agentTools[toolName] = actionToAITool(action, actionContext);
+        }
+      }
     }
   }
 
