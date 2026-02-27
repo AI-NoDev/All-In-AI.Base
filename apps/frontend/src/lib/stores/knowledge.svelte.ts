@@ -8,7 +8,7 @@ import { authStore } from './auth.svelte';
 import { PostApiKnowledgeNodesTypeEnum } from '@qiyu-allinai/api';
 
 // ============ Types ============
-export type FileViewMode = 'all' | 'my-shared' | 'shared-with-me' | 'favorites';
+export type FileViewMode = 'all' | 'my-shared' | 'shared-with-me' | 'favorites' | 'recycle-bin';
 export type NodeType = 'folder' | 'file';
 
 export interface NodeItem {
@@ -39,6 +39,9 @@ export interface NodeItem {
   updatedAt: string;
   createdBy: string;
   createdById: string;
+  deletedAt?: string | null;
+  deletedBy?: string | null;
+  deletedById?: string | null;
 }
 
 // 兼容旧的 FolderItem 和 FileItem 类型
@@ -55,6 +58,7 @@ export interface FolderItem {
   createdAt: string;
   updatedAt: string;
   createdById: string;
+  deletedAt?: string | null;
 }
 
 export interface FileItem {
@@ -73,6 +77,7 @@ export interface FileItem {
   createdAt: string;
   updatedAt: string;
   createdById: string;
+  deletedAt?: string | null;
 }
 
 export interface PathItem {
@@ -112,6 +117,7 @@ function nodeToFolder(n: NodeItem): FolderItem {
     createdAt: n.createdAt,
     updatedAt: n.updatedAt,
     createdById: n.createdById,
+    deletedAt: n.deletedAt,
   };
 }
 
@@ -133,6 +139,7 @@ function nodeToFile(n: NodeItem): FileItem {
     createdAt: n.createdAt,
     updatedAt: n.updatedAt,
     createdById: n.createdById,
+    deletedAt: n.deletedAt,
   };
 }
 
@@ -140,8 +147,27 @@ function createKnowledgeStore() {
   // State - 使用统一的 nodes
   let nodes = $state<NodeItem[]>([]);
   let loading = $state(false);
-  let currentFolderId = $state<string | null>(null);
-  let pathStack = $state<PathItem[]>([{ id: null, name: '根目录' }]);
+  
+  // Navigation State per View Mode
+  interface ViewState {
+    currentFolderId: string | null;
+    pathStack: PathItem[];
+  }
+
+  const defaultViewState: ViewState = {
+    currentFolderId: null,
+    pathStack: [{ id: null, name: '根目录' }]
+  };
+  
+  // Initialize view states with deep copies
+  let viewStates = $state<Record<FileViewMode, ViewState>>({
+    'all': JSON.parse(JSON.stringify(defaultViewState)),
+    'my-shared': JSON.parse(JSON.stringify(defaultViewState)),
+    'shared-with-me': JSON.parse(JSON.stringify(defaultViewState)),
+    'favorites': JSON.parse(JSON.stringify(defaultViewState)),
+    'recycle-bin': { currentFolderId: null, pathStack: [{ id: null, name: '回收站' }] }
+  });
+
   let selectedNodeIds = $state<Set<string>>(new Set());
   let clipboard = $state<ClipboardItem[]>([]);
   let viewMode = $state<FileViewMode>('all');
@@ -155,20 +181,28 @@ function createKnowledgeStore() {
   const api = authStore.createApi(true);
 
   // ============ Derived State ============
+  // Current view navigation state
+  let currentFolderId = $derived(viewStates[viewMode].currentFolderId);
+  let pathStack = $derived(viewStates[viewMode].pathStack);
+
+  // 根据视图模式选择当前显示的节点列表
+  let activeNodes = $derived(viewMode === 'all' ? nodes : sharedNodes);
+
   // 分离文件夹和文件（兼容旧组件）
-  let folders = $derived(nodes.filter(n => n.type === 'folder').map(nodeToFolder));
-  let files = $derived(nodes.filter(n => n.type === 'file').map(nodeToFile));
+  let folders = $derived(activeNodes.filter(n => n.type === 'folder').map(nodeToFolder));
+  let files = $derived(activeNodes.filter(n => n.type === 'file').map(nodeToFile));
+  
   let selectedFolderIds = $derived(new Set(
-    Array.from(selectedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'folder')
+    Array.from(selectedNodeIds).filter(id => activeNodes.find(n => n.id === id)?.type === 'folder')
   ));
   let selectedFileIds = $derived(new Set(
-    Array.from(selectedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'file')
+    Array.from(selectedNodeIds).filter(id => activeNodes.find(n => n.id === id)?.type === 'file')
   ));
   let favoritedFolderIds = $derived(new Set(
-    Array.from(favoritedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'folder')
+    Array.from(favoritedNodeIds).filter(id => activeNodes.find(n => n.id === id)?.type === 'folder')
   ));
   let favoritedFileIds = $derived(new Set(
-    Array.from(favoritedNodeIds).filter(id => nodes.find(n => n.id === id)?.type === 'file')
+    Array.from(favoritedNodeIds).filter(id => activeNodes.find(n => n.id === id)?.type === 'file')
   ));
 
   // ============ LocalStorage ============
@@ -178,10 +212,24 @@ function createKnowledgeStore() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored) as { pathStack: PathItem[]; currentFolderId: string | null };
-        if (parsed.pathStack?.length > 0) {
-          pathStack = parsed.pathStack;
-          currentFolderId = parsed.currentFolderId;
+        const parsed = JSON.parse(stored);
+        
+        // Handle legacy format (single view state)
+        if (parsed.pathStack && Array.isArray(parsed.pathStack)) {
+           // Only restore for 'all' view if it's legacy format
+           viewStates['all'].pathStack = parsed.pathStack;
+           viewStates['all'].currentFolderId = parsed.currentFolderId;
+        } 
+        // Handle new format (multi-view state)
+        else if (parsed.viewStates) {
+          // Merge stored states into current states
+          Object.keys(parsed.viewStates).forEach((key) => {
+             const mode = key as FileViewMode;
+             if (viewStates[mode]) {
+               viewStates[mode].pathStack = parsed.viewStates[mode].pathStack;
+               viewStates[mode].currentFolderId = parsed.viewStates[mode].currentFolderId;
+             }
+          });
         }
       } catch {
         // 解析失败，使用默认值
@@ -191,14 +239,22 @@ function createKnowledgeStore() {
 
   function savePathToStorage(): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      pathStack,
-      currentFolderId,
-    }));
+    // Save all view states
+    // We create a plain object representation to avoid proxy issues if any
+    const stateToSave = {
+      viewStates: {
+        'all': { ...viewStates['all'] },
+        'my-shared': { ...viewStates['my-shared'] },
+        'shared-with-me': { ...viewStates['shared-with-me'] },
+        'favorites': { ...viewStates['favorites'] },
+        'recycle-bin': { ...viewStates['recycle-bin'] }
+      }
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
   }
 
   // ============ Data Loading ============
-  async function loadContents(folderId: string | null = currentFolderId): Promise<void> {
+  async function loadContents(folderId: string | null = viewStates[viewMode].currentFolderId): Promise<void> {
     loading = true;
     clearSelection();
     
@@ -238,7 +294,7 @@ function createKnowledgeStore() {
 
   async function refresh(): Promise<void> {
     if (viewMode === 'all') {
-      await loadContents(currentFolderId);
+      await loadContents(viewStates[viewMode].currentFolderId);
     } else {
       await loadViewModeData();
     }
@@ -248,8 +304,11 @@ function createKnowledgeStore() {
   function setViewMode(mode: FileViewMode): void {
     viewMode = mode;
     clearSelection();
+    
+    // We no longer need to manually reset pathStack here as each view has its own state
+    
     if (mode === 'all') {
-      loadContents(currentFolderId);
+      loadContents(viewStates[mode].currentFolderId);
     } else {
       loadViewModeData();
     }
@@ -307,7 +366,19 @@ function createKnowledgeStore() {
             updatedAt: item.createdAt,
             createdBy: '',
             createdById: '',
+            deletedAt: null,
           })) as SharedNodeItem[];
+        }
+      } else if (viewMode === 'recycle-bin') {
+        const currentId = viewStates[viewMode].currentFolderId;
+        const res = await api.knowledge.postApiKnowledgeNodesRecycleBin({
+          limit: 100,
+          offset: 0,
+          sort: { field: 'deletedAt', order: 'desc' },
+          filter: currentId ? { parentId: currentId } : { rootOnly: true } as any
+        });
+        if (res.data?.data) {
+          sharedNodes = (res.data.data as NodeItem[]) as SharedNodeItem[];
         }
       }
     } catch (err) {
@@ -355,33 +426,39 @@ function createKnowledgeStore() {
 
   // ============ Navigation ============
   function navigateToFolder(folder: FolderItem): void {
-    currentFolderId = folder.id;
-    pathStack = [...pathStack, { id: folder.id, name: folder.name }];
+    viewStates[viewMode].currentFolderId = folder.id;
+    viewStates[viewMode].pathStack = [...viewStates[viewMode].pathStack, { id: folder.id, name: folder.name }];
     savePathToStorage();
-    loadContents(folder.id);
+    refresh();
   }
 
   function navigateUp(): void {
-    if (pathStack.length <= 1) return;
-    pathStack = pathStack.slice(0, -1);
-    currentFolderId = pathStack[pathStack.length - 1].id;
+    const stack = viewStates[viewMode].pathStack;
+    if (stack.length <= 1) return;
+    
+    viewStates[viewMode].pathStack = stack.slice(0, -1);
+    viewStates[viewMode].currentFolderId = viewStates[viewMode].pathStack[viewStates[viewMode].pathStack.length - 1].id;
     savePathToStorage();
-    loadContents(currentFolderId);
+    refresh();
   }
 
   function navigateToPath(index: number): void {
-    if (index >= pathStack.length - 1) return;
-    pathStack = pathStack.slice(0, index + 1);
-    currentFolderId = pathStack[index].id;
+    const stack = viewStates[viewMode].pathStack;
+    if (index >= stack.length - 1) return;
+    
+    viewStates[viewMode].pathStack = stack.slice(0, index + 1);
+    viewStates[viewMode].currentFolderId = viewStates[viewMode].pathStack[index].id;
     savePathToStorage();
-    loadContents(currentFolderId);
+    refresh();
   }
 
   function navigateToRoot(): void {
-    pathStack = [{ id: null, name: '根目录' }];
-    currentFolderId = null;
+    // Reset based on view mode default
+    const rootName = viewMode === 'recycle-bin' ? '回收站' : '根目录';
+    viewStates[viewMode].pathStack = [{ id: null, name: rootName }];
+    viewStates[viewMode].currentFolderId = null;
     savePathToStorage();
-    loadContents(null);
+    refresh();
   }
 
   // ============ Selection ============
@@ -390,12 +467,12 @@ function createKnowledgeStore() {
   }
 
   function toggleSelectAll(): void {
-    const allSelected = nodes.length > 0 && nodes.every(n => selectedNodeIds.has(n.id));
+    const allSelected = activeNodes.length > 0 && activeNodes.every(n => selectedNodeIds.has(n.id));
     
     if (allSelected) {
       clearSelection();
     } else {
-      selectedNodeIds = new Set(nodes.map(n => n.id));
+      selectedNodeIds = new Set(activeNodes.map(n => n.id));
     }
   }
 
@@ -415,7 +492,7 @@ function createKnowledgeStore() {
   function copySelected(): void {
     const items: ClipboardItem[] = [];
     selectedNodeIds.forEach(id => {
-      const n = nodes.find(x => x.id === id);
+      const n = activeNodes.find(x => x.id === id);
       if (n) items.push({ type: n.type, id, name: n.name, action: 'copy', sourceFolderId: n.parentId });
     });
     clipboard = items;
@@ -424,7 +501,7 @@ function createKnowledgeStore() {
   function cutSelected(): void {
     const items: ClipboardItem[] = [];
     selectedNodeIds.forEach(id => {
-      const n = nodes.find(x => x.id === id);
+      const n = activeNodes.find(x => x.id === id);
       if (n) items.push({ type: n.type, id, name: n.name, action: 'cut', sourceFolderId: n.parentId });
     });
     clipboard = items;
@@ -493,23 +570,95 @@ function createKnowledgeStore() {
     if (ids.length === 0) return;
     
     try {
-      await api.knowledge.postApiKnowledgeNodesDeleteBatch({ ids });
+      if (viewMode === 'recycle-bin') {
+        await api.knowledge.deleteApiKnowledgeNodesRecycleBinDelete({ ids });
+      } else {
+        await api.knowledge.postApiKnowledgeNodesDeleteBatch({ ids });
+      }
       await refresh();
+      clearSelection();
     } catch (err) {
       console.error('批量删除失败:', err);
     }
   }
 
+  async function restoreSelected(): Promise<void> {
+    const ids = Array.from(selectedNodeIds);
+    if (ids.length === 0) return;
+    
+    try {
+      await api.knowledge.postApiKnowledgeNodesRestore({ ids });
+      await refresh();
+      clearSelection();
+    } catch (err) {
+      console.error('还原失败:', err);
+    }
+  }
+
+  async function restoreNode(id: string): Promise<void> {
+    try {
+      await api.knowledge.postApiKnowledgeNodesRestore({ ids: [id] });
+      await refresh();
+    } catch (err) {
+      console.error('还原失败:', err);
+    }
+  }
+
+  async function deleteNodePermanently(id: string): Promise<void> {
+    try {
+      await api.knowledge.deleteApiKnowledgeNodesRecycleBinDelete({ ids: [id] });
+      await refresh();
+    } catch (err) {
+      console.error('永久删除失败:', err);
+    }
+  }
+
+  async function renameFolder(folder: FolderItem, newName: string): Promise<boolean> {
+    try {
+      await api.knowledge.putApiKnowledgeNodesById({ id: folder.id }, { name: newName });
+      await refresh();
+      return true;
+    } catch (err) {
+      console.error('重命名文件夹失败:', err);
+      return false;
+    }
+  }
+
+  async function renameFile(file: FileItem, newName: string): Promise<boolean> {
+    try {
+      await api.knowledge.putApiKnowledgeNodesById({ id: file.id }, { name: newName });
+      await refresh();
+      return true;
+    } catch (err) {
+      console.error('重命名文件失败:', err);
+      return false;
+    }
+  }
+
   // ============ Initialization ============
   function init(): void {
+    // Reset view mode to 'all' when initializing (e.g. entering My Files page)
+    viewMode = 'all';
+    
     loadPathFromStorage();
-    loadContents(currentFolderId);
+    
+    // Check URL parameters for folder ID
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const folderId = urlParams.get('folderId');
+      if (folderId) {
+        // If URL has folderId, use it
+        viewStates['all'].currentFolderId = folderId;
+      }
+    }
+    
+    loadContents(viewStates['all'].currentFolderId);
   }
 
   // ============ Derived State ============
   const hasSelection = () => selectedNodeIds.size > 0;
   const hasClipboard = () => clipboard.length > 0;
-  const isAllSelected = () => nodes.length > 0 && nodes.every(n => selectedNodeIds.has(n.id));
+  const isAllSelected = () => activeNodes.length > 0 && activeNodes.every(n => selectedNodeIds.has(n.id));
 
   return {
     // State getters
@@ -540,6 +689,8 @@ function createKnowledgeStore() {
     navigateUp,
     navigateToPath,
     navigateToRoot,
+    loadRecycleBin: () => setViewMode('recycle-bin'),
+    setViewMode,
 
     // Selection
     clearSelection,
@@ -556,14 +707,26 @@ function createKnowledgeStore() {
     cutFile,
     clearClipboard,
 
-    // CRUD
+    // Actions
     createFolder,
     deleteFolder,
     deleteFile,
     deleteSelected,
-
-    // View Mode
-    setViewMode,
+    restore: async (ids: string[]) => {
+      await api.knowledge.postApiKnowledgeNodesRestore({ ids });
+      await refresh();
+    },
+    deletePermanently: async (ids: string[]) => {
+      await api.knowledge.deleteApiKnowledgeNodesRecycleBinDelete({ ids });
+      await refresh();
+    },
+    emptyRecycleBin: async () => {
+      // @ts-ignore
+      await api.knowledge.deleteApiKnowledgeNodesRecycleBin();
+      await refresh();
+    },
+    renameFolder,
+    renameFile,
     loadViewModeData,
     
     // Favorites

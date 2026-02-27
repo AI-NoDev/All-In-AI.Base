@@ -20,7 +20,7 @@ export * from '../../files/components/types';
 export type { ViewMode, GenericFolder, GenericFile, ViewPermissions } from '../../files/components/knowledge-file-list.svelte';
 
 // Knowledge page view mode type
-export type KnowledgeViewMode = 'my-files' | 'shared-with-me' | 'my-shared' | 'favorites';
+export type KnowledgeViewMode = 'my-files' | 'shared-with-me' | 'my-shared' | 'favorites' | 'recycle-bin';
 
 // Permission config for each view mode
 export interface KnowledgePagePermissions {
@@ -69,6 +69,15 @@ export const VIEW_MODE_PERMISSIONS: Record<KnowledgeViewMode, KnowledgePagePermi
     canEdit: false,
     canShare: false,
     canDownload: true,
+    canCopyPaste: false,
+  },
+  'recycle-bin': {
+    canCreate: false,
+    canUpload: false,
+    canDelete: true, // Permanent delete
+    canEdit: false,
+    canShare: false,
+    canDownload: false,
     canCopyPaste: false,
   },
 };

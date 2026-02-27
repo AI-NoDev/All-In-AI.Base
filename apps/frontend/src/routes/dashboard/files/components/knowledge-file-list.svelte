@@ -13,7 +13,7 @@
   import type { Snippet } from 'svelte';
 
   // 视图模式
-  export type ViewMode = 'my-files' | 'shared-with-me' | 'my-shared' | 'favorites';
+  export type ViewMode = 'my-files' | 'shared-with-me' | 'my-shared' | 'favorites' | 'recycle-bin';
 
   // 通用文件夹类型
   export interface GenericFolder {
@@ -66,6 +66,7 @@
     canFavorite: boolean;
     canViewVersions: boolean;
     canEdit: boolean;
+    canRestore: boolean;
   }
 
   // 默认权限配置
@@ -74,25 +75,31 @@
       canSelect: true, canNavigate: true, canCopy: true, canCut: true,
       canRename: true, canDelete: true, canDownload: true, canShowInfo: true,
       canEditDescription: true, canEditStyle: true, canEditPermission: true,
-      canFavorite: true, canViewVersions: true, canEdit: true,
+      canFavorite: true, canViewVersions: true, canEdit: true, canRestore: false,
     },
     'shared-with-me': {
       canSelect: false, canNavigate: true, canCopy: false, canCut: false,
       canRename: false, canDelete: false, canDownload: true, canShowInfo: true,
       canEditDescription: false, canEditStyle: false, canEditPermission: false,
-      canFavorite: true, canViewVersions: false, canEdit: false, // 根据 permission 动态判断
+      canFavorite: true, canViewVersions: false, canEdit: false, canRestore: false,
     },
     'my-shared': {
       canSelect: false, canNavigate: true, canCopy: false, canCut: false,
       canRename: false, canDelete: false, canDownload: true, canShowInfo: true,
       canEditDescription: false, canEditStyle: false, canEditPermission: true,
-      canFavorite: true, canViewVersions: false, canEdit: false,
+      canFavorite: true, canViewVersions: false, canEdit: false, canRestore: false,
     },
     'favorites': {
       canSelect: false, canNavigate: true, canCopy: false, canCut: false,
       canRename: false, canDelete: false, canDownload: true, canShowInfo: true,
       canEditDescription: false, canEditStyle: false, canEditPermission: false,
-      canFavorite: true, canViewVersions: false, canEdit: false,
+      canFavorite: true, canViewVersions: false, canEdit: false, canRestore: false,
+    },
+    'recycle-bin': {
+      canSelect: true, canNavigate: true, canCopy: false, canCut: false,
+      canRename: false, canDelete: true, canDownload: false, canShowInfo: false,
+      canEditDescription: false, canEditStyle: false, canEditPermission: false,
+      canFavorite: false, canViewVersions: false, canEdit: false, canRestore: true,
     },
   };
 
@@ -124,6 +131,7 @@
     onCutFolder?: (folder: GenericFolder) => void;
     onRenameFolder?: (folder: GenericFolder) => void;
     onDeleteFolder?: (folder: GenericFolder) => void;
+    onRestoreFolder?: (folder: GenericFolder) => void;
     onDownloadFolder?: (folder: GenericFolder) => void;
     onShowFolderInfo?: (folder: GenericFolder) => void;
     onEditFolderDescription?: (folder: GenericFolder) => void;
@@ -134,6 +142,7 @@
     onCutFile?: (file: GenericFile) => void;
     onRenameFile?: (file: GenericFile) => void;
     onDeleteFile?: (file: GenericFile) => void;
+    onRestoreFile?: (file: GenericFile) => void;
     onDownloadFile?: (file: GenericFile) => void;
     onShowFileInfo?: (file: GenericFile) => void;
     onEditFileDescription?: (file: GenericFile) => void;
@@ -142,6 +151,7 @@
     onViewFileVersions?: (file: GenericFile) => void;
     onToggleFileFavorite?: (file: GenericFile) => void;
     onFileDoubleClick?: (file: GenericFile) => void;
+    deleteLabel?: string;
   }
 
   let {
@@ -152,11 +162,12 @@
     extraHeaderColumns, extraFolderColumns, extraFileColumns,
     folderActions, fileActions,
     onNavigateUp, onNavigateToFolder, onToggleSelectAll, onToggleFolderSelect, onToggleFileSelect,
-    onCopyFolder, onCutFolder, onRenameFolder, onDeleteFolder, onDownloadFolder,
+    onCopyFolder, onCutFolder, onRenameFolder, onDeleteFolder, onRestoreFolder, onDownloadFolder,
     onShowFolderInfo, onEditFolderDescription, onEditFolderStyle, onEditFolderPermission, onToggleFolderFavorite,
-    onCopyFile, onCutFile, onRenameFile, onDeleteFile, onDownloadFile,
+    onCopyFile, onCutFile, onRenameFile, onDeleteFile, onRestoreFile, onDownloadFile,
     onShowFileInfo, onEditFileDescription, onEditFile, onEditFilePermission, onViewFileVersions, onToggleFileFavorite,
     onFileDoubleClick,
+    deleteLabel,
   }: Props = $props();
 
   // 合并权限配置
@@ -211,7 +222,7 @@
               {@render extraHeaderColumns()}
             {/if}
             <Table.Head class="w-24 text-left">{t('page.knowledge.size')}</Table.Head>
-            <Table.Head class="w-40 text-left">{t('page.knowledge.modifiedTime')}</Table.Head>
+            <Table.Head class="w-40 text-left">{viewMode === 'recycle-bin' ? t('page.knowledge.deletedAt') : t('page.knowledge.modifiedTime')}</Table.Head>
             {#if folderActions || fileActions || perms.canShowInfo}
               <Table.Head class="w-20 text-center">{t('page.knowledge.actions')}</Table.Head>
             {/if}
@@ -237,10 +248,12 @@
           {#each folders as folder}
             <FileContextMenu type="folder" item={folder}
               isFavorited={favoritedFolderIds.has(folder.id)}
+              deleteLabel={deleteLabel}
               onCopy={perms.canCopy ? () => onCopyFolder?.(folder) : undefined}
               onCut={perms.canCut ? () => onCutFolder?.(folder) : undefined}
               onRename={perms.canRename ? () => onRenameFolder?.(folder) : undefined}
               onDelete={perms.canDelete ? () => onDeleteFolder?.(folder) : undefined}
+              onRestore={perms.canRestore ? () => onRestoreFolder?.(folder) : undefined}
               onDownload={perms.canDownload ? () => onDownloadFolder?.(folder) : undefined}
               onShowInfo={perms.canShowInfo ? () => onShowFolderInfo?.(folder) : undefined}
               onEditDescription={perms.canEditDescription ? () => onEditFolderDescription?.(folder) : undefined}
@@ -295,10 +308,12 @@
           {#each files as file}
             <FileContextMenu type="file" item={file}
               isFavorited={favoritedFileIds.has(file.id)}
+              deleteLabel={deleteLabel}
               onCopy={perms.canCopy ? () => onCopyFile?.(file) : undefined}
               onCut={perms.canCut ? () => onCutFile?.(file) : undefined}
               onRename={perms.canRename ? () => onRenameFile?.(file) : undefined}
               onDelete={perms.canDelete ? () => onDeleteFile?.(file) : undefined}
+              onRestore={perms.canRestore ? () => onRestoreFile?.(file) : undefined}
               onDownload={perms.canDownload ? () => onDownloadFile?.(file) : undefined}
               onShowInfo={perms.canShowInfo ? () => onShowFileInfo?.(file) : undefined}
               onEditDescription={perms.canEditDescription ? () => onEditFileDescription?.(file) : undefined}

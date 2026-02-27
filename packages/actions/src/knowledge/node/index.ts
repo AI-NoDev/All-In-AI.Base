@@ -12,6 +12,10 @@ export { nodeCreate } from './create';
 export { nodeUpdate } from './update';
 export { nodeDelete } from './deleteByPk';
 export { nodeDeleteMany } from './deleteMany';
+export { nodeGetRecycleBin } from './getRecycleBin';
+export { nodeRestore } from './restore';
+export { nodeDeletePermanently } from './deletePermanently';
+export { nodeEmptyRecycleBin } from './emptyRecycleBin';
 export { nodeGetSchema } from './getSchema';
 
 import { nodeGetByPagination } from './getByPagination';
@@ -21,6 +25,10 @@ import { nodeCreate } from './create';
 import { nodeUpdate } from './update';
 import { nodeDelete } from './deleteByPk';
 import { nodeDeleteMany } from './deleteMany';
+import { nodeGetRecycleBin } from './getRecycleBin';
+import { nodeRestore } from './restore';
+import { nodeDeletePermanently } from './deletePermanently';
+import { nodeEmptyRecycleBin } from './emptyRecycleBin';
 import { nodeGetSchema } from './getSchema';
 
 export const nodeActions = [
@@ -31,5 +39,9 @@ export const nodeActions = [
   nodeUpdate,
   nodeDelete,
   nodeDeleteMany,
+  nodeGetRecycleBin,
+  nodeRestore,
+  nodeDeletePermanently,
+  nodeEmptyRecycleBin,
   nodeGetSchema,
 ];

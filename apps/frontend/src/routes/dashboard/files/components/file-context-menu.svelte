@@ -30,6 +30,8 @@
     onEditPermission?: () => void;
     onViewVersions?: () => void;
     onToggleFavorite?: () => void;
+    onRestore?: () => void;
+    deleteLabel?: string;
   }
 
   let {
@@ -49,6 +51,8 @@
     onEditPermission,
     onViewVersions,
     onToggleFavorite,
+    onRestore,
+    deleteLabel,
   }: Props = $props();
 
   let isTextFile = $derived(
@@ -93,10 +97,17 @@
       </ContextMenu.Item>
     {/if}
 
+    {#if onRestore}
+      <ContextMenu.Item onclick={onRestore}>
+        <Icon icon="tdesign:rollback" class="mr-2 size-4" />
+        {t('page.knowledge.restore')}
+      </ContextMenu.Item>
+    {/if}
+
     {#if onDelete}
       <ContextMenu.Item onclick={onDelete} class="text-destructive focus:text-destructive">
         <Icon icon="tdesign:delete" class="mr-2 size-4" />
-        {t('page.knowledge.delete')}
+        {deleteLabel || t('page.knowledge.delete')}
       </ContextMenu.Item>
     {/if}
 

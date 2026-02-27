@@ -308,6 +308,30 @@ export enum DeleteApiKnowledgeNodesByIdPermissionsBySubjectTypeBySubjectIdParams
   Dept = "dept",
 }
 
+export interface DeleteApiKnowledgeNodesRecycleBinData {
+  data: {
+    deletedCount: number;
+  };
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiKnowledgeNodesRecycleBinDeleteData {
+  data: {
+    deletedCount: number;
+  };
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface DeleteApiKnowledgeNodesRecycleBinDeletePayload {
+  ids: string[];
+}
+
 export interface DeleteApiSystemConfigByIdData {
   data: boolean;
   /** @default "ok" */
@@ -895,6 +919,39 @@ export interface GetApiAiMcpServerByIdParams {
   id: string;
 }
 
+export interface GetApiAiMcpServerByIdSkillData {
+  data: {
+    /** 生成的文件列表 */
+    files: {
+      /** 文件内容 */
+      content: string;
+      /** 文件相对路径 */
+      path: string;
+    }[];
+    /** Skill 名称（基于 MCP 服务名） */
+    skillName: string;
+  };
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface GetApiAiMcpServerByIdSkillDownloadParams {
+  id: string;
+}
+
+export type GetApiAiMcpServerByIdSkillError = {
+  data: null;
+  message: string;
+  /** @default 404 */
+  status: number;
+};
+
+export interface GetApiAiMcpServerByIdSkillParams {
+  id: string;
+}
+
 export interface GetApiAiMcpServerSchemaData {
   data: object;
   /** @default "ok" */
@@ -1245,18 +1302,12 @@ export interface GetApiAiWorkflowByIdData {
     id: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion: number | null;
     remark: string | null;
     status: string | null;
     updatedAt: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version: number;
   } | null;
   /** @default "ok" */
   message: string;
@@ -2945,6 +2996,14 @@ export interface GetMcpByIdInfoParams {
   id: string;
 }
 
+export interface GetMcpByIdStdioDownloadParams {
+  id: string;
+}
+
+export interface GetMcpByIdStdioParams {
+  id: string;
+}
+
 export enum PermissionEnum {
   Read = "read",
   Write = "write",
@@ -3732,6 +3791,7 @@ export interface PostApiAiChatPayload {
   /** @format uuid */
   agentId?: string;
   maxSteps?: number;
+  mcpServerIds?: string[];
   messages: {
     content?: string;
     id: string;
@@ -5434,18 +5494,12 @@ export interface PostApiAiWorkflowBatchData {
     id: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion: number | null;
     remark: string | null;
     status: string | null;
     updatedAt: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version: number;
   }[];
   /** @default "ok" */
   message: string;
@@ -5466,18 +5520,12 @@ export interface PostApiAiWorkflowBatchPayload {
     id?: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion?: number | null;
     remark?: string | null;
     status?: string | null;
     updatedAt?: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById?: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version?: number;
   }[];
 }
 
@@ -5494,18 +5542,12 @@ export interface PostApiAiWorkflowData {
     id: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion: number | null;
     remark: string | null;
     status: string | null;
     updatedAt: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version: number;
   };
   /** @default "ok" */
   message: string;
@@ -5526,18 +5568,12 @@ export interface PostApiAiWorkflowPayload {
     id?: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion?: number | null;
     remark?: string | null;
     status?: string | null;
     updatedAt?: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById?: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version?: number;
   };
 }
 
@@ -5555,18 +5591,12 @@ export interface PostApiAiWorkflowQueryData {
       id: string;
       /** @maxLength 100 */
       name: string;
-      publishedVersion: number | null;
       remark: string | null;
       status: string | null;
       updatedAt: string;
       /** @maxLength 64 */
       updatedBy: string;
       updatedById: string | null;
-      /**
-       * @min -2147483648
-       * @max 2147483647
-       */
-      version: number;
     }[];
     total: number;
   };
@@ -7331,6 +7361,60 @@ export enum PostApiKnowledgeNodesQueryTypesEnum {
   File = "file",
 }
 
+export interface PostApiKnowledgeNodesRecycleBinData {
+  data: {
+    data: any[];
+    total: number;
+  };
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeNodesRecycleBinPayload {
+  filter?: {
+    deletedAtEnd?: string;
+    deletedAtStart?: string;
+    extension?: string;
+    ids?: string[];
+    name?: string;
+    parentId?: string;
+    rootOnly?: boolean;
+    type?: string;
+    types?: string[];
+  };
+  /**
+   * @min 1
+   * @max 100
+   * @default 20
+   */
+  limit?: number;
+  /**
+   * @min 0
+   * @default 0
+   */
+  offset?: number;
+  sort?: {
+    field?: string;
+    order?: string;
+  };
+}
+
+export interface PostApiKnowledgeNodesRestoreData {
+  data: {
+    restoredCount: number;
+  };
+  /** @default "ok" */
+  message: string;
+  /** @default 200 */
+  status: number;
+}
+
+export interface PostApiKnowledgeNodesRestorePayload {
+  ids: string[];
+}
+
 export interface PostApiKnowledgeNodesSearchData {
   data: {
     /** 搜索结果列表 */
@@ -7817,11 +7901,14 @@ export interface PostApiKnowledgeUploadDirectData {
 }
 
 export interface PostApiKnowledgeUploadDirectPayload {
-  /** 文件内容（Base64 编码） */
+  /**
+   * 文件内容（纯文本，建议不超过50000字符）
+   * @maxLength 100000
+   */
   content: string;
   /** 文件描述 */
   description?: string;
-  /** 文件 MIME 类型 */
+  /** 文件 MIME 类型，默认 text/plain */
   mimeType?: string;
   /**
    * 文件名
@@ -12908,18 +12995,12 @@ export interface PutApiAiWorkflowBatchData {
     id: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion: number | null;
     remark: string | null;
     status: string | null;
     updatedAt: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version: number;
   }[];
   /** @default "ok" */
   message: string;
@@ -12940,18 +13021,12 @@ export interface PutApiAiWorkflowBatchPayload {
     id?: string;
     /** @maxLength 100 */
     name?: string;
-    publishedVersion?: number | null;
     remark?: string | null;
     status?: string | null;
     updatedAt?: string;
     /** @maxLength 64 */
     updatedBy?: string;
     updatedById?: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version?: number;
   };
   ids: string[];
 }
@@ -12969,18 +13044,12 @@ export interface PutApiAiWorkflowByIdData {
     id: string;
     /** @maxLength 100 */
     name: string;
-    publishedVersion: number | null;
     remark: string | null;
     status: string | null;
     updatedAt: string;
     /** @maxLength 64 */
     updatedBy: string;
     updatedById: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version: number;
   };
   /** @default "ok" */
   message: string;
@@ -13005,18 +13074,12 @@ export interface PutApiAiWorkflowByIdPayload {
     id?: string;
     /** @maxLength 100 */
     name?: string;
-    publishedVersion?: number | null;
     remark?: string | null;
     status?: string | null;
     updatedAt?: string;
     /** @maxLength 64 */
     updatedBy?: string;
     updatedById?: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    version?: number;
   };
 }
 
@@ -13478,83 +13541,6 @@ export enum PutApiKnowledgeNodesByIdPermissionsSubjectTypeEnum {
   User = "user",
   Role = "role",
   Dept = "dept",
-}
-
-export interface PutApiKnowledgeNodesByIdTextData {
-  data: {
-    bucket: string | null;
-    color: string | null;
-    createdAt: string;
-    /** @maxLength 64 */
-    createdBy: string;
-    createdById: string | null;
-    deletedAt: string | null;
-    deletedBy: string | null;
-    deletedById: string | null;
-    description: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    downloadCount: number;
-    etag: string | null;
-    extension: string | null;
-    icon: string | null;
-    /** @format uuid */
-    id: string;
-    isPublic: boolean;
-    materializedPath: string;
-    metadata: ((string | number | boolean | null) | any[] | object) | null;
-    mimeType: string | null;
-    /** @maxLength 255 */
-    name: string;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    orderNum: number;
-    originalName: string | null;
-    parentId: string | null;
-    path: string;
-    processResult: ((string | number | boolean | null) | any[] | object) | null;
-    processStatus: string | null;
-    region: string | null;
-    /**
-     * @min -9007199254740991
-     * @max 9007199254740991
-     */
-    size: number;
-    status: string | null;
-    storageClass: string | null;
-    storageKey: string | null;
-    tags: ((string | number | boolean | null) | any[] | object) | null;
-    /** @maxLength 16 */
-    type: string;
-    updatedAt: string;
-    /** @maxLength 64 */
-    updatedBy: string;
-    updatedById: string | null;
-    /**
-     * @min -2147483648
-     * @max 2147483647
-     */
-    versionCount: number;
-    versionId: string | null;
-  };
-  /** @default "ok" */
-  message: string;
-  /** @default 200 */
-  status: number;
-}
-
-export interface PutApiKnowledgeNodesByIdTextParams {
-  /** 文件节点 ID */
-  id: string;
-}
-
-export interface PutApiKnowledgeNodesByIdTextPayload {
-  /** 要保存的文本内容 */
-  content: string;
 }
 
 export interface PutApiKnowledgeNodesOrderData {
@@ -15247,6 +15233,40 @@ export namespace Mcp {
   }
 
   /**
+   * @description 生成 STDIO 模式的 MCP 服务器 JS 文件
+   * @tags MCP
+   * @name GetMcpByIdStdio
+   * @summary 获取 STDIO MCP 服务器
+   * @request GET:/mcp/{id}/stdio
+   */
+  export namespace GetMcpByIdStdio {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
+   * @description 下载 STDIO 模式的 MCP 服务器 JS 文件
+   * @tags MCP
+   * @name GetMcpByIdStdioDownload
+   * @summary 下载 STDIO MCP 服务器
+   * @request GET:/mcp/{id}/stdio/download
+   */
+  export namespace GetMcpByIdStdioDownload {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
+  }
+
+  /**
    * No description
    * @name PostMcpById
    * @request POST:/mcp/{id}
@@ -15750,6 +15770,48 @@ export namespace Ai {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetApiAiMcpServerByIdConfigData;
+  }
+
+  /**
+ * @description 为 MCP 服务生成标准 AI Skill 文件包，可用于 Claude Desktop 等 AI 工具。 **生成的文件结构：** ``` .claude/skills/{mcpName}/ ├── SKILL.md              # Skill 说明文档 ├── scripts/ │   └── fetch.js          # API 调用脚本 └── docs/ └── {action}.md       # 每个 action 的详细文档 ``` **使用方式：** 1. 下载生成的 Skill 文件 2. 解压到项目根目录 3. 配置环境变量 QIYUAI_AUTH_TOKEN 或在 fetch.js 中设置 AUTH_TOKEN 4. 使用 `node fetch.js -h` 查看所有可用 actions 5. 使用 `node fetch.js --action <name> -h` 查看单个 action 帮助
+ * @tags AI, MCP
+ * @name GetApiAiMcpServerByIdSkill
+ * @summary 生成 AI Skill
+ * @request GET:/api/ai/mcp-server/{id}/skill
+ * @response `200` `GetApiAiMcpServerByIdSkillData` Response for status 200
+ * @response `404` `{
+    data: null,
+    message: string,
+  /** @default 404 *\/
+    status: number,
+
+}` Response for status 404
+*/
+  export namespace GetApiAiMcpServerByIdSkill {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetApiAiMcpServerByIdSkillData;
+  }
+
+  /**
+   * @description 下载 MCP 服务的 AI Skill 文件包（ZIP 格式）
+   * @tags AI, MCP
+   * @name GetApiAiMcpServerByIdSkillDownload
+   * @summary 下载 AI Skill ZIP
+   * @request GET:/api/ai/mcp-server/{id}/skill/download
+   */
+  export namespace GetApiAiMcpServerByIdSkillDownload {
+    export type RequestParams = {
+      id: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = any;
   }
 
   /**
@@ -16485,7 +16547,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个工具组记录。 **必填字段：** - name: 工具组名称 **可选字段：** - description: 描述 - icon: 图标 - orderNum: 排序号 - status: 状态 **示例：** ```json { "data": { "name": "代码工具", "description": "代码相关的AI工具", "orderNum": 1 } } ```
+   * @description 创建单个工具组记录。 **必填字段：** - name: 工具组名称 **可选字段：** - description: 描述 - icon: 图标 iconify ,例如：mdi:robot - orderNum: 排序号 - status: 状态 **示例：** ```json { "data": { "name": "代码工具", "description": "代码相关的AI工具", "orderNum": 1 } } ```
    * @tags ai, toolGroup
    * @name PostApiAiToolGroup
    * @summary 创建工具组
@@ -16581,7 +16643,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 创建单个工作流。 **必填字段：** - name: 工作流名称 **可选字段：** - description: 描述 - icon: 图标 - graph: 工作流图定义（默认空图） - status: 状态，"0"=草稿（默认），"1"=已发布，"2"=已禁用 - remark: 备注 **示例：** ```json { "data": { "name": "客服工作流", "description": "自动回复客户问题", "graph": { "nodes": [ { "id": "start", "type": "start", "position": { "x": 0, "y": 0 }, "data": {} }, { "id": "llm", "type": "llm", "position": { "x": 200, "y": 0 }, "data": { "model": "gpt-4" } }, { "id": "end", "type": "end", "position": { "x": 400, "y": 0 }, "data": {} } ], "edges": [ { "id": "e1", "source": "start", "target": "llm" }, { "id": "e2", "source": "llm", "target": "end" } ] } } } ```
+   * @description 创建单个工作流。 **必填字段：** - name: 工作流名称 **可选字段：** - description: 描述 - icon: 图标 iconify ,例如：mdi:robot - graph: 工作流图定义（默认空图） - status: 状态，"0"=草稿（默认），"1"=已发布，"2"=已禁用 - remark: 备注 **示例：** ```json { "data": { "name": "客服工作流", "description": "自动回复客户问题", "graph": { "nodes": [ { "id": "start", "type": "start", "position": { "x": 0, "y": 0 }, "data": {} }, { "id": "llm", "type": "llm", "position": { "x": 200, "y": 0 }, "data": { "model": "gpt-4" } }, { "id": "end", "type": "end", "position": { "x": 400, "y": 0 }, "data": {} } ], "edges": [ { "id": "e1", "source": "start", "target": "llm" }, { "id": "e2", "source": "llm", "target": "end" } ] } } } ```
    * @tags ai, workflow
    * @name PostApiAiWorkflow
    * @summary 创建工作流
@@ -16942,7 +17004,7 @@ export namespace Ai {
   }
 
   /**
-   * @description 根据ID更新单个工作流的信息。 **路径参数：** - id: 工作流的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 工作流名称 - description: 描述 - icon: 图标 - graph: 工作流图定义 - version: 版本号（通常自动递增） - publishedVersion: 已发布版本号 - status: 状态，"0"=草稿，"1"=已发布，"2"=已禁用 - remark: 备注
+   * @description 根据ID更新单个工作流的信息。 **路径参数：** - id: 工作流的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 工作流名称 - description: 描述 - icon: 图标 iconify ,例如：mdi:robot - graph: 工作流图定义 - version: 版本号（通常自动递增） - publishedVersion: 已发布版本号 - status: 状态，"0"=草稿，"1"=已发布，"2"=已禁用 - remark: 备注
    * @tags ai, workflow
    * @name PutApiAiWorkflowById
    * @summary 更新工作流
@@ -17415,7 +17477,7 @@ export namespace Actions {
   }
 
   /**
-   * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据。
+   * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式
    * @tags actions
    * @name PostApiActionsExecuteByName
    * @summary 通过名称执行Action
@@ -18848,7 +18910,7 @@ export namespace System {
   }
 
   /**
-   * @description 创建单个菜单项。 **必填字段：** - name: 菜单名称 - type: 菜单类型，M=目录，C=菜单，F=按钮 **可选字段：** - parentId: 父级菜单ID，null表示顶级 - path: 路由路径（菜单类型需要） - component: 组件路径 - permission: 权限标识（按钮类型需要） - icon: 图标 - orderNum: 排序号，默认0 - visible: 是否可见，默认true - status: 状态，"0"=正常，"1"=禁用 **示例 - 创建目录：** ```json { "data": { "name": "系统管理", "type": "M", "icon": "setting", "orderNum": 1 } } ``` **示例 - 创建菜单：** ```json { "data": { "name": "用户管理", "type": "C", "parentId": "parent-uuid", "path": "/system/users", "component": "system/users/index" } } ```
+   * @description 创建单个菜单项。 **必填字段：** - name: 菜单名称 - type: 菜单类型，M=目录，C=菜单，F=按钮 **可选字段：** - parentId: 父级菜单ID，null表示顶级 - path: 路由路径（菜单类型需要） - component: 组件路径 - permission: 权限标识（按钮类型需要） - icon: 图标 iconify ,例如：mdi:robot - orderNum: 排序号，默认0 - visible: 是否可见，默认true - status: 状态，"0"=正常，"1"=禁用 **示例 - 创建目录：** ```json { "data": { "name": "系统管理", "type": "M", "icon": "setting", "orderNum": 1 } } ``` **示例 - 创建菜单：** ```json { "data": { "name": "用户管理", "type": "C", "parentId": "parent-uuid", "path": "/system/users", "component": "system/users/index" } } ```
    * @tags system, menu
    * @name PostApiSystemMenu
    * @summary 创建菜单
@@ -19716,7 +19778,7 @@ export namespace System {
   }
 
   /**
-   * @description 根据ID更新单个菜单的信息。 **路径参数：** - id: 菜单的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 菜单名称 - type: 菜单类型 - parentId: 父级菜单ID - path: 路由路径 - component: 组件路径 - permission: 权限标识 - icon: 图标 - orderNum: 排序号 - visible: 是否可见 - status: 状态 **示例：** ```json PUT /api/system/menu/xxx-uuid { "data": { "visible": false, "orderNum": 10 } } ```
+   * @description 根据ID更新单个菜单的信息。 **路径参数：** - id: 菜单的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 菜单名称 - type: 菜单类型 - parentId: 父级菜单ID - path: 路由路径 - component: 组件路径 - permission: 权限标识 - icon: 图标 iconify ,例如：mdi:robot - orderNum: 排序号 - visible: 是否可见 - status: 状态 **示例：** ```json PUT /api/system/menu/xxx-uuid { "data": { "visible": false, "orderNum": 10 } } ```
    * @tags system, menu
    * @name PutApiSystemMenuById
    * @summary 更新菜单
@@ -20004,6 +20066,38 @@ export namespace Knowledge {
   }
 
   /**
+   * @description 清空当前用户的回收站（永久删除所有已删除节点）。
+   * @tags knowledge, node, mutation
+   * @name DeleteApiKnowledgeNodesRecycleBin
+   * @summary 清空回收站
+   * @request DELETE:/api/knowledge/nodes/recycle-bin
+   * @response `200` `DeleteApiKnowledgeNodesRecycleBinData` Response for status 200
+   */
+  export namespace DeleteApiKnowledgeNodesRecycleBin {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiKnowledgeNodesRecycleBinData;
+  }
+
+  /**
+   * @description 永久删除回收站中的节点。 **请求体参数：** - ids: 节点ID数组 **权限检查：** - 需要对该节点有 delete 权限 **行为：** - 永久删除：从数据库物理删除 - 文件夹：递归删除所有后代节点 - 权限：清理相关权限记录 **返回：** - deletedCount: 删除的节点数量
+   * @tags knowledge, node, mutation
+   * @name DeleteApiKnowledgeNodesRecycleBinDelete
+   * @summary 永久删除节点
+   * @request DELETE:/api/knowledge/nodes/recycle-bin/delete
+   * @response `200` `DeleteApiKnowledgeNodesRecycleBinDeleteData` Response for status 200
+   */
+  export namespace DeleteApiKnowledgeNodesRecycleBinDelete {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = DeleteApiKnowledgeNodesRecycleBinDeletePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = DeleteApiKnowledgeNodesRecycleBinDeleteData;
+  }
+
+  /**
    * @description 根据主键ID查询单个节点详情。 **路径参数：** - id: 节点UUID **返回：** - 节点完整信息，包含 id, name, type, path, size, mimeType 等 - 如果节点不存在或无权限，返回 null **权限检查：** - 需要对该节点有 read 权限 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000
    * @tags knowledge, node, query
    * @name GetApiKnowledgeNodesById
@@ -20277,7 +20371,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 创建文件夹或文件节点。 **请求体参数：** - type: 节点类型，必填，"folder" | "file" - parentId: 父节点ID，可选，null表示根目录 - name: 名称，必填，1-255字符 - description: 描述，可选 - 文件夹特有：icon, color - 文件特有：extension, mimeType, size, storageKey, bucket, etag, versionId **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的节点完整信息 **示例（创建文件夹）：** ```json { "type": "folder", "parentId": null, "name": "我的文档", "icon": "folder", "color": "#4A90E2" } ```
+   * @description 创建文件夹或文件节点。 **使用方式：** 1. 创建文件夹：type="folder"，直接调用即可 2. 创建空文件：type="file"，无需提供storageKey，系统自动生成 **请求体参数：** - type: 节点类型，必填，"folder" | "file" - parentId: 父节点ID，可选，null表示根目录 - name: 名称，必填，1-255字符 - description: 描述，可选 - 文件夹特有：icon, color - 文件特有（可选）：extension, mimeType, size, storageKey, bucket **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的节点完整信息 **示例（创建文件夹）：** ```json { "type": "folder", "parentId": null, "name": "我的文档" } ``` **示例（创建Markdown文件）：** ```json { "type": "file", "parentId": "folder-uuid", "name": "readme.md", "extension": "md", "mimeType": "text/markdown" } ```
    * @tags knowledge, node, mutation
    * @name PostApiKnowledgeNodes
    * @summary 创建节点
@@ -20436,6 +20530,38 @@ export namespace Knowledge {
   }
 
   /**
+   * @description 分页查询回收站中的节点列表，仅显示当前用户删除的节点。
+   * @tags knowledge, node, query
+   * @name PostApiKnowledgeNodesRecycleBin
+   * @summary 分页查询回收站
+   * @request POST:/api/knowledge/nodes/recycle-bin
+   * @response `200` `PostApiKnowledgeNodesRecycleBinData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesRecycleBin {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesRecycleBinPayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesRecycleBinData;
+  }
+
+  /**
+   * @description 还原回收站中的节点。 **请求体参数：** - ids: 节点ID数组 **权限检查：** - 需要对该节点有 delete 权限 (通常还原操作视为反向删除) **行为：** - 还原：设置 deletedAt, deletedBy, deletedById 为 null - 文件夹：递归还原所有后代节点 (仅还原与文件夹一同删除的节点，即 deletedAt 时间戳相同的节点) **返回：** - restoredCount: 还原的节点数量
+   * @tags knowledge, node, mutation
+   * @name PostApiKnowledgeNodesRestore
+   * @summary 还原节点
+   * @request POST:/api/knowledge/nodes/restore
+   * @response `200` `PostApiKnowledgeNodesRestoreData` Response for status 200
+   */
+  export namespace PostApiKnowledgeNodesRestore {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = PostApiKnowledgeNodesRestorePayload;
+    export type RequestHeaders = {};
+    export type ResponseBody = PostApiKnowledgeNodesRestoreData;
+  }
+
+  /**
    * @description 全文搜索知识库节点（按名称模糊匹配）。 **请求体参数：** - keyword: 搜索关键词，必填，1-100字符 - type: 节点类型筛选，可选 "folder" | "file" - limit: 返回数量限制，默认20，最大50 **返回：** - data: 匹配的节点数组 **使用场景：** - 文件搜索 - 快速定位文件 **示例：** ```json { "keyword": "readme", "type": "file", "limit": 10 } ```
    * @tags knowledge, operations
    * @name PostApiKnowledgeNodesSearch
@@ -20500,7 +20626,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 直接上传小文件（Base64编码），自动检测同名冲突。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，可选，默认 application/octet-stream - description: 描述，可选 **返回：** - success: 是否成功 - node: 创建的节点（成功时） - conflict: 冲突信息（存在同名文件时） - nodeId: 已存在节点ID - name: 文件名 - size: 文件大小 - updatedAt: 更新时间 **使用场景：** - 小文件快速上传（<5MB） - 文本文件创建 **示例：** ```json { "parentId": null, "name": "readme.md", "content": "IyBIZWxsbyBXb3JsZA==", "mimeType": "text/markdown" } ```
+   * @description 直接上传文件并创建节点，支持纯文本内容。 **重要限制：** - content 内容长度建议不超过 50000 字符 - 超长内容可能导致 JSON 解析失败 - 对于大文件，建议分多次调用或精简内容 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，纯文本（建议<50000字符） - mimeType: MIME类型，可选，默认 text/plain - description: 描述，可选 **返回：** - success: 是否成功 - node: 创建的节点（成功时） - conflict: 冲突信息（存在同名文件时） **示例：** ```json { "parentId": "folder-uuid", "name": "readme.md", "content": "# Hello\n\n内容", "mimeType": "text/markdown" } ```
    * @tags knowledge, upload
    * @name PostApiKnowledgeUploadDirect
    * @summary 直接上传
@@ -20532,7 +20658,7 @@ export namespace Knowledge {
   }
 
   /**
-   * @description 获取预签名上传URL，用于大文件分片上传。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - filename: 文件名，必填，1-255字符 - mimeType: MIME类型，必填 **返回：** - uploadUrl: 预签名上传URL（直接PUT到此URL） - storageKey: 存储路径，用于后续确认上传 - expiresAt: URL过期时间（ISO 8601） **使用场景：** - 大文件上传（>5MB） - 前端直传S3/MinIO **示例：** ```json { "parentId": "folder-uuid", "filename": "large-file.zip", "mimeType": "application/zip" } ```
+   * @description 获取预签名上传URL，用于文件上传。 **这是创建文件的第一步！** 创建文件的完整流程： 1. 调用此接口获取 uploadUrl 和 storageKey 2. 使用 uploadUrl 上传文件内容（HTTP PUT 请求，Body 为文件内容） 3. 调用 knowledge.node.create 创建文件节点，传入 storageKey **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - filename: 文件名，必填，1-255字符 - mimeType: MIME类型，必填（如 text/markdown, text/plain, application/json） **返回：** - uploadUrl: 预签名上传URL（使用 HTTP PUT 方法上传文件内容到此URL） - storageKey: 存储路径，创建文件节点时必须传入此值 - expiresAt: URL过期时间（ISO 8601） **示例：** ```json { "parentId": "folder-uuid", "filename": "readme.md", "mimeType": "text/markdown" } ```
    * @tags knowledge, upload
    * @name PostApiKnowledgeUploadUrl
    * @summary 获取上传URL
@@ -20617,25 +20743,6 @@ export namespace Knowledge {
     export type RequestBody = PutApiKnowledgeNodesByIdPermissionsPayload;
     export type RequestHeaders = {};
     export type ResponseBody = PutApiKnowledgeNodesByIdPermissionsData;
-  }
-
-  /**
-   * @description 保存文本文件内容（在线编辑保存）。 **路径参数：** - id: 文件节点UUID **请求体参数：** - content: 文件内容，必填，UTF-8字符串 **权限检查：** - 需要对该节点有 write 权限 **返回：** - 更新后的节点完整信息（包含新的 size） **使用场景：** - 在线文本编辑器保存 - Markdown 编辑保存 **示例：** ```json { "content": "# 标题\n\n这是更新后的内容" } ```
-   * @tags knowledge, content
-   * @name PutApiKnowledgeNodesByIdText
-   * @summary 保存文本内容
-   * @request PUT:/api/knowledge/nodes/{id}/text
-   * @response `200` `PutApiKnowledgeNodesByIdTextData` Response for status 200
-   */
-  export namespace PutApiKnowledgeNodesByIdText {
-    export type RequestParams = {
-      /** 文件节点 ID */
-      id: string;
-    };
-    export type RequestQuery = {};
-    export type RequestBody = PutApiKnowledgeNodesByIdTextPayload;
-    export type RequestHeaders = {};
-    export type ResponseBody = PutApiKnowledgeNodesByIdTextData;
   }
 
   /**
@@ -21748,6 +21855,42 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 生成 STDIO 模式的 MCP 服务器 JS 文件
+     *
+     * @tags MCP
+     * @name GetMcpByIdStdio
+     * @summary 获取 STDIO MCP 服务器
+     * @request GET:/mcp/{id}/stdio
+     */
+    getMcpByIdStdio: (
+      { id, ...query }: GetMcpByIdStdioParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/mcp/${id}/stdio`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * @description 下载 STDIO 模式的 MCP 服务器 JS 文件
+     *
+     * @tags MCP
+     * @name GetMcpByIdStdioDownload
+     * @summary 下载 STDIO MCP 服务器
+     * @request GET:/mcp/{id}/stdio/download
+     */
+    getMcpByIdStdioDownload: (
+      { id, ...query }: GetMcpByIdStdioDownloadParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/mcp/${id}/stdio/download`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @name PostMcpById
@@ -22304,6 +22447,54 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/ai/mcp-server/${id}/config`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+ * @description 为 MCP 服务生成标准 AI Skill 文件包，可用于 Claude Desktop 等 AI 工具。 **生成的文件结构：** ``` .claude/skills/{mcpName}/ ├── SKILL.md              # Skill 说明文档 ├── scripts/ │   └── fetch.js          # API 调用脚本 └── docs/ └── {action}.md       # 每个 action 的详细文档 ``` **使用方式：** 1. 下载生成的 Skill 文件 2. 解压到项目根目录 3. 配置环境变量 QIYUAI_AUTH_TOKEN 或在 fetch.js 中设置 AUTH_TOKEN 4. 使用 `node fetch.js -h` 查看所有可用 actions 5. 使用 `node fetch.js --action <name> -h` 查看单个 action 帮助
+ *
+ * @tags AI, MCP
+ * @name GetApiAiMcpServerByIdSkill
+ * @summary 生成 AI Skill
+ * @request GET:/api/ai/mcp-server/{id}/skill
+ * @response `200` `GetApiAiMcpServerByIdSkillData` Response for status 200
+ * @response `404` `{
+    data: null,
+    message: string,
+  /** @default 404 *\/
+    status: number,
+
+}` Response for status 404
+ */
+    getApiAiMcpServerByIdSkill: (
+      { id, ...query }: GetApiAiMcpServerByIdSkillParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<
+        GetApiAiMcpServerByIdSkillData,
+        GetApiAiMcpServerByIdSkillError
+      >({
+        path: `/api/ai/mcp-server/${id}/skill`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 下载 MCP 服务的 AI Skill 文件包（ZIP 格式）
+     *
+     * @tags AI, MCP
+     * @name GetApiAiMcpServerByIdSkillDownload
+     * @summary 下载 AI Skill ZIP
+     * @request GET:/api/ai/mcp-server/{id}/skill/download
+     */
+    getApiAiMcpServerByIdSkillDownload: (
+      { id, ...query }: GetApiAiMcpServerByIdSkillDownloadParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<any, any>({
+        path: `/api/ai/mcp-server/${id}/skill/download`,
+        method: "GET",
         ...params,
       }),
 
@@ -23214,7 +23405,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个工具组记录。 **必填字段：** - name: 工具组名称 **可选字段：** - description: 描述 - icon: 图标 - orderNum: 排序号 - status: 状态 **示例：** ```json { "data": { "name": "代码工具", "description": "代码相关的AI工具", "orderNum": 1 } } ```
+     * @description 创建单个工具组记录。 **必填字段：** - name: 工具组名称 **可选字段：** - description: 描述 - icon: 图标 iconify ,例如：mdi:robot - orderNum: 排序号 - status: 状态 **示例：** ```json { "data": { "name": "代码工具", "description": "代码相关的AI工具", "orderNum": 1 } } ```
      *
      * @tags ai, toolGroup
      * @name PostApiAiToolGroup
@@ -23346,7 +23537,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个工作流。 **必填字段：** - name: 工作流名称 **可选字段：** - description: 描述 - icon: 图标 - graph: 工作流图定义（默认空图） - status: 状态，"0"=草稿（默认），"1"=已发布，"2"=已禁用 - remark: 备注 **示例：** ```json { "data": { "name": "客服工作流", "description": "自动回复客户问题", "graph": { "nodes": [ { "id": "start", "type": "start", "position": { "x": 0, "y": 0 }, "data": {} }, { "id": "llm", "type": "llm", "position": { "x": 200, "y": 0 }, "data": { "model": "gpt-4" } }, { "id": "end", "type": "end", "position": { "x": 400, "y": 0 }, "data": {} } ], "edges": [ { "id": "e1", "source": "start", "target": "llm" }, { "id": "e2", "source": "llm", "target": "end" } ] } } } ```
+     * @description 创建单个工作流。 **必填字段：** - name: 工作流名称 **可选字段：** - description: 描述 - icon: 图标 iconify ,例如：mdi:robot - graph: 工作流图定义（默认空图） - status: 状态，"0"=草稿（默认），"1"=已发布，"2"=已禁用 - remark: 备注 **示例：** ```json { "data": { "name": "客服工作流", "description": "自动回复客户问题", "graph": { "nodes": [ { "id": "start", "type": "start", "position": { "x": 0, "y": 0 }, "data": {} }, { "id": "llm", "type": "llm", "position": { "x": 200, "y": 0 }, "data": { "model": "gpt-4" } }, { "id": "end", "type": "end", "position": { "x": 400, "y": 0 }, "data": {} } ], "edges": [ { "id": "e1", "source": "start", "target": "llm" }, { "id": "e2", "source": "llm", "target": "end" } ] } } } ```
      *
      * @tags ai, workflow
      * @name PostApiAiWorkflow
@@ -23820,7 +24011,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个工作流的信息。 **路径参数：** - id: 工作流的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 工作流名称 - description: 描述 - icon: 图标 - graph: 工作流图定义 - version: 版本号（通常自动递增） - publishedVersion: 已发布版本号 - status: 状态，"0"=草稿，"1"=已发布，"2"=已禁用 - remark: 备注
+     * @description 根据ID更新单个工作流的信息。 **路径参数：** - id: 工作流的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 工作流名称 - description: 描述 - icon: 图标 iconify ,例如：mdi:robot - graph: 工作流图定义 - version: 版本号（通常自动递增） - publishedVersion: 已发布版本号 - status: 状态，"0"=草稿，"1"=已发布，"2"=已禁用 - remark: 备注
      *
      * @tags ai, workflow
      * @name PutApiAiWorkflowById
@@ -24352,7 +24543,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式。沙盒模式下只验证输入不实际执行，返回模拟数据。
+     * @description 通过Action名称执行，支持X-Sandbox header控制沙盒模式
      *
      * @tags actions
      * @name PostApiActionsExecuteByName
@@ -26025,7 +26216,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建单个菜单项。 **必填字段：** - name: 菜单名称 - type: 菜单类型，M=目录，C=菜单，F=按钮 **可选字段：** - parentId: 父级菜单ID，null表示顶级 - path: 路由路径（菜单类型需要） - component: 组件路径 - permission: 权限标识（按钮类型需要） - icon: 图标 - orderNum: 排序号，默认0 - visible: 是否可见，默认true - status: 状态，"0"=正常，"1"=禁用 **示例 - 创建目录：** ```json { "data": { "name": "系统管理", "type": "M", "icon": "setting", "orderNum": 1 } } ``` **示例 - 创建菜单：** ```json { "data": { "name": "用户管理", "type": "C", "parentId": "parent-uuid", "path": "/system/users", "component": "system/users/index" } } ```
+     * @description 创建单个菜单项。 **必填字段：** - name: 菜单名称 - type: 菜单类型，M=目录，C=菜单，F=按钮 **可选字段：** - parentId: 父级菜单ID，null表示顶级 - path: 路由路径（菜单类型需要） - component: 组件路径 - permission: 权限标识（按钮类型需要） - icon: 图标 iconify ,例如：mdi:robot - orderNum: 排序号，默认0 - visible: 是否可见，默认true - status: 状态，"0"=正常，"1"=禁用 **示例 - 创建目录：** ```json { "data": { "name": "系统管理", "type": "M", "icon": "setting", "orderNum": 1 } } ``` **示例 - 创建菜单：** ```json { "data": { "name": "用户管理", "type": "C", "parentId": "parent-uuid", "path": "/system/users", "component": "system/users/index" } } ```
      *
      * @tags system, menu
      * @name PostApiSystemMenu
@@ -27177,7 +27368,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 根据ID更新单个菜单的信息。 **路径参数：** - id: 菜单的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 菜单名称 - type: 菜单类型 - parentId: 父级菜单ID - path: 路由路径 - component: 组件路径 - permission: 权限标识 - icon: 图标 - orderNum: 排序号 - visible: 是否可见 - status: 状态 **示例：** ```json PUT /api/system/menu/xxx-uuid { "data": { "visible": false, "orderNum": 10 } } ```
+     * @description 根据ID更新单个菜单的信息。 **路径参数：** - id: 菜单的UUID **请求体 (data)：** 要更新的字段，所有字段均为可选 - name: 菜单名称 - type: 菜单类型 - parentId: 父级菜单ID - path: 路由路径 - component: 组件路径 - permission: 权限标识 - icon: 图标 iconify ,例如：mdi:robot - orderNum: 排序号 - visible: 是否可见 - status: 状态 **示例：** ```json PUT /api/system/menu/xxx-uuid { "data": { "visible": false, "orderNum": 10 } } ```
      *
      * @tags system, menu
      * @name PutApiSystemMenuById
@@ -27541,6 +27732,45 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 清空当前用户的回收站（永久删除所有已删除节点）。
+     *
+     * @tags knowledge, node, mutation
+     * @name DeleteApiKnowledgeNodesRecycleBin
+     * @summary 清空回收站
+     * @request DELETE:/api/knowledge/nodes/recycle-bin
+     * @response `200` `DeleteApiKnowledgeNodesRecycleBinData` Response for status 200
+     */
+    deleteApiKnowledgeNodesRecycleBin: (params: RequestParams = {}) =>
+      this.http.request<DeleteApiKnowledgeNodesRecycleBinData, any>({
+        path: `/api/knowledge/nodes/recycle-bin`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 永久删除回收站中的节点。 **请求体参数：** - ids: 节点ID数组 **权限检查：** - 需要对该节点有 delete 权限 **行为：** - 永久删除：从数据库物理删除 - 文件夹：递归删除所有后代节点 - 权限：清理相关权限记录 **返回：** - deletedCount: 删除的节点数量
+     *
+     * @tags knowledge, node, mutation
+     * @name DeleteApiKnowledgeNodesRecycleBinDelete
+     * @summary 永久删除节点
+     * @request DELETE:/api/knowledge/nodes/recycle-bin/delete
+     * @response `200` `DeleteApiKnowledgeNodesRecycleBinDeleteData` Response for status 200
+     */
+    deleteApiKnowledgeNodesRecycleBinDelete: (
+      data: DeleteApiKnowledgeNodesRecycleBinDeletePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<DeleteApiKnowledgeNodesRecycleBinDeleteData, any>({
+        path: `/api/knowledge/nodes/recycle-bin/delete`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 根据主键ID查询单个节点详情。 **路径参数：** - id: 节点UUID **返回：** - 节点完整信息，包含 id, name, type, path, size, mimeType 等 - 如果节点不存在或无权限，返回 null **权限检查：** - 需要对该节点有 read 权限 **示例：** GET /api/knowledge/nodes/550e8400-e29b-41d4-a716-446655440000
      *
      * @tags knowledge, node, query
@@ -27843,7 +28073,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 创建文件夹或文件节点。 **请求体参数：** - type: 节点类型，必填，"folder" | "file" - parentId: 父节点ID，可选，null表示根目录 - name: 名称，必填，1-255字符 - description: 描述，可选 - 文件夹特有：icon, color - 文件特有：extension, mimeType, size, storageKey, bucket, etag, versionId **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的节点完整信息 **示例（创建文件夹）：** ```json { "type": "folder", "parentId": null, "name": "我的文档", "icon": "folder", "color": "#4A90E2" } ```
+     * @description 创建文件夹或文件节点。 **使用方式：** 1. 创建文件夹：type="folder"，直接调用即可 2. 创建空文件：type="file"，无需提供storageKey，系统自动生成 **请求体参数：** - type: 节点类型，必填，"folder" | "file" - parentId: 父节点ID，可选，null表示根目录 - name: 名称，必填，1-255字符 - description: 描述，可选 - 文件夹特有：icon, color - 文件特有（可选）：extension, mimeType, size, storageKey, bucket **权限检查：** - 如果指定 parentId，需要对父节点有 write 权限 **返回：** - 创建的节点完整信息 **示例（创建文件夹）：** ```json { "type": "folder", "parentId": null, "name": "我的文档" } ``` **示例（创建Markdown文件）：** ```json { "type": "file", "parentId": "folder-uuid", "name": "readme.md", "extension": "md", "mimeType": "text/markdown" } ```
      *
      * @tags knowledge, node, mutation
      * @name PostApiKnowledgeNodes
@@ -28046,6 +28276,50 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
+     * @description 分页查询回收站中的节点列表，仅显示当前用户删除的节点。
+     *
+     * @tags knowledge, node, query
+     * @name PostApiKnowledgeNodesRecycleBin
+     * @summary 分页查询回收站
+     * @request POST:/api/knowledge/nodes/recycle-bin
+     * @response `200` `PostApiKnowledgeNodesRecycleBinData` Response for status 200
+     */
+    postApiKnowledgeNodesRecycleBin: (
+      data: PostApiKnowledgeNodesRecycleBinPayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesRecycleBinData, any>({
+        path: `/api/knowledge/nodes/recycle-bin`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description 还原回收站中的节点。 **请求体参数：** - ids: 节点ID数组 **权限检查：** - 需要对该节点有 delete 权限 (通常还原操作视为反向删除) **行为：** - 还原：设置 deletedAt, deletedBy, deletedById 为 null - 文件夹：递归还原所有后代节点 (仅还原与文件夹一同删除的节点，即 deletedAt 时间戳相同的节点) **返回：** - restoredCount: 还原的节点数量
+     *
+     * @tags knowledge, node, mutation
+     * @name PostApiKnowledgeNodesRestore
+     * @summary 还原节点
+     * @request POST:/api/knowledge/nodes/restore
+     * @response `200` `PostApiKnowledgeNodesRestoreData` Response for status 200
+     */
+    postApiKnowledgeNodesRestore: (
+      data: PostApiKnowledgeNodesRestorePayload,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<PostApiKnowledgeNodesRestoreData, any>({
+        path: `/api/knowledge/nodes/restore`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description 全文搜索知识库节点（按名称模糊匹配）。 **请求体参数：** - keyword: 搜索关键词，必填，1-100字符 - type: 节点类型筛选，可选 "folder" | "file" - limit: 返回数量限制，默认20，最大50 **返回：** - data: 匹配的节点数组 **使用场景：** - 文件搜索 - 快速定位文件 **示例：** ```json { "keyword": "readme", "type": "file", "limit": 10 } ```
      *
      * @tags knowledge, operations
@@ -28134,7 +28408,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 直接上传小文件（Base64编码），自动检测同名冲突。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，Base64编码 - mimeType: MIME类型，可选，默认 application/octet-stream - description: 描述，可选 **返回：** - success: 是否成功 - node: 创建的节点（成功时） - conflict: 冲突信息（存在同名文件时） - nodeId: 已存在节点ID - name: 文件名 - size: 文件大小 - updatedAt: 更新时间 **使用场景：** - 小文件快速上传（<5MB） - 文本文件创建 **示例：** ```json { "parentId": null, "name": "readme.md", "content": "IyBIZWxsbyBXb3JsZA==", "mimeType": "text/markdown" } ```
+     * @description 直接上传文件并创建节点，支持纯文本内容。 **重要限制：** - content 内容长度建议不超过 50000 字符 - 超长内容可能导致 JSON 解析失败 - 对于大文件，建议分多次调用或精简内容 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - name: 文件名，必填，1-255字符 - content: 文件内容，必填，纯文本（建议<50000字符） - mimeType: MIME类型，可选，默认 text/plain - description: 描述，可选 **返回：** - success: 是否成功 - node: 创建的节点（成功时） - conflict: 冲突信息（存在同名文件时） **示例：** ```json { "parentId": "folder-uuid", "name": "readme.md", "content": "# Hello\n\n内容", "mimeType": "text/markdown" } ```
      *
      * @tags knowledge, upload
      * @name PostApiKnowledgeUploadDirect
@@ -28178,7 +28452,7 @@ export class Api<SecurityDataType extends unknown> {
       }),
 
     /**
-     * @description 获取预签名上传URL，用于大文件分片上传。 **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - filename: 文件名，必填，1-255字符 - mimeType: MIME类型，必填 **返回：** - uploadUrl: 预签名上传URL（直接PUT到此URL） - storageKey: 存储路径，用于后续确认上传 - expiresAt: URL过期时间（ISO 8601） **使用场景：** - 大文件上传（>5MB） - 前端直传S3/MinIO **示例：** ```json { "parentId": "folder-uuid", "filename": "large-file.zip", "mimeType": "application/zip" } ```
+     * @description 获取预签名上传URL，用于文件上传。 **这是创建文件的第一步！** 创建文件的完整流程： 1. 调用此接口获取 uploadUrl 和 storageKey 2. 使用 uploadUrl 上传文件内容（HTTP PUT 请求，Body 为文件内容） 3. 调用 knowledge.node.create 创建文件节点，传入 storageKey **请求体参数：** - parentId: 父文件夹ID，可选，null表示根目录 - filename: 文件名，必填，1-255字符 - mimeType: MIME类型，必填（如 text/markdown, text/plain, application/json） **返回：** - uploadUrl: 预签名上传URL（使用 HTTP PUT 方法上传文件内容到此URL） - storageKey: 存储路径，创建文件节点时必须传入此值 - expiresAt: URL过期时间（ISO 8601） **示例：** ```json { "parentId": "folder-uuid", "filename": "readme.md", "mimeType": "text/markdown" } ```
      *
      * @tags knowledge, upload
      * @name PostApiKnowledgeUploadUrl
@@ -28280,29 +28554,6 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<PutApiKnowledgeNodesByIdPermissionsData, any>({
         path: `/api/knowledge/nodes/${id}/permissions`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description 保存文本文件内容（在线编辑保存）。 **路径参数：** - id: 文件节点UUID **请求体参数：** - content: 文件内容，必填，UTF-8字符串 **权限检查：** - 需要对该节点有 write 权限 **返回：** - 更新后的节点完整信息（包含新的 size） **使用场景：** - 在线文本编辑器保存 - Markdown 编辑保存 **示例：** ```json { "content": "# 标题\n\n这是更新后的内容" } ```
-     *
-     * @tags knowledge, content
-     * @name PutApiKnowledgeNodesByIdText
-     * @summary 保存文本内容
-     * @request PUT:/api/knowledge/nodes/{id}/text
-     * @response `200` `PutApiKnowledgeNodesByIdTextData` Response for status 200
-     */
-    putApiKnowledgeNodesByIdText: (
-      { id, ...query }: PutApiKnowledgeNodesByIdTextParams,
-      data: PutApiKnowledgeNodesByIdTextPayload,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<PutApiKnowledgeNodesByIdTextData, any>({
-        path: `/api/knowledge/nodes/${id}/text`,
         method: "PUT",
         body: data,
         type: ContentType.Json,

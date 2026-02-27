@@ -186,7 +186,7 @@
 	function buildGenerateMessage(): string {
 		let message = instruction;
 		if (idealOutput.trim()) {
-			message += `\n\n参考输出格式或风格：\n${idealOutput}`;
+			message += `\n\n\n${idealOutput}`;
 		}
 		return message;
 	}

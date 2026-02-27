@@ -190,6 +190,13 @@ export const pages: PageMeta[] = [
     "order": 50
   },
   {
+    "path": "/dashboard/knowledge/recycle-bin",
+    "title": "nav.title.recycleBin",
+    "icon": "mdi:trash-can",
+    "group": "nav.group.knowledge",
+    "order": 50
+  },
+  {
     "path": "/dashboard/ai/mcp-servers",
     "title": "nav.title.mcpServers",
     "icon": "mdi:api",
@@ -375,6 +382,7 @@ export const routeTitles: Record<string, string> = {
   '/dashboard/system/login-logs': "nav.title.loginLogs",
   '/dashboard/ai/agents': "nav.title.agents",
   '/dashboard/ai/user-memory': "nav.title.userMemory",
+  '/dashboard/knowledge/recycle-bin': "nav.title.recycleBin",
   '/dashboard/ai/mcp-servers': "nav.title.mcpServers",
   '/dashboard/ai/api-keys': "nav.title.apiKeys",
   '/dashboard/preferences': "nav.title.preferences",
@@ -467,6 +475,13 @@ export const groupedPages: Record<string, PageMeta[]> = {
       "group": "nav.group.knowledge",
       "order": 10,
       "hidden": true
+    },
+    {
+      "path": "/dashboard/knowledge/recycle-bin",
+      "title": "nav.title.recycleBin",
+      "icon": "mdi:trash-can",
+      "group": "nav.group.knowledge",
+      "order": 50
     }
   ],
   "nav.group.communication": [
